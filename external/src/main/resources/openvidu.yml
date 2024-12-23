@@ -1,0 +1,19 @@
+spring.config.activate.on-profile: test
+
+openvidu:
+  url: http://test_url.test
+  secret: test_secret
+
+---
+spring.config.activate.on-profile: local
+openvidu:
+  url: ${OPENVIDU_URL}  # OpenVidu 서버 URL 환경변수로 설정
+  secret: ${OPENVIDU_SECRET}  # OpenVidu 비밀키 환경변수로 설정
+
+---
+spring.config.activate.on-profile: live
+openvidu:
+  url: ${OPENVIDU_URL}  # OpenVidu 서버 URL 환경변수로 설정
+  secret: ${OPENVIDU_SECRET}  # OpenVidu 비밀키 환경변수로 설정
+
+

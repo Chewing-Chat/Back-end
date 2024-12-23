@@ -1,0 +1,29 @@
+spring.config.activate.on-profile: test
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: test
+    password: test
+
+---
+spring.config.activate.on-profile: local
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+
+---
+spring.config.activate.on-profile: live
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+

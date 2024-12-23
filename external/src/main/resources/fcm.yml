@@ -1,0 +1,19 @@
+spring.config.activate.on-profile: test
+
+fcm:
+  api:
+    url: test-url
+    resource: test.json
+---
+spring.config.activate.on-profile: local
+fcm:
+  api:
+    url: local -url
+    resource: local.json
+
+---
+spring.config.activate.on-profile: live
+fcm:
+  api:
+    url: ${FCM_API_URL}
+    resource: google-services.json

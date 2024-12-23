@@ -1,0 +1,27 @@
+= API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+:snippets: ../../../build/generated-snippets
+
+== 소개
+
+API 문서입니다.
+
+== 공통 사항
+API 문서에서 공통으로 사용되는 내용을 정의합니다.
+
+=== Domain
+
+=== Common Response
+공통 응답
+
+응답 코드
+
+
+== Announcement API
+:api-title: Announcement API
+include::Announcement-API.adoc[]

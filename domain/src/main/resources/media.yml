@@ -1,0 +1,22 @@
+spring.config.activate.on-profile: test
+
+
+ncp:
+  storage:
+    endpoint: https://kr.object.ncloudstorage.com
+    bucketName: test-bucket-name
+
+---
+spring.config.activate.on-profile: local
+
+ncp:
+  storage:
+    endpoint: https://kr.object.ncloudstorage.com
+    bucketName: ${NCP_BUCKET_NAME}
+
+---
+spring.config.activate.on-profile: live
+ncp:
+  storage:
+    endpoint: https://kr.object.ncloudstorage.com
+    bucketName: ${NCP_BUCKET_NAME}

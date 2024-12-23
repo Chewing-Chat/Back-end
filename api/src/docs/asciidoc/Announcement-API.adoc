@@ -1,0 +1,11 @@
+[[Announcement-API]]
+== Announcement API
+
+[[Announcement-단일-조회]]
+=== Announcement 단일 조회
+=== Curl
+include::{snippets}/announcement-controller-test/get-announcements/curl-request.adoc[]
+=== Request
+include::{snippets}/announcement-controller-test/get-announcements/http-request.adoc[]
+=== Response
+include::{snippets}/announcement-controller-test/get-announcements/http-response.adoc[]
