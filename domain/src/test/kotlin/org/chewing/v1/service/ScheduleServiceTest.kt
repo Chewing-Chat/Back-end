@@ -33,7 +33,7 @@ class ScheduleServiceTest {
 
         every { scheduleRepository.append(scheduleTime, scheduleContent, userId) } returns scheduleId
 
-        val result = scheduleService.create(userId, scheduleTime, scheduleContent)
+        val result = scheduleService.create(userId, scheduleTime, scheduleContent, emptyList())
 
         assert(result == scheduleId)
     }
@@ -66,10 +66,10 @@ class ScheduleServiceTest {
         val type = ScheduleType.of(2021, 1)
         val schedule = TestDataFactory.createSchedule()
 
-        every { scheduleRepository.reads(userId, type, true) }.returns(listOf(schedule))
+        every { scheduleRepository.reads(userId, type) }.returns(listOf(schedule))
 
         val result = assertDoesNotThrow {
-            scheduleService.fetches(userId, type, true)
+            scheduleService.fetches(userId, type)
         }
 
         assert(result.size == 1)

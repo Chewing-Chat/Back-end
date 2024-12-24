@@ -27,12 +27,12 @@ internal class ScheduleRepositoryImpl(
         scheduleJpaRepository.deleteAllByUserId(userId)
     }
 
-    override fun reads(userId: String, type: ScheduleType, isOwned: Boolean): List<Schedule> {
+    override fun reads(userId: String, type: ScheduleType): List<Schedule> {
         val startDateTime = LocalDateTime.of(type.year, type.month, 1, 0, 0)
         val endDateTime = startDateTime
             .with(TemporalAdjusters.firstDayOfNextMonth()) // 다음 달의 첫 날로 설정
             .minusSeconds(1) // 1초 전으로 설정
-        return scheduleJpaRepository.findSchedules(userId, startDateTime, endDateTime, isOwned)
+        return scheduleJpaRepository.findSchedules(userId, startDateTime, endDateTime)
             .map { it.toSchedule() }
     }
 }

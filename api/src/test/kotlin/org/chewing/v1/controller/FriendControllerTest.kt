@@ -31,25 +31,6 @@ class FriendControllerTest : RestDocsTest() {
     }
 
     @Test
-    @DisplayName("이메일로 친구 추가")
-    fun addFriendWithEmail() {
-        val requestBody = FriendRequest.AddWithEmail(
-            email = "test@example.com",
-            firstName = "testFirstName",
-            lastName = "testLastName",
-        )
-        every { friendFacade.addFriend(any(), any(), any()) } just Runs
-
-        val result = mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/friend/email")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonBody(requestBody))
-                .requestAttr("userId", "testUserId"),
-        )
-        performCommonSuccessCreateResponse(result)
-    }
-
-    @Test
     @DisplayName("전화번호로 친구 추가")
     fun addFriendWithPhone() {
         val requestBody = FriendRequest.AddWithPhone(

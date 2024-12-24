@@ -23,7 +23,7 @@ class ScheduleRepositoryTest : JpaContextTest() {
     @Test
     fun `스케줄 저장에 성공`() {
         val userId = generateUserId()
-        val content = ScheduleProvider.buildContent(true)
+        val content = ScheduleProvider.buildContent()
         val time = ScheduleProvider.buildTime()
         val result = scheduleRepositoryImpl.append(time, content, userId)
         assert(result.isNotEmpty())
@@ -32,7 +32,7 @@ class ScheduleRepositoryTest : JpaContextTest() {
     @Test
     fun `스케줄 삭제에 성공`() {
         val userId = generateUserId()
-        val content = ScheduleProvider.buildContent(true)
+        val content = ScheduleProvider.buildContent()
         val time = ScheduleProvider.buildTime()
         val schedule = jpaDataGenerator.scheduleEntityData(content, time, userId)
         scheduleRepositoryImpl.remove(schedule.id)
@@ -42,7 +42,7 @@ class ScheduleRepositoryTest : JpaContextTest() {
     @Test
     fun `스케줄 전체 삭제에 성공`() {
         val userId = generateUserId()
-        val content = ScheduleProvider.buildContent(true)
+        val content = ScheduleProvider.buildContent()
         val time = ScheduleProvider.buildTime()
         val schedule = jpaDataGenerator.scheduleEntityData(content, time, userId)
         scheduleRepositoryImpl.removeUsers(userId)
@@ -50,56 +50,25 @@ class ScheduleRepositoryTest : JpaContextTest() {
     }
 
     @Test
-    fun `시작시간 기준으로 본인 스케줄 조회에 성공`() {
+    fun `시간 기준으로 본인 스케줄 조회에 성공`() {
         val userId = generateUserId()
-        val content = ScheduleProvider.buildContent(true)
-        val firstTime = ScheduleProvider.build1000YearFirstTime()
-        val secondTime = ScheduleProvider.build1000YearSecondTime()
-        val schedule2 = jpaDataGenerator.scheduleEntityData(content, secondTime, userId)
-        val schedule = jpaDataGenerator.scheduleEntityData(content, firstTime, userId)
-        val schedules = scheduleRepositoryImpl.reads(userId, ScheduleType.of(1000, 1), true)
-        assert(schedules.size == 2)
-        assert(schedule.time.startAt == schedules[0].time.startAt)
-        assert(schedule2.time.startAt == schedules[1].time.startAt)
+        val content = ScheduleProvider.buildContent()
+        val time = ScheduleProvider.build1000YearTime()
+        val schedule = jpaDataGenerator.scheduleEntityData(content, time, userId)
+        val schedules = scheduleRepositoryImpl.reads(userId, ScheduleType.of(time.dateTime.year, time.dateTime.monthValue))
+        assert(schedules.size == 1)
+        assert(schedule.time.dateTime == schedules[0].time.dateTime)
     }
 
     @Test
-    fun `시작시간 기준으로 본인 스케줄 조회에 실패`() {
+    fun `시간 기준으로 본인 스케줄 조회에 실패`() {
         val userId = generateUserId()
-        val content = ScheduleProvider.buildContent(true)
-        val firstTime = ScheduleProvider.build1000YearFirstTime()
-        val secondTime = ScheduleProvider.build1000YearSecondTime()
-        jpaDataGenerator.scheduleEntityData(content, secondTime, userId)
-        jpaDataGenerator.scheduleEntityData(content, firstTime, userId)
-        val schedules = scheduleRepositoryImpl.reads(userId, ScheduleType.of(1001, 1), true)
+        val content = ScheduleProvider.buildContent()
+        val time = ScheduleProvider.build1000YearTime()
+        jpaDataGenerator.scheduleEntityData(content, time, userId)
+        jpaDataGenerator.scheduleEntityData(content, time, userId)
+        val schedules = scheduleRepositoryImpl.reads(userId, ScheduleType.of(time.dateTime.year.minus(1), time.dateTime.monthValue))
         assert(schedules.isEmpty())
     }
-
-    @Test
-    fun `시작시간 기준으로 친구 스케줄 조회에 성공`() {
-        val friendId = generateUserId()
-        val content = ScheduleProvider.buildContent(false)
-        val firstTime = ScheduleProvider.build1000YearFirstTime()
-        val secondTime = ScheduleProvider.build1000YearSecondTime()
-        val schedule2 = jpaDataGenerator.scheduleEntityData(content, secondTime, friendId)
-        val schedule = jpaDataGenerator.scheduleEntityData(content, firstTime, friendId)
-        val schedules = scheduleRepositoryImpl.reads(friendId, ScheduleType.of(1000, 1), false)
-        assert(schedules.size == 2)
-        assert(schedule.time.startAt == schedules[0].time.startAt)
-        assert(schedule2.time.startAt == schedules[1].time.startAt)
-    }
-
-    @Test
-    fun `시작시간 기준으로 친구 스케줄 조회 실패 - private 스케줄`() {
-        val friendId = generateUserId()
-        val content = ScheduleProvider.buildContent(true)
-        val firstTime = ScheduleProvider.build1000YearFirstTime()
-        val secondTime = ScheduleProvider.build1000YearSecondTime()
-        jpaDataGenerator.scheduleEntityData(content, secondTime, friendId)
-        jpaDataGenerator.scheduleEntityData(content, firstTime, friendId)
-        val schedules = scheduleRepositoryImpl.reads(friendId, ScheduleType.of(1000, 1), false)
-        assert(schedules.isEmpty())
-    }
-
     fun generateUserId(): String = UUID.randomUUID().toString()
 }

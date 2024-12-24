@@ -49,20 +49,6 @@ class SpringSecurityTest2 : IntegrationTest() {
     }
 
     @Test
-    @DisplayName("이메일 인증번호 전송 - 인증 없이 통과해야함")
-    fun sendEmailVerification() {
-        val requestBody = mapOf(
-            "email" to "test@Example.com",
-        )
-        every { authService.createCredential(any()) } just Runs
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/auth/email/create/send")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestBody)),
-        ).andExpect(status().isOk)
-    }
-
-    @Test
     @DisplayName("휴대폰 인증번호 확인- 인증 없이 통과해야함")
     fun verifyPhone() {
         val jwtToken = TestDataFactory.createJwtToken()
@@ -83,28 +69,6 @@ class SpringSecurityTest2 : IntegrationTest() {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)),
 
-        )
-            .andExpect(status().isOk)
-    }
-
-    @Test
-    @DisplayName("이메일 인증번호 확인 - 인증 없이 통과해야함")
-    fun verifyEmail() {
-        val jwtToken = TestDataFactory.createJwtToken()
-        val user = TestDataFactory.createUser()
-        val loginInfo = LoginInfo.of(jwtToken, user)
-        val requestBody = mapOf(
-            "email" to "test@example.com",
-            "verificationCode" to "123456",
-            "appToken" to "testToken",
-            "deviceId" to "testDeviceId",
-            "provider" to "ANDROID",
-        )
-        every { accountFacade.loginAndCreateUser(any(), any(), any(), any()) } returns loginInfo
-        mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/auth/email/create/verify")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(requestBody)),
         )
             .andExpect(status().isOk)
     }

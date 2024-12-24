@@ -3,7 +3,6 @@ package org.chewing.v1.jpaentity.user
 import jakarta.persistence.*
 import org.chewing.v1.jpaentity.common.BaseEntity
 import org.chewing.v1.model.contact.Contact
-import org.chewing.v1.model.contact.Email
 import org.chewing.v1.model.contact.Phone
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
@@ -38,8 +37,6 @@ internal class UserJpaEntity(
 
     private var birth: String,
 
-    private var emailId: String?,
-
     private var phoneNumberId: String?,
     private var ttsUrl: String?,
     @Enumerated(EnumType.STRING)
@@ -49,23 +46,6 @@ internal class UserJpaEntity(
     private var type: AccessStatus,
 ) : BaseEntity() {
     companion object {
-        fun generateByEmail(email: Email): UserJpaEntity {
-            return UserJpaEntity(
-                firstName = "",
-                lastName = "",
-                birth = "",
-                pictureUrl = "",
-                backgroundPictureUrl = "",
-                type = AccessStatus.NOT_ACCESS,
-                emailId = email.emailId,
-                phoneNumberId = null,
-                pictureType = MediaType.IMAGE_BASIC,
-                backgroundPictureType = MediaType.IMAGE_BASIC,
-                ttsUrl = null,
-                ttsType = MediaType.VIDEO_BASIC,
-            )
-        }
-
         fun generateByPhone(phone: Phone): UserJpaEntity {
             return UserJpaEntity(
                 firstName = "",
@@ -74,7 +54,6 @@ internal class UserJpaEntity(
                 pictureUrl = "",
                 backgroundPictureUrl = "",
                 type = AccessStatus.NOT_ACCESS,
-                emailId = null,
                 phoneNumberId = phone.phoneId,
                 pictureType = MediaType.IMAGE_BASIC,
                 backgroundPictureType = MediaType.IMAGE_BASIC,
@@ -125,7 +104,6 @@ internal class UserJpaEntity(
 
     fun updateContact(contact: Contact) {
         when (contact) {
-            is Email -> this.emailId = contact.emailId
             is Phone -> this.phoneNumberId = contact.phoneId
         }
     }
@@ -142,7 +120,6 @@ internal class UserJpaEntity(
     fun toUserAccount(): UserAccount {
         return UserAccount.of(
             this.toUser(),
-            this.emailId,
             this.phoneNumberId,
         )
     }

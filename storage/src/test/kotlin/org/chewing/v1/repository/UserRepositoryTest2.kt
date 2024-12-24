@@ -4,7 +4,6 @@ import io.mockk.every
 import io.mockk.mockk
 import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.repository.jpa.user.UserRepositoryImpl
-import org.chewing.v1.repository.support.EmailProvider
 import org.chewing.v1.repository.support.MediaProvider
 import org.chewing.v1.repository.support.PhoneProvider
 import org.chewing.v1.repository.support.UserProvider
@@ -23,16 +22,6 @@ class UserRepositoryTest2 {
 
         val result = userRepositoryImpl.read(userId)
 
-        assert(result == null)
-    }
-
-    @Test
-    fun `이메일로 유저 읽기 - 실페(유저를 찾을 수 없음)`() {
-        val contact = EmailProvider.buildNormal()
-
-        every { userJpaRepository.findByEmailId(contact.emailId) } returns Optional.empty()
-
-        val result = userRepositoryImpl.readByContact(contact)
         assert(result == null)
     }
 
@@ -108,7 +97,7 @@ class UserRepositoryTest2 {
     fun `유저 연락처 변환 실패(유저를 찾을 수 없음)`() {
         val userId = generateUserId()
         val user = UserProvider.buildNormal(userId)
-        val contact = EmailProvider.buildNormal()
+        val contact = PhoneProvider.buildNormal()
 
         every { userJpaRepository.findById(user.userId) } returns Optional.empty()
 

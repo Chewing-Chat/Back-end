@@ -37,9 +37,8 @@ class UserServiceTest {
     @Test
     fun `유저 계정 정보를 가져와야함`() {
         val userId = "userId"
-        val emailId = "emailId"
         val phoneId = "phoneId"
-        val userAccount = TestDataFactory.createUserAccount(emailId, phoneId)
+        val userAccount = TestDataFactory.createUserAccount(phoneId)
 
         every { userRepository.readAccount(userId) } returns userAccount
 
@@ -61,26 +60,6 @@ class UserServiceTest {
         }
 
         assert(result.errorCode == ErrorCode.USER_NOT_FOUND)
-    }
-
-    @Test
-    fun `유저를 이메일로 생성해야함`() {
-        val verificationCode = "1234"
-        val userId = "userId"
-        val contact = TestDataFactory.createEmail(verificationCode)
-        val appToken = TestDataFactory.createAppToken()
-        val device = TestDataFactory.createDevice()
-        val user = TestDataFactory.createUser(userId)
-
-        every { userRepository.append(contact) } returns user
-        every { pushNotificationRepository.remove(device) } just Runs
-        every { pushNotificationRepository.append(device, appToken, user) } just Runs
-
-        val result = assertDoesNotThrow {
-            userService.createUser(contact, appToken, device)
-        }
-
-        assert(user == result)
     }
 
     @Test
@@ -175,38 +154,10 @@ class UserServiceTest {
     }
 
     @Test
-    fun `유저의 이메일을 업데이트 해야함`() {
-        val userId = "userId"
-        val verificationCode = "1234"
-        val contact = TestDataFactory.createEmail(verificationCode)
-
-        every { userRepository.updateContact(userId, contact) } returns userId
-
-        assertDoesNotThrow {
-            userService.updateUserContact(userId, contact)
-        }
-    }
-
-    @Test
     fun `유저의 연락처 업데이트 실패 - 유저가 없음`() {
         val userId = "userId"
         val verificationCode = "1234"
         val contact = TestDataFactory.createPhone(verificationCode)
-
-        every { userRepository.updateContact(userId, contact) } returns null
-
-        val result = assertThrows<NotFoundException> {
-            userService.updateUserContact(userId, contact)
-        }
-
-        assert(result.errorCode == ErrorCode.USER_NOT_FOUND)
-    }
-
-    @Test
-    fun `유저의 이메일 업데이트 실패 - 유저가 없음`() {
-        val userId = "userId"
-        val verificationCode = "1234"
-        val contact = TestDataFactory.createEmail(verificationCode)
 
         every { userRepository.updateContact(userId, contact) } returns null
 

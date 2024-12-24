@@ -1,8 +1,9 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    kotlin("jvm") version "1.9.0" // 안정적인 버전으로 변경
-    kotlin("kapt") version "1.9.0" // 동일한 버전으로 설정
+    //kapt 1.9 오류 무시해도됨
+    kotlin("jvm") version "2.0.0"
+    kotlin("kapt") version "2.0.0"
     kotlin("plugin.spring") apply false
     kotlin("plugin.jpa") apply false
     id("org.springframework.boot")

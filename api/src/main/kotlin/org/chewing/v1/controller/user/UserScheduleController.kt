@@ -22,19 +22,7 @@ class UserScheduleController(
         @RequestParam("month") month: Int,
     ): SuccessResponseEntity<ScheduleListResponse> {
         val type = ScheduleType.of(year, month)
-        val schedules = scheduleService.fetches(userId, type, true)
-        return ResponseHelper.success(ScheduleListResponse.of(schedules))
-    }
-
-    @GetMapping("/friend/{friendId}")
-    fun getFriendSchedule(
-        @RequestAttribute("userId") userId: String,
-        @PathVariable("friendId") friendId: String,
-        @RequestParam("year") year: Int,
-        @RequestParam("month") month: Int,
-    ): SuccessResponseEntity<ScheduleListResponse> {
-        val type = ScheduleType.of(year, month)
-        val schedules = scheduleService.fetches(friendId, type, false)
+        val schedules = scheduleService.fetches(userId, type)
         return ResponseHelper.success(ScheduleListResponse.of(schedules))
     }
 
@@ -53,7 +41,7 @@ class UserScheduleController(
         @RequestAttribute("userId") userId: String,
         @RequestBody request: ScheduleRequest.Add,
     ): SuccessResponseEntity<ScheduleIdResponse> {
-        val scheduleId = scheduleService.create(userId, request.toScheduleTime(), request.toScheduleContent())
+        val scheduleId = scheduleService.create(userId, request.toScheduleTime(), request.toScheduleContent(), request.toFriendIds())
         return ResponseHelper.successCreate(ScheduleIdResponse(scheduleId))
     }
 }

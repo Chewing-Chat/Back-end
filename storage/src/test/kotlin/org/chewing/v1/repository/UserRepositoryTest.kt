@@ -4,7 +4,6 @@ import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.repository.jpa.user.UserRepositoryImpl
-import org.chewing.v1.repository.support.EmailProvider
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.chewing.v1.repository.support.MediaProvider
 import org.chewing.v1.repository.support.PhoneProvider
@@ -25,20 +24,10 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 아이디로 읽기`() {
-        val email = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email)
+        val phone = PhoneProvider.buildNormal()
+        val user = jpaDataGenerator.userEntityPhoneData(phone)
 
         val result = userRepositoryImpl.read(user.userId)
-
-        assert(result!!.userId == user.userId)
-    }
-
-    @Test
-    fun `유저 이메일로 읽기`() {
-        val email = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email)
-
-        val result = userRepositoryImpl.readByContact(email)
 
         assert(result!!.userId == user.userId)
     }
@@ -55,9 +44,8 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `이메일로 유저 신규 생성`() {
-        val email = EmailProvider.buildNormal()
-
-        val user = userRepositoryImpl.append(email)
+        val phone = PhoneProvider.buildNormal()
+        val user = userRepositoryImpl.append(phone)
 
         assert(user.userId.isNotEmpty())
     }
@@ -73,10 +61,10 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `이미 이메일 유저가 있다면 신규 생성하면 안됨`() {
-        val email = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email)
+        val phone = PhoneProvider.buildNormal()
+        val user = userRepositoryImpl.append(phone)
 
-        val result = userRepositoryImpl.append(email)
+        val result = userRepositoryImpl.append(phone)
 
         assert(result.userId == user.userId)
     }
@@ -93,8 +81,8 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 삭제`() {
-        val email = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email)
+        val phone = PhoneProvider.buildNormal()
+        val user = userRepositoryImpl.append(phone)
 
         userRepositoryImpl.remove(user.userId)
 
@@ -103,8 +91,8 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 이미지 업데이트 - 기본 사진에서 새로운 사진으로 바뀜`() {
-        val email = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email)
+        val phone = PhoneProvider.buildNormal()
+        val user = userRepositoryImpl.append(phone)
         val media = MediaProvider.buildProfileContent()
 
         userRepositoryImpl.updateMedia(user.userId, media)
@@ -115,8 +103,8 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 이미지 업데이트 - 기본 배경 사진에서 새로운 사진으로 바뀜`() {
-        val email = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email)
+        val phone = PhoneProvider.buildNormal()
+        val user = userRepositoryImpl.append(phone)
         val media = MediaProvider.buildBackgroundContent()
 
         userRepositoryImpl.updateMedia(user.userId, media)
@@ -127,8 +115,8 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 TTS업데이트`() {
-        val email = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email)
+        val phone = PhoneProvider.buildNormal()
+        val user = userRepositoryImpl.append(phone)
         val media = MediaProvider.buildTTSContent()
 
         userRepositoryImpl.updateMedia(user.userId, media)
@@ -138,8 +126,8 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 이름 변경`() {
-        val email = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email)
+        val phone = PhoneProvider.buildNormal()
+        val user = userRepositoryImpl.append(phone)
         val newName = UserProvider.buildNewUserName()
 
         userRepositoryImpl.updateName(user.userId, newName)
@@ -151,20 +139,20 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 연락처 변경`() {
-        val oldEmail = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(oldEmail)
-        val newEmail = EmailProvider.buildNew()
+        val phone = PhoneProvider.buildNormal()
+        val user = userRepositoryImpl.append(phone)
+        val newPhone = PhoneProvider.buildNew()
 
-        userRepositoryImpl.updateContact(user.userId, newEmail)
+        userRepositoryImpl.updateContact(user.userId, newPhone)
         val result = userJpaRepository.findById(user.userId).get().toUserAccount()
 
-        assert(result.emailId != oldEmail.emailId)
+        assert(result.phoneId != newPhone.phoneId)
     }
 
     @Test
     fun `유저 접근 변경`() {
-        val email = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email)
+        val phone = PhoneProvider.buildNormal()
+        val user = jpaDataGenerator.userEntityPhoneData(phone)
         val newContent = UserProvider.buildNewUserContent()
 
         userRepositoryImpl.updateAccess(user.userId, newContent)
@@ -188,21 +176,9 @@ class UserRepositoryTest : JpaContextTest() {
     }
 
     @Test
-    fun `이메일이 다른 유저 소유 인지 확인`() {
-        val email = EmailProvider.buildNormal()
-        jpaDataGenerator.userEntityEmailData(email)
-
-        val newUserId = generateUserId()
-
-        val result = userRepositoryImpl.checkContactIsUsedByElse(email, newUserId)
-
-        assert(result)
-    }
-
-    @Test
     fun `유저 생일 변경`() {
-        val email = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email)
+        val phone = PhoneProvider.buildNormal()
+        val user = jpaDataGenerator.userEntityPhoneData(phone)
         val newBirth = UserProvider.buildNewBirth()
 
         userRepositoryImpl.updateBirth(user.userId, newBirth)
@@ -214,23 +190,22 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 게정 읽기 읽기`() {
-        val email = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email)
+        val phone = PhoneProvider.buildNormal()
+        val user = jpaDataGenerator.userEntityPhoneData(phone)
 
         val result = userRepositoryImpl.readAccount(user.userId)
 
         assert(result != null)
         assert(result!!.user.userId == user.userId)
-        assert(result.emailId == email.emailId)
+        assert(result.phoneId == phone.phoneId)
     }
 
     @Test
     fun `유저Ids의 모든 정보 가져오기`() {
-        val email1 = EmailProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityEmailData(email1)
+        val phone = PhoneProvider.buildNormal()
+        val user = jpaDataGenerator.userEntityPhoneData(phone)
 
-        val email2 = EmailProvider.buildNormal()
-        val user2 = jpaDataGenerator.userEntityEmailData(email2)
+        val user2 = jpaDataGenerator.userEntityPhoneData(phone)
 
         val result = userRepositoryImpl.reads(listOf(user.userId, user2.userId))
 

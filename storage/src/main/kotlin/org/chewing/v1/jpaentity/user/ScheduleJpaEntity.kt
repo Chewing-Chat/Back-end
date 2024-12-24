@@ -11,8 +11,7 @@ import java.util.*
 @Table(
     name = "schedule",
     indexes = [
-        Index(name = "schedule_idx_start_at", columnList = "startAt"),
-        Index(name = "schedule_idx_end_at", columnList = "endAt"),
+        Index(name = "schedule_idx_dateTime", columnList = "dateTime"),
     ],
 )
 internal class ScheduleJpaEntity(
@@ -20,11 +19,9 @@ internal class ScheduleJpaEntity(
     private val scheduleId: String = UUID.randomUUID().toString(),
     private val name: String,
     private val content: String,
-    private val startAt: LocalDateTime,
-    private val endAt: LocalDateTime,
-    private val notificationAt: LocalDateTime,
+    private val dateTime: LocalDateTime,
     private val userId: String,
-    private val private: Boolean,
+    private val timeDecided: Boolean,
     private val location: String,
 ) {
     companion object {
@@ -35,12 +32,10 @@ internal class ScheduleJpaEntity(
         ): ScheduleJpaEntity = ScheduleJpaEntity(
             name = scheduleContent.title,
             content = scheduleContent.memo,
-            startAt = scheduleTime.startAt,
-            endAt = scheduleTime.endAt,
-            notificationAt = scheduleTime.notificationAt,
+            dateTime = scheduleTime.dateTime,
             userId = userId,
             location = scheduleContent.location,
-            private = scheduleContent.private,
+            timeDecided = scheduleTime.timeDecided,
         )
     }
 
@@ -48,10 +43,8 @@ internal class ScheduleJpaEntity(
         scheduleId,
         name,
         content,
-        startAt,
-        endAt,
-        notificationAt,
+        dateTime,
         location,
-        private,
+        timeDecided,
     )
 }

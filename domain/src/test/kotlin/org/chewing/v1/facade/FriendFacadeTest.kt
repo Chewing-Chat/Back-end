@@ -26,7 +26,7 @@ class FriendFacadeTest {
         val targetContact = TestDataFactory.createPhoneNumber()
         val contact = TestDataFactory.createPhone(verificationCode)
         val targetUser = TestDataFactory.createUser(userId)
-        val userAccount = TestDataFactory.createUserAccount(null, null)
+        val userAccount = TestDataFactory.createUserAccount(null)
 
         every { authService.getContact(targetContact) } returns contact
         every { userService.getUserByContact(contact) } returns targetUser

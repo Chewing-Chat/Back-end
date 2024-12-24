@@ -3,7 +3,6 @@ package org.chewing.v1.repository.jpa.user
 import org.chewing.v1.jpaentity.user.UserJpaEntity
 import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.contact.Contact
-import org.chewing.v1.model.contact.Email
 import org.chewing.v1.model.contact.Phone
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
@@ -36,15 +35,10 @@ internal class UserRepositoryImpl(
     }
 
     override fun readByContact(contact: Contact): User? = when (contact) {
-        is Email -> userJpaRepository.findByEmailId(contact.emailId).map { it.toUser() }.orElse(null)
         is Phone -> userJpaRepository.findByPhoneNumberId(contact.phoneId).map { it.toUser() }.orElse(null)
     }
 
     override fun append(contact: Contact): User = when (contact) {
-        is Email -> userJpaRepository.findByEmailId(contact.emailId).map { it.toUser() }.orElseGet {
-            userJpaRepository.save(UserJpaEntity.generateByEmail(contact)).toUser()
-        }
-
         is Phone -> userJpaRepository.findByPhoneNumberId(contact.phoneId).map { it.toUser() }.orElseGet {
             userJpaRepository.save(UserJpaEntity.generateByPhone(contact)).toUser()
         }
@@ -102,7 +96,6 @@ internal class UserRepositoryImpl(
     }.orElse(null)
 
     override fun checkContactIsUsedByElse(contact: Contact, userId: String): Boolean = when (contact) {
-        is Email -> userJpaRepository.existsByEmailIdAndUserIdNot(contact.emailId, userId)
         is Phone -> userJpaRepository.existsByPhoneNumberIdAndUserIdNot(contact.phoneId, userId)
     }
 

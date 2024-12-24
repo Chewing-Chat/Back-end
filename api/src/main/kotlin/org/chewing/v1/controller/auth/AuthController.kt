@@ -40,25 +40,6 @@ class AuthController(
         return ResponseHelper.success(LogInfoResponse.of(loginInfo))
     }
 
-    @PostMapping("/email/create/send")
-    fun sendEmailVerification(@RequestBody request: VerificationRequest.Email): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
-        authService.createCredential(request.toEmailAddress())
-        return ResponseHelper.successOnly()
-    }
-
-    @PostMapping("/email/create/verify")
-    fun verifyEmail(
-        @RequestBody request: LoginRequest.Email,
-    ): SuccessResponseEntity<LogInfoResponse> {
-        val loginInfo = accountFacade.loginAndCreateUser(
-            request.toEmailAddress(),
-            request.toVerificationCode(),
-            request.toAppToken(),
-            request.toDevice(),
-        )
-        return ResponseHelper.success(LogInfoResponse.of(loginInfo))
-    }
-
     @PostMapping("/phone/update/send")
     fun sendPhoneVerification(
         @RequestAttribute("userId") userId: String,
@@ -68,30 +49,12 @@ class AuthController(
         return ResponseHelper.successOnly()
     }
 
-    @PostMapping("/email/update/send")
-    fun sendEmailVerification(
-        @RequestAttribute("userId") userId: String,
-        @RequestBody request: VerificationRequest.Email,
-    ): SuccessResponseEntity<SuccessOnlyResponse> {
-        authService.createCredentialNotUsed(userId, request.toEmailAddress())
-        return ResponseHelper.successOnly()
-    }
-
     @PostMapping("/phone/update/verify")
     fun changePhone(
         @RequestAttribute("userId") userId: String,
         @RequestBody request: VerificationCheckRequest.Phone,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         accountFacade.changeCredential(userId, request.toPhoneNumber(), request.toVerificationCode())
-        return ResponseHelper.successOnly()
-    }
-
-    @PostMapping("/email/update/verify")
-    fun changeEmail(
-        @RequestAttribute("userId") userId: String,
-        @RequestBody request: VerificationCheckRequest.Email,
-    ): SuccessResponseEntity<SuccessOnlyResponse> {
-        accountFacade.changeCredential(userId, request.toEmailAddress(), request.toVerificationCode())
         return ResponseHelper.successOnly()
     }
 

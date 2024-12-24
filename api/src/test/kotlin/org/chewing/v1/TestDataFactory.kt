@@ -65,29 +65,14 @@ object TestDataFactory {
         return Friend.of(createUser(), true, createFriendName(), createUserStatus(), AccessStatus.ACCESS)
     }
 
-    fun createPrivateSchedule(): Schedule {
+    fun createSchedule(): Schedule {
         return Schedule.of(
             "testScheduleId",
             "testScheduleTitle",
             "testScheduleMemo",
-            LocalDateTime.now(),
-            LocalDateTime.now(),
             LocalDateTime.now(),
             "testLocation",
             true,
-        )
-    }
-
-    fun createPublicSchedule(): Schedule {
-        return Schedule.of(
-            "testScheduleId",
-            "testScheduleTitle",
-            "testScheduleMemo",
-            LocalDateTime.now(),
-            LocalDateTime.now(),
-            LocalDateTime.now(),
-            "testLocation",
-            false,
         )
     }
 

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 class ScheduleReader(
     private val scheduleRepository: ScheduleRepository,
 ) {
-    fun reads(userId: String, type: ScheduleType, isOwned: Boolean): List<Schedule> {
-        return scheduleRepository.reads(userId, type, isOwned)
+    fun reads(userId: String, type: ScheduleType): List<Schedule> {
+        return scheduleRepository.reads(userId, type)
     }
 }

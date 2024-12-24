@@ -5,8 +5,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
-import org.chewing.v1.TestDataFactory.createPrivateSchedule
-import org.chewing.v1.TestDataFactory.createPublicSchedule
+import org.chewing.v1.TestDataFactory
 import org.chewing.v1.controller.user.UserScheduleController
 import org.chewing.v1.dto.request.user.ScheduleRequest
 import org.chewing.v1.service.user.ScheduleService
@@ -33,16 +32,13 @@ class UserScheduleControllerTest : RestDocsTest() {
 
     @Test
     fun getSchedule() {
-        val schedules = listOf(createPublicSchedule())
+        val schedules = listOf(TestDataFactory.createSchedule())
         val year = 2021
         val month = 1
         val formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss")
-        val startTime = schedules[0].time.startAt.format(formatter)
-        val endTime = schedules[0].time.endAt.format(formatter)
-        val notificationTime = schedules[0].time.notificationAt.format(formatter)
-
+        val dateTime = schedules[0].time.dateTime.format(formatter)
         // When
-        every { scheduleService.fetches(any(), any(), any()) } returns schedules
+        every { scheduleService.fetches(any(), any()) } returns schedules
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/schedule")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -55,61 +51,14 @@ class UserScheduleControllerTest : RestDocsTest() {
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.schedules[0].title").value(schedules[0].content.title))
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.schedules[0].memo").value(schedules[0].content.memo))
             .andExpect(
-                MockMvcResultMatchers.jsonPath("$.data.schedules[0].startTime").value(startTime),
-            )
-            .andExpect(
-                MockMvcResultMatchers.jsonPath("$.data.schedules[0].endTime").value(endTime),
-            )
-            .andExpect(
-                MockMvcResultMatchers.jsonPath("$.data.schedules[0].notificationTime")
-                    .value(notificationTime),
+                MockMvcResultMatchers.jsonPath("$.data.schedules[0].dateTime").value(dateTime),
             )
             .andExpect(
                 MockMvcResultMatchers.jsonPath("$.data.schedules[0].location").value(schedules[0].content.location),
             )
             .andExpect(
-                MockMvcResultMatchers.jsonPath("$.data.schedules[0].private").value(schedules[0].content.private),
-            )
-    }
-
-    @Test
-    fun getFriendSchedule() {
-        val schedules = listOf(createPrivateSchedule())
-        val year = 2021
-        val month = 1
-        val formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss")
-        val startTime = schedules[0].time.startAt.format(formatter)
-        val endTime = schedules[0].time.endAt.format(formatter)
-        val notificationTime = schedules[0].time.notificationAt.format(formatter)
-
-        // When
-        every { scheduleService.fetches(any(), any(), any()) } returns schedules
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/api/schedule/friend/testFriendId")
-                .contentType(MediaType.APPLICATION_JSON)
-                .param("year", year.toString())
-                .param("month", month.toString())
-                .requestAttr("userId", "testUserId"),
-        )
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.schedules[0].scheduleId").value(schedules[0].id))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.schedules[0].title").value(schedules[0].content.title))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.schedules[0].memo").value(schedules[0].content.memo))
-            .andExpect(
-                MockMvcResultMatchers.jsonPath("$.data.schedules[0].startTime").value(startTime),
-            )
-            .andExpect(
-                MockMvcResultMatchers.jsonPath("$.data.schedules[0].endTime").value(endTime),
-            )
-            .andExpect(
-                MockMvcResultMatchers.jsonPath("$.data.schedules[0].notificationTime")
-                    .value(notificationTime),
-            )
-            .andExpect(
-                MockMvcResultMatchers.jsonPath("$.data.schedules[0].location").value(schedules[0].content.location),
-            )
-            .andExpect(
-                MockMvcResultMatchers.jsonPath("$.data.schedules[0].private").value(schedules[0].content.private),
+                MockMvcResultMatchers.jsonPath("$.data.schedules[0].timeDecided")
+                    .value(schedules[0].time.timeDecided),
             )
     }
 
@@ -134,16 +83,15 @@ class UserScheduleControllerTest : RestDocsTest() {
     fun createSchedule() {
         val requestBody = ScheduleRequest.Add(
             title = "testTitle",
-            startTime = "2021-01-01 00:00:00",
-            endTime = "2021-01-01 00:00:00",
-            notificationTime = "2021-01-01 00:00:00",
+            dateTime = "2021-01-01 00:00:00",
             memo = "testMemo",
             location = "testLocation",
-            private = false,
+            timeDecided = true,
+            friendIds = listOf("testFriendId"),
         )
         val scheduleId = "testScheduleId"
 
-        every { scheduleService.create(any(), any(), any()) } returns scheduleId
+        every { scheduleService.create(any(), any(), any(), any()) } returns scheduleId
 
         // When
         mockMvc.perform(

@@ -1,7 +1,6 @@
 package org.chewing.v1.repository.support
 
 import org.chewing.v1.jpaentity.announcement.AnnouncementJpaEntity
-import org.chewing.v1.jpaentity.auth.EmailJpaEntity
 import org.chewing.v1.jpaentity.auth.LoggedInJpaEntity
 import org.chewing.v1.jpaentity.auth.PhoneJpaEntity
 import org.chewing.v1.jpaentity.chat.ChatRoomJpaEntity
@@ -20,7 +19,6 @@ import org.chewing.v1.jpaentity.user.UserEmoticonJpaEntity
 import org.chewing.v1.jpaentity.user.UserJpaEntity
 import org.chewing.v1.jpaentity.user.UserStatusJpaEntity
 import org.chewing.v1.jparepository.announcement.AnnouncementJpaRepository
-import org.chewing.v1.jparepository.auth.EmailJpaRepository
 import org.chewing.v1.jparepository.auth.LoggedInJpaRepository
 import org.chewing.v1.jparepository.auth.PhoneJpaRepository
 import org.chewing.v1.jparepository.chat.ChatRoomJpaRepository
@@ -38,13 +36,11 @@ import org.chewing.v1.jparepository.user.ScheduleJpaRepository
 import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.jparepository.user.UserStatusJpaRepository
 import org.chewing.v1.model.announcement.Announcement
-import org.chewing.v1.model.auth.EmailAddress
 import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.chat.room.ChatNumber
 import org.chewing.v1.model.chat.room.ChatRoomInfo
 import org.chewing.v1.model.comment.CommentInfo
-import org.chewing.v1.model.contact.Email
 import org.chewing.v1.model.contact.Phone
 import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
@@ -64,8 +60,6 @@ import java.time.LocalDateTime
 
 @Component
 class JpaDataGenerator {
-    @Autowired
-    private lateinit var emailJpaRepository: EmailJpaRepository
 
     @Autowired
     private lateinit var phoneJpaRepository: PhoneJpaRepository
@@ -118,12 +112,6 @@ class JpaDataGenerator {
     @Autowired
     private lateinit var personalChatRoomMemberJpaRepository: PersonalChatRoomMemberJpaRepository
 
-    fun emailEntityData(emailAddress: EmailAddress): Email {
-        val email = EmailJpaEntity.generate(emailAddress)
-        emailJpaRepository.save(email)
-        return email.toEmail()
-    }
-
     fun phoneEntityData(phoneNumber: PhoneNumber): Phone {
         val phone = PhoneJpaEntity.generate(phoneNumber)
         phoneJpaRepository.save(phone)
@@ -153,12 +141,6 @@ class JpaDataGenerator {
         val scheduleEntity = ScheduleJpaEntity.generate(content, time, userId)
         scheduleJpaRepository.save(scheduleEntity)
         return scheduleEntity.toSchedule()
-    }
-
-    fun userEntityEmailData(email: Email): User {
-        val user = UserJpaEntity.generateByEmail(email)
-        userJpaRepository.save(user)
-        return user.toUser()
     }
 
     fun userEntityPhoneData(phone: Phone): User {

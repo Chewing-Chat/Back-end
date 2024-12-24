@@ -47,13 +47,9 @@ class AccountFacade(
     fun getAccount(userId: String): Account {
         val userAccount = userService.getUserAccount(userId)
 
-        val email = userAccount.emailId?.let {
-            authService.getContactById(it, ContactType.EMAIL)
-        }
-
         val phone = userAccount.phoneId?.let {
             authService.getContactById(it, ContactType.PHONE)
         }
-        return Account.of(userAccount, email, phone)
+        return Account.of(userAccount, phone)
     }
 }

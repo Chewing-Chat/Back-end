@@ -13,4 +13,6 @@ object PhoneProvider {
     fun buildWrongPhoneNumber(): PhoneNumber = PhoneNumber.of("wrong", "wrong")
 
     fun buildNormal(): Phone = Phone.of(UUID.randomUUID().toString(), "normal", "normal", "normal", LocalDateTime.now())
+
+    fun buildNew(): Phone = Phone.of(UUID.randomUUID().toString(), "new", "new", "new", LocalDateTime.now())
 }
