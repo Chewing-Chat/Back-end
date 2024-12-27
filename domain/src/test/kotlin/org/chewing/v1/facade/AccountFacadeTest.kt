@@ -22,34 +22,21 @@ class AccountFacadeTest {
     private val accountFacade = AccountFacade(authService, userService, userStatusService, scheduleService)
 
     @Test
-    fun `로그인 및 유저 생성`() {
+    fun `유저 생성`() {
         val userId = "123"
         val user = TestDataFactory.createUser(userId)
-        val phone = TestDataFactory.createPhone("123")
         val phoneNumber = TestDataFactory.createPhoneNumber()
         val loginInfo = TestDataFactory.createLoginInfo(user)
         val device = TestDataFactory.createDevice()
 
-        every { authService.verify(any(), any()) } returns phone
-        every { userService.createUser(any(), any(), any()) } returns user
-        every { authService.createLoginInfo(any()) } returns loginInfo
+        every { authService.verify(any(), any()) } just Runs
+        every { userService.createUser(any(), any(), any(), any()) } returns user
+        every { authService.createLoginInfo(user) } returns loginInfo
 
         val result = assertDoesNotThrow {
-            accountFacade.loginAndCreateUser(phoneNumber, "123", "testAppToken", device)
+            accountFacade.createUser(phoneNumber, "123", "testAppToken", device, "testUserName")
         }
         assert(result == loginInfo)
-    }
-
-    @Test
-    fun `인증 정보 변경`() {
-        val userId = "123"
-        val phone = TestDataFactory.createPhone("123")
-        val phoneNumber = TestDataFactory.createPhoneNumber()
-
-        every { authService.verify(any(), any()) } returns phone
-        every { userService.updateUserContact(any(), any()) } just Runs
-
-        accountFacade.changeCredential(userId, phoneNumber, "123")
     }
 
     @Test
@@ -63,20 +50,5 @@ class AccountFacadeTest {
         accountFacade.deleteAccount(userId)
 
         verify { userService.deleteUser(userId) }
-    }
-
-    @Test
-    fun `계정 조회 - 휴대폰은 none이 들어가야 함`() {
-        val userId = "123"
-        val userAccount = TestDataFactory.createUserAccount(null)
-
-        every { userService.getUserAccount(any()) } returns userAccount
-
-        val result = assertDoesNotThrow {
-            accountFacade.getAccount(userId)
-        }
-        assert(result.user == userAccount.user)
-        assert(result.phoneNumber == "none")
-        assert(result.countryCode == "none")
     }
 }

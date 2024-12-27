@@ -6,7 +6,7 @@ import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.repository.jpa.user.UserRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.chewing.v1.repository.support.MediaProvider
-import org.chewing.v1.repository.support.PhoneProvider
+import org.chewing.v1.repository.support.PhoneNumberProvider
 import org.chewing.v1.repository.support.UserProvider
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,8 +24,9 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 아이디로 읽기`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityPhoneData(phone)
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
 
         val result = userRepositoryImpl.read(user.userId)
 
@@ -34,55 +35,43 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 휴대폰으로 읽기`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityPhoneData(phone)
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
 
-        val result = userRepositoryImpl.readByContact(phone)
+        val result = userRepositoryImpl.readByCredential(phoneNumber)
 
         assert(result!!.userId == user.userId)
     }
 
     @Test
-    fun `이메일로 유저 신규 생성`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = userRepositoryImpl.append(phone)
-
-        assert(user.userId.isNotEmpty())
-    }
-
-    @Test
     fun `휴대폰 으로 유저 신규 생성`() {
-        val phone = PhoneProvider.buildNormal()
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
 
-        val user = userRepositoryImpl.append(phone)
+        val user = userRepositoryImpl.append(phoneNumber, userName)
 
         assert(user.userId.isNotEmpty())
-    }
-
-    @Test
-    fun `이미 이메일 유저가 있다면 신규 생성하면 안됨`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = userRepositoryImpl.append(phone)
-
-        val result = userRepositoryImpl.append(phone)
-
-        assert(result.userId == user.userId)
     }
 
     @Test
     fun `이미 휴대폰 유저가 있다면 신규 생성하면 안됨`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityPhoneData(phone)
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
 
-        val result = userRepositoryImpl.append(phone)
+        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+
+        val result = userRepositoryImpl.append(phoneNumber, userName)
 
         assert(result.userId == user.userId)
     }
 
     @Test
     fun `유저 삭제`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = userRepositoryImpl.append(phone)
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+
+        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
 
         userRepositoryImpl.remove(user.userId)
 
@@ -91,8 +80,11 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 이미지 업데이트 - 기본 사진에서 새로운 사진으로 바뀜`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = userRepositoryImpl.append(phone)
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+
+        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+
         val media = MediaProvider.buildProfileContent()
 
         userRepositoryImpl.updateMedia(user.userId, media)
@@ -103,8 +95,11 @@ class UserRepositoryTest : JpaContextTest() {
 
     @Test
     fun `유저 이미지 업데이트 - 기본 배경 사진에서 새로운 사진으로 바뀜`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = userRepositoryImpl.append(phone)
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+
+        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+
         val media = MediaProvider.buildBackgroundContent()
 
         userRepositoryImpl.updateMedia(user.userId, media)
@@ -113,104 +108,30 @@ class UserRepositoryTest : JpaContextTest() {
         assert(result.backgroundImage.type == media.type)
     }
 
-    @Test
-    fun `유저 TTS업데이트`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = userRepositoryImpl.append(phone)
-        val media = MediaProvider.buildTTSContent()
-
-        userRepositoryImpl.updateMedia(user.userId, media)
-        val result = userJpaRepository.findById(user.userId).get().toTTS()
-        assert(result.url == media.url)
-    }
-
-    @Test
-    fun `유저 이름 변경`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = userRepositoryImpl.append(phone)
-        val newName = UserProvider.buildNewUserName()
-
-        userRepositoryImpl.updateName(user.userId, newName)
-        val result = userJpaRepository.findById(user.userId).get().toUser()
-
-        assert(result.name.firstName == newName.firstName)
-        assert(user.name.lastName != newName.lastName)
-    }
-
-    @Test
-    fun `유저 연락처 변경`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = userRepositoryImpl.append(phone)
-        val newPhone = PhoneProvider.buildNew()
-
-        userRepositoryImpl.updateContact(user.userId, newPhone)
-        val result = userJpaRepository.findById(user.userId).get().toUserAccount()
-
-        assert(result.phoneId != newPhone.phoneId)
-    }
-
-    @Test
-    fun `유저 접근 변경`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityPhoneData(phone)
-        val newContent = UserProvider.buildNewUserContent()
-
-        userRepositoryImpl.updateAccess(user.userId, newContent)
-        val result = userJpaRepository.findById(user.userId).get().toUser()
-
-        assert(result.status == AccessStatus.ACCESS)
-        assert(result.name.firstName != user.name.firstName)
-        assert(result.birth != user.birth)
-        assert(result.name.lastName != user.name.lastName)
-    }
-
-    @Test
-    fun `연락처가 다른 유저 소유 있는지 확인`() {
-        val phone = PhoneProvider.buildNormal()
-        jpaDataGenerator.userEntityPhoneData(phone)
-        val newUserId = generateUserId()
-
-        val result = userRepositoryImpl.checkContactIsUsedByElse(phone, newUserId)
-
-        assert(result)
-    }
-
-    @Test
-    fun `유저 생일 변경`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityPhoneData(phone)
-        val newBirth = UserProvider.buildNewBirth()
-
-        userRepositoryImpl.updateBirth(user.userId, newBirth)
-        val result = userJpaRepository.findById(user.userId).get().toUser()
-
-        assert(result.birth == newBirth)
-        assert(result.birth != user.birth)
-    }
 
     @Test
     fun `유저 게정 읽기 읽기`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityPhoneData(phone)
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
 
-        val result = userRepositoryImpl.readAccount(user.userId)
+        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+
+        val result = userRepositoryImpl.read(user.userId)
 
         assert(result != null)
-        assert(result!!.user.userId == user.userId)
-        assert(result.phoneId == phone.phoneId)
+        assert(result!!.userId == user.userId)
     }
 
     @Test
     fun `유저Ids의 모든 정보 가져오기`() {
-        val phone = PhoneProvider.buildNormal()
-        val user = jpaDataGenerator.userEntityPhoneData(phone)
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
 
-        val user2 = jpaDataGenerator.userEntityPhoneData(phone)
+        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+        val user2 = jpaDataGenerator.userEntityData(phoneNumber,userName)
 
         val result = userRepositoryImpl.reads(listOf(user.userId, user2.userId))
 
         assert(result.size == 2)
     }
-
-    private fun generateUserId(): String = UUID.randomUUID().toString()
 }

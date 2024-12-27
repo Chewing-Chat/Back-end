@@ -4,8 +4,6 @@ import org.chewing.v1.implementation.auth.*
 import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.JwtToken
 import org.chewing.v1.model.auth.LoginInfo
-import org.chewing.v1.model.contact.Contact
-import org.chewing.v1.model.contact.ContactType
 import org.chewing.v1.model.user.User
 import org.springframework.stereotype.Service
 
@@ -16,18 +14,26 @@ class AuthService(
     private val authSender: AuthSender,
     private val authValidator: AuthValidator,
     private val authUpdater: AuthUpdater,
+    private val authGenerator: AuthGenerator,
     private val jwtTokenProvider: JwtTokenProvider,
     private val authRemover: AuthRemover,
 ) {
     fun createCredential(credential: Credential) {
-        val verificationCode = authAppender.makeCredential(credential)
+        val verificationCode = authGenerator.generateVerificationCode()
+        authAppender.appendVerification(credential, verificationCode)
         authSender.sendVerificationCode(credential, verificationCode)
     }
 
-    fun verify(credential: Credential, verificationCode: String): Contact {
-        val existingCredential = authReader.readContact(credential)
-        authValidator.validateVerifyCode(existingCredential, verificationCode)
-        return existingCredential
+    fun verify(credential: Credential, verificationCode: String) {
+        val existingVerificationCode = authReader.readVerificationCode(credential)
+        authValidator.validateVerifyCode(existingVerificationCode, verificationCode)
+    }
+
+    fun validatePassword(user: User, password: String) {
+        authValidator.validatePassword(
+            sourcePassword = password,
+            targetPassword = user.password,
+        )
     }
 
     fun createLoginInfo(user: User): LoginInfo {
@@ -48,12 +54,5 @@ class AuthService(
         return token
     }
 
-    fun createCredentialNotUsed(userId: String, credential: Credential) {
-        authValidator.validateContactIsUsed(credential, userId)
-        val verificationCode = authAppender.makeCredential(credential)
-        authSender.sendVerificationCode(credential, verificationCode)
-    }
-
-    fun getContactById(contactId: String, contactType: ContactType): Contact? = authReader.readContactById(contactId, contactType)
-    fun getContact(credential: Credential): Contact = authReader.readContact(credential)
+    fun encryptPassword(password: String): String = authGenerator.hashPassword(password)
 }

@@ -9,8 +9,7 @@ import org.chewing.v1.RestDocsTest
 import org.chewing.v1.TestDataFactory.createJwtToken
 import org.chewing.v1.TestDataFactory.createUser
 import org.chewing.v1.controller.auth.AuthController
-import org.chewing.v1.dto.request.auth.LoginRequest
-import org.chewing.v1.dto.request.auth.VerificationCheckRequest
+import org.chewing.v1.dto.request.auth.SignUpRequest
 import org.chewing.v1.dto.request.auth.VerificationRequest
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.auth.LoginInfo
@@ -49,7 +48,7 @@ class AuthControllerTest : RestDocsTest() {
         every { authService.createCredential(any()) } just Runs
 
         val result = mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/auth/phone/create/send")
+            MockMvcRequestBuilders.post("/api/auth/create/send")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody(requestBody)),
         )
@@ -64,18 +63,19 @@ class AuthControllerTest : RestDocsTest() {
         val user = createUser()
         val loginInfo = LoginInfo.of(jwtToken, user)
 
-        val requestBody = LoginRequest.Phone(
+        val requestBody = SignUpRequest.Phone(
             phoneNumber = "010-1234-5678",
             countryCode = "82",
             verificationCode = "123",
             deviceId = "testDeviceId",
             provider = "ios",
             appToken = "testToken",
+            userName = "testName",
         )
 
-        every { accountFacade.loginAndCreateUser(any(), any(), any(), any()) } returns loginInfo
+        every { accountFacade.createUser(any(), any(), any(), any(), any()) } returns loginInfo
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/auth/phone/create/verify")
+            MockMvcRequestBuilders.post("/api/auth/create/verify")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody(requestBody)),
 
@@ -88,45 +88,7 @@ class AuthControllerTest : RestDocsTest() {
                 MockMvcResultMatchers.jsonPath("$.data.access").value(AccessStatus.ACCESS.toString().lowercase()),
             )
 
-        verify { accountFacade.loginAndCreateUser(any(), any(), any(), any()) }
-    }
-
-    @Test
-    @DisplayName("휴대폰 변경을 위한 인증번호 전송")
-    fun sendPhoneVerificationForUpdate() {
-        val requestBody = VerificationRequest.Phone(
-            countryCode = "82",
-            phoneNumber = "010-1234-5678",
-        )
-
-        every { authService.createCredentialNotUsed(any(), any()) } just Runs
-
-        val result = mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/auth/phone/update/send")
-                .contentType(MediaType.APPLICATION_JSON)
-                .requestAttr("userId", "testUserId")
-                .content(jsonBody(requestBody)),
-        )
-        performCommonSuccessResponse(result)
-    }
-
-    @Test
-    @DisplayName("휴대폰 변경을 위한 인증번호 확인")
-    fun verifyPhoneForUpdate() {
-        every { accountFacade.changeCredential(any(), any(), any()) } just Runs
-
-        val requestBody = VerificationCheckRequest.Phone(
-            phoneNumber = "010-1234-5678",
-            countryCode = "82",
-            verificationCode = "123456",
-        )
-        val result = mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/auth/phone/update/verify")
-                .contentType(MediaType.APPLICATION_JSON)
-                .requestAttr("userId", "testUserId")
-                .content(jsonBody(requestBody)),
-        )
-        performCommonSuccessResponse(result)
+        verify { accountFacade.createUser(any(), any(), any(), any(), any()) }
     }
 
     @Test

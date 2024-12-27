@@ -2,10 +2,9 @@ package org.chewing.v1.implementation.user.user
 
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
+import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.PushToken
-import org.chewing.v1.model.contact.Contact
 import org.chewing.v1.model.user.User
-import org.chewing.v1.model.user.UserAccount
 import org.chewing.v1.repository.user.PushNotificationRepository
 import org.chewing.v1.repository.user.UserRepository
 import org.springframework.stereotype.Component
@@ -29,12 +28,8 @@ class UserReader(
         return userRepository.read(userId) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 
-    fun readAccount(userId: String): UserAccount {
-        return userRepository.readAccount(userId) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
-    }
-
-    fun readByContact(contact: Contact): User {
-        return userRepository.readByContact(contact) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
+    fun readByCredential(credential: Credential): User {
+        return userRepository.readByCredential(credential) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 
     fun reads(userIds: List<String>): List<User> {

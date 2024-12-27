@@ -2,7 +2,6 @@ package org.chewing.v1.implementation.friend.friendship
 
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
-import org.chewing.v1.model.user.UserName
 import org.chewing.v1.repository.friend.FriendShipRepository
 import org.springframework.stereotype.Component
 
@@ -14,7 +13,7 @@ class FriendShipUpdater(
         friendShipRepository.updateFavorite(userId, friendId, favorite) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
     }
 
-    fun updateName(userId: String, friendId: String, friendName: UserName) {
+    fun updateName(userId: String, friendId: String, friendName: String) {
         friendShipRepository.updateName(userId, friendId, friendName) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
     }
 }

@@ -1,7 +1,7 @@
 package org.chewing.v1.controller.auth
 
 import org.chewing.v1.dto.request.auth.LoginRequest
-import org.chewing.v1.dto.request.auth.VerificationCheckRequest
+import org.chewing.v1.dto.request.auth.SignUpRequest
 import org.chewing.v1.dto.request.auth.VerificationRequest
 import org.chewing.v1.dto.response.auth.LogInfoResponse
 import org.chewing.v1.dto.response.auth.TokenResponse
@@ -21,41 +21,44 @@ class AuthController(
     private val accountFacade: AccountFacade,
 ) {
 
-    @PostMapping("/phone/create/send")
+    @PostMapping("/create/send")
     fun sendPhoneVerification(@RequestBody request: VerificationRequest.Phone): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
         authService.createCredential(request.toPhoneNumber())
         return ResponseHelper.successOnly()
     }
 
-    @PostMapping("/phone/create/verify")
+    @PostMapping("/create/verify")
     fun verifyPhone(
-        @RequestBody request: LoginRequest.Phone,
+        @RequestBody request: SignUpRequest.Phone,
     ): SuccessResponseEntity<LogInfoResponse> {
-        val loginInfo = accountFacade.loginAndCreateUser(
+        val loginInfo = accountFacade.createUser(
             request.toPhoneNumber(),
             request.toVerificationCode(),
             request.toAppToken(),
             request.toDevice(),
+            request.toUserName(),
         )
         return ResponseHelper.success(LogInfoResponse.of(loginInfo))
     }
 
-    @PostMapping("/phone/update/send")
-    fun sendPhoneVerification(
+    @PostMapping("/create/password")
+    fun makePassword(
+        @RequestBody request: SignUpRequest.Password,
         @RequestAttribute("userId") userId: String,
-        @RequestBody request: VerificationRequest.Phone,
-    ): SuccessResponseEntity<SuccessOnlyResponse> {
-        authService.createCredentialNotUsed(userId, request.toPhoneNumber())
+    ): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
+        accountFacade.makePassword(
+            userId,
+            request.password,
+        )
         return ResponseHelper.successOnly()
     }
 
-    @PostMapping("/phone/update/verify")
-    fun changePhone(
-        @RequestAttribute("userId") userId: String,
-        @RequestBody request: VerificationCheckRequest.Phone,
-    ): SuccessResponseEntity<SuccessOnlyResponse> {
-        accountFacade.changeCredential(userId, request.toPhoneNumber(), request.toVerificationCode())
-        return ResponseHelper.successOnly()
+    @PostMapping("/login/password")
+    fun login(
+        @RequestBody request: LoginRequest,
+    ): SuccessResponseEntity<LogInfoResponse> {
+        val loginInfo = accountFacade.login(request.toPhoneNumber(), request.toPassword())
+        return ResponseHelper.success(LogInfoResponse.of(loginInfo))
     }
 
     @DeleteMapping("/logout")

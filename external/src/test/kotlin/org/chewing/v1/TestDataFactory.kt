@@ -11,7 +11,6 @@ import org.chewing.v1.model.chat.room.ChatRoomInfo
 import org.chewing.v1.model.chat.room.ChatSequenceNumber
 import org.chewing.v1.model.chat.room.Room
 import org.chewing.v1.model.comment.CommentInfo
-import org.chewing.v1.model.contact.Phone
 import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.Feed
@@ -33,18 +32,7 @@ import java.time.LocalDateTime
 
 object TestDataFactory {
 
-    fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "1234567890")
-
-    fun createPhone(verificationCode: String): Phone =
-        Phone.of("testPhoneId", "82", "1234567890", verificationCode, LocalDateTime.now().plusMinutes(1))
-
-    fun createUserContent(): UserContent = UserContent.of("firstName", "lastName", "2000-00-00")
-
-    fun createUserStatus(userId: String): UserStatus = UserStatus.of("statusId", userId, "emoji", "statusMessage", true)
-
-    fun createDefaultUserStatus(): UserStatus = UserStatus.default("userId")
-
-    fun createUserName(): UserName = UserName.of("firstName", "lastName")
+    fun createUserName(): String = "testUserName"
 
     fun createProfileMedia(): Media = Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG)
 
@@ -69,22 +57,13 @@ object TestDataFactory {
 
     fun createUser(userId: String): User = User.of(
         userId,
-        "testFirstName",
-        "testLastName",
+        "name",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
         Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.ACCESS,
-    )
-
-    fun createNotAccessUser(): User = User.of(
-        "testUserId",
-        "testFirstName",
-        "testLastName",
-        "2000-00-00",
-        Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
-        Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
-        AccessStatus.NOT_ACCESS,
+        PhoneNumber.of("82","010-0000-0000"),
+        "password",
     )
 
     fun createFriendShip(friendId: String, accessStatus: AccessStatus): FriendShip =

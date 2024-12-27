@@ -34,8 +34,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
 
         // then
         val friendShipTarget = friendShipJpaRepository.findById(FriendShipId(userId, friendId)).get().toFriendShip()
-        assert(friendShipTarget.friendName.firstName == friendName.firstName())
-        assert(friendShipTarget.friendName.lastName == friendName.lastName())
+        assert(friendShipTarget.friendName == friendName)
         assert(friendShipTarget.friendId == friendId)
         assert(!friendShipTarget.isFavorite)
     }
@@ -113,8 +112,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
 
         val entity = friendShipJpaRepository.findById(FriendShipId(userId, friendId))
 
-        assert(entity.get().toFriendShip().friendName.firstName == newName.firstName())
-        assert(entity.get().toFriendShip().friendName.lastName == newName.lastName())
+        assert(entity.get().toFriendShip().friendName == newName)
     }
 
     @Test

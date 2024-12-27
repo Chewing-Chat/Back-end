@@ -2,7 +2,6 @@ package org.chewing.v1.repository.support
 
 import org.chewing.v1.jpaentity.announcement.AnnouncementJpaEntity
 import org.chewing.v1.jpaentity.auth.LoggedInJpaEntity
-import org.chewing.v1.jpaentity.auth.PhoneJpaEntity
 import org.chewing.v1.jpaentity.chat.ChatRoomJpaEntity
 import org.chewing.v1.jpaentity.chat.GroupChatRoomMemberJpaEntity
 import org.chewing.v1.jpaentity.chat.PersonalChatRoomMemberJpaEntity
@@ -20,7 +19,6 @@ import org.chewing.v1.jpaentity.user.UserJpaEntity
 import org.chewing.v1.jpaentity.user.UserStatusJpaEntity
 import org.chewing.v1.jparepository.announcement.AnnouncementJpaRepository
 import org.chewing.v1.jparepository.auth.LoggedInJpaRepository
-import org.chewing.v1.jparepository.auth.PhoneJpaRepository
 import org.chewing.v1.jparepository.chat.ChatRoomJpaRepository
 import org.chewing.v1.jparepository.chat.GroupChatRoomMemberJpaRepository
 import org.chewing.v1.jparepository.chat.PersonalChatRoomMemberJpaRepository
@@ -41,7 +39,6 @@ import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.chat.room.ChatNumber
 import org.chewing.v1.model.chat.room.ChatRoomInfo
 import org.chewing.v1.model.comment.CommentInfo
-import org.chewing.v1.model.contact.Phone
 import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.FeedDetail
@@ -61,8 +58,6 @@ import java.time.LocalDateTime
 @Component
 class JpaDataGenerator {
 
-    @Autowired
-    private lateinit var phoneJpaRepository: PhoneJpaRepository
 
     @Autowired
     private lateinit var loggedInJpaRepository: LoggedInJpaRepository
@@ -112,10 +107,10 @@ class JpaDataGenerator {
     @Autowired
     private lateinit var personalChatRoomMemberJpaRepository: PersonalChatRoomMemberJpaRepository
 
-    fun phoneEntityData(phoneNumber: PhoneNumber): Phone {
-        val phone = PhoneJpaEntity.generate(phoneNumber)
-        phoneJpaRepository.save(phone)
-        return phone.toPhone()
+    fun userEntityData(credential: PhoneNumber, userName: String): User {
+        val user = UserJpaEntity.generate(credential, userName)
+        userJpaRepository.save(user)
+        return user.toUser()
     }
 
     fun loggedInEntityData(refreshToken: RefreshToken, userId: String) {
@@ -141,12 +136,6 @@ class JpaDataGenerator {
         val scheduleEntity = ScheduleJpaEntity.generate(content, time, userId)
         scheduleJpaRepository.save(scheduleEntity)
         return scheduleEntity.toSchedule()
-    }
-
-    fun userEntityPhoneData(phone: Phone): User {
-        val user = UserJpaEntity.generateByPhone(phone)
-        userJpaRepository.save(user)
-        return user.toUser()
     }
 
     fun userStatusData(userId: String): UserStatus {

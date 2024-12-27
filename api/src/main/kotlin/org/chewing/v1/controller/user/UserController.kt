@@ -1,6 +1,5 @@
 package org.chewing.v1.controller.user
 
-import org.chewing.v1.dto.request.user.UserRequest
 import org.chewing.v1.dto.response.user.AccountResponse
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.media.FileCategory
@@ -19,20 +18,11 @@ class UserController(
     private val accountFacade: AccountFacade,
 ) {
     @GetMapping("/profile")
-    fun getAccount(
+    fun getProfile(
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<AccountResponse> {
-        val account = accountFacade.getAccount(userId)
-        return ResponseHelper.success(AccountResponse.of(account))
-    }
-
-    @PostMapping("/access")
-    fun makeAccess(
-        @RequestAttribute("userId") userId: String,
-        @RequestBody request: UserRequest.UpdateProfile,
-    ): SuccessResponseEntity<SuccessOnlyResponse> {
-        userService.makeAccess(userId, request.toUserContent())
-        return ResponseHelper.successOnly()
+        val user = userService.getUser(userId)
+        return ResponseHelper.success(AccountResponse.of(user))
     }
 
     /**
@@ -50,39 +40,11 @@ class UserController(
         return ResponseHelper.successOnly()
     }
 
-    @PutMapping("/name")
-    fun changeName(
-        @RequestAttribute("userId") userId: String,
-        @RequestBody request: UserRequest.UpdateName,
-    ): SuccessResponseEntity<SuccessOnlyResponse> {
-        userService.updateName(userId, request.toUserName())
-        return ResponseHelper.successOnly()
-    }
-
-    @PutMapping("birth")
-    fun changeBirth(
-        @RequestAttribute("userId") userId: String,
-        @RequestBody request: UserRequest.UpdateBirth,
-    ): SuccessResponseEntity<SuccessOnlyResponse> {
-        userService.updateBirth(userId, request.toBirth())
-        return ResponseHelper.successOnly()
-    }
-
     @DeleteMapping("")
     fun deleteUser(
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         accountFacade.deleteAccount(userId)
-        return ResponseHelper.successOnly()
-    }
-
-    @PostMapping("/tts")
-    fun changeTTS(
-        @RequestAttribute("userId") userId: String,
-        @RequestPart("file") file: MultipartFile,
-    ): SuccessResponseEntity<SuccessOnlyResponse> {
-        val convertedFile = FileHelper.convertMultipartFileToFileData(file)
-        userService.updateFile(convertedFile, userId, FileCategory.TTS)
         return ResponseHelper.successOnly()
     }
 }

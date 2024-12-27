@@ -106,8 +106,7 @@ class SearchControllerTest : RestDocsTest() {
             .andExpect(jsonPath("$.data.chatRooms[0].members[1].readSeqNumber").value(chatRoom.chatRoomMemberInfos[1].readSeqNumber))
 
         result.andExpect(jsonPath("$.data.friends[0].friendId").value(friendShip.friendId))
-            .andExpect(jsonPath("$.data.friends[0].firstName").value(friendShip.friendName.firstName))
-            .andExpect(jsonPath("$.data.friends[0].lastName").value(friendShip.friendName.lastName))
+            .andExpect(jsonPath("$.data.friends[0].name").value(friendShip.friendName))
             .andExpect(jsonPath("$.data.friends[0].favorite").value(friendShip.isFavorite))
     }
 }

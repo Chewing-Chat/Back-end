@@ -13,13 +13,7 @@ class FriendSearchEngine() {
 
     private fun personalized(friendShips: List<FriendShip>, keyword: String): List<FriendShip> {
         return friendShips.filter { friendShip ->
-            val fullName = "${friendShip.friendName.firstName} ${friendShip.friendName.lastName()}"
-            val alternativeFullName = "${friendShip.friendName.lastName()} ${friendShip.friendName.firstName()}"
-            val concatenatedNames = "${friendShip.friendName.firstName()}${friendShip.friendName.lastName()}"
-
-            listOf(fullName, alternativeFullName, concatenatedNames).any {
-                it.contains(keyword, ignoreCase = true)
-            }
+            friendShip.friendName.contains(keyword, ignoreCase = true)
         }
     }
 }

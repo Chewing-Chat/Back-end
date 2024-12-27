@@ -3,5 +3,8 @@ package org.chewing.v1.external
 import org.chewing.v1.model.auth.PhoneNumber
 
 interface ExternalAuthClient {
+    fun cacheVerificationCode(phoneNumber: PhoneNumber, verificationCode: String)
+    fun readVerificationCode(phoneNumber: PhoneNumber): String?
+    fun deleteVerificationCode(phoneNumber: PhoneNumber)
     fun sendSms(phoneNumber: PhoneNumber, verificationCode: String)
 }

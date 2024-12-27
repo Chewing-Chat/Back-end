@@ -53,7 +53,7 @@ class AiServiceTest {
                 0 -> {
                     assert(prompt is TextPrompt, { "첫 번째 프롬프트는 TextPrompt 타입이어야 합니다." })
                     prompt as TextPrompt
-                    val expectedName = "${friendName.firstName}${friendName.lastName}"
+                    val expectedName = friendName
                     assert(
                         prompt.text.contains(expectedName),
                         { "첫 번째 프롬프트는 친구 이름 '$expectedName'을 포함해야 합니다." },

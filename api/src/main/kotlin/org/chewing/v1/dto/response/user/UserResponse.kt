@@ -8,8 +8,7 @@ data class UserResponse(
     val statusEmoji: String,
     val imageUrl: String,
     val imageType: String,
-    val firstName: String,
-    val lastName: String,
+    val name: String
 ) {
     companion object {
         fun of(
@@ -21,8 +20,7 @@ data class UserResponse(
                 statusEmoji = userStatus.emoji,
                 imageUrl = user.image.url,
                 imageType = user.image.type.value().lowercase(),
-                firstName = user.name.firstName(),
-                lastName = user.name.lastName(),
+                name = user.name,
             )
         }
     }

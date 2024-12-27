@@ -42,7 +42,7 @@ class SpringSecurityTest2 : IntegrationTest() {
         )
         every { authService.createCredential(any()) } just Runs
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/auth/phone/create/send")
+            MockMvcRequestBuilders.post("/api/auth/create/send")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)),
         ).andExpect(status().isOk)
@@ -61,11 +61,12 @@ class SpringSecurityTest2 : IntegrationTest() {
             "appToken" to "testToken",
             "deviceId" to "testDeviceId",
             "provider" to "IOS",
+            "userName" to "testUserName",
         )
-        every { accountFacade.loginAndCreateUser(any(), any(), any(), any()) } returns LoginInfo.of(jwtToken, user)
+        every { accountFacade.createUser(any(), any(), any(), any(),any()) } returns LoginInfo.of(jwtToken, user)
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/auth/phone/create/verify")
+            MockMvcRequestBuilders.post("/api/auth/create/verify")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)),
 

@@ -36,8 +36,7 @@ class FriendControllerTest : RestDocsTest() {
         val requestBody = FriendRequest.AddWithPhone(
             phoneNumber = "01012345678",
             countryCode = "82",
-            firstName = "testFirstName",
-            lastName = "testLastName",
+            name = "testName",
         )
 
         every { friendFacade.addFriend(any(), any(), any()) } just Runs
@@ -111,8 +110,7 @@ class FriendControllerTest : RestDocsTest() {
     fun updateFriendName() {
         val requestBody = FriendRequest.UpdateName(
             friendId = "testFriendId",
-            firstName = "testFirstName",
-            lastName = "testLastName",
+            name = "testName",
         )
 
         every { friendShipService.changeFriendName(any(), any(), any()) } just Runs

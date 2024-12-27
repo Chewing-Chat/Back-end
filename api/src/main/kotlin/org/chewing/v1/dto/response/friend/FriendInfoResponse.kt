@@ -1,12 +1,10 @@
 package org.chewing.v1.dto.response.friend
 
 import org.chewing.v1.model.user.AccessStatus
-import org.chewing.v1.model.user.UserName
 
 data class FriendInfoResponse(
     val friendId: String,
-    val firstName: String,
-    val lastName: String,
+    val name: String,
     val imageUrl: String,
     val imageType: String,
     val access: String,
@@ -14,15 +12,14 @@ data class FriendInfoResponse(
     companion object {
         fun of(
             friendId: String,
-            userName: UserName,
+            userName: String,
             imageUrl: String,
             imageType: String,
             access: AccessStatus,
         ): FriendInfoResponse {
             return FriendInfoResponse(
                 friendId = friendId,
-                firstName = userName.firstName(),
-                lastName = userName.lastName(),
+                name = userName,
                 imageUrl = imageUrl,
                 imageType = imageType,
                 access = access.name.lowercase(),

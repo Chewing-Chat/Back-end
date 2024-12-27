@@ -26,8 +26,8 @@ class SecurityConfig(
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers(
-                        "/api/auth/phone/create/**",
-                        "/api/auth/email/create/**",
+                        "/api/auth/create/send",
+                        "/api/auth/create/verify",
                         "/api/auth/refresh",
                         "/api/auth/logout",
                         "/ws-stomp/**",
