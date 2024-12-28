@@ -158,7 +158,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `유저의 비밀번호를 업데이트 한다 - 성공`(){
+    fun `유저의 비밀번호를 업데이트 한다 - 성공`() {
         val userId = "userId"
         val password = "password"
 
@@ -170,7 +170,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `유저의 비밀번호를 업데이트 한다 - 실패(유저가 존재하지 않음)`(){
+    fun `유저의 비밀번호를 업데이트 한다 - 실패(유저가 존재하지 않음)`() {
         val userId = "userId"
         val password = "password"
 

@@ -8,13 +8,10 @@ import io.mockk.slot
 import io.mockk.verify
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.error.AuthorizationException
-import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
-import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.external.ExternalAuthClient
 import org.chewing.v1.implementation.auth.*
 import org.chewing.v1.repository.auth.LoggedInRepository
-import org.chewing.v1.repository.user.UserRepository
 import org.chewing.v1.service.auth.AuthService
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -26,8 +23,8 @@ class AuthServiceTest {
     private val loggedInRepository: LoggedInRepository = mockk()
     private val externalAuthClient: ExternalAuthClient = mockk()
     private val authGenerator: AuthGenerator = AuthGenerator()
-    private val authReader: AuthReader = AuthReader(loggedInRepository,externalAuthClient)
-    private val authAppender: AuthAppender = AuthAppender(loggedInRepository,externalAuthClient)
+    private val authReader: AuthReader = AuthReader(loggedInRepository, externalAuthClient)
+    private val authAppender: AuthAppender = AuthAppender(loggedInRepository, externalAuthClient)
     private val authValidator: AuthValidator = AuthValidator()
     private val authUpdater: AuthUpdater = AuthUpdater(loggedInRepository)
     private val jwtTokenProvider: JwtTokenProvider = JwtTokenProvider(
@@ -157,31 +154,31 @@ class AuthServiceTest {
     }
 
     @Test
-    fun `비밀번호 암호화`(){
+    fun `비밀번호 암호화`() {
         val password = "1234"
         val encryptedPassword = authService.encryptPassword(password)
         assert(password != encryptedPassword)
     }
 
     @Test
-    fun `비밀번호 검증 - 성공`(){
+    fun `비밀번호 검증 - 성공`() {
         val password = "1234"
         val encryptPassword = authGenerator.hashPassword(password)
-        val user = TestDataFactory.createEncryptedUser("userId",encryptPassword)
+        val user = TestDataFactory.createEncryptedUser("userId", encryptPassword)
         assertDoesNotThrow {
-            authService.validatePassword(user,password)
+            authService.validatePassword(user, password)
         }
     }
 
     @Test
-    fun `비밀번호 검증 - 실패`(){
+    fun `비밀번호 검증 - 실패`() {
         val password = "1234"
         val wrongPassword = "5678"
         val encryptPassword = authGenerator.hashPassword(password)
-        val user = TestDataFactory.createEncryptedUser("userId",encryptPassword)
+        val user = TestDataFactory.createEncryptedUser("userId", encryptPassword)
 
         val exception = assertThrows<AuthorizationException> {
-            authService.validatePassword(user,wrongPassword)
+            authService.validatePassword(user, wrongPassword)
         }
 
         assert(exception.errorCode == ErrorCode.WRONG_PASSWORD)

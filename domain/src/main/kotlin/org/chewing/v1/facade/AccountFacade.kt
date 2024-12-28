@@ -29,6 +29,15 @@ class AccountFacade(
         return authService.createLoginInfo(user)
     }
 
+    fun verifyPhoneOnly(
+        phoneNumber: PhoneNumber,
+        verificationCode: String,
+    ): LoginInfo {
+        authService.verify(phoneNumber, verificationCode)
+        val user = userService.getUserByCredential(phoneNumber)
+        return authService.createLoginInfo(user)
+    }
+
     fun makePassword(
         userId: String,
         password: String,

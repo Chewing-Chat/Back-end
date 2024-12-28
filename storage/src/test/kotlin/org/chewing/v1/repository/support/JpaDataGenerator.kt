@@ -58,7 +58,6 @@ import java.time.LocalDateTime
 @Component
 class JpaDataGenerator {
 
-
     @Autowired
     private lateinit var loggedInJpaRepository: LoggedInJpaRepository
 

@@ -10,7 +10,6 @@ import org.chewing.v1.repository.support.PhoneNumberProvider
 import org.chewing.v1.repository.support.UserProvider
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import java.util.UUID
 
 class UserRepositoryTest : JpaContextTest() {
     @Autowired
@@ -26,7 +25,7 @@ class UserRepositoryTest : JpaContextTest() {
     fun `유저 아이디로 읽기`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
-        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+        val user = jpaDataGenerator.userEntityData(phoneNumber, userName)
 
         val result = userRepositoryImpl.read(user.userId)
 
@@ -37,7 +36,7 @@ class UserRepositoryTest : JpaContextTest() {
     fun `유저 휴대폰으로 읽기`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
-        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+        val user = jpaDataGenerator.userEntityData(phoneNumber, userName)
 
         val result = userRepositoryImpl.readByCredential(phoneNumber)
 
@@ -59,7 +58,7 @@ class UserRepositoryTest : JpaContextTest() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
 
-        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+        val user = jpaDataGenerator.userEntityData(phoneNumber, userName)
 
         val result = userRepositoryImpl.append(phoneNumber, userName)
 
@@ -71,7 +70,7 @@ class UserRepositoryTest : JpaContextTest() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
 
-        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+        val user = jpaDataGenerator.userEntityData(phoneNumber, userName)
 
         userRepositoryImpl.remove(user.userId)
 
@@ -83,7 +82,7 @@ class UserRepositoryTest : JpaContextTest() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
 
-        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+        val user = jpaDataGenerator.userEntityData(phoneNumber, userName)
 
         val media = MediaProvider.buildProfileContent()
 
@@ -98,7 +97,7 @@ class UserRepositoryTest : JpaContextTest() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
 
-        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+        val user = jpaDataGenerator.userEntityData(phoneNumber, userName)
 
         val media = MediaProvider.buildBackgroundContent()
 
@@ -108,13 +107,12 @@ class UserRepositoryTest : JpaContextTest() {
         assert(result.backgroundImage.type == media.type)
     }
 
-
     @Test
     fun `유저 게정 읽기 읽기`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
 
-        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
+        val user = jpaDataGenerator.userEntityData(phoneNumber, userName)
 
         val result = userRepositoryImpl.read(user.userId)
 
@@ -127,8 +125,8 @@ class UserRepositoryTest : JpaContextTest() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
 
-        val user = jpaDataGenerator.userEntityData(phoneNumber,userName)
-        val user2 = jpaDataGenerator.userEntityData(phoneNumber,userName)
+        val user = jpaDataGenerator.userEntityData(phoneNumber, userName)
+        val user2 = jpaDataGenerator.userEntityData(phoneNumber, userName)
 
         val result = userRepositoryImpl.reads(listOf(user.userId, user2.userId))
 

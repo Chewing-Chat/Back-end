@@ -1,7 +1,6 @@
 package org.chewing.v1.implementation.auth
 
 import org.chewing.v1.error.AuthorizationException
-import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component

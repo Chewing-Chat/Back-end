@@ -4,7 +4,6 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.verify
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.service.friend.FriendShipService

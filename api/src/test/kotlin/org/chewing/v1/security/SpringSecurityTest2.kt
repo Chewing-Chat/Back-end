@@ -63,7 +63,7 @@ class SpringSecurityTest2 : IntegrationTest() {
             "provider" to "IOS",
             "userName" to "testUserName",
         )
-        every { accountFacade.createUser(any(), any(), any(), any(),any()) } returns LoginInfo.of(jwtToken, user)
+        every { accountFacade.createUser(any(), any(), any(), any(), any()) } returns LoginInfo.of(jwtToken, user)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/auth/create/verify")

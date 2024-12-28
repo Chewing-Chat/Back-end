@@ -62,7 +62,7 @@ object TestDataFactory {
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
         Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.ACCESS,
-        PhoneNumber.of("82","010-0000-0000"),
+        PhoneNumber.of("82", "010-0000-0000"),
         "password",
     )
 

@@ -58,6 +58,5 @@ class UserRepositoryTest2 {
         assert(result == null)
     }
 
-
     private fun generateUserId(): String = UUID.randomUUID().toString()
 }

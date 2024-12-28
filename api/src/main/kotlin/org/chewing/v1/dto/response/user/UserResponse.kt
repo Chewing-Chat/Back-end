@@ -8,7 +8,7 @@ data class UserResponse(
     val statusEmoji: String,
     val imageUrl: String,
     val imageType: String,
-    val name: String
+    val name: String,
 ) {
     companion object {
         fun of(

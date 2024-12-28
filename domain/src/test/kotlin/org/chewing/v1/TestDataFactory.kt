@@ -73,7 +73,7 @@ object TestDataFactory {
         "password",
     )
 
-    fun createEncryptedUser(userId: String,password:String): User = User.of(
+    fun createEncryptedUser(userId: String, password: String): User = User.of(
         userId,
         "testName",
         "2000-00-00",
