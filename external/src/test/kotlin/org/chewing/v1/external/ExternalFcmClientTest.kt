@@ -93,8 +93,7 @@ class ExternalFcmClientTest {
 
         assert(fcmMessageDto.message.token == notification.pushToken.fcmToken)
         assert(fcmMessageDto.message.data["senderId"] == notification.user.userId)
-        assert(fcmMessageDto.message.data["senderFirstName"] == notification.user.name.firstName)
-        assert(fcmMessageDto.message.data["senderLastName"] == notification.user.name.lastName)
+        assert(fcmMessageDto.message.data["senderName"] == notification.user.name)
         assert(fcmMessageDto.message.data["type"] == notification.type.toLowerCase())
         assert(fcmMessageDto.message.data["targetId"] == notification.targetId)
         assert(fcmMessageDto.message.data["content"] == notification.content)

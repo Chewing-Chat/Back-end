@@ -15,4 +15,8 @@ class PhoneNumber(
             )
         }
     }
+
+    override fun toString(): String {
+        return "+$countryCode-$number"
+    }
 }

@@ -14,21 +14,20 @@ class ScheduleRequest {
 
     data class Add(
         val title: String,
-        val startTime: String,
-        val endTime: String,
-        val notificationTime: String,
+        val friendIds: List<String>,
+        val dateTime: String,
+        val timeDecided: Boolean,
         val memo: String,
         val location: String,
-        val private: Boolean,
     ) {
-        fun toScheduleContent(): ScheduleContent = ScheduleContent.of(title, memo, location, private)
+        fun toScheduleContent(): ScheduleContent = ScheduleContent.of(title, memo, location)
 
         fun toScheduleTime(): ScheduleTime {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-            val startTime = LocalDateTime.parse(startTime, formatter)
-            val endTime = LocalDateTime.parse(endTime, formatter)
-            val notification = LocalDateTime.parse(notificationTime, formatter)
-            return ScheduleTime.of(startTime, endTime, notification)
+            val date = LocalDateTime.parse(dateTime, formatter)
+            return ScheduleTime.of(date, timeDecided)
         }
+
+        fun toFriendIds(): List<String> = friendIds
     }
 }

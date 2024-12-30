@@ -14,15 +14,11 @@ class ScheduleGenerator {
         val title = scheduleData["title"] ?: ""
         val memo = scheduleData["memo"] ?: ""
         val location = scheduleData["location"] ?: ""
-        val startAtStr = scheduleData["startAt"] ?: throw ConflictException(ErrorCode.SCHEDULE_CREATE_FAILED)
-        val endAtStr = scheduleData["endAt"] ?: throw ConflictException(ErrorCode.SCHEDULE_CREATE_FAILED)
-        val notificationAtStr = scheduleData["notificationAt"] ?: startAtStr
-        val startAt = LocalDateTime.parse(startAtStr)
-        val endAt = LocalDateTime.parse(endAtStr)
-        val notificationAt = LocalDateTime.parse(notificationAtStr)
-
-        val scheduleTime = ScheduleTime.of(startAt, endAt, notificationAt)
-        val scheduleContent = ScheduleContent.of(title, memo, location, true)
+        val dataTimeStr = scheduleData["time"] ?: throw ConflictException(ErrorCode.SCHEDULE_CREATE_FAILED)
+        val timeDecided = scheduleData["timeDecided"]?.toBoolean() ?: false
+        val dateTime = LocalDateTime.parse(dataTimeStr)
+        val scheduleTime = ScheduleTime.of(dateTime, timeDecided)
+        val scheduleContent = ScheduleContent.of(title, memo, location)
         return Pair(scheduleContent, scheduleTime)
     }
     private fun parseSchedule(input: String): Map<String, String> {

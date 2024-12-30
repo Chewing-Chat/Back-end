@@ -12,8 +12,7 @@ data class MainResponse(
 ) {
     data class FriendMainResponse(
         val friendId: String,
-        val firstName: String,
-        val lastName: String,
+        val name: String,
         val backgroundImageUrl: String,
         val backgroundImageType: String,
         val imageUrl: String,
@@ -27,8 +26,7 @@ data class MainResponse(
             fun of(friend: Friend): FriendMainResponse {
                 return FriendMainResponse(
                     friendId = friend.user.userId,
-                    firstName = friend.name.firstName(),
-                    lastName = friend.name.lastName(),
+                    name = friend.name,
                     imageUrl = friend.user.image.url,
                     imageType = friend.user.image.type.value().lowercase(),
                     statusMessage = friend.status.message,

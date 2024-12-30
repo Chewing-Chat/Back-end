@@ -11,8 +11,6 @@ import org.chewing.v1.model.chat.room.ChatRoomInfo
 import org.chewing.v1.model.chat.room.ChatSequenceNumber
 import org.chewing.v1.model.chat.room.Room
 import org.chewing.v1.model.comment.CommentInfo
-import org.chewing.v1.model.contact.Email
-import org.chewing.v1.model.contact.Phone
 import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.Feed
@@ -37,27 +35,11 @@ object TestDataFactory {
 
     fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "1234567890")
 
-    fun createEmailAddress(): EmailAddress = EmailAddress.of("test@exampl.com")
-
-    fun createEmail(verificationCode: String): Email =
-        Email.of("testEmailId", "test@exampl.com", verificationCode, LocalDateTime.now().plusMinutes(1))
-
-    fun createExpiredEmail(verificationCode: String): Email =
-        Email.of("testEmailId", "test@example.com", verificationCode, LocalDateTime.now().minusMinutes(1))
-
-    fun createUserAccount(emailId: String?, phoneId: String?): UserAccount =
-        UserAccount.of(createUser("userId"), emailId, phoneId)
-
-    fun createPhone(verificationCode: String): Phone =
-        Phone.of("testPhoneId", "82", "1234567890", verificationCode, LocalDateTime.now().plusMinutes(1))
-
-    fun createUserContent(): UserContent = UserContent.of("firstName", "lastName", "2000-00-00")
-
     fun createUserStatus(userId: String): UserStatus = UserStatus.of("statusId", userId, "emoji", "statusMessage", true)
 
     fun createDefaultUserStatus(): UserStatus = UserStatus.default("userId")
 
-    fun createUserName(): UserName = UserName.of("firstName", "lastName")
+    fun createUserName(): String = "testUserName"
 
     fun createProfileMedia(): Media = Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG)
 
@@ -82,35 +64,46 @@ object TestDataFactory {
 
     fun createUser(userId: String): User = User.of(
         userId,
-        "testFirstName",
-        "testLastName",
+        "testName",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
         Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.ACCESS,
+        PhoneNumber.of("82", "1234567890"),
+        "password",
+    )
+
+    fun createEncryptedUser(userId: String, password: String): User = User.of(
+        userId,
+        "testName",
+        "2000-00-00",
+        Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
+        Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
+        AccessStatus.ACCESS,
+        PhoneNumber.of("82", "1234567890"),
+        password,
     )
 
     fun createNotAccessUser(): User = User.of(
         "testUserId",
-        "testFirstName",
-        "testLastName",
+        "testName",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
         Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.NOT_ACCESS,
+        PhoneNumber.of("82", "1234567890"),
+        "password",
     )
 
     fun createScheduledTime(): ScheduleTime =
-        ScheduleTime.of(LocalDateTime.now(), LocalDateTime.now().plusHours(1), LocalDateTime.now())
+        ScheduleTime.of(LocalDateTime.now(), false)
 
-    fun createScheduleContent(): ScheduleContent = ScheduleContent.of("testTitle", "memo", "location", true)
+    fun createScheduleContent(): ScheduleContent = ScheduleContent.of("testTitle", "memo", "location")
 
     fun createSchedule(): Schedule = Schedule.of(
         "scheduleId",
         "title",
         "memo",
-        LocalDateTime.now(),
-        LocalDateTime.now().plusHours(1),
         LocalDateTime.now(),
         "location",
         true,

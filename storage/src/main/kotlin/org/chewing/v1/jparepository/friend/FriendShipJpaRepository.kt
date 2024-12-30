@@ -7,8 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 internal interface FriendShipJpaRepository : JpaRepository<FriendShipJpaEntity, FriendShipId> {
 
-    fun findAllByIdUserIdAndTypeOrderByFirstNameAscLastNameAsc(userId: String, type: AccessStatus): List<FriendShipJpaEntity>
-    fun findAllByIdUserIdAndTypeOrderByFavoriteAscFirstNameAscLastNameAsc(userId: String, type: AccessStatus): List<FriendShipJpaEntity>
+    fun findAllByIdUserIdAndTypeOrderByName(userId: String, type: AccessStatus): List<FriendShipJpaEntity>
+    fun findAllByIdUserIdAndTypeOrderByFavoriteAscName(userId: String, type: AccessStatus): List<FriendShipJpaEntity>
     fun findAllByIdInAndType(friendShipIds: List<FriendShipId>, type: AccessStatus): List<FriendShipJpaEntity>
-    fun findByIdAndType(id: FriendShipId, type: AccessStatus): FriendShipJpaEntity?
 }

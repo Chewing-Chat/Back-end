@@ -2,13 +2,12 @@ package org.chewing.v1.model.friend
 
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
-import org.chewing.v1.model.user.UserName
 import org.chewing.v1.model.user.UserStatus
 
 class Friend private constructor(
     val user: User,
     val isFavorite: Boolean,
-    val name: UserName,
+    val name: String,
     val status: UserStatus,
     val type: AccessStatus,
 ) {
@@ -16,7 +15,7 @@ class Friend private constructor(
         fun of(
             friend: User,
             favorite: Boolean,
-            friendName: UserName,
+            friendName: String,
             friendStatus: UserStatus,
             type: AccessStatus,
         ): Friend {

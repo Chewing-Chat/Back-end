@@ -16,15 +16,6 @@ class FriendController(
     private val friendShipService: FriendShipService,
 ) {
     // 오류 관련 GlobalExceptionHandler 참조 404, 401, 409번만 사용
-    @PostMapping("/email")
-    fun addFriendWithEmail(
-        @RequestAttribute("userId") userId: String,
-        @RequestBody request: FriendRequest.AddWithEmail,
-    ): SuccessResponseEntity<SuccessCreateResponse> {
-        friendFacade.addFriend(userId, request.toUserName(), request.toEmail())
-        // 생성 완료 응답 201 반환
-        return ResponseHelper.successCreateOnly()
-    }
 
     @PostMapping("/phone")
     fun addFriendWithPhone(

@@ -104,12 +104,8 @@ class FeedCommentControllerTest : RestDocsTest() {
                 jsonPath("$.data.comments[0].friend.friendId").value(comment.writer.userId),
             )
             .andExpect(
-                jsonPath("$.data.comments[0].friend.firstName")
-                    .value(comment.writer.name.firstName()),
-            )
-            .andExpect(
-                jsonPath("$.data.comments[0].friend.lastName")
-                    .value(comment.writer.name.lastName()),
+                jsonPath("$.data.comments[0].friend.name")
+                    .value(comment.writer.name),
             )
             .andExpect(
                 jsonPath("$.data.comments[0].friend.imageUrl").value(comment.writer.image.url),
@@ -151,8 +147,7 @@ class FeedCommentControllerTest : RestDocsTest() {
             .andExpect(jsonPath("$.data.myComments[0].comments[0].comment").value(userCommentInfo.comment.comment))
             .andExpect(jsonPath("$.data.myComments[0].comments[0].commentTime").value(formattedCommentTime))
             .andExpect(jsonPath("$.data.myComments[0].friend.friendId").value(userCommentInfo.friendShip.friendId))
-            .andExpect(jsonPath("$.data.myComments[0].friend.firstName").value(userCommentInfo.friendShip.friendName.firstName()))
-            .andExpect(jsonPath("$.data.myComments[0].friend.lastName").value(userCommentInfo.friendShip.friendName.lastName()))
+            .andExpect(jsonPath("$.data.myComments[0].friend.name").value(userCommentInfo.friendShip.friendName))
             .andExpect(jsonPath("$.data.myComments[0].friend.imageUrl").value(userCommentInfo.user.image.url))
             .andExpect(
                 jsonPath("$.data.myComments[0].friend.imageType").value(

@@ -2,6 +2,7 @@ package org.chewing.v1
 
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.auth.JwtToken
+import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.chat.log.*
 import org.chewing.v1.model.chat.member.ChatRoomMember
@@ -31,7 +32,6 @@ import org.chewing.v1.model.search.Search
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
-import org.chewing.v1.model.user.UserName
 import org.chewing.v1.model.user.UserStatus
 import java.time.LocalDateTime
 
@@ -41,19 +41,20 @@ object TestDataFactory {
         return JwtToken.of("accessToken", RefreshToken.of("refreshToken", LocalDateTime.now()))
     }
 
-    fun createFriendName(): UserName {
-        return UserName.of("testFriendFirstName", "testFriendLastName")
+    fun createFriendName(): String {
+        return "testFriendName"
     }
 
     fun createUser(): User {
         return User.of(
             "testUserId",
-            "testFirstName",
-            "testLastName",
+            "testFriendName",
             "2000-00-00",
             Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
             Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
             AccessStatus.ACCESS,
+            PhoneNumber.of("+82", "010-0000-0000"),
+            "testPassword",
         )
     }
 
@@ -65,29 +66,14 @@ object TestDataFactory {
         return Friend.of(createUser(), true, createFriendName(), createUserStatus(), AccessStatus.ACCESS)
     }
 
-    fun createPrivateSchedule(): Schedule {
+    fun createSchedule(): Schedule {
         return Schedule.of(
             "testScheduleId",
             "testScheduleTitle",
             "testScheduleMemo",
-            LocalDateTime.now(),
-            LocalDateTime.now(),
             LocalDateTime.now(),
             "testLocation",
             true,
-        )
-    }
-
-    fun createPublicSchedule(): Schedule {
-        return Schedule.of(
-            "testScheduleId",
-            "testScheduleTitle",
-            "testScheduleMemo",
-            LocalDateTime.now(),
-            LocalDateTime.now(),
-            LocalDateTime.now(),
-            "testLocation",
-            false,
         )
     }
 

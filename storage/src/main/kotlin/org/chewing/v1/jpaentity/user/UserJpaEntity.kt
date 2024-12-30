@@ -2,16 +2,12 @@ package org.chewing.v1.jpaentity.user
 
 import jakarta.persistence.*
 import org.chewing.v1.jpaentity.common.BaseEntity
-import org.chewing.v1.model.contact.Contact
-import org.chewing.v1.model.contact.Email
-import org.chewing.v1.model.contact.Phone
+import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
-import org.chewing.v1.model.user.UserAccount
-import org.chewing.v1.model.user.UserName
 import org.hibernate.annotations.DynamicInsert
 import java.util.*
 
@@ -32,54 +28,32 @@ internal class UserJpaEntity(
     @Enumerated(EnumType.STRING)
     private var backgroundPictureType: MediaType,
 
-    private var firstName: String,
-
-    private var lastName: String,
-
     private var birth: String,
 
-    private var emailId: String?,
+    private var countryCode: String,
 
-    private var phoneNumberId: String?,
-    private var ttsUrl: String?,
-    @Enumerated(EnumType.STRING)
-    private var ttsType: MediaType,
+    private var phoneNumber: String,
+
+    private var password: String,
 
     @Enumerated(EnumType.STRING)
     private var type: AccessStatus,
+
+    private var name: String,
 ) : BaseEntity() {
     companion object {
-        fun generateByEmail(email: Email): UserJpaEntity {
+        fun generate(phoneNumber: PhoneNumber, userName: String): UserJpaEntity {
             return UserJpaEntity(
-                firstName = "",
-                lastName = "",
-                birth = "",
                 pictureUrl = "",
-                backgroundPictureUrl = "",
-                type = AccessStatus.NOT_ACCESS,
-                emailId = email.emailId,
-                phoneNumberId = null,
                 pictureType = MediaType.IMAGE_BASIC,
+                backgroundPictureUrl = "",
                 backgroundPictureType = MediaType.IMAGE_BASIC,
-                ttsUrl = null,
-                ttsType = MediaType.VIDEO_BASIC,
-            )
-        }
-
-        fun generateByPhone(phone: Phone): UserJpaEntity {
-            return UserJpaEntity(
-                firstName = "",
-                lastName = "",
                 birth = "",
-                pictureUrl = "",
-                backgroundPictureUrl = "",
-                type = AccessStatus.NOT_ACCESS,
-                emailId = null,
-                phoneNumberId = phone.phoneId,
-                pictureType = MediaType.IMAGE_BASIC,
-                backgroundPictureType = MediaType.IMAGE_BASIC,
-                ttsUrl = null,
-                ttsType = MediaType.VIDEO_BASIC,
+                countryCode = phoneNumber.countryCode,
+                phoneNumber = phoneNumber.number,
+                type = AccessStatus.NEED_CREATE_PASSWORD,
+                name = userName,
+                password = "",
             )
         }
     }
@@ -87,12 +61,13 @@ internal class UserJpaEntity(
     fun toUser(): User {
         return User.of(
             this.userId,
-            this.firstName,
-            this.lastName,
+            this.name,
             this.birth,
             Media.of(FileCategory.PROFILE, this.pictureUrl, 0, this.pictureType),
             Media.of(FileCategory.BACKGROUND, this.backgroundPictureUrl, 0, this.backgroundPictureType),
             this.type,
+            PhoneNumber.of(this.countryCode, this.phoneNumber),
+            this.password,
         )
     }
 
@@ -106,9 +81,8 @@ internal class UserJpaEntity(
         this.backgroundPictureType = media.type
     }
 
-    fun updateUserName(userName: UserName) {
-        this.firstName = userName.firstName
-        this.lastName = userName.lastName
+    fun updateUserName(userName: String) {
+        this.name = userName
     }
 
     fun updateBirth(birth: String) {
@@ -119,31 +93,12 @@ internal class UserJpaEntity(
         this.type = AccessStatus.DELETE
     }
 
-    fun updateAccess() {
+    fun updatePassword(password: String) {
+        this.password = password
         this.type = AccessStatus.ACCESS
     }
 
-    fun updateContact(contact: Contact) {
-        when (contact) {
-            is Email -> this.emailId = contact.emailId
-            is Phone -> this.phoneNumberId = contact.phoneId
-        }
-    }
-
-    fun updateTTS(tts: Media) {
-        this.ttsUrl = tts.url
-        this.ttsType = tts.type
-    }
-
-    fun toTTS(): Media {
-        return Media.of(FileCategory.TTS, this.ttsUrl ?: "", 0, this.ttsType)
-    }
-
-    fun toUserAccount(): UserAccount {
-        return UserAccount.of(
-            this.toUser(),
-            this.emailId,
-            this.phoneNumberId,
-        )
+    fun updateAccess() {
+        this.type = AccessStatus.ACCESS
     }
 }

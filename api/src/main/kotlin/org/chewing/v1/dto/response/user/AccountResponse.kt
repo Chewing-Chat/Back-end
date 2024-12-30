@@ -1,26 +1,22 @@
 package org.chewing.v1.dto.response.user
 
-import org.chewing.v1.model.auth.Account
+import org.chewing.v1.model.user.User
 
 data class AccountResponse(
-    val firstName: String,
-    val lastName: String,
+    val name: String,
     val birth: String,
     val phoneNumber: String,
     val countryCode: String,
-    val emailAddress: String,
 ) {
     companion object {
         fun of(
-            account: Account,
+            user: User,
         ): AccountResponse {
             return AccountResponse(
-                firstName = account.user.name.firstName(),
-                lastName = account.user.name.lastName(),
-                birth = account.user.birth,
-                phoneNumber = account.phoneNumber,
-                countryCode = account.countryCode,
-                emailAddress = account.emailAddress,
+                name = user.name,
+                birth = user.birth,
+                phoneNumber = user.phoneNumber.number,
+                countryCode = user.phoneNumber.countryCode,
             )
         }
     }

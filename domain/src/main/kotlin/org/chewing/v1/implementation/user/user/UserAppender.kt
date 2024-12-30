@@ -1,7 +1,7 @@
 package org.chewing.v1.implementation.user.user
 
+import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.PushToken
-import org.chewing.v1.model.contact.Contact
 import org.chewing.v1.model.user.User
 import org.chewing.v1.repository.user.PushNotificationRepository
 import org.chewing.v1.repository.user.UserRepository
@@ -17,7 +17,7 @@ class UserAppender(
         pushNotificationRepository.append(device, appToken, user)
     }
 
-    fun appendIfNotExist(contact: Contact): User {
-        return userRepository.append(contact)
+    fun appendIfNotExist(credential: Credential, userName: String): User {
+        return userRepository.append(credential, userName)
     }
 }

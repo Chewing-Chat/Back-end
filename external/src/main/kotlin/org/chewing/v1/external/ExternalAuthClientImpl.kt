@@ -1,22 +1,24 @@
 package org.chewing.v1.external
 
-import org.chewing.v1.model.auth.EmailAddress
+import org.chewing.v1.client.AuthCacheClient
 import org.chewing.v1.model.auth.PhoneNumber
-import org.springframework.mail.SimpleMailMessage
-import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Component
 
 @Component
 class ExternalAuthClientImpl(
-    private val javaMailSender: JavaMailSender,
+    private val authCacheClient: AuthCacheClient,
 ) : ExternalAuthClient {
 
-    override fun sendEmail(emailAddress: EmailAddress, verificationCode: String) {
-        val message = SimpleMailMessage()
-        message.setTo(emailAddress.address)
-        message.subject = "Verification Code"
-        message.text = "Your verification code is $verificationCode"
-        javaMailSender.send(message)
+    override fun cacheVerificationCode(phoneNumber: PhoneNumber, verificationCode: String) {
+        authCacheClient.cacheVerificationCode(phoneNumber, verificationCode)
+    }
+
+    override fun readVerificationCode(phoneNumber: PhoneNumber): String? {
+        return authCacheClient.getVerificationCode(phoneNumber)
+    }
+
+    override fun deleteVerificationCode(phoneNumber: PhoneNumber) {
+        authCacheClient.removeVerificationCode(phoneNumber)
     }
 
     override fun sendSms(phoneNumber: PhoneNumber, verificationCode: String) {

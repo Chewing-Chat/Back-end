@@ -6,7 +6,6 @@ import org.chewing.v1.jparepository.friend.FriendShipJpaRepository
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.friend.FriendSortCriteria
 import org.chewing.v1.model.user.AccessStatus
-import org.chewing.v1.model.user.UserName
 import org.chewing.v1.repository.friend.FriendShipRepository
 import org.springframework.stereotype.Repository
 
@@ -18,12 +17,12 @@ internal class FriendShipRepositoryImpl(
         when (sort) {
             FriendSortCriteria.NAME ->
                 friendShipJpaRepository
-                    .findAllByIdUserIdAndTypeOrderByFirstNameAscLastNameAsc(userId, accessStatus)
+                    .findAllByIdUserIdAndTypeOrderByName(userId, accessStatus)
                     .map { it.toFriendShip() }
 
             FriendSortCriteria.FAVORITE ->
                 friendShipJpaRepository
-                    .findAllByIdUserIdAndTypeOrderByFavoriteAscFirstNameAscLastNameAsc(userId, accessStatus)
+                    .findAllByIdUserIdAndTypeOrderByFavoriteAscName(userId, accessStatus)
                     .map { it.toFriendShip() }
         }
 
@@ -35,7 +34,7 @@ internal class FriendShipRepositoryImpl(
         friendShipJpaRepository.findAllByIdInAndType(friendIds.map { FriendShipId(userId, it) }, accessStatus)
             .map { it.toFriendShip() }
 
-    override fun append(userId: String, targetUserId: String, targetUserName: UserName) {
+    override fun append(userId: String, targetUserId: String, targetUserName: String) {
         friendShipJpaRepository.save(FriendShipJpaEntity.generate(userId, targetUserId, targetUserName))
     }
 
@@ -71,7 +70,7 @@ internal class FriendShipRepositoryImpl(
             userId
         }.orElse(null)
 
-    override fun updateName(userId: String, friendId: String, friendName: UserName): String? =
+    override fun updateName(userId: String, friendId: String, friendName: String): String? =
         friendShipJpaRepository.findById(FriendShipId(userId, friendId)).map {
             it.updateName(friendName)
             friendShipJpaRepository.save(it)

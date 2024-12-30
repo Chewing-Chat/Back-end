@@ -4,16 +4,14 @@ import org.chewing.v1.model.friend.FriendShip
 
 data class FriendShipResponse(
     val friendId: String,
-    val firstName: String,
-    val lastName: String,
+    val name: String,
     val favorite: Boolean,
 ) {
     companion object {
         fun of(friendShip: FriendShip): FriendShipResponse {
             return FriendShipResponse(
                 friendId = friendShip.friendId,
-                firstName = friendShip.friendName.firstName(),
-                lastName = friendShip.friendName.lastName(),
+                name = friendShip.friendName,
                 favorite = friendShip.isFavorite,
             )
         }

@@ -4,7 +4,6 @@ import org.chewing.v1.model.ai.ImagePrompt
 import org.chewing.v1.model.ai.Prompt
 import org.chewing.v1.model.ai.TextPrompt
 import org.chewing.v1.model.feed.Feed
-import org.chewing.v1.model.user.UserName
 import org.springframework.stereotype.Component
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -14,9 +13,9 @@ class PromptGenerator {
 
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("M월 d일 a h시", Locale.KOREAN)
 
-    fun generateRecentSummaryPrompt(friendName: UserName, feeds: List<Feed>): List<Prompt> = sequenceOf(
+    fun generateRecentSummaryPrompt(friendName: String, feeds: List<Feed>): List<Prompt> = sequenceOf(
         TextPrompt.of(
-            "다음은 ${friendName.firstName + friendName.lastName}님의 최근 피드 정보입니다. 텍스트와 이미지 설명이 포함되어 있습니다.",
+            "다음은 ${friendName}님의 최근 피드 정보입니다. 텍스트와 이미지 설명이 포함되어 있습니다.",
         ),
     )
         .plus(
@@ -31,7 +30,7 @@ class PromptGenerator {
         .plus(
             listOf(
                 TextPrompt.of(
-                    "이 정보를 기반으로 ${friendName.firstName + friendName.lastName}님의 근황을 한글로 각각 주제당 3줄로 요약해주세요. " +
+                    "이 정보를 기반으로 ${friendName}님의 근황을 한글로 각각 주제당 3줄로 요약해주세요. " +
                         "마지막에는 친구와의 대화를 위해 필요한 주제도 함께 알려주세요. " +
                         "출력 형식은 아래 예시를 참고하여 다음과 같이 해주세요:\n\n" +
                         "```\n" +

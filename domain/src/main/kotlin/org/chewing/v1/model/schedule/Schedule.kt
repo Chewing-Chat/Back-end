@@ -12,11 +12,9 @@ class Schedule(
             scheduleId: String,
             title: String,
             memo: String,
-            startTime: LocalDateTime,
-            endTime: LocalDateTime,
-            notificationTime: LocalDateTime,
+            dateTime: LocalDateTime,
             location: String,
-            private: Boolean,
+            timeDecided: Boolean,
         ): Schedule {
             return Schedule(
                 scheduleId,
@@ -24,12 +22,10 @@ class Schedule(
                     title,
                     memo,
                     location,
-                    private,
                 ),
                 ScheduleTime.of(
-                    startTime,
-                    endTime,
-                    notificationTime,
+                    dateTime,
+                    timeDecided,
                 ),
             )
         }

@@ -56,7 +56,7 @@ class SearchFacadeTest {
         val friendId = "friendId10"
 
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
-        val keyword = friendShip.friendName.firstName
+        val keyword = friendShip.friendName
 
         every { friendShipService.getAccessFriendShips(userId, FriendSortCriteria.NAME) } returns listOf(friendShip)
         every { roomService.getChatRooms(userId) } returns listOf()
@@ -81,7 +81,7 @@ class SearchFacadeTest {
         val time = LocalDateTime.now()
 
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
-        val keyword = friendShip.friendName.firstName
+        val keyword = friendShip.friendName
         val roomInfo = TestDataFactory.createRoom(chatRoomId, userId, friendId, false)
         val chatLog = TestDataFactory.createChatNormalLog(
             messageId,
@@ -122,7 +122,7 @@ class SearchFacadeTest {
         val time = LocalDateTime.now()
 
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
-        val keyword = friendShip.friendName.firstName
+        val keyword = friendShip.friendName
         val roomInfo = TestDataFactory.createRoom(chatRoomId, userId, friendId, false)
         val chatLog = TestDataFactory.createChatNormalLog(
             messageId,

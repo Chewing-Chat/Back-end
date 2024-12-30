@@ -12,7 +12,6 @@ spring:
       - fcm.yml
       - ncp.yml
       - media.yml
-      - email.yml
       - openvidu.yml
       - optional:file:../.env[.properties]
       - optional:file:./.env[.properties]

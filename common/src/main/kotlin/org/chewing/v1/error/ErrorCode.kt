@@ -17,6 +17,7 @@ enum class ErrorCode(
     EMAIL_ADDRESS_IS_USED("AUTH_6", "해당 이메일로 이미 다른 사람이 사용중입니다."),
     EMAIL_NOT_FOUND("AUTH_7", "해당 이메일을 찾을 수 없습니다."),
     PHONE_NUMBER_NOT_FOUND("AUTH_8", "해당 전화번호를 찾을 수 없습니다."),
+    WRONG_PASSWORD("AUTH_9", "비밀번호가 틀렸습니다."),
 
     // Common
     PATH_WRONG("COMMON_1", "잘못된 메세드입니다."),

@@ -19,12 +19,10 @@ data class ScheduleListResponse(
     data class ScheduleResponse(
         val scheduleId: String,
         val title: String,
-        val startTime: String,
-        val endTime: String,
-        val notificationTime: String,
+        val dateTime: String,
         val memo: String,
         val location: String,
-        val private: Boolean,
+        val timeDecided: Boolean,
     ) {
         companion object {
             fun of(schedule: Schedule): ScheduleResponse {
@@ -32,12 +30,10 @@ data class ScheduleListResponse(
                 return ScheduleResponse(
                     schedule.id,
                     schedule.content.title,
-                    schedule.time.startAt.format(formatter),
-                    schedule.time.endAt.format(formatter),
-                    schedule.time.notificationAt.format(formatter),
+                    schedule.time.dateTime.format(formatter),
                     schedule.content.memo,
                     schedule.content.location,
-                    schedule.content.private,
+                    schedule.time.timeDecided,
                 )
             }
         }
