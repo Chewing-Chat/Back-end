@@ -98,7 +98,7 @@ spring:
       database: ${STORAGE_DATABASE_MONGO_DB_NAME}
       authentication-database: admin
       auto-index-creation: true
-      username: ${STORAGE_DATABASE_MONGO_DB_NAME}
+      username: ${STORAGE_DATABASE_MONGO_DB_USER}
       password: ${STORAGE_DATABASE_MONGO_DB_PASSWORD}
 
 storage:

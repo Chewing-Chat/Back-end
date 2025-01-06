@@ -1,7 +1,9 @@
 version: '3.9'
 
 services:
+
   service:
+
     build:
       context: ./api
       dockerfile: Dockerfile
@@ -40,7 +42,17 @@ services:
       NCP_BUCKET_NAME: ${NCP_BUCKET_NAME}
     networks:
       - chewing_network
-
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - service
+    networks:
+      - chewing_network
   mysql:
     image: mysql:8.0
     restart: always
