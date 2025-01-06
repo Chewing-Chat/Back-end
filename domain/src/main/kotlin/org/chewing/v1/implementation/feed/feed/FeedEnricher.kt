@@ -9,10 +9,12 @@ import org.springframework.stereotype.Component
 class FeedEnricher {
     fun enriches(
         feeds: List<FeedInfo>,
+        visibleFeedIds: List<String>,
         feedDetails: List<FeedDetail>,
     ): List<Feed> {
+        val visibleFeeds = feeds.filter { visibleFeedIds.contains(it.feedId) }
         val feedDetailMap = feedDetails.groupBy { it.feedId }
-        return feeds.map { feedInfo ->
+        return visibleFeeds.map { feedInfo ->
             val details = feedDetailMap[feedInfo.feedId] ?: emptyList()
             Feed.of(
                 feedInfo,

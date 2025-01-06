@@ -2,16 +2,16 @@ package org.chewing.v1.dto.response.feed
 
 import org.chewing.v1.model.feed.Feed
 
-data class FeedsResponse(
-    val feeds: List<MainFeedResponse>,
+data class ThumbnailFeedsResponse(
+    val feeds: List<ThumbnailFeedResponse>,
 ) {
     companion object {
         fun of(
             feeds: List<Feed>,
-        ): FeedsResponse {
-            return FeedsResponse(
+        ): ThumbnailFeedsResponse {
+            return ThumbnailFeedsResponse(
                 feeds = feeds.map {
-                    MainFeedResponse.of(it)
+                    ThumbnailFeedResponse.of(it)
                 },
             )
         }

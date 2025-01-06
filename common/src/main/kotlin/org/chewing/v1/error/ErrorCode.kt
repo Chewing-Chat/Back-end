@@ -42,12 +42,9 @@ enum class ErrorCode(
     FRIEND_BLOCKED("FRIEND_5", "차단당한 친구입니다."),
 
     FEED_NOT_FOUND("FEED_1", "피드를 찾을 수 없음."),
-    FEED_ALREADY_LIKED("FEED_2", "이미 공감한 피드입니다."),
-    FEED_ALREADY_UNLIKED("FEED_3", "이미 공감을 취소한 피드입니다."),
     FEED_IS_NOT_OWNED("FEED_4", "피드 작성자가 아닙니다."),
     FEED_IS_OWNED("FEED_5", "피드 작성자입니다."),
-    FEED_LIKED_FAILED("FEED_6", "피드 공감을 실패하였습니다."),
-    FEED_UNLIKED_FAILED("FEED_7", "피드 공감 취소를 실패하였습니다."),
+    FEED_IS_NOT_VISIBLE("FEED_6", "피드를 볼 수 없습니다."),
 
     FEED_COMMENT_IS_NOT_OWNED("COMMENT_1", "댓글 작성자가 아닙니다."),
     FEED_COMMENT_NOT_FOUND("COMMENT_2", "댓글을 찾을 수 없음."),

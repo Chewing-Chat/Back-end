@@ -6,10 +6,4 @@ class FeedRequest {
     ) {
         fun toFeedId(): String = feedId
     }
-
-    data class Hide(
-        val feedId: String,
-    ) {
-        fun toFeedId(): String = feedId
-    }
 }
