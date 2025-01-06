@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 class FeedRemover(
     val feedRepository: FeedRepository,
     val feedDetailRepository: FeedDetailRepository,
-    val feedVisibilityRepository: FeedVisibilityRepository
+    val feedVisibilityRepository: FeedVisibilityRepository,
 ) {
     fun removes(feedIds: List<String>): List<Media> {
         feedRepository.removes(feedIds)

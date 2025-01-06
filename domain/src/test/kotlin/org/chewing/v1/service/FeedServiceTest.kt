@@ -93,12 +93,12 @@ class FeedServiceTest {
         val feedDetailsByFeedId = mapOf(
             "feedId1" to listOf(
                 TestDataFactory.createFeedDetail("feedId1", "feedDetailId1", 0),
-                TestDataFactory.createFeedDetail("feedId1", "feedDetailId2", 1)
+                TestDataFactory.createFeedDetail("feedId1", "feedDetailId2", 1),
             ),
             "feedId2" to listOf(
                 TestDataFactory.createFeedDetail("feedId2", "feedDetailId3", 0),
-                TestDataFactory.createFeedDetail("feedId2", "feedDetailId4", 1)
-            )
+                TestDataFactory.createFeedDetail("feedId2", "feedDetailId4", 1),
+            ),
         )
         val feeds = feedIds.map { TestDataFactory.createFeedInfo(it, userId) }
         val allFeedDetails = feedDetailsByFeedId.values.flatten()
@@ -124,7 +124,6 @@ class FeedServiceTest {
         }
     }
 
-
     @Test
     fun `친구의 피드들을 가져온다`() {
         // given
@@ -135,7 +134,7 @@ class FeedServiceTest {
         val feedDetailsByFeedId = mapOf(
             "feedId1" to listOf(
                 TestDataFactory.createFeedDetail("feedId1", "feedDetailId1", 0),
-                TestDataFactory.createFeedDetail("feedId1", "feedDetailId2", 1)
+                TestDataFactory.createFeedDetail("feedId1", "feedDetailId2", 1),
             ),
         )
         val feeds = feedIds.map { TestDataFactory.createFeedInfo(it, userId) }
@@ -161,7 +160,6 @@ class FeedServiceTest {
             }
         }
     }
-
 
     @Test
     fun `피드들을 삭제에 성공한다`() {

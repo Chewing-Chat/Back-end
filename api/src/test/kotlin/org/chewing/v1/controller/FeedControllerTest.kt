@@ -108,11 +108,11 @@ class FeedControllerTest : RestDocsTest() {
             .andExpect(jsonPath("$.data.feedId").value(feed.feed.feedId))
             .andExpect(jsonPath("$.data.topic").value(feed.feed.topic))
             .andExpect(jsonPath("$.data.uploadTime").value(uploadTime))
-            feed.feedDetails.forEachIndexed { index, feedDetail ->
-                jsonPath("$.data.details[$index].index").value(feedDetail.media.index)
-                jsonPath("$.data.details[$index].fileUrl").value(feedDetail.media.url)
-                jsonPath("$.data.details[$index].type").value(feedDetail.media.type.value().lowercase())
-            }
+        feed.feedDetails.forEachIndexed { index, feedDetail ->
+            jsonPath("$.data.details[$index].index").value(feedDetail.media.index)
+            jsonPath("$.data.details[$index].fileUrl").value(feedDetail.media.url)
+            jsonPath("$.data.details[$index].type").value(feedDetail.media.type.value().lowercase())
+        }
     }
 
     @Test
