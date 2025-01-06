@@ -1,0 +1,14 @@
+spring.config.activate.on-profile: test
+
+media:
+  url: test-url
+
+---
+spring.config.activate.on-profile: local
+media:
+  url: local-url
+
+---
+spring.config.activate.on-profile: live
+media:
+  url: ${MEDIA_URL}

@@ -1,0 +1,132 @@
+version: '3.9'
+
+services:
+
+  service:
+
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - mongo
+    environment:
+      TZ: Asia/Seoul
+      SPRING_PROFILES_ACTIVE: live
+      STORAGE_DATABASE_CORE_DB_HOST: mysql
+      STORAGE_DATABASE_CORE_DB_PORT: 3306
+      STORAGE_DATABASE_CORE_DB_NAME: ${STORAGE_DATABASE_CORE_DB_NAME}
+      STORAGE_DATABASE_CORE_DB_USERNAME: ${STORAGE_DATABASE_CORE_DB_USERNAME}
+      STORAGE_DATABASE_CORE_DB_PASSWORD: ${STORAGE_DATABASE_CORE_DB_PASSWORD}
+      STORAGE_DATABASE_MONGO_DB_HOST: mongo
+      STORAGE_DATABASE_MONGO_DB_PORT: 27017
+      STORAGE_DATABASE_MONGO_DB_NAME: ${STORAGE_DATABASE_MONGO_DB_NAME}
+      STORAGE_DATABASE_MONGO_DB_USER: ${STORAGE_DATABASE_MONGO_DB_USER}
+      STORAGE_DATABASE_MONGO_DB_PASSWORD: ${STORAGE_DATABASE_MONGO_DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_MODEL: ${OPENAI_API_MODEL}
+      OPENAI_API_URL: ${OPENAI_API_URL}
+      FCM_API_URL: ${FCM_API_URL}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      NCP_STORAGE_ACCESS_KEY: ${NCP_STORAGE_ACCESS_KEY}
+      NCP_STORAGE_SECRET_KEY: ${NCP_STORAGE_SECRET_KEY}
+      NCP_TTS_ACCESS_KEY: ${NCP_TTS_ACCESS_KEY}
+      NCP_TTS_SECRET_KEY: ${NCP_TTS_SECRET_KEY}
+      NCP_TTS_API_URL: ${NCP_TTS_API_URL}
+      OPENVIDU_SECRET: ${OPENVIDU_SECRET}
+      OPENVIDU_URL: ${OPENVIDU_URL}
+      NCP_BUCKET_NAME: ${NCP_BUCKET_NAME}
+    networks:
+      - chewing_network
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - service
+    networks:
+      - chewing_network
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${STORAGE_DATABASE_CORE_DB_PASSWORD}
+      MYSQL_DATABASE: ${STORAGE_DATABASE_CORE_DB_NAME}
+      TZ: Asia/Seoul
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./data/mysql-data:/var/lib/mysql
+    networks:
+      - chewing_network
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27018:27017"
+    environment:
+      TZ: Asia/Seoul
+      MONGO_INITDB_ROOT_USERNAME: ${STORAGE_DATABASE_MONGO_DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${STORAGE_DATABASE_MONGO_DB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${STORAGE_DATABASE_MONGO_DB_NAME}
+    volumes:
+      - ./data/mongo-data:/data
+    networks:
+      - chewing_network
+
+  openvidu-server:
+    image: openvidu/openvidu-server:2.30.0
+    container_name: openvidu-server
+    ports:
+      - "4443:4443"
+    volumes:
+      - /opt/openvidu/.env:/.env
+    environment:
+      - OPENVIDU_SECRET=${OPENVIDU_SECRET}
+      - DOMAIN_OR_PUBLIC_IP=${DOMAIN_OR_PUBLIC_IP}
+      - OPENVIDU_URL=${OPENVIDU_URL}
+      - KMS_URIS=${KMS_URIS}
+    networks:
+      - chewing_network
+
+  kurento:
+    image: kurento/kurento-media-server:latest
+    container_name: kurento
+    ports:
+      - "8888:8888"
+    environment:
+      - KMS_MIN_PORT=40000
+      - KMS_MAX_PORT=50000
+      - KMS_STUN_IP=stun.l.google.com
+      - KMS_STUN_PORT=19302
+    networks:
+      - chewing_network
+
+
+  coturn:
+    image: instrumentisto/coturn
+    container_name: coturn
+    ports:
+      - "3478:3478/udp"
+    command: [ "-n", "--log-file=stdout", "--external-ip=${DOMAIN_OR_PUBLIC_IP}" ]
+    volumes:
+      - ./certificates/turn_server_cert.pem:/etc/coturn/turn_server_cert.pem
+      - ./certificates/turn_server_pkey.pem:/etc/coturn/turn_server_pkey.pem
+    environment:
+      - CLI_PASSWORD=${CLI_PASSWORD}
+    networks:
+      - chewing_network
+
+
+networks:
+  chewing_network:
+    name: root_chewing_network
+    driver: bridge
