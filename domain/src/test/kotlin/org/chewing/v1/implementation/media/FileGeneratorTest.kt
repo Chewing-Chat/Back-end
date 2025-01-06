@@ -68,17 +68,4 @@ class FileGeneratorTest {
         assert(result.category == FileCategory.BACKGROUND)
         assert(result.url.endsWith("0.png"))
     }
-
-    @Test
-    fun `유저 TTS 파일 생성`() {
-        val userId = "userId"
-        val file = TestDataFactory.createFileData(MediaType.AUDIO_MP3, "0.mp3")
-        val result = fileGenerator.generateMedia(file, userId, FileCategory.TTS)
-
-        assert(result.url.startsWith("$baseUrl/$bucketName/TTS/$userId"))
-        assert(result.index == 0)
-        assert(result.type == MediaType.AUDIO_MP3)
-        assert(result.category == FileCategory.TTS)
-        assert(result.url.endsWith("0.mp3"))
-    }
 }

@@ -10,7 +10,6 @@ import org.chewing.v1.model.chat.room.ChatNumber
 import org.chewing.v1.model.chat.room.ChatRoomInfo
 import org.chewing.v1.model.chat.room.ChatSequenceNumber
 import org.chewing.v1.model.chat.room.Room
-import org.chewing.v1.model.comment.CommentInfo
 import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.Feed
@@ -112,11 +111,8 @@ object TestDataFactory {
     fun createFriendShip(friendId: String, accessStatus: AccessStatus): FriendShip =
         FriendShip.of(friendId, createUserName(), true, accessStatus)
 
-    fun createCommentInfo(userId: String, commentId: String, feedId: String): CommentInfo =
-        CommentInfo.of(commentId, "comment", LocalDateTime.now(), userId, feedId)
-
     fun createFeedInfo(feedId: String, userId: String): FeedInfo =
-        FeedInfo.of(feedId, "topic", 5, 5, LocalDateTime.now(), userId)
+        FeedInfo.of(feedId, "topic", LocalDateTime.now(), userId)
 
     private fun createFeedMedia(index: Int): Media =
         Media.of(FileCategory.FEED, "www.example.com", index, MediaType.IMAGE_PNG)

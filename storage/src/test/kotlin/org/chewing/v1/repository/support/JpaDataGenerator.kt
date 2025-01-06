@@ -7,9 +7,10 @@ import org.chewing.v1.jpaentity.chat.GroupChatRoomMemberJpaEntity
 import org.chewing.v1.jpaentity.chat.PersonalChatRoomMemberJpaEntity
 import org.chewing.v1.jpaentity.emoticon.EmoticonJpaEntity
 import org.chewing.v1.jpaentity.emoticon.EmoticonPackJpaEntity
-import org.chewing.v1.jpaentity.feed.FeedCommentJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedDetailJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedJpaEntity
+import org.chewing.v1.jpaentity.feed.FeedVisibilityEntity
+import org.chewing.v1.jpaentity.feed.FeedVisibilityId
 import org.chewing.v1.jpaentity.friend.FriendShipJpaEntity
 import org.chewing.v1.jpaentity.user.*
 import org.chewing.v1.jpaentity.user.PushNotificationJpaEntity
@@ -24,9 +25,9 @@ import org.chewing.v1.jparepository.chat.GroupChatRoomMemberJpaRepository
 import org.chewing.v1.jparepository.chat.PersonalChatRoomMemberJpaRepository
 import org.chewing.v1.jparepository.emoticon.EmoticonJpaRepository
 import org.chewing.v1.jparepository.emoticon.EmoticonPackJpaRepository
-import org.chewing.v1.jparepository.feed.FeedCommentJpaRepository
 import org.chewing.v1.jparepository.feed.FeedDetailJpaRepository
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
+import org.chewing.v1.jparepository.feed.FeedVisibilityJpaRepository
 import org.chewing.v1.jparepository.friend.FriendShipJpaRepository
 import org.chewing.v1.jparepository.user.*
 import org.chewing.v1.jparepository.user.PushNotificationJpaRepository
@@ -38,7 +39,6 @@ import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.chat.room.ChatNumber
 import org.chewing.v1.model.chat.room.ChatRoomInfo
-import org.chewing.v1.model.comment.CommentInfo
 import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.FeedDetail
@@ -83,9 +83,6 @@ class JpaDataGenerator {
     private lateinit var feedDetailJpaRepository: FeedDetailJpaRepository
 
     @Autowired
-    private lateinit var commentJpaRepository: FeedCommentJpaRepository
-
-    @Autowired
     private lateinit var friendShipJpaRepository: FriendShipJpaRepository
 
     @Autowired
@@ -105,6 +102,9 @@ class JpaDataGenerator {
 
     @Autowired
     private lateinit var personalChatRoomMemberJpaRepository: PersonalChatRoomMemberJpaRepository
+
+    @Autowired
+    private lateinit var feedVisibilityJpaRepository: FeedVisibilityJpaRepository
 
     fun userEntityData(credential: PhoneNumber, userName: String): User {
         val user = UserJpaEntity.generate(credential, userName)
@@ -135,6 +135,14 @@ class JpaDataGenerator {
         val scheduleEntity = ScheduleJpaEntity.generate(content, time, userId)
         scheduleJpaRepository.save(scheduleEntity)
         return scheduleEntity.toSchedule()
+    }
+
+    fun feedVisibilityEntityData(feedId: String, userId: String) {
+        feedVisibilityJpaRepository.save(FeedVisibilityEntity(FeedVisibilityId(feedId, userId)))
+    }
+
+    fun feedVisibilityEntityDataList(feedId: String, userIds: List<String>) {
+        feedVisibilityJpaRepository.saveAll(userIds.map { FeedVisibilityEntity(FeedVisibilityId(feedId, it)) })
     }
 
     fun userStatusData(userId: String): UserStatus {
@@ -202,18 +210,6 @@ class JpaDataGenerator {
         feedDetailJpaRepository.saveAll(feedEntities)
         return feedEntities.map { it.toFeedDetail() }
     }
-
-    fun feedCommentEntityDataList(userId: String, feedId: String): List<CommentInfo> {
-        (1..10).map {
-            FeedCommentJpaEntity.generate(userId, feedId, "comment")
-        }.let { commentEntities ->
-            commentJpaRepository.saveAll(commentEntities)
-            return commentEntities.map { it.toCommentInfo() }
-        }
-    }
-
-    fun feedCommentEntityData(userId: String, feedId: String): CommentInfo =
-        commentJpaRepository.save(FeedCommentJpaEntity.generate(userId, feedId, "comment")).toCommentInfo()
 
     fun friendShipEntityData(userId: String, friendId: String, access: AccessStatus) {
         val friendName = UserProvider.buildFriendName()

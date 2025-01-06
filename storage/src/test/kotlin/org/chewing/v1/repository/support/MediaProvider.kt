@@ -15,10 +15,6 @@ object MediaProvider {
         return Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG)
     }
 
-    fun buildTTSContent(): Media {
-        return Media.of(FileCategory.TTS, "www.example.com", 0, MediaType.AUDIO_MP3)
-    }
-
     fun buildFeedContent(index: Int): Media {
         return Media.of(FileCategory.FEED, "www.example.com", index, MediaType.IMAGE_PNG)
     }

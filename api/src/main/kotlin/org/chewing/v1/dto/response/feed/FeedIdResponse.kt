@@ -1,4 +1,4 @@
-package org.chewing.v1.dto.request.feed
+package org.chewing.v1.dto.response.feed
 
 data class FeedIdResponse(
     val feedId: String,
