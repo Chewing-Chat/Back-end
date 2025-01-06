@@ -15,10 +15,8 @@ import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.Feed
 import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedInfo
-import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.friend.UserSearch
 import org.chewing.v1.model.media.FileCategory
-import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.notification.Notification
@@ -26,31 +24,11 @@ import org.chewing.v1.model.notification.NotificationType
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.*
 import org.chewing.v1.model.user.AccessStatus
-import java.io.ByteArrayInputStream
 import java.time.LocalDateTime
 
 object TestDataFactory {
 
     fun createUserName(): String = "testUserName"
-
-    fun createProfileMedia(): Media = Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG)
-
-    fun createMedia(category: FileCategory, index: Int, mediaType: MediaType): Media =
-        Media.of(category, "www.example.com", index, mediaType)
-
-    fun createFileData(
-        contentType: MediaType = MediaType.IMAGE_JPEG,
-        fileName: String = "test_image.jpg",
-    ): FileData {
-        val content = "Test file content"
-        val size = content.toByteArray().size.toLong()
-        val inputStream = ByteArrayInputStream(content.toByteArray())
-        return FileData.of(inputStream, contentType, fileName, size)
-    }
-
-    fun createAppToken(): String = "someAppToken"
-
-    fun createDevice(): PushToken.Device = PushToken.Device.of("deviceId", PushToken.Provider.ANDROID)
 
     fun createJwtToken(): JwtToken = JwtToken.of("accessToken", RefreshToken.of("refreshToken", LocalDateTime.now()))
 
@@ -64,10 +42,8 @@ object TestDataFactory {
         PhoneNumber.of("82", "010-0000-0000"),
         "password",
     )
-
-    fun createFriendShip(friendId: String, accessStatus: AccessStatus): FriendShip =
-        FriendShip.of(friendId, createUserName(), true, accessStatus)
-
+    fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "010-0000-0000")
+    fun createWrongPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "010-0000-0001")
     fun createFeedInfo(feedId: String, userId: String): FeedInfo =
         FeedInfo.of(feedId, "topic", LocalDateTime.now(), userId)
 

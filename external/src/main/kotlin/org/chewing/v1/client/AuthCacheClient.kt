@@ -1,29 +1,30 @@
 package org.chewing.v1.client
 
+import com.github.benmanes.caffeine.cache.Cache
+import com.github.benmanes.caffeine.cache.Caffeine
 import org.chewing.v1.model.auth.PhoneNumber
-import org.springframework.cache.CacheManager
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.CachePut
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Component
+import java.util.concurrent.TimeUnit
 
 @Component
-class AuthCacheClient(
-    private val cacheManager: CacheManager,
-) {
+class AuthCacheClient {
 
-    @CachePut(value = ["phoneVerificationCode"], key = "#phoneNumber.toString()")
+    private val cache: Cache<String, String> = Caffeine.newBuilder()
+        .expireAfterWrite(5, TimeUnit.MINUTES)
+        .maximumSize(1000)
+        .recordStats()
+        .build()
+
     fun cacheVerificationCode(phoneNumber: PhoneNumber, verificationCode: String): String {
+        cache.put(phoneNumber.toString(), verificationCode)
         return verificationCode
     }
 
-    @CacheEvict(value = ["phoneVerificationCode"], key = "#phoneNumber.toString()")
     fun removeVerificationCode(phoneNumber: PhoneNumber) {
+        cache.invalidate(phoneNumber.toString())
     }
 
-    @Cacheable(value = ["phoneVerificationCode"], key = "#phoneNumber.toString()")
     fun getVerificationCode(phoneNumber: PhoneNumber): String? {
-        // 캐시에 값이 없으면 null 반환
-        return null
+        return cache.getIfPresent(phoneNumber.toString())
     }
 }

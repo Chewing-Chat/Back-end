@@ -83,7 +83,7 @@ class AuthController(
         return ResponseHelper.successOnly()
     }
 
-    @PostMapping("/login/password")
+    @PostMapping("/login")
     fun login(
         @RequestBody request: LoginRequest,
     ): SuccessResponseEntity<LogInfoResponse> {
