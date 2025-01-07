@@ -67,6 +67,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
         
+      - name: Remove old docker-compose
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.NCP_SERVER_HOST }}
+          username: ${{ secrets.NCP_USERNAME }}
+          key: ${{ secrets.NCP_SSH_KEY }}
+          port: 8080
+          script: |
+            cd ~
+            rm -f docker-compose.yml
+            
       - name: Copy docker-compose.yml to Server
         uses: appleboy/ssh-action@master
         with:
@@ -76,7 +87,7 @@ jobs:
           port: 8080
           source: "./docker-compose.yml"
           target: "~/docker-compose.yml"
-          
+            
       - name: Create .env on NCP Server
         uses: appleboy/ssh-action@master
         with:
