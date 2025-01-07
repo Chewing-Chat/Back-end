@@ -79,13 +79,12 @@ jobs:
             rm -f docker-compose.yml
             
       - name: Copy docker-compose.yml to Server
-        uses: appleboy/ssh-action@master
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.NCP_SERVER_HOST }}
           username: ${{ secrets.NCP_USERNAME }}
           key: ${{ secrets.NCP_SSH_KEY }}
           port: 8080
-          method: scp
           source: "./docker-compose.yml"
           target: "~/docker-compose.yml"
             
