@@ -85,8 +85,9 @@ jobs:
           username: ${{ secrets.NCP_USERNAME }}
           key: ${{ secrets.NCP_SSH_KEY }}
           port: 8080
+          method: scp
           source: "./docker-compose.yml"
-          target: "~/"
+          target: "~/docker-compose.yml"
             
       - name: Create .env on NCP Server
         uses: appleboy/ssh-action@master
