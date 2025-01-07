@@ -76,6 +76,16 @@ jobs:
           port: 8080
           source: "./docker-compose.yml"
           target: "~/"
+          
+      - name: Copy nginx to Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.NCP_SERVER_HOST }}
+          username: ${{ secrets.NCP_USERNAME }}
+          key: ${{ secrets.NCP_SSH_KEY }}
+          port: 8080
+          source: "./nginx"
+          target: "~/"
             
       - name: Create .env on NCP Server
         uses: appleboy/ssh-action@master
