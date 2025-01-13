@@ -35,7 +35,7 @@ class SecurityConfig(
                         "/api/tts",
                         "/api/openvidu/**",
                         "/",
-                        "/index.html"
+                        "/index.html",
                     ).permitAll()
                     .anyRequest().authenticated()
             }
