@@ -1,5 +1,11 @@
 package org.chewing.v1.controller
 
+import com.fasterxml.jackson.module.kotlin.KotlinFeature
+import com.fasterxml.jackson.module.kotlin.KotlinFeature.NullIsSameAsDefault
+import com.fasterxml.jackson.module.kotlin.KotlinFeature.NullToEmptyCollection
+import com.fasterxml.jackson.module.kotlin.KotlinFeature.NullToEmptyMap
+import com.fasterxml.jackson.module.kotlin.KotlinFeature.SingletonSupport
+import com.fasterxml.jackson.module.kotlin.KotlinFeature.StrictNullChecks
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.mockk.every
@@ -34,7 +40,9 @@ class ChatControllerTest : IntegrationTest() {
     private lateinit var session: StompSession
 
     private val stompClient: WebSocketStompClient by lazy {
-        val objectMapper = jacksonObjectMapper().registerModule(KotlinModule())
+        val objectMapper = jacksonObjectMapper().registerModule(
+            KotlinModule.Builder().build()
+        )
         val converter = MappingJackson2MessageConverter().apply {
             this.objectMapper = objectMapper
         }

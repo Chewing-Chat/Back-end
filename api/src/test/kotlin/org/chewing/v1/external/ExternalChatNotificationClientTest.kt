@@ -49,7 +49,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
     private val chatMessages: ConcurrentLinkedQueue<ChatMessageDto> = ConcurrentLinkedQueue()
 
     private val stompClient: WebSocketStompClient by lazy {
-        val objectMapper = jacksonObjectMapper().registerModule(KotlinModule())
+        val objectMapper = jacksonObjectMapper().registerModule(KotlinModule.Builder().build())
         val converter = MappingJackson2MessageConverter().apply {
             this.objectMapper = objectMapper
         }
