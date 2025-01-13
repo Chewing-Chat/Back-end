@@ -50,7 +50,9 @@ class UserRepositoryTest : JpaContextTest() {
 
         val user = userRepositoryImpl.append(phoneNumber, userName)
 
-        assert(user != null)
+        val result = userRepositoryImpl.readByCredential(phoneNumber)
+
+        assert(result!!.userId == user.userId)
     }
 
     @Test
