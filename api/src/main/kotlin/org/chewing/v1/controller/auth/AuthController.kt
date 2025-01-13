@@ -87,7 +87,7 @@ class AuthController(
     fun login(
         @RequestBody request: LoginRequest,
     ): SuccessResponseEntity<LogInfoResponse> {
-        val loginInfo = accountFacade.login(request.toPhoneNumber(), request.toPassword())
+        val loginInfo = accountFacade.login(request.toPhoneNumber(), request.toPassword(), request.toDevice(), request.toAppToken())
         return ResponseHelper.success(LogInfoResponse.of(loginInfo))
     }
 

@@ -6,6 +6,7 @@ import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
+import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
 import org.chewing.v1.repository.user.UserRepository
 import org.springframework.stereotype.Repository
@@ -29,9 +30,8 @@ internal class UserRepositoryImpl(
             userJpaRepository.findUserJpaEntityByCountryCodeAndPhoneNumber(credential.countryCode, credential.number)
                 .map { it.toUser() }
                 .orElseGet {
-                    val userEntity = UserJpaEntity.generate(credential, userName)
-                    userJpaRepository.save(userEntity)
-                    userEntity.toUser()
+                    val userEntity = UserJpaEntity.generate(credential, userName, AccessStatus.NEED_CREATE_PASSWORD)
+                    userJpaRepository.save(userEntity).toUser()
                 }
         }
     }

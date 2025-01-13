@@ -34,6 +34,8 @@ class SecurityConfig(
                         "/bot/chat",
                         "/api/tts",
                         "/api/openvidu/**",
+                        "/",
+                        "/index.html"
                     ).permitAll()
                     .anyRequest().authenticated()
             }

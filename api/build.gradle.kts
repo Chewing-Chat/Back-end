@@ -12,27 +12,7 @@ dependencies {
     testRuntimeOnly("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.11.0")
 }
 
-val snippetsDir by extra { file("build/generated-snippets") }
-
 tasks {
-    val resultDir = file("src/main/resources/static/docs")
-
-    test {
-        outputs.dir(snippetsDir)
-        useJUnitPlatform()
-        finalizedBy(asciidoctor)
-    }
-
-    asciidoctor {
-        baseDirFollowsSourceDir()
-        doLast {
-            copy {
-                from(outputDir)
-                into(resultDir)
-            }
-        }
-        finalizedBy(bootJar)
-    }
 
     jar {
         enabled = false

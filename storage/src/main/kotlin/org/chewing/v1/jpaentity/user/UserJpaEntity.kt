@@ -42,7 +42,7 @@ internal class UserJpaEntity(
     private var name: String,
 ) : BaseEntity() {
     companion object {
-        fun generate(phoneNumber: PhoneNumber, userName: String): UserJpaEntity {
+        fun generate(phoneNumber: PhoneNumber, userName: String, access: AccessStatus): UserJpaEntity {
             return UserJpaEntity(
                 pictureUrl = "",
                 pictureType = MediaType.IMAGE_BASIC,
@@ -51,7 +51,7 @@ internal class UserJpaEntity(
                 birth = "",
                 countryCode = phoneNumber.countryCode,
                 phoneNumber = phoneNumber.number,
-                type = AccessStatus.NEED_CREATE_PASSWORD,
+                type = access,
                 name = userName,
                 password = "",
             )
