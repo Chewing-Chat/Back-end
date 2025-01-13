@@ -23,6 +23,9 @@ jobs:
         run: chmod +x gradlew
 
       - name: Test with Gradle
+        run: ./gradlew ktLintCheck
+
+      - name: Test with Gradle
         run: ./gradlew --info test
 
       - name: Test Coverage Report
