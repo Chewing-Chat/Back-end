@@ -31,18 +31,10 @@ jobs:
       - name: List all files in directory
         run: ls -R
         
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
       - name: Build with Gradle
         env:
           SPRING_PROFILES_ACTIVE: live
-        run: ./gradlew build
+        run: ./gradlew clean build
             
       - name: Build Docker Image
         env:
