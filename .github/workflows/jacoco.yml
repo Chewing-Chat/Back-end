@@ -23,7 +23,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Test with Gradle
-        run: ./gradlew ktLintCheck
+        run: ./gradlew ktlintCheck
 
       - name: Test with Gradle
         run: ./gradlew --info test
