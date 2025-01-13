@@ -191,9 +191,12 @@ class AuthControllerTest : RestDocsTest() {
             password = "testPassword",
             countryCode = "82",
             phoneNumber = "010-1234-5678",
+            deviceId = "testDeviceId",
+            provider = "ios",
+            appToken = "testToken",
         )
 
-        every { accountFacade.login(any(), any()) } returns loginInfo
+        every { accountFacade.login(any(), any(), any(), any()) } returns loginInfo
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -207,7 +210,7 @@ class AuthControllerTest : RestDocsTest() {
                 jsonPath("$.data.access").value(AccessStatus.ACCESS.toString().lowercase())
             }
 
-        verify { accountFacade.login(any(), any()) }
+        verify { accountFacade.login(any(), any(), any(), any()) }
     }
 
     @Test

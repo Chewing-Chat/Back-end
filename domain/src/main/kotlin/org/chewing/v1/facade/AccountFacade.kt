@@ -55,9 +55,12 @@ class AccountFacade(
     fun login(
         phoneNumber: PhoneNumber,
         password: String,
+        device: PushToken.Device,
+        appToken: String,
     ): LoginInfo {
         val user = userService.getUserByCredential(phoneNumber)
         authService.validatePassword(user, password)
+        userService.loginUser(user, device, appToken)
         return authService.createLoginInfo(user)
     }
 }

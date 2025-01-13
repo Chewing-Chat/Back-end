@@ -39,7 +39,7 @@ class UserScheduleController(
     @PostMapping("")
     fun addSchedule(
         @RequestAttribute("userId") userId: String,
-        @RequestBody request: ScheduleRequest.Add,
+        @RequestBody request: ScheduleRequest.Create,
     ): SuccessResponseEntity<ScheduleIdResponse> {
         val scheduleId = scheduleService.create(userId, request.toScheduleTime(), request.toScheduleContent(), request.toFriendIds())
         return ResponseHelper.successCreate(ScheduleIdResponse(scheduleId))

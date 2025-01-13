@@ -106,8 +106,8 @@ class JpaDataGenerator {
     @Autowired
     private lateinit var feedVisibilityJpaRepository: FeedVisibilityJpaRepository
 
-    fun userEntityData(credential: PhoneNumber, userName: String): User {
-        val user = UserJpaEntity.generate(credential, userName)
+    fun userEntityData(credential: PhoneNumber, userName: String, access: AccessStatus): User {
+        val user = UserJpaEntity.generate(credential, userName, access)
         userJpaRepository.save(user)
         return user.toUser()
     }

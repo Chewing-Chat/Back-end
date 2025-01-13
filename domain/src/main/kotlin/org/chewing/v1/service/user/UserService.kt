@@ -37,10 +37,19 @@ class UserService(
         device: PushToken.Device,
         userName: String,
     ): User {
-        val user = userAppender.appendIfNotExist(credential, userName)
+        val user = userAppender.append(credential, userName)
+        userValidator.isAlreadyCreated(user)
         userRemover.removePushToken(device)
         userAppender.appendUserPushToken(user, appToken, device)
         return user
+    }
+
+    fun loginUser(
+        user: User,
+        device: PushToken.Device,
+        appToken: String,
+    ) {
+        userAppender.appendUserPushToken(user, appToken, device)
     }
 
     fun updatePassword(userId: String, password: String) {

@@ -44,7 +44,7 @@ class JwtAuthenticationFilter(
         val path = request.requestURI
         // 특정 경로를 무시하도록 설정
         return path.startsWith("/api/auth/create/send") || path.startsWith("/api/auth/create/verify") || path.startsWith("/api/auth/refresh") || path.startsWith("/api/auth/logout") ||
-            path.startsWith("/api/openvidu/") || path.startsWith("/api/tts")
+            path.startsWith("/api/openvidu/") || path.startsWith("/api/tts") || path.startsWith("/api/voice") || path.equals("/") || path.equals("/index.html")
     }
 
     private fun resolveToken(request: HttpServletRequest): String {
