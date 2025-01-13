@@ -33,6 +33,7 @@ bin/
 /.nb-gradle/
 data
 .env
+.kotlin
 ### VS Code ###
 .vscode/
 
