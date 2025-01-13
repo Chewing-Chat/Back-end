@@ -1,11 +1,38 @@
 [[Announcement-API]]
-== Announcement API
+= Announcement API
+
+[[Announcement-목록-조회]]
+== 1. Announcement 목록 조회
+
+=== 요청(Request)
+include::{snippets}/announcement-controller-test/get-announcements/http-request.adoc[]
+
+=== 응답(Response)
+include::{snippets}/announcement-controller-test/get-announcements/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/announcement-controller-test/get-announcements/response-fields.adoc[]
 
 [[Announcement-단일-조회]]
-=== Announcement 단일 조회
-=== Curl
-include::{snippets}/announcement-controller-test/get-announcements/curl-request.adoc[]
-=== Request
-include::{snippets}/announcement-controller-test/get-announcements/http-request.adoc[]
-=== Response
-include::{snippets}/announcement-controller-test/get-announcements/http-response.adoc[]
+== 2-1. Announcement 단일 조회
+
+=== 요청(Request)
+include::{snippets}/announcement-controller-test/get-announcement/http-request.adoc[]
+
+=== 응답(Response)
+include::{snippets}/announcement-controller-test/get-announcement/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/announcement-controller-test/get-announcement/response-fields.adoc[]
+
+[[Announcement-단일-조회-존재하지-않음]]
+== 2-2. Announcement 단일 조회 (존재하지 않음)
+
+=== 요청(Request)
+include::{snippets}/announcement-controller-test/get-announcement-not-found/http-request.adoc[]
+
+=== 응답(Response)
+include::{snippets}/announcement-controller-test/get-announcement-not-found/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/announcement-controller-test/get-announcement-not-found/response-fields.adoc[]

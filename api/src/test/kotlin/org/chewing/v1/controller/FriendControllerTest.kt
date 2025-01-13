@@ -9,6 +9,7 @@ import org.chewing.v1.controller.friend.FriendController
 import org.chewing.v1.dto.request.friend.FriendRequest
 import org.chewing.v1.facade.FriendFacade
 import org.chewing.v1.service.friend.FriendShipService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -21,13 +22,15 @@ class FriendControllerTest : RestDocsTest() {
     private lateinit var friendFacade: FriendFacade
     private lateinit var friendShipService: FriendShipService
     private lateinit var friendController: FriendController
+    private lateinit var exceptionHandler: GlobalExceptionHandler
 
     @BeforeEach
     fun setUp() {
         friendFacade = mockk()
         friendShipService = mockk()
+        exceptionHandler = GlobalExceptionHandler()
         friendController = FriendController(friendFacade, friendShipService)
-        mockMvc = mockController(friendController)
+        mockMvc = mockController(friendController,exceptionHandler)
     }
 
     @Test

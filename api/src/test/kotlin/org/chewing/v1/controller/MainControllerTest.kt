@@ -9,6 +9,7 @@ import org.chewing.v1.TestDataFactory.createUserStatus
 import org.chewing.v1.controller.main.MainController
 import org.chewing.v1.facade.MainFacade
 import org.chewing.v1.util.converter.StringToFriendSortCriteriaConverter
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -27,8 +28,9 @@ class MainControllerTest : RestDocsTest() {
     fun setUp() {
         mainFacade = mockk()
         mainController = MainController(mainFacade)
-        mockMvc = mockControllerWithCustomConverter(
+        mockMvc = mockControllerWithAdviceAndCustomConverter(
             mainController,
+            GlobalExceptionHandler(),
             StringToFriendSortCriteriaConverter(),
         )
     }

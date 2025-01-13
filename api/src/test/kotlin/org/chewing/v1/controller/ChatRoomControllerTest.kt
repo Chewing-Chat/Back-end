@@ -12,6 +12,7 @@ import org.chewing.v1.facade.ChatRoomFacade
 import org.chewing.v1.model.chat.room.ChatRoomSortCriteria
 import org.chewing.v1.service.chat.RoomService
 import org.chewing.v1.util.converter.StringToChatRoomSortCriteriaConverter
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -27,14 +28,16 @@ class ChatRoomControllerTest : RestDocsTest() {
     private lateinit var chatRoomFacade: ChatRoomFacade
     private lateinit var roomService: RoomService
     private lateinit var chatRoomController: ChatRoomController
-
+    private lateinit var exceptionHandler: GlobalExceptionHandler
     @BeforeEach
     fun setUp() {
         chatRoomFacade = mockk()
+        exceptionHandler = GlobalExceptionHandler()
         roomService = mockk()
         chatRoomController = ChatRoomController(chatRoomFacade, roomService)
-        mockMvc = mockControllerWithCustomConverter(
+        mockMvc = mockControllerWithAdviceAndCustomConverter(
             chatRoomController,
+            exceptionHandler,
             StringToChatRoomSortCriteriaConverter(),
         )
     }

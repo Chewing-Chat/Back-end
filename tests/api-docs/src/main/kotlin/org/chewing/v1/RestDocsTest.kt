@@ -32,8 +32,9 @@ abstract class RestDocsTest {
 
     protected fun mockController(
         controller: Any,
+        handler: Any,
     ): MockMvc =
-        createMockMvc(controller, null, null)
+        createMockMvc(controller, handler, null)
 
     protected fun mockControllerWithAdvice(controller: Any, advice: Any): MockMvc =
         createMockMvc(controller, advice, null)
@@ -42,6 +43,11 @@ abstract class RestDocsTest {
         controller: Any,
         customConverter: Converter<String, *>,
     ): MockMvc = createMockMvc(controller, null, customConverter)
+    protected fun mockControllerWithAdviceAndCustomConverter(
+        controller: Any,
+        advice: Any,
+        customConverter: Converter<String, *>,
+    ): MockMvc = createMockMvc(controller, advice, customConverter)
 
     private fun createMockMvc(controller: Any, advice: Any?, customConverter: Converter<String, *>?): MockMvc {
         val converter = MappingJackson2HttpMessageConverter(objectMapper())

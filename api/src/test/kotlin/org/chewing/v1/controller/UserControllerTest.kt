@@ -8,6 +8,7 @@ import org.chewing.v1.RestDocsTest
 import org.chewing.v1.controller.user.UserController
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.service.user.UserService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -27,7 +28,7 @@ class UserControllerTest : RestDocsTest() {
         userService = mockk()
         accountFacade = mockk()
         val userController = UserController(userService, accountFacade)
-        mockMvc = mockController(userController)
+        mockMvc = mockController(userController,GlobalExceptionHandler())
     }
 
     @Test

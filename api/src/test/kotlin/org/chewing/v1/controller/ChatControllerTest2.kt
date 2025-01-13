@@ -7,6 +7,7 @@ import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.controller.chat.ChatController
 import org.chewing.v1.facade.ChatFacade
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -19,12 +20,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 class ChatControllerTest2 : RestDocsTest() {
     private lateinit var chatFacade: ChatFacade
     private lateinit var chatController: ChatController
+    private lateinit var exceptionHandler: GlobalExceptionHandler
 
     @BeforeEach
     fun setUp() {
         chatFacade = mockk()
+        exceptionHandler = GlobalExceptionHandler()
         chatController = ChatController(chatFacade)
-        mockMvc = mockController(chatController)
+        mockMvc = mockController(chatController,exceptionHandler)
     }
 
     @Test

@@ -6,6 +6,11 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.chewing.v1.RestDocsTest
+import org.chewing.v1.RestDocsUtils.requestJwtTokenFields
+import org.chewing.v1.RestDocsUtils.requestPreprocessor
+import org.chewing.v1.RestDocsUtils.responseSuccessCreateFields
+import org.chewing.v1.RestDocsUtils.responsePreprocessor
+import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory.createJwtToken
 import org.chewing.v1.TestDataFactory.createUser
 import org.chewing.v1.controller.auth.AuthController
@@ -17,12 +22,15 @@ import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.auth.LoginInfo
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.service.auth.AuthService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -31,13 +39,15 @@ class AuthControllerTest : RestDocsTest() {
     private lateinit var authController: AuthController
     private lateinit var authService: AuthService
     private lateinit var accountFacade: AccountFacade
+    private lateinit var exceptionHandler: GlobalExceptionHandler
 
     @BeforeEach
     fun setUp() {
         authService = mockk()
         accountFacade = mockk()
+        exceptionHandler = GlobalExceptionHandler()
         authController = AuthController(authService, accountFacade)
-        mockMvc = mockController(authController)
+        mockMvc = mockController(authController,exceptionHandler)
     }
 
     @Test
@@ -51,10 +61,18 @@ class AuthControllerTest : RestDocsTest() {
         every { authService.createCredential(any()) } just Runs
 
         val result = mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/auth/create/send")
+            post("/api/auth/create/send")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody(requestBody)),
+        ).andDo(
+            document(
+                "{class-name}/{method-name}",
+                requestPreprocessor(),
+                responsePreprocessor(),
+                responseSuccessFields(),
+            )
         )
+
         performCommonSuccessResponse(result)
         verify { authService.createCredential(any()) }
     }
@@ -70,7 +88,7 @@ class AuthControllerTest : RestDocsTest() {
         every { authService.createCredential(any()) } just Runs
 
         val result = mockMvc.perform(
-            MockMvcRequestBuilders.post("/api/auth/reset/send")
+            post("/api/auth/reset/send")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody(requestBody)),
         )

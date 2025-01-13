@@ -9,6 +9,7 @@ import org.chewing.v1.TestDataFactory.createFeed
 import org.chewing.v1.controller.feed.FeedController
 import org.chewing.v1.dto.request.feed.FeedRequest
 import org.chewing.v1.service.feed.FeedService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -25,12 +26,14 @@ import java.time.format.DateTimeFormatter
 class FeedControllerTest : RestDocsTest() {
     private lateinit var feedService: FeedService
     private lateinit var feedController: FeedController
+    private lateinit var exceptionHandler: GlobalExceptionHandler
 
     @BeforeEach
     fun setUp() {
         feedService = mockk()
+        exceptionHandler = GlobalExceptionHandler()
         feedController = FeedController(feedService)
-        mockMvc = mockController(feedController)
+        mockMvc = mockController(feedController, exceptionHandler)
     }
 
     @Test

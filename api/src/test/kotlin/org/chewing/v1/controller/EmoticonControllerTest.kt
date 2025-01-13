@@ -6,6 +6,7 @@ import org.chewing.v1.RestDocsTest
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.controller.emoticon.EmoticonController
 import org.chewing.v1.service.emoticon.EmoticonService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -18,12 +19,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class EmoticonControllerTest : RestDocsTest() {
     private lateinit var emoticonService: EmoticonService
     private lateinit var emoticonController: EmoticonController
+    private lateinit var exceptionHandler: GlobalExceptionHandler
 
     @BeforeEach
     fun setUp() {
         emoticonService = mockk()
+        exceptionHandler = GlobalExceptionHandler()
         emoticonController = EmoticonController(emoticonService)
-        mockMvc = mockController(emoticonController)
+        mockMvc = mockController(emoticonController,exceptionHandler)
     }
 
     @Test
