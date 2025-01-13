@@ -31,12 +31,10 @@ jobs:
       - name: List all files in directory
         run: ls -R
         
-      - name: Test with Gradle
-        run: ./gradlew clean test
       - name: Build with Gradle
         env:
           SPRING_PROFILES_ACTIVE: live
-        run: ./gradlew build
+        run: ./gradlew clean build --no-build-cache
             
       - name: Build Docker Image
         env:
