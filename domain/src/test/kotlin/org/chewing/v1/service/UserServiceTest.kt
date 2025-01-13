@@ -182,4 +182,42 @@ class UserServiceTest {
 
         assert(result.errorCode == ErrorCode.USER_NOT_FOUND)
     }
+
+    @Test
+    fun `유저 생성 성공한다 - 유저가 존재하지 않음`() {
+        val userId = "userId"
+        val credential = TestDataFactory.createPhoneNumber()
+        val appToken = "appToken"
+        val device = TestDataFactory.createDevice()
+        val userName = "userName"
+        val user = TestDataFactory.createNotAccessUser(userId)
+
+        every { userRepository.append(credential, userName) } returns user
+        every { pushNotificationRepository.append(device, appToken, user) } just Runs
+        every { pushNotificationRepository.remove(device) } just Runs
+
+        assertDoesNotThrow {
+            userService.createUser(credential, appToken, device, userName)
+        }
+    }
+
+    @Test
+    fun `유저 생성 실패한다 - 유저가 이미 존재함`() {
+        val userId = "userId"
+        val credential = TestDataFactory.createPhoneNumber()
+        val appToken = "appToken"
+        val device = TestDataFactory.createDevice()
+        val userName = "userName"
+        val user = TestDataFactory.createUser(userId)
+
+        every { userRepository.append(credential, userName) } returns user
+        every { pushNotificationRepository.append(device, appToken, user) } just Runs
+        every { pushNotificationRepository.remove(device) } just Runs
+
+        val result = assertThrows<ConflictException> {
+            userService.createUser(credential, appToken, device, userName)
+        }
+
+        assert(result.errorCode == ErrorCode.USER_ALREADY_CREATED)
+    }
 }

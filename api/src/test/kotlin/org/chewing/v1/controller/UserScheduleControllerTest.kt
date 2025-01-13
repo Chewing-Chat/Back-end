@@ -81,7 +81,7 @@ class UserScheduleControllerTest : RestDocsTest() {
 
     @Test
     fun createSchedule() {
-        val requestBody = ScheduleRequest.Add(
+        val requestBody = ScheduleRequest.Create(
             title = "testTitle",
             dateTime = "2021-01-01 00:00:00",
             memo = "testMemo",

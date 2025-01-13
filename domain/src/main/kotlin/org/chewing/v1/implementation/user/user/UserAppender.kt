@@ -17,7 +17,7 @@ class UserAppender(
         pushNotificationRepository.append(device, appToken, user)
     }
 
-    fun appendIfNotExist(credential: Credential, userName: String): User {
+    fun append(credential: Credential, userName: String): User {
         return userRepository.append(credential, userName)
     }
 }

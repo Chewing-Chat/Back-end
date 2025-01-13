@@ -34,6 +34,7 @@ enum class ErrorCode(
 
     USER_NOT_FOUND("USER_1", "회원을 찾을 수 없음."),
     USER_NOT_ACCESS("USER_2", "사용자가 활성화되지 않았습니다."),
+    USER_ALREADY_CREATED("USER_3", "이미 가입된 사용자입니다."),
 
     FRIEND_NOT_FOUND("FRIEND_1", "친구를 찾을 수 없음."),
     FRIEND_ALREADY_CREATED("FRIEND_2", "이미 추가된 친구입니다."),

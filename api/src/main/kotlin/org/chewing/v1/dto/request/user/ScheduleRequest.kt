@@ -12,7 +12,7 @@ class ScheduleRequest {
         fun toScheduleId(): String = scheduleId
     }
 
-    data class Add(
+    data class Create(
         val title: String,
         val friendIds: List<String>,
         val dateTime: String,

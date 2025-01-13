@@ -72,6 +72,17 @@ object TestDataFactory {
         "password",
     )
 
+    fun createNotAccessUser(userId: String): User = User.of(
+        userId,
+        "testName",
+        "2000-00-00",
+        Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
+        Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
+        AccessStatus.NEED_CREATE_PASSWORD,
+        PhoneNumber.of("82", "1234567890"),
+        "password",
+    )
+
     fun createEncryptedUser(userId: String, password: String): User = User.of(
         userId,
         "testName",

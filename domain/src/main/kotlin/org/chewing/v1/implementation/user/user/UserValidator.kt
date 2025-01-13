@@ -13,4 +13,9 @@ class UserValidator() {
             throw ConflictException(ErrorCode.USER_NOT_ACCESS)
         }
     }
+    fun isAlreadyCreated(user: User) {
+        if (user.status == AccessStatus.ACCESS) {
+            throw ConflictException(ErrorCode.USER_ALREADY_CREATED)
+        }
+    }
 }
