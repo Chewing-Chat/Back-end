@@ -25,13 +25,12 @@ class AiControllerTest : RestDocsTest() {
     private lateinit var aiController: AiController
     private lateinit var exceptionHandler: GlobalExceptionHandler
 
-
     @BeforeEach
     fun setUp() {
         aiFacade = mockk()
         aiController = AiController(aiFacade)
         exceptionHandler = GlobalExceptionHandler()
-        mockMvc = mockController(aiController,exceptionHandler)
+        mockMvc = mockController(aiController, exceptionHandler)
 
         mockMvc = mockControllerWithCustomConverter(
             aiController,

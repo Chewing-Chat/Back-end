@@ -28,7 +28,7 @@ class UserControllerTest : RestDocsTest() {
         userService = mockk()
         accountFacade = mockk()
         val userController = UserController(userService, accountFacade)
-        mockMvc = mockController(userController,GlobalExceptionHandler())
+        mockMvc = mockController(userController, GlobalExceptionHandler())
     }
 
     @Test

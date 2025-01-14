@@ -29,6 +29,7 @@ class ChatRoomControllerTest : RestDocsTest() {
     private lateinit var roomService: RoomService
     private lateinit var chatRoomController: ChatRoomController
     private lateinit var exceptionHandler: GlobalExceptionHandler
+
     @BeforeEach
     fun setUp() {
         chatRoomFacade = mockk()

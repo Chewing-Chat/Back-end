@@ -34,7 +34,7 @@ class SearchControllerTest : RestDocsTest() {
         searchFacade = mockk()
         searchService = mockk()
         searchController = SearchController(searchFacade, searchService)
-        mockMvc = mockController(searchController,GlobalExceptionHandler())
+        mockMvc = mockController(searchController, GlobalExceptionHandler())
     }
 
     @Test

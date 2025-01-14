@@ -27,10 +27,10 @@ object RestDocsUtils {
         PayloadDocumentation.fieldWithPath("data.message").description("성공"),
     )
 
-    fun responseErrorFields(status: HttpStatus,errorCode: ErrorCode): ResponseFieldsSnippet = responseFields(
+    fun responseErrorFields(status: HttpStatus, errorCode: ErrorCode, description: String): ResponseFieldsSnippet = responseFields(
         PayloadDocumentation.fieldWithPath("status").description(status.value()),
         PayloadDocumentation.fieldWithPath("data.errorCode").description(errorCode.code),
-        PayloadDocumentation.fieldWithPath("data.message").description(errorCode.message),
+        PayloadDocumentation.fieldWithPath("data.message").description(errorCode.message).description(description),
     )
 
     fun responseSuccessCreateFields(): ResponseFieldsSnippet = responseFields(
@@ -41,5 +41,4 @@ object RestDocsUtils {
     fun requestJwtTokenFields(): RequestHeadersSnippet = requestHeaders(
         headerWithName("Authorization").description("Bearer 토큰 정보"),
     )
-
 }

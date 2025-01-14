@@ -3,6 +3,7 @@ package org.chewing.v1.service.user
 import org.chewing.v1.implementation.media.FileHandler
 import org.chewing.v1.implementation.user.user.*
 import org.chewing.v1.model.auth.Credential
+import org.chewing.v1.model.auth.CredentialTarget
 import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
@@ -37,8 +38,8 @@ class UserService(
         device: PushToken.Device,
         userName: String,
     ): User {
+        userValidator.isNotAlreadyCreated(credential)
         val user = userAppender.append(credential, userName)
-        userValidator.isAlreadyCreated(user)
         userRemover.removePushToken(device)
         userAppender.appendUserPushToken(user, appToken, device)
         return user
@@ -62,9 +63,16 @@ class UserService(
         fileHandler.handleOldFile(oldMedia)
     }
 
+    fun checkAvailability(credential: Credential, type: CredentialTarget) {
+        when (type) {
+            CredentialTarget.SIGN_UP -> userValidator.isNotAlreadyCreated(credential)
+            CredentialTarget.RESET -> userValidator.isAlreadyCreated(credential)
+        }
+    }
+
     fun getAccessUser(userId: String): User {
         val user = userReader.read(userId)
-        userValidator.isUserAccess(user)
+        userValidator.isAccess(user)
         return user
     }
 

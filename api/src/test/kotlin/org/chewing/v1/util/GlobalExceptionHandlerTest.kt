@@ -90,7 +90,7 @@ class GlobalExceptionHandlerTest : RestDocsTest() {
         val requestBody = mapOf(
             "test" to 0,
         )
-        every { testExceptionService.testException() } throws AuthorizationException(ErrorCode.EXPIRED_VALIDATE_CODE)
+        every { testExceptionService.testException() } throws AuthorizationException(ErrorCode.EXPIRED_VERIFICATION_CODE)
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/test")
@@ -99,8 +99,8 @@ class GlobalExceptionHandlerTest : RestDocsTest() {
                 .content(jsonBody(requestBody)),
         ).andExpect(status().isUnauthorized)
             .andExpect(jsonPath("$.status").value(HttpStatus.UNAUTHORIZED.value()))
-            .andExpect(jsonPath("$.data.errorCode").value(ErrorCode.EXPIRED_VALIDATE_CODE.code))
-            .andExpect(jsonPath("$.data.message").value(ErrorResponse.from(ErrorCode.EXPIRED_VALIDATE_CODE).message))
+            .andExpect(jsonPath("$.data.errorCode").value(ErrorCode.EXPIRED_VERIFICATION_CODE.code))
+            .andExpect(jsonPath("$.data.message").value(ErrorResponse.from(ErrorCode.EXPIRED_VERIFICATION_CODE).message))
     }
 
     @Test

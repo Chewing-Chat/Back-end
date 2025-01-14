@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 class AuthValidator() {
     fun validateVerifyCode(existsVerificationCode: String, verificationCode: String) {
         if (existsVerificationCode != verificationCode) {
-            throw AuthorizationException(ErrorCode.WRONG_VALIDATE_CODE)
+            throw AuthorizationException(ErrorCode.WRONG_VERIFICATION_CODE)
         }
     }
 

@@ -42,14 +42,14 @@ object TestDataFactory {
         return "testFriendName"
     }
 
-    fun createUser(): User {
+    fun createUser(accessStatus: AccessStatus): User {
         return User.of(
             "testUserId",
             "testFriendName",
             "2000-00-00",
             Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
             Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
-            AccessStatus.ACCESS,
+            accessStatus,
             PhoneNumber.of("+82", "010-0000-0000"),
             "testPassword",
         )
@@ -60,7 +60,9 @@ object TestDataFactory {
     }
 
     fun createFriend(): Friend {
-        return Friend.of(createUser(), true, createFriendName(), createUserStatus(), AccessStatus.ACCESS)
+        return Friend.of(createUser(
+            AccessStatus.ACCESS
+        ), true, createFriendName(), createUserStatus(), AccessStatus.ACCESS)
     }
 
     fun createSchedule(): Schedule {
@@ -390,7 +392,7 @@ object TestDataFactory {
 
     fun createNotification(): Notification {
         return Notification.of(
-            createUser(),
+            createUser(AccessStatus.ACCESS),
             PushToken.of(
                 "pushToken",
                 "platform",

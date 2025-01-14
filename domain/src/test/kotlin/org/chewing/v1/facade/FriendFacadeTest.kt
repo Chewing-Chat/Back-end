@@ -24,8 +24,8 @@ class FriendFacadeTest {
         val friendName = "friendName"
         val friendId = "friendId"
         val targetCredential = TestDataFactory.createPhoneNumber()
-        val targetUser = TestDataFactory.createUser(friendId)
-        val user = TestDataFactory.createUser(userId)
+        val targetUser = TestDataFactory.createAccessUser(friendId)
+        val user = TestDataFactory.createAccessUser(userId)
 
         every { userService.getUserByCredential(targetCredential) } returns targetUser
         every { userService.getUser(userId) } returns user

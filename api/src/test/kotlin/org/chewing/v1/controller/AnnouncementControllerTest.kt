@@ -109,8 +109,8 @@ class AnnouncementControllerTest : RestDocsTest() {
         val invalidId = "invalidId"
         every { announcementService.readAnnouncement(any()) } throws NotFoundException(ErrorCode.ANNOUNCEMENT_NOT_FOUND)
 
-        mockMvc.perform(
-            get("/api/announcement/${invalidId}")
+        val result = mockMvc.perform(
+            get("/api/announcement/$invalidId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .requestAttr("userId", "userId")
                 .header("Authorization", "Bearer sample-token"),
@@ -120,13 +120,10 @@ class AnnouncementControllerTest : RestDocsTest() {
                     "{class-name}/{method-name}",
                     requestPreprocessor(),
                     responsePreprocessor(),
-                    responseErrorFields(HttpStatus.NOT_FOUND, ErrorCode.ANNOUNCEMENT_NOT_FOUND),
+                    responseErrorFields(HttpStatus.NOT_FOUND, ErrorCode.ANNOUNCEMENT_NOT_FOUND, "공지사항을 찾을 수 없습니다. 잘못된 아이디를 보냈다면 생기는 문제입니다."),
                     requestJwtTokenFields(),
                 ),
             )
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-            .andExpect(jsonPath("$.data.errorCode").value(ErrorCode.ANNOUNCEMENT_NOT_FOUND.code))
-            .andExpect(jsonPath("$.data.message").value(ErrorCode.ANNOUNCEMENT_NOT_FOUND.message))
+        performErrorResponse(result, HttpStatus.NOT_FOUND, ErrorCode.ANNOUNCEMENT_NOT_FOUND)
     }
 }

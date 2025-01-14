@@ -30,7 +30,7 @@ class FriendControllerTest : RestDocsTest() {
         friendShipService = mockk()
         exceptionHandler = GlobalExceptionHandler()
         friendController = FriendController(friendFacade, friendShipService)
-        mockMvc = mockController(friendController,exceptionHandler)
+        mockMvc = mockController(friendController, exceptionHandler)
     }
 
     @Test

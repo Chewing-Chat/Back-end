@@ -1,6 +1,7 @@
 package org.chewing.v1.facade
 
 import org.chewing.v1.model.auth.Credential
+import org.chewing.v1.model.auth.CredentialTarget
 import org.chewing.v1.model.auth.LoginInfo
 import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
@@ -29,7 +30,12 @@ class AccountFacade(
         return authService.createLoginInfo(user)
     }
 
-    fun verifyPhoneOnly(
+    fun registerCredential(phoneNumber: PhoneNumber, type: CredentialTarget) {
+        userService.checkAvailability(phoneNumber, type)
+        authService.createCredential(phoneNumber)
+    }
+
+    fun resetCredential(
         phoneNumber: PhoneNumber,
         verificationCode: String,
     ): LoginInfo {
@@ -38,7 +44,7 @@ class AccountFacade(
         return authService.createLoginInfo(user)
     }
 
-    fun makePassword(
+    fun changePassword(
         userId: String,
         password: String,
     ) {

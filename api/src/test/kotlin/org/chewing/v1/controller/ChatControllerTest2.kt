@@ -27,7 +27,7 @@ class ChatControllerTest2 : RestDocsTest() {
         chatFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
         chatController = ChatController(chatFacade)
-        mockMvc = mockController(chatController,exceptionHandler)
+        mockMvc = mockController(chatController, exceptionHandler)
     }
 
     @Test

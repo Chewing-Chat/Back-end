@@ -28,7 +28,7 @@ class UserStatusControllerTest : RestDocsTest() {
     fun setUp() {
         userStatusService = mockk()
         userStatusController = UserStatusController(userStatusService)
-        mockMvc = mockController(userStatusController,GlobalExceptionHandler())
+        mockMvc = mockController(userStatusController, GlobalExceptionHandler())
     }
 
     @Test

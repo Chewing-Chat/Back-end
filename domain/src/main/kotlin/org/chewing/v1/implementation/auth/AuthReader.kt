@@ -15,7 +15,7 @@ class AuthReader(
 ) {
     fun readVerificationCode(credential: Credential): String = when (credential) {
         is PhoneNumber -> externalAuthClient.readVerificationCode(credential)
-            ?: throw AuthorizationException(ErrorCode.EXPIRED_VALIDATE_CODE)
+            ?: throw AuthorizationException(ErrorCode.EXPIRED_VERIFICATION_CODE)
     }
 
     fun readRefreshToken(refreshToken: String, userId: String): RefreshToken = loggedInRepository.read(refreshToken, userId) ?: throw AuthorizationException(ErrorCode.INVALID_TOKEN)

@@ -61,7 +61,7 @@ object TestDataFactory {
 
     fun createJwtToken(): JwtToken = JwtToken.of("accessToken", RefreshToken.of("refreshToken", LocalDateTime.now()))
 
-    fun createUser(userId: String): User = User.of(
+    fun createAccessUser(userId: String): User = User.of(
         userId,
         "testName",
         "2000-00-00",

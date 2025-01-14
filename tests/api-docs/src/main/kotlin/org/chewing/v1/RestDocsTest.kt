@@ -3,11 +3,13 @@ package org.chewing.v1
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.chewing.v1.error.ErrorCode
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.core.convert.converter.Converter
 import org.springframework.format.support.DefaultFormattingConversionService
+import org.springframework.http.HttpStatus
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
@@ -72,6 +74,13 @@ abstract class RestDocsTest {
         .findAndRegisterModules()
         .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         .disable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
+
+    protected fun performErrorResponse(result: ResultActions, status: HttpStatus, errorCode: ErrorCode) {
+        result.andExpect(status().`is`(status.value()))
+            .andExpect(jsonPath("$.status").value(status.value()))
+            .andExpect(jsonPath("$.data.errorCode").value(errorCode.code))
+            .andExpect(jsonPath("$.data.message").value(errorCode.message))
+    }
 
     protected fun performCommonSuccessResponse(result: ResultActions) {
         result.andExpect(status().isOk)

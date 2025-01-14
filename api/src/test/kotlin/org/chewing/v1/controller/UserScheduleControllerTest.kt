@@ -28,7 +28,7 @@ class UserScheduleControllerTest : RestDocsTest() {
     fun setUp() {
         scheduleService = mockk()
         userScheduleController = UserScheduleController(scheduleService)
-        mockMvc = mockController(userScheduleController,GlobalExceptionHandler())
+        mockMvc = mockController(userScheduleController, GlobalExceptionHandler())
     }
 
     @Test

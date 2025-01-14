@@ -26,7 +26,7 @@ class EmoticonControllerTest : RestDocsTest() {
         emoticonService = mockk()
         exceptionHandler = GlobalExceptionHandler()
         emoticonController = EmoticonController(emoticonService)
-        mockMvc = mockController(emoticonController,exceptionHandler)
+        mockMvc = mockController(emoticonController, exceptionHandler)
     }
 
     @Test
