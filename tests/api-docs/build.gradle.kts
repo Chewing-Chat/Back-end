@@ -4,6 +4,7 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot-starter-test")
     api("org.springframework.restdocs:spring-restdocs-mockmvc")
     api("org.springframework.restdocs:spring-restdocs-asciidoctor")
+    implementation(project(":common"))
 }
 
 val apiProject = project(":api")

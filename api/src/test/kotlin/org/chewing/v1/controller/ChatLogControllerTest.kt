@@ -6,6 +6,7 @@ import org.chewing.v1.RestDocsTest
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.controller.chat.ChatLogController
 import org.chewing.v1.service.chat.ChatLogService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.test.context.ActiveProfiles
@@ -18,12 +19,14 @@ import java.time.format.DateTimeFormatter
 class ChatLogControllerTest : RestDocsTest() {
     private lateinit var chatLogService: ChatLogService
     private lateinit var chatLogController: ChatLogController
+    private lateinit var exceptionHandler: GlobalExceptionHandler
 
     @BeforeEach
     fun setUp() {
         chatLogService = mockk()
+        exceptionHandler = GlobalExceptionHandler()
         chatLogController = ChatLogController(chatLogService)
-        mockMvc = mockController(chatLogController)
+        mockMvc = mockController(chatLogController, exceptionHandler)
     }
 
     @Test

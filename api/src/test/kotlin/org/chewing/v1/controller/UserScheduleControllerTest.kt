@@ -9,6 +9,7 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.controller.user.UserScheduleController
 import org.chewing.v1.dto.request.user.ScheduleRequest
 import org.chewing.v1.service.user.ScheduleService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -27,7 +28,7 @@ class UserScheduleControllerTest : RestDocsTest() {
     fun setUp() {
         scheduleService = mockk()
         userScheduleController = UserScheduleController(scheduleService)
-        mockMvc = mockController(userScheduleController)
+        mockMvc = mockController(userScheduleController, GlobalExceptionHandler())
     }
 
     @Test

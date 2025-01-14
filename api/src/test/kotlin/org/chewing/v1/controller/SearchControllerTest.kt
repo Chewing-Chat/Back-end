@@ -11,6 +11,7 @@ import org.chewing.v1.dto.request.friend.FriendSearchRequest
 import org.chewing.v1.facade.SearchFacade
 import org.chewing.v1.model.friend.UserSearch
 import org.chewing.v1.service.search.SearchService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -33,7 +34,7 @@ class SearchControllerTest : RestDocsTest() {
         searchFacade = mockk()
         searchService = mockk()
         searchController = SearchController(searchFacade, searchService)
-        mockMvc = mockController(searchController)
+        mockMvc = mockController(searchController, GlobalExceptionHandler())
     }
 
     @Test

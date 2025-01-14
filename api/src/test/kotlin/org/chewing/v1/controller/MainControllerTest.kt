@@ -8,7 +8,9 @@ import org.chewing.v1.TestDataFactory.createUser
 import org.chewing.v1.TestDataFactory.createUserStatus
 import org.chewing.v1.controller.main.MainController
 import org.chewing.v1.facade.MainFacade
+import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.util.converter.StringToFriendSortCriteriaConverter
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -27,8 +29,9 @@ class MainControllerTest : RestDocsTest() {
     fun setUp() {
         mainFacade = mockk()
         mainController = MainController(mainFacade)
-        mockMvc = mockControllerWithCustomConverter(
+        mockMvc = mockControllerWithAdviceAndCustomConverter(
             mainController,
+            GlobalExceptionHandler(),
             StringToFriendSortCriteriaConverter(),
         )
     }
@@ -36,7 +39,7 @@ class MainControllerTest : RestDocsTest() {
     @Test
     @DisplayName("메인페이지 조회")
     fun getMainPage() {
-        val user = createUser()
+        val user = createUser(AccessStatus.ACCESS)
         val friends = listOf(createFriend())
         val status = createUserStatus()
         every { mainFacade.getMainPage(any(), any()) }.returns(

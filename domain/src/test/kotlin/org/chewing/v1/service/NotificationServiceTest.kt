@@ -55,7 +55,7 @@ class NotificationServiceTest {
         val userId = "userId"
         val feedId = "feedId"
         val comment = "comment"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
         val pushToken = TestDataFactory.createPushToken(userId)
         val notificationSlot = mutableListOf<Notification>()
 
@@ -87,7 +87,7 @@ class NotificationServiceTest {
         val userId = "userId"
         val feedId = "feedId"
         val comment = "comment"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
         val pushToken = TestDataFactory.createPushToken(userId)
         val pushTokens = listOf(pushToken, pushToken)
 
@@ -155,7 +155,7 @@ class NotificationServiceTest {
     fun `채팅 메시지 푸시 알림 전송 - 일반 메시지`() {
         val userId = "userId"
         val friendId = "friendId"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
         val pushToken = TestDataFactory.createPushToken(friendId)
         val chatMessage = TestDataFactory.createChatNormalMessage("messageId", "chatRoomId", userId)
         val notificationSlot = slot<Notification>()
@@ -179,7 +179,7 @@ class NotificationServiceTest {
     fun `채팅 메시지 푸시 알림 전송 - 폭탄 메시지`() {
         val userId = "userId"
         val friendId = "friendId"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
         val pushToken = TestDataFactory.createPushToken(friendId)
         val chatMessage = TestDataFactory.createBombMessage("messageId", "chatRoomId")
         val notificationSlot = slot<Notification>()
@@ -202,7 +202,7 @@ class NotificationServiceTest {
     fun `채팅 메시지 푸시 알림 전송되지 않음 - 읽음 메시지`() {
         val userId = "userId"
         val friendId = "friendId"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
         val pushToken = TestDataFactory.createPushToken(friendId)
         val chatMessage = TestDataFactory.createReadMessage("chatRoomId")
 
@@ -220,7 +220,7 @@ class NotificationServiceTest {
     fun `채팅 메시지 푸시 알림 전송 - 댓긓 메시지`() {
         val userId = "userId"
         val friendId = "friendId"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
         val pushToken = TestDataFactory.createPushToken(friendId)
         val chatMessage = TestDataFactory.createReplyMessage("messageId", "chatRoomId")
         val notificationSlot = slot<Notification>()
@@ -247,7 +247,7 @@ class NotificationServiceTest {
     fun `채팅 메시지 푸시 알림 전송 - 파일 메시지`() {
         val userId = "userId"
         val friendId = "friendId"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
         val pushToken = TestDataFactory.createPushToken(friendId)
         val chatMessage = TestDataFactory.createFileMessage("messageId", "chatRoomId")
         val notificationSlot = slot<Notification>()
@@ -270,7 +270,7 @@ class NotificationServiceTest {
     fun `채팅 메시지 푸시 알림 전송 - 초대 메시지`() {
         val userId = "userId"
         val friendId = "friendId"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
         val pushToken = TestDataFactory.createPushToken(friendId)
         val chatMessage = TestDataFactory.createInviteMessage("messageId", "chatRoomId")
         val notificationSlot = slot<Notification>()
@@ -297,7 +297,7 @@ class NotificationServiceTest {
         // Given
         val userId = "userId"
         val friendId = "friendId"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
         val pushToken = TestDataFactory.createPushToken(friendId)
         val chatMessage = TestDataFactory.createLeaveMessage("messageId", "chatRoomId")
         val notificationSlot = slot<Notification>()

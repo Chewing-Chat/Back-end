@@ -24,7 +24,7 @@ class MainFacadeTest {
         val userId = "123"
         val friendId1 = "456"
         val friendId2 = "789"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
         val userStatus = TestDataFactory.createUserStatus(userId)
         val friendShips = listOf(
             TestDataFactory.createFriendShip(friendId1, AccessStatus.ACCESS),
@@ -33,8 +33,8 @@ class MainFacadeTest {
 
         val friendIds = friendShips.map { it.friendId }
         val users = listOf(
-            TestDataFactory.createUser(friendId2),
-            TestDataFactory.createUser(friendId1),
+            TestDataFactory.createAccessUser(friendId2),
+            TestDataFactory.createAccessUser(friendId1),
         )
         val usersStatuses = listOf(
             TestDataFactory.createUserStatus(friendId2),

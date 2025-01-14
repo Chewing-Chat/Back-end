@@ -29,7 +29,7 @@ class UserServiceTest {
     private val userRemover = UserRemover(userRepository, pushNotificationRepository)
     private val userAppender =
         UserAppender(userRepository, pushNotificationRepository)
-    private val userValidator = UserValidator()
+    private val userValidator = UserValidator(userRepository)
 
     private val userService =
         UserService(userReader, fileHandler, userUpdater, userValidator, userRemover, userAppender)
@@ -37,7 +37,7 @@ class UserServiceTest {
     @Test
     fun `유저 계정 정보를 가져와야함`() {
         val userId = "userId"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.read(userId) } returns user
         val result = assertDoesNotThrow {
@@ -63,7 +63,7 @@ class UserServiceTest {
     @Test
     fun `유저의 정보를 가져오는 활성화된 유저임`() {
         val userId = "userId"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.read(userId) } returns user
 
@@ -120,7 +120,7 @@ class UserServiceTest {
     @Test
     fun `유저를 삭제함`() {
         val userId = "userId"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.remove(userId) } returns user
         every { fileHandler.handleOldFiles(any()) } just Runs
@@ -146,7 +146,7 @@ class UserServiceTest {
     fun `유저 아이디들로 해당 유저가 포합된 유저들을 가져온다`() {
         val userId = "userId"
 
-        val users = listOf(TestDataFactory.createUser(userId))
+        val users = listOf(TestDataFactory.createAccessUser(userId))
 
         every { userRepository.reads(listOf(userId)) } returns users
 
@@ -193,6 +193,7 @@ class UserServiceTest {
         val user = TestDataFactory.createNotAccessUser(userId)
 
         every { userRepository.append(credential, userName) } returns user
+        every { userRepository.readByCredential(credential) } returns null
         every { pushNotificationRepository.append(device, appToken, user) } just Runs
         every { pushNotificationRepository.remove(device) } just Runs
 
@@ -208,9 +209,10 @@ class UserServiceTest {
         val appToken = "appToken"
         val device = TestDataFactory.createDevice()
         val userName = "userName"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.append(credential, userName) } returns user
+        every { userRepository.readByCredential(credential) } returns user
         every { pushNotificationRepository.append(device, appToken, user) } just Runs
         every { pushNotificationRepository.remove(device) } just Runs
 

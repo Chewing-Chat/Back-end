@@ -86,7 +86,7 @@ class AuthServiceTest {
         val exception = assertThrows<AuthorizationException> {
             authService.verify(phoneNumber, verificationCode)
         }
-        assert(exception.errorCode == ErrorCode.WRONG_VALIDATE_CODE)
+        assert(exception.errorCode == ErrorCode.WRONG_VERIFICATION_CODE)
     }
 
     @Test
@@ -99,13 +99,13 @@ class AuthServiceTest {
         val exception = assertThrows<AuthorizationException> {
             authService.verify(phoneNumber, verificationCode)
         }
-        assert(exception.errorCode == ErrorCode.EXPIRED_VALIDATE_CODE)
+        assert(exception.errorCode == ErrorCode.EXPIRED_VERIFICATION_CODE)
     }
 
     @Test
     fun `로그인 정보 생성`() {
         val userId = "1234"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
 
         every { loggedInRepository.append(any(), any()) } just Runs
 

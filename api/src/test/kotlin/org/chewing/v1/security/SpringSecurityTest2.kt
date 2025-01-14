@@ -8,6 +8,7 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.config.IntegrationTest
 import org.chewing.v1.implementation.auth.JwtTokenProvider
 import org.chewing.v1.model.auth.LoginInfo
+import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.util.security.JwtAuthenticationEntryPoint
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -40,7 +41,7 @@ class SpringSecurityTest2 : IntegrationTest() {
             "countryCode" to "82",
             "phoneNumber" to "010-1234-5678",
         )
-        every { authService.createCredential(any()) } just Runs
+        every { accountFacade.registerCredential(any(), any()) } just Runs
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/auth/create/send")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -52,7 +53,7 @@ class SpringSecurityTest2 : IntegrationTest() {
     @DisplayName("휴대폰 인증번호 확인- 인증 없이 통과해야함")
     fun verifyPhone() {
         val jwtToken = TestDataFactory.createJwtToken()
-        val user = TestDataFactory.createUser()
+        val user = TestDataFactory.createUser(AccessStatus.ACCESS)
 
         val requestBody = mapOf(
             "countryCode" to "82",

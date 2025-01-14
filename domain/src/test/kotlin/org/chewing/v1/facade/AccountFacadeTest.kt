@@ -24,7 +24,7 @@ class AccountFacadeTest {
     @Test
     fun `유저 생성`() {
         val userId = "123"
-        val user = TestDataFactory.createUser(userId)
+        val user = TestDataFactory.createAccessUser(userId)
         val phoneNumber = TestDataFactory.createPhoneNumber()
         val loginInfo = TestDataFactory.createLoginInfo(user)
         val device = TestDataFactory.createDevice()

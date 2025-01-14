@@ -9,6 +9,7 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.controller.user.UserStatusController
 import org.chewing.v1.dto.request.user.UserStatusRequest
 import org.chewing.v1.service.user.UserStatusService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -27,7 +28,7 @@ class UserStatusControllerTest : RestDocsTest() {
     fun setUp() {
         userStatusService = mockk()
         userStatusController = UserStatusController(userStatusService)
-        mockMvc = mockController(userStatusController)
+        mockMvc = mockController(userStatusController, GlobalExceptionHandler())
     }
 
     @Test

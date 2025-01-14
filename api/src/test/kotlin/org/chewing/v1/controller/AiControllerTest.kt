@@ -9,6 +9,7 @@ import org.chewing.v1.dto.request.ai.AiRequest
 import org.chewing.v1.facade.AiFacade
 import org.chewing.v1.model.ai.DateTarget
 import org.chewing.v1.util.converter.StringToDateTargetConverter
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,12 +23,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class AiControllerTest : RestDocsTest() {
     private lateinit var aiFacade: AiFacade
     private lateinit var aiController: AiController
+    private lateinit var exceptionHandler: GlobalExceptionHandler
 
     @BeforeEach
     fun setUp() {
         aiFacade = mockk()
         aiController = AiController(aiFacade)
-        mockMvc = mockController(aiController)
+        exceptionHandler = GlobalExceptionHandler()
+        mockMvc = mockController(aiController, exceptionHandler)
 
         mockMvc = mockControllerWithCustomConverter(
             aiController,

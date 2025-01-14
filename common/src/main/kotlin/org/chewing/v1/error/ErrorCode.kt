@@ -9,8 +9,8 @@ enum class ErrorCode(
     val message: String,
 ) {
     // Auth errors
-    WRONG_VALIDATE_CODE("AUTH_1", "인증 번호가 틀렸습니다."),
-    EXPIRED_VALIDATE_CODE("AUTH_2", "인증 번호가 만료되었습니다."),
+    WRONG_VERIFICATION_CODE("AUTH_1", "인증 번호가 틀렸습니다."),
+    EXPIRED_VERIFICATION_CODE("AUTH_2", "인증 번호가 만료되었습니다."),
     TOKEN_EXPIRED("AUTH_3", "토큰이 만료되었습니다."),
     INVALID_TOKEN("AUTH_4", "토큰을 확인해주세요"),
     PHONE_NUMBER_IS_USED("AUTH_5", "해당 전화번호로 이미 다른 사람이 사용중입니다."),
@@ -35,6 +35,7 @@ enum class ErrorCode(
     USER_NOT_FOUND("USER_1", "회원을 찾을 수 없음."),
     USER_NOT_ACCESS("USER_2", "사용자가 활성화되지 않았습니다."),
     USER_ALREADY_CREATED("USER_3", "이미 가입된 사용자입니다."),
+    USER_NOT_CREATED("USER_4", "가입되지 않은 사용자입니다."),
 
     FRIEND_NOT_FOUND("FRIEND_1", "친구를 찾을 수 없음."),
     FRIEND_ALREADY_CREATED("FRIEND_2", "이미 추가된 친구입니다."),
