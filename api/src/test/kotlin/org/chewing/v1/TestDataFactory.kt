@@ -60,9 +60,15 @@ object TestDataFactory {
     }
 
     fun createFriend(): Friend {
-        return Friend.of(createUser(
-            AccessStatus.ACCESS
-        ), true, createFriendName(), createUserStatus(), AccessStatus.ACCESS)
+        return Friend.of(
+            createUser(
+                AccessStatus.ACCESS,
+            ),
+            true,
+            createFriendName(),
+            createUserStatus(),
+            AccessStatus.ACCESS,
+        )
     }
 
     fun createSchedule(): Schedule {

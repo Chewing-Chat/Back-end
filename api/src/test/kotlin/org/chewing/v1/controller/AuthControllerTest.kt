@@ -308,7 +308,7 @@ class AuthControllerTest : RestDocsTest() {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody(requestBody)),
 
-            )
+        )
             .andDo(
                 document(
                     "{class-name}/{method-name}",
@@ -495,7 +495,7 @@ class AuthControllerTest : RestDocsTest() {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody(requestBody)),
 
-            )
+        )
             .andDo(
                 document(
                     "{class-name}/{method-name}",
@@ -638,7 +638,6 @@ class AuthControllerTest : RestDocsTest() {
     @Test
     @DisplayName("로그인 실패 - 잘못된 비밀번호")
     fun loginWrongPassword() {
-
         val requestBody = LoginRequest(
             password = "testPassword",
             countryCode = "82",
@@ -663,7 +662,7 @@ class AuthControllerTest : RestDocsTest() {
                         HttpStatus.UNAUTHORIZED,
                         ErrorCode.WRONG_PASSWORD,
                         "비밀번호가 잘못되었음 - 재입력 요청으로 유도해야함",
-                    )
+                    ),
                 ),
             )
 
@@ -675,7 +674,6 @@ class AuthControllerTest : RestDocsTest() {
     @Test
     @DisplayName("로그인 실패 - 존재하지 않는 계정")
     fun loginNotFoundUser() {
-
         val requestBody = LoginRequest(
             password = "testPassword",
             countryCode = "82",
