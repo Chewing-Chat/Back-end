@@ -17,8 +17,8 @@ class MainController(
         @RequestAttribute("userId") userId: String,
         @RequestParam("sort") sort: FriendSortCriteria,
     ): SuccessResponseEntity<MainResponse> {
-        val (user, userStatus, friends) = mainFacade.getMainPage(userId, sort)
+        val (user, friends) = mainFacade.getMainPage(userId, sort)
         // 성공 응답 200 반환
-        return ResponseHelper.success(MainResponse.ofList(user, userStatus, friends))
+        return ResponseHelper.success(MainResponse.ofList(user, friends))
     }
 }

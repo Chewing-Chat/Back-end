@@ -9,17 +9,15 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.service.user.ScheduleService
 import org.chewing.v1.service.user.UserService
-import org.chewing.v1.service.user.UserStatusService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 
 class AccountFacadeTest {
     private val authService: AuthService = mockk()
     private val userService: UserService = mockk()
-    private val userStatusService: UserStatusService = mockk()
     private val scheduleService: ScheduleService = mockk()
 
-    private val accountFacade = AccountFacade(authService, userService, userStatusService, scheduleService)
+    private val accountFacade = AccountFacade(authService, userService, scheduleService)
 
     @Test
     fun `유저 생성`() {
@@ -44,7 +42,6 @@ class AccountFacadeTest {
         val userId = "123"
 
         every { userService.deleteUser(any()) } just Runs
-        every { userStatusService.deleteAllUserStatuses(any()) } just Runs
         every { scheduleService.deleteUsers(any()) } just Runs
 
         accountFacade.deleteAccount(userId)

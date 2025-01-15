@@ -55,17 +55,4 @@ class FileGeneratorTest {
         assert(result.category == FileCategory.PROFILE)
         assert(result.url.endsWith("0.png"))
     }
-
-    @Test
-    fun `유저 배경 이미지 파일 생성`() {
-        val userId = "userId"
-        val file = TestDataFactory.createFileData(MediaType.IMAGE_PNG, "0.png")
-        val result = fileGenerator.generateMedia(file, userId, FileCategory.BACKGROUND)
-
-        assert(result.url.startsWith("$baseUrl/$bucketName/BACKGROUND/$userId"))
-        assert(result.index == 0)
-        assert(result.type == MediaType.IMAGE_PNG)
-        assert(result.category == FileCategory.BACKGROUND)
-        assert(result.url.endsWith("0.png"))
-    }
 }

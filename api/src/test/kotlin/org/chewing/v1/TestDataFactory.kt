@@ -29,7 +29,6 @@ import org.chewing.v1.model.search.Search
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
-import org.chewing.v1.model.user.UserStatus
 import java.time.LocalDateTime
 
 object TestDataFactory {
@@ -45,18 +44,14 @@ object TestDataFactory {
     fun createUser(accessStatus: AccessStatus): User {
         return User.of(
             "testUserId",
-            "testFriendName",
-            "2000-00-00",
+            "testUserName",
+            "20000101",
             Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
-            Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
             accessStatus,
-            PhoneNumber.of("+82", "010-0000-0000"),
+            PhoneNumber.of("82", "01000000000"),
             "testPassword",
+            "testStatusMessage",
         )
-    }
-
-    fun createUserStatus(): UserStatus {
-        return UserStatus.of("testStatusId", "testMessage", "testEmoji", "testUserId", true)
     }
 
     fun createFriend(): Friend {
@@ -66,7 +61,6 @@ object TestDataFactory {
             ),
             true,
             createFriendName(),
-            createUserStatus(),
             AccessStatus.ACCESS,
         )
     }

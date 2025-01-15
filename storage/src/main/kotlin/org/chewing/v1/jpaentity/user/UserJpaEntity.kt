@@ -40,6 +40,8 @@ internal class UserJpaEntity(
     private var type: AccessStatus,
 
     private var name: String,
+
+    private var statusMessage: String,
 ) : BaseEntity() {
     companion object {
         fun generate(phoneNumber: PhoneNumber, userName: String, access: AccessStatus): UserJpaEntity {
@@ -54,6 +56,7 @@ internal class UserJpaEntity(
                 type = access,
                 name = userName,
                 password = "",
+                statusMessage = "",
             )
         }
     }
@@ -64,10 +67,10 @@ internal class UserJpaEntity(
             this.name,
             this.birth,
             Media.of(FileCategory.PROFILE, this.pictureUrl, 0, this.pictureType),
-            Media.of(FileCategory.BACKGROUND, this.backgroundPictureUrl, 0, this.backgroundPictureType),
             this.type,
             PhoneNumber.of(this.countryCode, this.phoneNumber),
             this.password,
+            this.statusMessage,
         )
     }
 
@@ -81,12 +84,8 @@ internal class UserJpaEntity(
         this.backgroundPictureType = media.type
     }
 
-    fun updateUserName(userName: String) {
-        this.name = userName
-    }
-
-    fun updateBirth(birth: String) {
-        this.birth = birth
+    fun updateStatusMessage(statusMessage: String) {
+        this.statusMessage = statusMessage
     }
 
     fun updatePassword(password: String) {

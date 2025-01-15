@@ -67,3 +67,7 @@ include::Announcement-API.adoc[]
 == Auth API
 :api-title: Auth API
 include::Auth-API.adoc[]
+
+== User API
+:api-title: User API
+include::User-API.adoc[]

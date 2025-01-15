@@ -46,17 +46,5 @@ class UserRepositoryTest2 {
         assert(result == null)
     }
 
-    @Test
-    fun `유저 배경사진 변환 실패(유저를 찾을 수 없음)`() {
-        val media = MediaProvider.buildBackgroundContent()
-        val userId = generateUserId()
-        val user = UserProvider.buildNormal(userId)
-
-        every { userJpaRepository.findById(user.userId) } returns Optional.empty()
-
-        val result = userRepositoryImpl.updateMedia(user.userId, media)
-        assert(result == null)
-    }
-
     private fun generateUserId(): String = UUID.randomUUID().toString()
 }

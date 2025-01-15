@@ -63,6 +63,10 @@ class UserService(
         fileHandler.handleOldFile(oldMedia)
     }
 
+    fun updateStatusMessage(userId: String, statusMessage: String) {
+        userUpdater.updateStatusMessage(userId, statusMessage)
+    }
+
     fun checkAvailability(credential: Credential, type: CredentialTarget) {
         when (type) {
             CredentialTarget.SIGN_UP -> userValidator.isNotAlreadyCreated(credential)
@@ -78,6 +82,6 @@ class UserService(
 
     fun deleteUser(userId: String) {
         val removedUser = userRemover.remove(userId)
-        fileHandler.handleOldFiles(listOf(removedUser.image, removedUser.backgroundImage))
+        fileHandler.handleOldFile(removedUser.image)
     }
 }

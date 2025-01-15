@@ -43,14 +43,12 @@ internal class UserRepositoryImpl(
         // 수정 전 기존 미디어 정보를 반환
         val previousMedia = when (media.category) {
             FileCategory.PROFILE -> user.toUser().image
-            FileCategory.BACKGROUND -> user.toUser().backgroundImage
             else -> null
         }
 
         // 새로운 미디어 정보 업데이트
         when (media.category) {
             FileCategory.PROFILE -> user.updateUserPictureUrl(media)
-            FileCategory.BACKGROUND -> user.updateBackgroundPictureUrl(media)
             else -> {}
         }
 
@@ -74,6 +72,14 @@ internal class UserRepositoryImpl(
             AccessStatus.ACCESS,
         ).map {
             it.toUser()
+        }.orElse(null)
+    }
+
+    override fun updateStatusMessage(userId: String, statusMessage: String): String? {
+        return userJpaRepository.findById(userId).map {
+            it.updateStatusMessage(statusMessage)
+            userJpaRepository.save(it)
+            userId
         }.orElse(null)
     }
 }

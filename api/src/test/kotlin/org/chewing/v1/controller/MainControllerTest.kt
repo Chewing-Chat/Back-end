@@ -5,7 +5,6 @@ import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.TestDataFactory.createFriend
 import org.chewing.v1.TestDataFactory.createUser
-import org.chewing.v1.TestDataFactory.createUserStatus
 import org.chewing.v1.controller.main.MainController
 import org.chewing.v1.facade.MainFacade
 import org.chewing.v1.model.user.AccessStatus
@@ -41,14 +40,14 @@ class MainControllerTest : RestDocsTest() {
     fun getMainPage() {
         val user = createUser(AccessStatus.ACCESS)
         val friends = listOf(createFriend())
-        val status = createUserStatus()
+
         every { mainFacade.getMainPage(any(), any()) }.returns(
-            Triple(
+            Pair(
                 user,
-                status,
                 friends,
             ),
         )
+
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/main")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -62,7 +61,7 @@ class MainControllerTest : RestDocsTest() {
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.friends[0].imageUrl").value(friends[0].user.image.url))
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.friends[0].imageType").value("image/png"))
             .andExpect(
-                MockMvcResultMatchers.jsonPath("$.data.friends[0].statusMessage").value(friends[0].status.message),
+                MockMvcResultMatchers.jsonPath("$.data.friends[0].statusMessage").value(friends[0].user.statusMessage),
             )
             .andExpect(
                 MockMvcResultMatchers.jsonPath("$.data.friends[0].favorite").value(friends[0].isFavorite.toString()),
@@ -71,17 +70,10 @@ class MainControllerTest : RestDocsTest() {
                 MockMvcResultMatchers.jsonPath("$.data.friends[0].access")
                     .value(friends[0].user.status.name.lowercase()),
             )
-            .andExpect(
-                MockMvcResultMatchers.jsonPath("$.data.friends[0].backgroundImageUrl")
-                    .value(friends[0].user.backgroundImage.url),
-            )
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.friends[0].backgroundImageType").value("image/png"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.friends[0].statusEmoji").value(friends[0].status.emoji))
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.totalFriends").value(1))
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.user.name").value(user.name))
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.user.imageUrl").value(user.image.url))
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.user.imageType").value("image/png"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.user.statusEmoji").value(status.emoji))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.user.statusMessage").value(status.message))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.data.user.statusMessage").value(user.statusMessage))
     }
 }
