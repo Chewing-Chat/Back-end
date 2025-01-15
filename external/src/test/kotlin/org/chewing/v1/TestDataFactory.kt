@@ -37,10 +37,10 @@ object TestDataFactory {
         "name",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
-        Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.ACCESS,
         PhoneNumber.of("82", "010-0000-0000"),
         "password",
+        "testStatusMessage",
     )
     fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "010-0000-0000")
     fun createWrongPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "010-0000-0001")

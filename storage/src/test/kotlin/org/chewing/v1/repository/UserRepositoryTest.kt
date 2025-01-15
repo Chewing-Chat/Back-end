@@ -94,21 +94,6 @@ class UserRepositoryTest : JpaContextTest() {
     }
 
     @Test
-    fun `유저 이미지 업데이트 - 기본 배경 사진에서 새로운 사진으로 바뀜`() {
-        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
-        val userName = UserProvider.buildUserName()
-
-        val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
-
-        val media = MediaProvider.buildBackgroundContent()
-
-        userRepositoryImpl.updateMedia(user.userId, media)
-        val result = userJpaRepository.findById(user.userId).get().toUser()
-
-        assert(result.backgroundImage.type == media.type)
-    }
-
-    @Test
     fun `유저 게정 읽기 읽기`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()

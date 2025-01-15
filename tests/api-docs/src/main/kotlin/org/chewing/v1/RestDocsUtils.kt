@@ -23,8 +23,8 @@ object RestDocsUtils {
         Preprocessors.preprocessResponse(Preprocessors.prettyPrint())
 
     fun responseSuccessFields(): ResponseFieldsSnippet = responseFields(
-        PayloadDocumentation.fieldWithPath("status").description("200"),
-        PayloadDocumentation.fieldWithPath("data.message").description("성공"),
+        PayloadDocumentation.fieldWithPath("status").description("상태 코드"),
+        PayloadDocumentation.fieldWithPath("data.message").description("성공 메시지"),
     )
 
     fun responseErrorFields(status: HttpStatus, errorCode: ErrorCode, description: String): ResponseFieldsSnippet = responseFields(
@@ -33,12 +33,11 @@ object RestDocsUtils {
         PayloadDocumentation.fieldWithPath("data.message").description(errorCode.message).description(description),
     )
 
-    fun responseSuccessCreateFields(): ResponseFieldsSnippet = responseFields(
-        PayloadDocumentation.fieldWithPath("status").description("201"),
-        PayloadDocumentation.fieldWithPath("data.message").description("생성 완료"),
+    fun requestAccessTokenFields(): RequestHeadersSnippet = requestHeaders(
+        headerWithName("Authorization").description("Bearer 액세스 토큰"),
     )
 
-    fun requestJwtTokenFields(): RequestHeadersSnippet = requestHeaders(
-        headerWithName("Authorization").description("Bearer 토큰 정보"),
+    fun requestRefreshTokenFields(): RequestHeadersSnippet = requestHeaders(
+        headerWithName("Authorization").description("Bearer 리프레시 토큰"),
     )
 }

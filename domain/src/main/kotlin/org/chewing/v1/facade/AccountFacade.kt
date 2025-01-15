@@ -8,14 +8,12 @@ import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.service.user.ScheduleService
 import org.chewing.v1.service.user.UserService
-import org.chewing.v1.service.user.UserStatusService
 import org.springframework.stereotype.Service
 
 @Service
 class AccountFacade(
     private val authService: AuthService,
     private val userService: UserService,
-    private val userStatusService: UserStatusService,
     private val scheduleService: ScheduleService,
 ) {
     fun createUser(
@@ -54,7 +52,6 @@ class AccountFacade(
 
     fun deleteAccount(userId: String) {
         userService.deleteUser(userId)
-        userStatusService.deleteAllUserStatuses(userId)
         scheduleService.deleteUsers(userId)
     }
 

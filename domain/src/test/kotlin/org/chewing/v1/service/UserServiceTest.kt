@@ -123,7 +123,7 @@ class UserServiceTest {
         val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.remove(userId) } returns user
-        every { fileHandler.handleOldFiles(any()) } just Runs
+        every { fileHandler.handleOldFile(any()) } just Runs
 
         assertDoesNotThrow {
             userService.deleteUser(userId)

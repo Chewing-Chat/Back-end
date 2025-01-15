@@ -3,7 +3,7 @@ package org.chewing.v1.controller
 import io.mockk.every
 import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
-import org.chewing.v1.RestDocsUtils.requestJwtTokenFields
+import org.chewing.v1.RestDocsUtils.requestAccessTokenFields
 import org.chewing.v1.RestDocsUtils.requestPreprocessor
 import org.chewing.v1.RestDocsUtils.responseErrorFields
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
@@ -65,7 +65,7 @@ class AnnouncementControllerTest : RestDocsTest() {
                     fieldWithPath("data.announcements[].uploadTime")
                         .description("공지사항 업로드 시간 - 형식 yyyy-MM-dd HH:mm:ss"),
                 ),
-                requestJwtTokenFields(),
+                requestAccessTokenFields(),
             ),
         )
             .andExpect(status().isOk)
@@ -95,7 +95,7 @@ class AnnouncementControllerTest : RestDocsTest() {
                         fieldWithPath("status").description("상태 코드"),
                         fieldWithPath("data.content").description("공지사항 내용"),
                     ),
-                    requestJwtTokenFields(),
+                    requestAccessTokenFields(),
                 ),
             )
             .andExpect(status().isOk)
@@ -121,7 +121,7 @@ class AnnouncementControllerTest : RestDocsTest() {
                     requestPreprocessor(),
                     responsePreprocessor(),
                     responseErrorFields(HttpStatus.NOT_FOUND, ErrorCode.ANNOUNCEMENT_NOT_FOUND, "공지사항을 찾을 수 없습니다. 잘못된 아이디를 보냈다면 생기는 문제입니다."),
-                    requestJwtTokenFields(),
+                    requestAccessTokenFields(),
                 ),
             )
         performErrorResponse(result, HttpStatus.NOT_FOUND, ErrorCode.ANNOUNCEMENT_NOT_FOUND)

@@ -34,10 +34,6 @@ object TestDataFactory {
 
     fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "1234567890")
 
-    fun createUserStatus(userId: String): UserStatus = UserStatus.of("statusId", userId, "emoji", "statusMessage", true)
-
-    fun createDefaultUserStatus(): UserStatus = UserStatus.default("userId")
-
     fun createUserName(): String = "testUserName"
 
     fun createProfileMedia(): Media = Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG)
@@ -66,10 +62,10 @@ object TestDataFactory {
         "testName",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
-        Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.ACCESS,
         PhoneNumber.of("82", "1234567890"),
         "password",
+        "test",
     )
 
     fun createNotAccessUser(userId: String): User = User.of(
@@ -77,10 +73,10 @@ object TestDataFactory {
         "testName",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
-        Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.NEED_CREATE_PASSWORD,
         PhoneNumber.of("82", "1234567890"),
         "password",
+        "testStatusMessage",
     )
 
     fun createEncryptedUser(userId: String, password: String): User = User.of(
@@ -88,10 +84,10 @@ object TestDataFactory {
         "testName",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
-        Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.ACCESS,
         PhoneNumber.of("82", "1234567890"),
         password,
+        "testStatusMessage",
     )
 
     fun createNotAccessUser(): User = User.of(
@@ -99,10 +95,10 @@ object TestDataFactory {
         "testName",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
-        Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.NOT_ACCESS,
         PhoneNumber.of("82", "1234567890"),
         "password",
+        "testStatusMessage",
     )
 
     fun createScheduledTime(): ScheduleTime =

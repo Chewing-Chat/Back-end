@@ -11,10 +11,6 @@ object MediaProvider {
         return Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG)
     }
 
-    fun buildBackgroundContent(): Media {
-        return Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG)
-    }
-
     fun buildFeedContent(index: Int): Media {
         return Media.of(FileCategory.FEED, "www.example.com", index, MediaType.IMAGE_PNG)
     }

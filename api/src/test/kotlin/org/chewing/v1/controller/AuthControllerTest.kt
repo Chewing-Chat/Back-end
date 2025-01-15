@@ -6,7 +6,9 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.chewing.v1.RestDocsTest
+import org.chewing.v1.RestDocsUtils.requestAccessTokenFields
 import org.chewing.v1.RestDocsUtils.requestPreprocessor
+import org.chewing.v1.RestDocsUtils.requestRefreshTokenFields
 import org.chewing.v1.RestDocsUtils.responseErrorFields
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
@@ -532,9 +534,7 @@ class AuthControllerTest : RestDocsTest() {
                     "{class-name}/{method-name}",
                     requestPreprocessor(),
                     responsePreprocessor(),
-                    requestHeaders(
-                        headerWithName("Authorization").description("액세스 토큰"),
-                    ),
+                    requestAccessTokenFields(),
                     requestFields(
                         fieldWithPath("password").description("변경할 비밀번호"),
                     ),
@@ -566,9 +566,7 @@ class AuthControllerTest : RestDocsTest() {
                     "{class-name}/{method-name}",
                     requestPreprocessor(),
                     responsePreprocessor(),
-                    requestHeaders(
-                        headerWithName("Authorization").description("액세스 토큰"),
-                    ),
+                    requestAccessTokenFields(),
                     requestFields(
                         fieldWithPath("password").description("생성할 비밀번호"),
                     ),
@@ -722,9 +720,7 @@ class AuthControllerTest : RestDocsTest() {
                     "{class-name}/{method-name}",
                     requestPreprocessor(),
                     responsePreprocessor(),
-                    requestHeaders(
-                        headerWithName("Authorization").description("리프레시 토큰 -> 프론트 로컬 리프레시 토큰 삭제 필요"),
-                    ),
+                    requestRefreshTokenFields(),
                     responseSuccessFields(),
                 ),
             )

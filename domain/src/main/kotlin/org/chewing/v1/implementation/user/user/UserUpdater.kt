@@ -22,4 +22,8 @@ class UserUpdater(
     fun updatePassword(userId: String, password: String) {
         userRepository.updatePassword(userId, password) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
+
+    fun updateStatusMessage(userId: String, statusMessage: String) {
+        userRepository.updateStatusMessage(userId, statusMessage) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
+    }
 }
