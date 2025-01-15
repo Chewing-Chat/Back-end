@@ -44,27 +44,26 @@ class UserRepositoryTest : JpaContextTest() {
     }
 
     @Test
-    fun `휴대폰 으로 유저 신규 생성`() {
+    fun `유저 휴대폰으로 읽기 - 실패 존재하지 않는 계정(PASSWORD 생성 여부, 삭제 여부)`() {
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+        jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.DELETE)
+
+        val result = userRepositoryImpl.readByCredential(phoneNumber)
+
+        assert(result == null)
+    }
+
+    @Test
+    fun `휴대폰으로 유저 신규 생성 - 상태가 NEED PASSWORD여야 함`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
 
         val user = userRepositoryImpl.append(phoneNumber, userName)
 
-        val result = userRepositoryImpl.readByCredential(phoneNumber)
+        val result = userRepositoryImpl.read(user.userId)
 
-        assert(result!!.userId == user.userId)
-    }
-
-    @Test
-    fun `이미 휴대폰 유저가 있다면 신규 생성하면 안됨`() {
-        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
-        val userName = UserProvider.buildUserName()
-
-        val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
-
-        val result = userRepositoryImpl.append(phoneNumber, userName)
-
-        assert(result.userId == user.userId)
+        assert(result!!.status == AccessStatus.NEED_CREATE_PASSWORD)
     }
 
     @Test

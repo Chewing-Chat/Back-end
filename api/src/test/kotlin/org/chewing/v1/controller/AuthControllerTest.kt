@@ -234,7 +234,7 @@ class AuthControllerTest : RestDocsTest() {
                         fieldWithPath("data.token.accessToken").description("액세스 토큰"),
                         fieldWithPath("data.token.refreshToken").description("리프레시 토큰"),
                         fieldWithPath("data.access").description(
-                            "액세스 상태로 로그인이 가능한지 여부 - need_create_password/delete(소문자) 로 반환됨 (정상) 다른거 (비정상)- 비밀번호 설정으로 진행",
+                            "액세스 상태로 로그인이 가능한지 여부 - need_create_password 로 반환됨 (정상) 다른거 (비정상)- 비밀번호 설정으로 진행",
                         ),
                     ),
                 ),

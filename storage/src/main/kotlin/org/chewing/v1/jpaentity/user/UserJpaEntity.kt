@@ -89,16 +89,12 @@ internal class UserJpaEntity(
         this.birth = birth
     }
 
-    fun updateDelete() {
-        this.type = AccessStatus.DELETE
-    }
-
     fun updatePassword(password: String) {
         this.password = password
         this.type = AccessStatus.ACCESS
     }
 
-    fun updateAccess() {
-        this.type = AccessStatus.ACCESS
+    fun updateAccessStatus(accessStatus: AccessStatus) {
+        this.type = accessStatus
     }
 }

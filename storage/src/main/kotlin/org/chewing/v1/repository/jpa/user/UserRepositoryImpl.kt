@@ -27,18 +27,14 @@ internal class UserRepositoryImpl(
 
     override fun append(credential: Credential, userName: String): User = when (credential) {
         is PhoneNumber -> {
-            userJpaRepository.findUserJpaEntityByCountryCodeAndPhoneNumber(credential.countryCode, credential.number)
-                .map { it.toUser() }
-                .orElseGet {
-                    val userEntity = UserJpaEntity.generate(credential, userName, AccessStatus.NEED_CREATE_PASSWORD)
-                    userJpaRepository.save(userEntity).toUser()
-                }
+            val userEntity = UserJpaEntity.generate(credential, userName, AccessStatus.NEED_CREATE_PASSWORD)
+            userJpaRepository.save(userEntity).toUser()
         }
     }
 
     override fun remove(userId: String): User? = userJpaRepository.findById(userId)
         .map { entity ->
-            entity.updateDelete()
+            entity.updateAccessStatus(AccessStatus.DELETE)
             userJpaRepository.save(entity)
             entity.toUser()
         }.orElse(null)
@@ -72,9 +68,10 @@ internal class UserRepositoryImpl(
     }.orElse(null)
 
     override fun readByCredential(credential: Credential): User? = when (credential) {
-        is PhoneNumber -> userJpaRepository.findUserJpaEntityByCountryCodeAndPhoneNumber(
+        is PhoneNumber -> userJpaRepository.findUserJpaEntityByCountryCodeAndPhoneNumberAndType(
             credential.countryCode,
             credential.number,
+            AccessStatus.ACCESS,
         ).map {
             it.toUser()
         }.orElse(null)
