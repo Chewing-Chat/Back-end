@@ -1,39 +1,30 @@
-//package org.chewing.v1.controller
-//
-//import io.mockk.every
-//import io.mockk.mockk
-//import org.chewing.v1.RestDocsTest
-//import org.chewing.v1.TestDataFactory.createFriend
-//import org.chewing.v1.TestDataFactory.createUser
-//import org.chewing.v1.controller.main.MainController
-//import org.chewing.v1.facade.MainFacade
-//import org.chewing.v1.model.user.AccessStatus
-//import org.chewing.v1.util.converter.StringToFriendSortCriteriaConverter
-//import org.chewing.v1.util.handler.GlobalExceptionHandler
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.DisplayName
-//import org.junit.jupiter.api.Test
-//import org.springframework.http.MediaType
-//import org.springframework.test.context.ActiveProfiles
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-//
-//@ActiveProfiles("test")
-//class MainControllerTest : RestDocsTest() {
-//
-//    private lateinit var mainFacade: MainFacade
-//    private lateinit var mainController: MainController
-//
-//    @BeforeEach
-//    fun setUp() {
-//        mainFacade = mockk()
-//        mainController = MainController(mainFacade)
-//        mockMvc = mockControllerWithAdviceAndCustomConverter(
-//            mainController,
-//            GlobalExceptionHandler(),
-//            StringToFriendSortCriteriaConverter(),
-//        )
-//    }
+package org.chewing.v1.controller
+
+import io.mockk.mockk
+import org.chewing.v1.RestDocsTest
+import org.chewing.v1.controller.main.MainController
+import org.chewing.v1.facade.MainFacade
+import org.chewing.v1.util.converter.StringToFriendSortCriteriaConverter
+import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.junit.jupiter.api.BeforeEach
+import org.springframework.test.context.ActiveProfiles
+
+@ActiveProfiles("test")
+class MainControllerTest : RestDocsTest() {
+
+    private lateinit var mainFacade: MainFacade
+    private lateinit var mainController: MainController
+
+    @BeforeEach
+    fun setUp() {
+        mainFacade = mockk()
+        mainController = MainController(mainFacade)
+        mockMvc = mockControllerWithAdviceAndCustomConverter(
+            mainController,
+            GlobalExceptionHandler(),
+            StringToFriendSortCriteriaConverter(),
+        )
+    }
 //
 //    @Test
 //    @DisplayName("메인페이지 조회")
@@ -76,4 +67,4 @@
 //            .andExpect(MockMvcResultMatchers.jsonPath("$.data.user.imageType").value("image/png"))
 //            .andExpect(MockMvcResultMatchers.jsonPath("$.data.user.statusMessage").value(user.statusMessage))
 //    }
-//}
+}

@@ -1,35 +1,27 @@
-//package org.chewing.v1.controller
-//
-//import io.mockk.Runs
-//import io.mockk.every
-//import io.mockk.just
-//import io.mockk.mockk
-//import org.chewing.v1.RestDocsTest
-//import org.chewing.v1.controller.chat.ChatController
-//import org.chewing.v1.facade.ChatFacade
-//import org.chewing.v1.util.handler.GlobalExceptionHandler
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.DisplayName
-//import org.junit.jupiter.api.Test
-//import org.springframework.http.MediaType
-//import org.springframework.mock.web.MockMultipartFile
-//import org.springframework.test.context.ActiveProfiles
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-//
-//@ActiveProfiles("test")
-//class ChatControllerTest2 : RestDocsTest() {
-//    private lateinit var chatFacade: ChatFacade
-//    private lateinit var chatController: ChatController
-//    private lateinit var exceptionHandler: GlobalExceptionHandler
-//
-//    @BeforeEach
-//    fun setUp() {
-//        chatFacade = mockk()
-//        exceptionHandler = GlobalExceptionHandler()
-//        chatController = ChatController(chatFacade)
-//        mockMvc = mockController(chatController, exceptionHandler)
-//    }
-//
+package org.chewing.v1.controller
+
+import io.mockk.mockk
+import org.chewing.v1.RestDocsTest
+import org.chewing.v1.controller.chat.ChatController
+import org.chewing.v1.facade.ChatFacade
+import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.junit.jupiter.api.BeforeEach
+import org.springframework.test.context.ActiveProfiles
+
+@ActiveProfiles("test")
+class ChatControllerTest2 : RestDocsTest() {
+    private lateinit var chatFacade: ChatFacade
+    private lateinit var chatController: ChatController
+    private lateinit var exceptionHandler: GlobalExceptionHandler
+
+    @BeforeEach
+    fun setUp() {
+        chatFacade = mockk()
+        exceptionHandler = GlobalExceptionHandler()
+        chatController = ChatController(chatFacade)
+        mockMvc = mockController(chatController, exceptionHandler)
+    }
+
 //    @Test
 //    @DisplayName("채팅방 파일 추가 테스트")
 //    fun `uploadFiles`() {
@@ -60,4 +52,4 @@
 //        )
 //        performCommonSuccessCreateResponse(result)
 //    }
-//}
+}

@@ -1,48 +1,36 @@
-//package org.chewing.v1.controller
-//
-//import io.mockk.Runs
-//import io.mockk.every
-//import io.mockk.just
-//import io.mockk.mockk
-//import org.chewing.v1.RestDocsTest
-//import org.chewing.v1.TestDataFactory
-//import org.chewing.v1.controller.chat.ChatRoomController
-//import org.chewing.v1.dto.request.chat.ChatRoomRequest
-//import org.chewing.v1.facade.ChatRoomFacade
-//import org.chewing.v1.model.chat.room.ChatRoomSortCriteria
-//import org.chewing.v1.service.chat.RoomService
-//import org.chewing.v1.util.converter.StringToChatRoomSortCriteriaConverter
-//import org.chewing.v1.util.handler.GlobalExceptionHandler
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.Test
-//import org.springframework.http.MediaType
-//import org.springframework.test.context.ActiveProfiles
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-//import java.time.format.DateTimeFormatter
-//
-//@ActiveProfiles("test")
-//class ChatRoomControllerTest : RestDocsTest() {
-//
-//    private lateinit var chatRoomFacade: ChatRoomFacade
-//    private lateinit var roomService: RoomService
-//    private lateinit var chatRoomController: ChatRoomController
-//    private lateinit var exceptionHandler: GlobalExceptionHandler
-//
-//    @BeforeEach
-//    fun setUp() {
-//        chatRoomFacade = mockk()
-//        exceptionHandler = GlobalExceptionHandler()
-//        roomService = mockk()
-//        chatRoomController = ChatRoomController(chatRoomFacade, roomService)
-//        mockMvc = mockControllerWithAdviceAndCustomConverter(
-//            chatRoomController,
-//            exceptionHandler,
-//            StringToChatRoomSortCriteriaConverter(),
-//        )
-//    }
-//
+package org.chewing.v1.controller
+
+import io.mockk.mockk
+import org.chewing.v1.RestDocsTest
+import org.chewing.v1.controller.chat.ChatRoomController
+import org.chewing.v1.facade.ChatRoomFacade
+import org.chewing.v1.service.chat.RoomService
+import org.chewing.v1.util.converter.StringToChatRoomSortCriteriaConverter
+import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.junit.jupiter.api.BeforeEach
+import org.springframework.test.context.ActiveProfiles
+
+@ActiveProfiles("test")
+class ChatRoomControllerTest : RestDocsTest() {
+
+    private lateinit var chatRoomFacade: ChatRoomFacade
+    private lateinit var roomService: RoomService
+    private lateinit var chatRoomController: ChatRoomController
+    private lateinit var exceptionHandler: GlobalExceptionHandler
+
+    @BeforeEach
+    fun setUp() {
+        chatRoomFacade = mockk()
+        exceptionHandler = GlobalExceptionHandler()
+        roomService = mockk()
+        chatRoomController = ChatRoomController(chatRoomFacade, roomService)
+        mockMvc = mockControllerWithAdviceAndCustomConverter(
+            chatRoomController,
+            exceptionHandler,
+            StringToChatRoomSortCriteriaConverter(),
+        )
+    }
+
 //    @Test
 //    fun `채팅방 리스트 가져오기`() {
 //        val userId = "userId"
@@ -201,4 +189,4 @@
 //        )
 //        performCommonSuccessResponse(result)
 //    }
-//}
+}

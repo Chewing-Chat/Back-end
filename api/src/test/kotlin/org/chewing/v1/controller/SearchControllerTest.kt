@@ -1,42 +1,29 @@
-//package org.chewing.v1.controller
-//
-//import io.mockk.Runs
-//import io.mockk.every
-//import io.mockk.just
-//import io.mockk.mockk
-//import org.chewing.v1.RestDocsTest
-//import org.chewing.v1.TestDataFactory
-//import org.chewing.v1.controller.search.SearchController
-//import org.chewing.v1.dto.request.friend.FriendSearchRequest
-//import org.chewing.v1.facade.SearchFacade
-//import org.chewing.v1.model.friend.UserSearch
-//import org.chewing.v1.service.search.SearchService
-//import org.chewing.v1.util.handler.GlobalExceptionHandler
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.Test
-//import org.springframework.http.MediaType
-//import org.springframework.test.context.ActiveProfiles
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-//import java.time.LocalDateTime
-//import java.time.format.DateTimeFormatter
-//
-//@ActiveProfiles("test")
-//class SearchControllerTest : RestDocsTest() {
-//    private lateinit var searchFacade: SearchFacade
-//    private lateinit var searchService: SearchService
-//    private lateinit var searchController: SearchController
-//
-//    @BeforeEach
-//    fun setUp() {
-//        searchFacade = mockk()
-//        searchService = mockk()
-//        searchController = SearchController(searchFacade, searchService)
-//        mockMvc = mockController(searchController, GlobalExceptionHandler())
-//    }
-//
+package org.chewing.v1.controller
+
+import io.mockk.mockk
+import org.chewing.v1.RestDocsTest
+import org.chewing.v1.controller.search.SearchController
+import org.chewing.v1.facade.SearchFacade
+import org.chewing.v1.service.search.SearchService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.junit.jupiter.api.BeforeEach
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+
+@ActiveProfiles("test")
+class SearchControllerTest : RestDocsTest() {
+    private lateinit var searchFacade: SearchFacade
+    private lateinit var searchService: SearchService
+    private lateinit var searchController: SearchController
+
+    @BeforeEach
+    fun setUp() {
+        searchFacade = mockk()
+        searchService = mockk()
+        searchController = SearchController(searchFacade, searchService)
+        mockMvc = mockController(searchController, GlobalExceptionHandler())
+    }
+
 //    @Test
 //    fun `검색 키워드 추가`() {
 //        val userId = "userId"
@@ -110,4 +97,4 @@
 //            .andExpect(jsonPath("$.data.friends[0].name").value(friendShip.friendName))
 //            .andExpect(jsonPath("$.data.friends[0].favorite").value(friendShip.isFavorite))
 //    }
-//}
+}

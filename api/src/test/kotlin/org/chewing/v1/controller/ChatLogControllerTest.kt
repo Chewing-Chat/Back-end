@@ -1,34 +1,27 @@
-//package org.chewing.v1.controller
-//
-//import io.mockk.every
-//import io.mockk.mockk
-//import org.chewing.v1.RestDocsTest
-//import org.chewing.v1.TestDataFactory
-//import org.chewing.v1.controller.chat.ChatLogController
-//import org.chewing.v1.service.chat.ChatLogService
-//import org.chewing.v1.util.handler.GlobalExceptionHandler
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.Test
-//import org.springframework.test.context.ActiveProfiles
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-//import java.time.format.DateTimeFormatter
-//
-//@ActiveProfiles("test")
-//class ChatLogControllerTest : RestDocsTest() {
-//    private lateinit var chatLogService: ChatLogService
-//    private lateinit var chatLogController: ChatLogController
-//    private lateinit var exceptionHandler: GlobalExceptionHandler
-//
-//    @BeforeEach
-//    fun setUp() {
-//        chatLogService = mockk()
-//        exceptionHandler = GlobalExceptionHandler()
-//        chatLogController = ChatLogController(chatLogService)
-//        mockMvc = mockController(chatLogController, exceptionHandler)
-//    }
-//
+package org.chewing.v1.controller
+
+import io.mockk.mockk
+import org.chewing.v1.RestDocsTest
+import org.chewing.v1.controller.chat.ChatLogController
+import org.chewing.v1.service.chat.ChatLogService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.junit.jupiter.api.BeforeEach
+import org.springframework.test.context.ActiveProfiles
+
+@ActiveProfiles("test")
+class ChatLogControllerTest : RestDocsTest() {
+    private lateinit var chatLogService: ChatLogService
+    private lateinit var chatLogController: ChatLogController
+    private lateinit var exceptionHandler: GlobalExceptionHandler
+
+    @BeforeEach
+    fun setUp() {
+        chatLogService = mockk()
+        exceptionHandler = GlobalExceptionHandler()
+        chatLogController = ChatLogController(chatLogService)
+        mockMvc = mockController(chatLogController, exceptionHandler)
+    }
+
 //    @Test
 //    fun `채팅 로그 가져오기`() {
 //        val userId = "testUserId"
@@ -124,4 +117,4 @@
 //            .andExpect(jsonPath("$.data.chatLogs[5].text").value(chatNormalLog.text))
 //            .andExpect(jsonPath("$.data.chatLogs[5].timestamp").value(chatNormalLog.timestamp.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))))
 //    }
-//}
+}

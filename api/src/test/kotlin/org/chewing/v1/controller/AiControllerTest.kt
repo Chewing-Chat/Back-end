@@ -1,43 +1,34 @@
-//package org.chewing.v1.controller
-//
-//import io.mockk.every
-//import io.mockk.mockk
-//import org.chewing.v1.RestDocsTest
-//import org.chewing.v1.TestDataFactory
-//import org.chewing.v1.controller.ai.AiController
-//import org.chewing.v1.dto.request.ai.AiRequest
-//import org.chewing.v1.facade.AiFacade
-//import org.chewing.v1.model.ai.DateTarget
-//import org.chewing.v1.util.converter.StringToDateTargetConverter
-//import org.chewing.v1.util.handler.GlobalExceptionHandler
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.Test
-//import org.springframework.http.MediaType
-//import org.springframework.test.context.ActiveProfiles
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-//
-//@ActiveProfiles("test")
-//class AiControllerTest : RestDocsTest() {
-//    private lateinit var aiFacade: AiFacade
-//    private lateinit var aiController: AiController
-//    private lateinit var exceptionHandler: GlobalExceptionHandler
-//
-//    @BeforeEach
-//    fun setUp() {
-//        aiFacade = mockk()
-//        aiController = AiController(aiFacade)
-//        exceptionHandler = GlobalExceptionHandler()
-//        mockMvc = mockController(aiController, exceptionHandler)
-//
-//        mockMvc = mockControllerWithCustomConverter(
-//            aiController,
-//            StringToDateTargetConverter(),
-//        )
-//    }
-//
+package org.chewing.v1.controller
+
+import io.mockk.mockk
+import org.chewing.v1.RestDocsTest
+import org.chewing.v1.controller.ai.AiController
+import org.chewing.v1.facade.AiFacade
+import org.chewing.v1.util.converter.StringToDateTargetConverter
+import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.junit.jupiter.api.BeforeEach
+import org.springframework.test.context.ActiveProfiles
+
+@ActiveProfiles("test")
+class AiControllerTest : RestDocsTest() {
+    private lateinit var aiFacade: AiFacade
+    private lateinit var aiController: AiController
+    private lateinit var exceptionHandler: GlobalExceptionHandler
+
+    @BeforeEach
+    fun setUp() {
+        aiFacade = mockk()
+        aiController = AiController(aiFacade)
+        exceptionHandler = GlobalExceptionHandler()
+        mockMvc = mockController(aiController, exceptionHandler)
+
+        mockMvc = mockControllerWithCustomConverter(
+            aiController,
+            StringToDateTargetConverter(),
+        )
+    }
+
 //    @Test
 //    fun `AI 챗봇 친구 근황 요약하기`() {
 //        val userId = "testUserId"
@@ -105,4 +96,4 @@
 //            .andExpect(status().isCreated)
 //            .andExpect(jsonPath("$.data.scheduleId").value(scheduleId))
 //    }
-//}
+}

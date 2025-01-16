@@ -1,41 +1,29 @@
-//package org.chewing.v1.util
-//
-//import io.mockk.every
-//import io.mockk.mockk
-//import org.chewing.v1.RestDocsTest
-//import org.chewing.v1.config.TestSecurityConfig
-//import org.chewing.v1.error.AuthorizationException
-//import org.chewing.v1.error.ConflictException
-//import org.chewing.v1.error.ErrorCode
-//import org.chewing.v1.error.NotFoundException
-//import org.chewing.v1.response.ErrorResponse
-//import org.chewing.v1.support.TestExceptionController
-//import org.chewing.v1.support.TestExceptionService
-//import org.chewing.v1.util.handler.GlobalExceptionHandler
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.Test
-//import org.springframework.context.annotation.Import
-//import org.springframework.http.HttpStatus
-//import org.springframework.http.MediaType
-//import org.springframework.test.context.ActiveProfiles
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-//
-//@Import(TestSecurityConfig::class)
-//@ActiveProfiles("test")
-//class GlobalExceptionHandlerTest : RestDocsTest() {
-//
-//    private lateinit var testExceptionService: TestExceptionService
-//    private lateinit var testExceptionController: TestExceptionController
-//
-//    @BeforeEach
-//    fun setUp() {
-//        testExceptionService = mockk()
-//        testExceptionController = TestExceptionController(testExceptionService)
-//        mockMvc = mockControllerWithAdvice(testExceptionController, GlobalExceptionHandler())
-//    }
-//
+package org.chewing.v1.util
+
+import io.mockk.mockk
+import org.chewing.v1.RestDocsTest
+import org.chewing.v1.config.TestSecurityConfig
+import org.chewing.v1.support.TestExceptionController
+import org.chewing.v1.support.TestExceptionService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.junit.jupiter.api.BeforeEach
+import org.springframework.context.annotation.Import
+import org.springframework.test.context.ActiveProfiles
+
+@Import(TestSecurityConfig::class)
+@ActiveProfiles("test")
+class GlobalExceptionHandlerTest : RestDocsTest() {
+
+    private lateinit var testExceptionService: TestExceptionService
+    private lateinit var testExceptionController: TestExceptionController
+
+    @BeforeEach
+    fun setUp() {
+        testExceptionService = mockk()
+        testExceptionController = TestExceptionController(testExceptionService)
+        mockMvc = mockControllerWithAdvice(testExceptionController, GlobalExceptionHandler())
+    }
+
 //    @Test
 //    fun `MissingServletRequestParameterException 처리 확인`() {
 //        val requestBody = mapOf(
@@ -193,4 +181,4 @@
 //            .andExpect(jsonPath("$.data.errorCode").value(ErrorCode.INTERNAL_SERVER_ERROR.code))
 //            .andExpect(jsonPath("$.data.message").value(ErrorResponse.from(ErrorCode.INTERNAL_SERVER_ERROR).message))
 //    }
-//}
+}

@@ -1,36 +1,26 @@
-//package org.chewing.v1.controller
-//
-//import io.mockk.Runs
-//import io.mockk.every
-//import io.mockk.just
-//import io.mockk.mockk
-//import org.chewing.v1.RestDocsTest
-//import org.chewing.v1.TestDataFactory
-//import org.chewing.v1.controller.user.UserScheduleController
-//import org.chewing.v1.dto.request.user.ScheduleRequest
-//import org.chewing.v1.service.user.ScheduleService
-//import org.chewing.v1.util.handler.GlobalExceptionHandler
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.Test
-//import org.springframework.http.MediaType
-//import org.springframework.test.context.ActiveProfiles
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-//import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-//import java.time.format.DateTimeFormatter
-//
-//@ActiveProfiles("test")
-//class UserScheduleControllerTest : RestDocsTest() {
-//
-//    private lateinit var scheduleService: ScheduleService
-//    private lateinit var userScheduleController: UserScheduleController
-//
-//    @BeforeEach
-//    fun setUp() {
-//        scheduleService = mockk()
-//        userScheduleController = UserScheduleController(scheduleService)
-//        mockMvc = mockController(userScheduleController, GlobalExceptionHandler())
-//    }
-//
+package org.chewing.v1.controller
+
+import io.mockk.mockk
+import org.chewing.v1.RestDocsTest
+import org.chewing.v1.controller.user.UserScheduleController
+import org.chewing.v1.service.user.ScheduleService
+import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.junit.jupiter.api.BeforeEach
+import org.springframework.test.context.ActiveProfiles
+
+@ActiveProfiles("test")
+class UserScheduleControllerTest : RestDocsTest() {
+
+    private lateinit var scheduleService: ScheduleService
+    private lateinit var userScheduleController: UserScheduleController
+
+    @BeforeEach
+    fun setUp() {
+        scheduleService = mockk()
+        userScheduleController = UserScheduleController(scheduleService)
+        mockMvc = mockController(userScheduleController, GlobalExceptionHandler())
+    }
+
 //    @Test
 //    fun getSchedule() {
 //        val schedules = listOf(TestDataFactory.createSchedule())
@@ -104,4 +94,4 @@
 //            .andExpect(MockMvcResultMatchers.status().isCreated)
 //            .andExpect(MockMvcResultMatchers.jsonPath("$.data.scheduleId").value(scheduleId))
 //    }
-//}
+}
