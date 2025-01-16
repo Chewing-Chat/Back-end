@@ -33,38 +33,48 @@ class UserRepositoryTest : JpaContextTest() {
     }
 
     @Test
+    fun `유저 아이디로 읽기 - 유저가 존재하지 않음`() {
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+        jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
+
+        val result = userRepositoryImpl.read("notExistUserId")
+
+        assert(result == null)
+    }
+
+    @Test
     fun `유저 휴대폰으로 읽기`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
         val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
-        val result = userRepositoryImpl.readByCredential(phoneNumber)
+        val result = userRepositoryImpl.readByCredential(phoneNumber, AccessStatus.ACCESS)
 
         assert(result!!.userId == user.userId)
     }
 
     @Test
-    fun `휴대폰 으로 유저 신규 생성`() {
+    fun `유저 휴대폰으로 읽기 - 실패 존재하지 않는 계정(PASSWORD 생성 여부, 삭제 여부)`() {
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+        jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.DELETE)
+
+        val result = userRepositoryImpl.readByCredential(phoneNumber, AccessStatus.ACCESS)
+
+        assert(result == null)
+    }
+
+    @Test
+    fun `휴대폰으로 유저 신규 생성 - 상태가 NEED PASSWORD여야 함`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
 
         val user = userRepositoryImpl.append(phoneNumber, userName)
 
-        val result = userRepositoryImpl.readByCredential(phoneNumber)
+        val result = userRepositoryImpl.read(user.userId)
 
-        assert(result!!.userId == user.userId)
-    }
-
-    @Test
-    fun `이미 휴대폰 유저가 있다면 신규 생성하면 안됨`() {
-        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
-        val userName = UserProvider.buildUserName()
-
-        val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
-
-        val result = userRepositoryImpl.append(phoneNumber, userName)
-
-        assert(result.userId == user.userId)
+        assert(result!!.status == AccessStatus.NEED_CREATE_PASSWORD)
     }
 
     @Test
@@ -77,6 +87,18 @@ class UserRepositoryTest : JpaContextTest() {
         userRepositoryImpl.remove(user.userId)
 
         assert(userJpaRepository.findById(user.userId).get().toUser().status == AccessStatus.DELETE)
+    }
+
+    @Test
+    fun `유저 삭제 실패 - 유저가 존재하지 않음`() {
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+
+        jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
+
+        val result = userRepositoryImpl.remove("notExistUserId")
+
+        assert(result == null)
     }
 
     @Test
@@ -95,18 +117,17 @@ class UserRepositoryTest : JpaContextTest() {
     }
 
     @Test
-    fun `유저 이미지 업데이트 - 기본 배경 사진에서 새로운 사진으로 바뀜`() {
+    fun `유저 이미지 업데이트 실패 - 유저가 존재하지 않음`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
+        val userId = "notExistUserId"
 
-        val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
+        jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
-        val media = MediaProvider.buildBackgroundContent()
+        val media = MediaProvider.buildProfileContent()
 
-        userRepositoryImpl.updateMedia(user.userId, media)
-        val result = userJpaRepository.findById(user.userId).get().toUser()
-
-        assert(result.backgroundImage.type == media.type)
+        val result = userRepositoryImpl.updateMedia(userId, media)
+        assert(result == null)
     }
 
     @Test
@@ -133,5 +154,61 @@ class UserRepositoryTest : JpaContextTest() {
         val result = userRepositoryImpl.reads(listOf(user.userId, user2.userId))
 
         assert(result.size == 2)
+    }
+
+    @Test
+    fun `비밀번호 업데이트 성공`() {
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+
+        val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
+
+        val newPassword = "newPassword"
+        userRepositoryImpl.updatePassword(user.userId, newPassword)
+
+        val result = userJpaRepository.findById(user.userId)
+
+        assert(result.get().toUser().password == newPassword)
+    }
+
+    @Test
+    fun `비밀번호 업데이트 실패 - 유저가 존재하지 않음`() {
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+
+        jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
+
+        val newPassword = "newPassword"
+        val result = userRepositoryImpl.updatePassword("notExistUserId", newPassword)
+
+        assert(result == null)
+    }
+
+    @Test
+    fun `상태 메시지 업데이트 성공`() {
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+
+        val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
+
+        val newStatusMessage = "newStatusMessage"
+        userRepositoryImpl.updateStatusMessage(user.userId, newStatusMessage)
+
+        val result = userJpaRepository.findById(user.userId)
+
+        assert(result.get().toUser().statusMessage == newStatusMessage)
+    }
+
+    @Test
+    fun `상태 메시지 업데이트 실패 - 유저가 존재하지 않음`() {
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+
+        jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
+
+        val newStatusMessage = "newStatusMessage"
+        val result = userRepositoryImpl.updateStatusMessage("notExistUserId", newStatusMessage)
+
+        assert(result == null)
     }
 }

@@ -109,9 +109,9 @@ class AuthServiceTest {
 
         every { loggedInRepository.append(any(), any()) } just Runs
 
-        val result = authService.createLoginInfo(user)
-
-        assert(result.loginType == user.status)
+        assertDoesNotThrow {
+            authService.createToken(user)
+        }
     }
 
     @Test

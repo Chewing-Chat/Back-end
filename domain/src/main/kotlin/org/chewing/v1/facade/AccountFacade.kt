@@ -2,20 +2,19 @@ package org.chewing.v1.facade
 
 import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.CredentialTarget
-import org.chewing.v1.model.auth.LoginInfo
+import org.chewing.v1.model.auth.JwtToken
 import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.service.user.ScheduleService
 import org.chewing.v1.service.user.UserService
-import org.chewing.v1.service.user.UserStatusService
 import org.springframework.stereotype.Service
 
 @Service
 class AccountFacade(
     private val authService: AuthService,
     private val userService: UserService,
-    private val userStatusService: UserStatusService,
     private val scheduleService: ScheduleService,
 ) {
     fun createUser(
@@ -24,10 +23,10 @@ class AccountFacade(
         appToken: String,
         device: PushToken.Device,
         userName: String,
-    ): LoginInfo {
+    ): JwtToken {
         authService.verify(credential, verificationCode)
         val user = userService.createUser(credential, appToken, device, userName)
-        return authService.createLoginInfo(user)
+        return authService.createToken(user)
     }
 
     fun registerCredential(phoneNumber: PhoneNumber, type: CredentialTarget) {
@@ -38,10 +37,10 @@ class AccountFacade(
     fun resetCredential(
         phoneNumber: PhoneNumber,
         verificationCode: String,
-    ): LoginInfo {
+    ): JwtToken {
         authService.verify(phoneNumber, verificationCode)
-        val user = userService.getUserByCredential(phoneNumber)
-        return authService.createLoginInfo(user)
+        val user = userService.getUserByCredential(phoneNumber, AccessStatus.ACCESS)
+        return authService.createToken(user)
     }
 
     fun changePassword(
@@ -54,7 +53,6 @@ class AccountFacade(
 
     fun deleteAccount(userId: String) {
         userService.deleteUser(userId)
-        userStatusService.deleteAllUserStatuses(userId)
         scheduleService.deleteUsers(userId)
     }
 
@@ -63,10 +61,10 @@ class AccountFacade(
         password: String,
         device: PushToken.Device,
         appToken: String,
-    ): LoginInfo {
-        val user = userService.getUserByCredential(phoneNumber)
+    ): JwtToken {
+        val user = userService.getUserByCredential(phoneNumber, AccessStatus.ACCESS)
         authService.validatePassword(user, password)
-        userService.loginUser(user, device, appToken)
-        return authService.createLoginInfo(user)
+        userService.createDeviceInfo(user, device, appToken)
+        return authService.createToken(user)
     }
 }

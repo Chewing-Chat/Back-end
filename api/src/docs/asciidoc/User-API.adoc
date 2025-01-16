@@ -1,0 +1,52 @@
+[[User-API]]
+= User API
+
+== 1. 프로필 이미지 변경 01/15 수정
+
+=== 요청(Request)
+include::{snippets}/user-controller-test/change-profile-image/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/user-controller-test/change-profile-image/request-headers.adoc[]
+
+=== 요청 파트 설명(Request Parts)
+include::{snippets}/user-controller-test/change-profile-image/request-parts.adoc[]
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/change-profile-image/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/change-profile-image/response-fields.adoc[]
+
+== 2. 상태메시지 변경 01/15 수정
+
+=== 요청(Request)
+include::{snippets}/user-controller-test/change-status-message/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/user-controller-test/change-status-message/request-headers.adoc[]
+
+=== 요청 필드 설명(Request Fields)
+include::{snippets}/user-controller-test/change-status-message/request-fields.adoc[]
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/change-status-message/http-response.adoc[]
+
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/change-status-message/response-fields.adoc[]
+
+== 3. 사용자 정보 조회 01/15 수정
+
+=== 요청(Request)
+include::{snippets}/user-controller-test/get-profile/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/user-controller-test/get-profile/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/get-profile/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/get-profile/response-fields.adoc[]
+

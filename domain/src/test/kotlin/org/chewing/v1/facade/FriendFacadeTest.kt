@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import org.chewing.v1.TestDataFactory
+import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.service.friend.FriendShipService
 import org.chewing.v1.service.user.UserService
@@ -27,7 +28,7 @@ class FriendFacadeTest {
         val targetUser = TestDataFactory.createAccessUser(friendId)
         val user = TestDataFactory.createAccessUser(userId)
 
-        every { userService.getUserByCredential(targetCredential) } returns targetUser
+        every { userService.getUserByCredential(targetCredential, AccessStatus.ACCESS) } returns targetUser
         every { userService.getUser(userId) } returns user
         every { friendShipService.createFriendShip(userId, user.name, friendId, friendName) } just Runs
     }

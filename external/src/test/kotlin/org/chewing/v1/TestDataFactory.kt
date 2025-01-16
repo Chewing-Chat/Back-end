@@ -37,10 +37,10 @@ object TestDataFactory {
         "name",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
-        Media.of(FileCategory.BACKGROUND, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.ACCESS,
         PhoneNumber.of("82", "010-0000-0000"),
         "password",
+        "testStatusMessage",
     )
     fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "010-0000-0000")
     fun createWrongPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "010-0000-0001")
@@ -57,8 +57,6 @@ object TestDataFactory {
         Announcement.of(announcementId, "title", LocalDateTime.now(), "content")
 
     fun createUserSearch(userId: String): UserSearch = UserSearch.of(userId, LocalDateTime.now())
-
-    fun createLoginInfo(user: User): LoginInfo = LoginInfo.of(createJwtToken(), user)
 
     fun createChatNormalLog(
         messageId: String,

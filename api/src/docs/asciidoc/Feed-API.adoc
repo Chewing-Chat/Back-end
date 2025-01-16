@@ -1,0 +1,84 @@
+[[FEED-API]]
+= FEED API
+
+== 1. 피드 작성 01/16 수정
+
+=== 요청(Request)
+include::{snippets}/feed-controller-test/add-feed/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/feed-controller-test/add-feed/request-headers.adoc[]
+
+=== 요청 파트 설명(Request Parts)
+include::{snippets}/feed-controller-test/add-feed/request-parts.adoc[]
+
+=== 요청 쿼리 파라미터 설명(Request Query Parameters)
+include::{snippets}/feed-controller-test/add-feed/query-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/feed-controller-test/add-feed/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/feed-controller-test/add-feed/response-fields.adoc[]
+
+== 2. 피드 삭제 01/16 수정
+
+=== 요청(Request)
+include::{snippets}/feed-controller-test/delete-feeds/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/feed-controller-test/delete-feeds/request-headers.adoc[]
+
+=== 요청 필드 설명(Request Fields)
+include::{snippets}/feed-controller-test/delete-feeds/request-fields.adoc[]
+
+=== 응답(Response)
+include::{snippets}/feed-controller-test/delete-feeds/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/feed-controller-test/delete-feeds/response-fields.adoc[]
+
+== 3. 나의 피드 썸네일 목록 조회 01/16 수정
+
+=== 요청(Request)
+include::{snippets}/feed-controller-test/get-owned-feed-thumbnails/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/feed-controller-test/get-owned-feed-thumbnails/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/feed-controller-test/get-owned-feed-thumbnails/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/feed-controller-test/get-owned-feed-thumbnails/response-fields.adoc[]
+
+== 4. 친구 피드 썸네일 목록 조회 01/16 수정
+include::{snippets}/feed-controller-test/get-friend-feed-thumbnails/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/feed-controller-test/get-friend-feed-thumbnails/request-headers.adoc[]
+
+=== 요청 경로 파라미터 설명(Request Path Parameters)
+include::{snippets}/feed-controller-test/get-friend-feed-thumbnails/path-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/feed-controller-test/get-friend-feed-thumbnails/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/feed-controller-test/get-friend-feed-thumbnails/response-fields.adoc[]
+
+== 5. 피드 상세 조회 01/16 수정
+include::{snippets}/feed-controller-test/get-feed/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/feed-controller-test/get-feed/request-headers.adoc[]
+
+=== 요청 경로 파라미터 설명(Request Path Parameters)
+include::{snippets}/feed-controller-test/get-feed/path-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/feed-controller-test/get-feed/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/feed-controller-test/get-feed/response-fields.adoc[]
+

@@ -19,16 +19,15 @@ class UserValidator(
     }
 
     fun isNotAlreadyCreated(credential: Credential) {
-        userRepository.readByCredential(credential)?.let {
-            if (it.status == AccessStatus.ACCESS) {
-                throw ConflictException(ErrorCode.USER_ALREADY_CREATED)
-            }
+        val user = userRepository.readByCredential(credential, AccessStatus.ACCESS)
+        if (user != null) {
+            throw ConflictException(ErrorCode.USER_ALREADY_CREATED)
         }
     }
 
     fun isAlreadyCreated(credential: Credential) {
-        val user = userRepository.readByCredential(credential)
-        if (user == null || user.status != AccessStatus.ACCESS) {
+        val user = userRepository.readByCredential(credential, AccessStatus.ACCESS)
+        if (user == null) {
             throw ConflictException(ErrorCode.USER_NOT_CREATED)
         }
     }

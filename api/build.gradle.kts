@@ -9,7 +9,7 @@ dependencies {
     testImplementation(project(":storage"))
     testImplementation(project(":tests:api-docs"))
     testRuntimeOnly("com.h2database:h2")
-    testRuntimeOnly("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.11.0")
+    testRuntimeOnly("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:4.18.0")
 }
 
 tasks {

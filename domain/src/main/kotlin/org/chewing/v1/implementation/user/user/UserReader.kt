@@ -4,6 +4,7 @@ import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
 import org.chewing.v1.repository.user.PushNotificationRepository
 import org.chewing.v1.repository.user.UserRepository
@@ -28,8 +29,8 @@ class UserReader(
         return userRepository.read(userId) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 
-    fun readByCredential(credential: Credential): User {
-        return userRepository.readByCredential(credential) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
+    fun readByCredential(credential: Credential, accessStatus: AccessStatus): User {
+        return userRepository.readByCredential(credential, accessStatus) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 
     fun reads(userIds: List<String>): List<User> {

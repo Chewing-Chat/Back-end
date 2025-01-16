@@ -1,5 +1,6 @@
 package org.chewing.v1.controller.user
 
+import org.chewing.v1.dto.request.user.UserRequest
 import org.chewing.v1.dto.response.user.AccountResponse
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.media.FileCategory
@@ -33,10 +34,9 @@ class UserController(
     fun changeUserImage(
         @RequestPart("file") file: MultipartFile,
         @RequestAttribute("userId") userId: String,
-        @RequestParam("category") category: FileCategory,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         val convertedFile = FileHelper.convertMultipartFileToFileData(file)
-        userService.updateFile(convertedFile, userId, category)
+        userService.updateFile(convertedFile, userId, FileCategory.PROFILE)
         return ResponseHelper.successOnly()
     }
 
@@ -45,6 +45,15 @@ class UserController(
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         accountFacade.deleteAccount(userId)
+        return ResponseHelper.successOnly()
+    }
+
+    @PutMapping("/status/message")
+    fun changeStatusMessage(
+        @RequestAttribute("userId") userId: String,
+        @RequestBody statusMessage: UserRequest.UpdateStatusMessage,
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
+        userService.updateStatusMessage(userId, statusMessage.toStatusMessage())
         return ResponseHelper.successOnly()
     }
 }

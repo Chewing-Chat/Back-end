@@ -11,6 +11,6 @@ interface FeedRepository {
     fun readsFriendBetween(userId: String, dateTarget: DateTarget): List<FeedInfo>
     fun removes(feedIds: List<String>)
     fun removesOwned(userId: String)
-    fun append(userId: String, topic: String): String
+    fun append(userId: String, content: String): String
     fun isOwners(feedIds: List<String>, userId: String): Boolean
 }
