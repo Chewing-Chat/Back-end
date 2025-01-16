@@ -14,13 +14,8 @@ val snippetsDir by extra { apiProject.file("build/generated-snippets") }
 val resultDir = apiProject.file("src/main/resources/static/docs")
 
 tasks {
-
-    test {
-        finalizedBy(asciidoctor)
-    }
-
     asciidoctor {
-        dependsOn("test")
+        dependsOn("api:test")
         outputs.dir(snippetsDir)
         inputs.dir(apiProject.file("src/docs/asciidoc"))
         setOutputDir(snippetsDir)
