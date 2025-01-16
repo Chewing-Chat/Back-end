@@ -49,7 +49,7 @@ class UserRepositoryTest : JpaContextTest() {
         val userName = UserProvider.buildUserName()
         val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
-        val result = userRepositoryImpl.readByCredential(phoneNumber,AccessStatus.ACCESS)
+        val result = userRepositoryImpl.readByCredential(phoneNumber, AccessStatus.ACCESS)
 
         assert(result!!.userId == user.userId)
     }
@@ -60,7 +60,7 @@ class UserRepositoryTest : JpaContextTest() {
         val userName = UserProvider.buildUserName()
         jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.DELETE)
 
-        val result = userRepositoryImpl.readByCredential(phoneNumber,AccessStatus.ACCESS)
+        val result = userRepositoryImpl.readByCredential(phoneNumber, AccessStatus.ACCESS)
 
         assert(result == null)
     }
@@ -117,7 +117,7 @@ class UserRepositoryTest : JpaContextTest() {
     }
 
     @Test
-    fun `유저 이미지 업데이트 실패 - 유저가 존재하지 않음`(){
+    fun `유저 이미지 업데이트 실패 - 유저가 존재하지 않음`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
         val userId = "notExistUserId"
@@ -172,7 +172,7 @@ class UserRepositoryTest : JpaContextTest() {
     }
 
     @Test
-    fun `비밀번호 업데이트 실패 - 유저가 존재하지 않음`(){
+    fun `비밀번호 업데이트 실패 - 유저가 존재하지 않음`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
 
@@ -200,7 +200,7 @@ class UserRepositoryTest : JpaContextTest() {
     }
 
     @Test
-    fun `상태 메시지 업데이트 실패 - 유저가 존재하지 않음`(){
+    fun `상태 메시지 업데이트 실패 - 유저가 존재하지 않음`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
 

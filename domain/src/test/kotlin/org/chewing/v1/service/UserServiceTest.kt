@@ -195,7 +195,7 @@ class UserServiceTest {
         val user = TestDataFactory.createNotAccessUser(userId)
 
         every { userRepository.append(credential, userName) } returns user
-        every { userRepository.readByCredential(credential,AccessStatus.ACCESS) } returns null
+        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns null
         every { pushNotificationRepository.append(device, appToken, user) } just Runs
         every { pushNotificationRepository.remove(device) } just Runs
 
@@ -214,7 +214,7 @@ class UserServiceTest {
         val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.append(credential, userName) } returns user
-        every { userRepository.readByCredential(credential,AccessStatus.ACCESS) } returns user
+        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns user
         every { pushNotificationRepository.append(device, appToken, user) } just Runs
         every { pushNotificationRepository.remove(device) } just Runs
 
@@ -268,20 +268,19 @@ class UserServiceTest {
     fun `유저의 접근 가능 여부를 확인한다 - 회원가입 가능(유저가 없는 경우)`() {
         val credential = TestDataFactory.createPhoneNumber()
 
-        every { userRepository.readByCredential(credential,AccessStatus.ACCESS) } returns null
+        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns null
 
         assertDoesNotThrow {
             userService.checkAvailability(credential, CredentialTarget.SIGN_UP)
         }
     }
 
-
     @Test
     fun `유저의 접근 가능 여부를 확인한다 - 회원가입 불가능(이미 가입됨)`() {
         val credential = TestDataFactory.createPhoneNumber()
         val user = TestDataFactory.createAccessUser("userId")
 
-        every { userRepository.readByCredential(credential,AccessStatus.ACCESS) } returns user
+        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns user
 
         val result = assertThrows<ConflictException> {
             userService.checkAvailability(credential, CredentialTarget.SIGN_UP)
@@ -295,7 +294,7 @@ class UserServiceTest {
         val credential = TestDataFactory.createPhoneNumber()
         val user = TestDataFactory.createAccessUser("userId")
 
-        every { userRepository.readByCredential(credential,AccessStatus.ACCESS) } returns user
+        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns user
 
         assertDoesNotThrow {
             userService.checkAvailability(credential, CredentialTarget.RESET)
@@ -306,7 +305,7 @@ class UserServiceTest {
     fun `유저의 접근 가능 여부를 확인한다 - 비밀번호 재설정 불가능(유저가 없는 경우)`() {
         val credential = TestDataFactory.createPhoneNumber()
 
-        every { userRepository.readByCredential(credential,AccessStatus.ACCESS) } returns null
+        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns null
 
         val result = assertThrows<ConflictException> {
             userService.checkAvailability(credential, CredentialTarget.RESET)

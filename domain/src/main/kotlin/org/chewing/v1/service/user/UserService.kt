@@ -28,8 +28,8 @@ class UserService(
         return userReader.read(userId)
     }
 
-    fun getUserByCredential(credential: Credential ,accessStatus : AccessStatus): User {
-        return userReader.readByCredential(credential,accessStatus)
+    fun getUserByCredential(credential: Credential, accessStatus: AccessStatus): User {
+        return userReader.readByCredential(credential, accessStatus)
     }
 
     fun createUser(

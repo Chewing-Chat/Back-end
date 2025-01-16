@@ -29,8 +29,8 @@ class UserReader(
         return userRepository.read(userId) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 
-    fun readByCredential(credential: Credential,accessStatus: AccessStatus): User {
-        return userRepository.readByCredential(credential,accessStatus) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
+    fun readByCredential(credential: Credential, accessStatus: AccessStatus): User {
+        return userRepository.readByCredential(credential, accessStatus) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 
     fun reads(userIds: List<String>): List<User> {

@@ -4,7 +4,6 @@ import org.chewing.v1.jpaentity.user.UserJpaEntity
 import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.PhoneNumber
-import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User

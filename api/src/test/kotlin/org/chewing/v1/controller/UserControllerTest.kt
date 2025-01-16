@@ -29,9 +29,7 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
-import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
 import org.springframework.restdocs.request.RequestDocumentation.partWithName
-import org.springframework.restdocs.request.RequestDocumentation.queryParameters
 import org.springframework.restdocs.request.RequestDocumentation.requestParts
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -69,7 +67,7 @@ class UserControllerTest : RestDocsTest() {
                 .file(mockFile)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .requestAttr("userId", "testUserId")
-                .header("Authorization", "Bearer accessToken")
+                .header("Authorization", "Bearer accessToken"),
         )
             .andDo(
                 document(

@@ -15,5 +15,5 @@ interface UserRepository {
     fun append(credential: Credential, userName: String): User
     fun updatePassword(userId: String, password: String): String?
     fun updateStatusMessage(userId: String, statusMessage: String): String?
-    fun readByCredential(credential: Credential,accessStatus: AccessStatus ): User?
+    fun readByCredential(credential: Credential, accessStatus: AccessStatus): User?
 }
