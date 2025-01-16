@@ -18,6 +18,7 @@ import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.service.user.UserService
 import org.chewing.v1.util.converter.StringToFileCategoryConverter
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -32,9 +33,6 @@ import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.request.RequestDocumentation.partWithName
 import org.springframework.restdocs.request.RequestDocumentation.requestParts
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @ActiveProfiles("test")
 class UserControllerTest : RestDocsTest() {
@@ -47,7 +45,11 @@ class UserControllerTest : RestDocsTest() {
         userService = mockk()
         accountFacade = mockk()
         val userController = UserController(userService, accountFacade)
-        mockMvc = mockControllerWithAdviceAndCustomConverter(userController, GlobalExceptionHandler(), StringToFileCategoryConverter())
+        mockMvc = mockControllerWithAdviceAndCustomConverter(
+            userController,
+            GlobalExceptionHandler(),
+            StringToFileCategoryConverter(),
+        )
     }
 
     @Test
@@ -62,14 +64,14 @@ class UserControllerTest : RestDocsTest() {
 
         every { userService.updateFile(any(), any(), any()) } just Runs
 
-        val result = mockMvc.perform(
-            MockMvcRequestBuilders.multipart("/api/user/image")
-                .file(mockFile)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .requestAttr("userId", "testUserId")
-                .header("Authorization", "Bearer accessToken"),
-        )
-            .andDo(
+        val result = given()
+            .header("Authorization", "Bearer accessToken")
+            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+            .multiPart("file", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
+            .attribute("userId", "testUserId")
+            .post("/api/user/image")
+            .then()
+            .apply(
                 document(
                     "{class-name}/{method-name}",
                     requestPreprocessor(),
@@ -84,7 +86,6 @@ class UserControllerTest : RestDocsTest() {
                     responseSuccessFields(),
                 ),
             )
-
         performCommonSuccessResponse(result)
         verify { userService.updateFile(any(), any(), any()) }
     }
@@ -94,20 +95,21 @@ class UserControllerTest : RestDocsTest() {
     fun deleteUser() {
         every { accountFacade.deleteAccount(any()) } just Runs
 
-        val result = mockMvc.perform(
-            MockMvcRequestBuilders.delete("/api/user")
-                .requestAttr("userId", "testUserId")
-                .header("Authorization", "Bearer accessToken"),
-        )
-            .andDo(
-                document(
-                    "{class-name}/{method-name}",
-                    requestPreprocessor(),
-                    responsePreprocessor(),
-                    requestAccessTokenFields(),
-                    responseSuccessFields(),
-                ),
-            )
+        val result =
+            given()
+                .header("Authorization", "Bearer accessToken")
+                .attribute("userId", "testUserId")
+                .delete("/api/user")
+                .then()
+                .apply(
+                    document(
+                        "{class-name}/{method-name}",
+                        requestPreprocessor(),
+                        responsePreprocessor(),
+                        requestAccessTokenFields(),
+                        responseSuccessFields(),
+                    ),
+                )
         performCommonSuccessResponse(result)
 
         verify { accountFacade.deleteAccount(any()) }
@@ -119,25 +121,27 @@ class UserControllerTest : RestDocsTest() {
         val requestBody = UserRequest.UpdateStatusMessage("testStatusMessage")
         every { userService.updateStatusMessage(any(), any()) } just Runs
 
-        val result = mockMvc.perform(
-            MockMvcRequestBuilders.put("/api/user/status/message")
-                .content(jsonBody(requestBody))
-                .contentType(MediaType.APPLICATION_JSON)
-                .requestAttr("userId", "testUserId")
-                .header("Authorization", "Bearer accessToken"),
-        )
-            .andDo(
-                document(
-                    "{class-name}/{method-name}",
-                    requestPreprocessor(),
-                    responsePreprocessor(),
-                    requestFields(
-                        fieldWithPath("statusMessage").description("상태 메시지"),
+        val result =
+            given()
+                .header("Authorization", "Bearer accessToken")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(requestBody)
+                .attribute("userId", "testUserId")
+                .put("/api/user/status/message")
+                .then()
+                .apply(
+                    document(
+                        "{class-name}/{method-name}",
+                        requestPreprocessor(),
+                        responsePreprocessor(),
+                        requestFields(
+                            fieldWithPath("statusMessage").description("상태 메시지"),
+                        ),
+                        requestAccessTokenFields(),
+                        responseSuccessFields(),
                     ),
-                    requestAccessTokenFields(),
-                    responseSuccessFields(),
-                ),
-            )
+                )
+
         performCommonSuccessResponse(result)
 
         verify { userService.updateStatusMessage(any(), any()) }
@@ -149,12 +153,18 @@ class UserControllerTest : RestDocsTest() {
         val user = TestDataFactory.createUser(AccessStatus.ACCESS)
         every { userService.getUser(any()) } returns user
 
-        mockMvc.perform(
-            MockMvcRequestBuilders.get("/api/user/profile")
-                .requestAttr("userId", "testUserId")
-                .header("Authorization", "Bearer accessToken"),
-        )
-            .andDo(
+        given()
+            .header("Authorization", "Bearer accessToken")
+            .attribute("userId", "testUserId")
+            .get("/api/user/profile")
+            .then()
+            .statusCode(200)
+            .body("status", equalTo(200))
+            .body("data.name", equalTo(user.name))
+            .body("data.phoneNumber", equalTo(user.phoneNumber.number))
+            .body("data.countryCode", equalTo(user.phoneNumber.countryCode))
+            .body("data.birth", equalTo(user.birth))
+            .apply(
                 document(
                     "{class-name}/{method-name}",
                     requestPreprocessor(),
@@ -169,11 +179,5 @@ class UserControllerTest : RestDocsTest() {
                     ),
                 ),
             )
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.status").value(200))
-            .andExpect(jsonPath("$.data.name").value(user.name))
-            .andExpect(jsonPath("$.data.phoneNumber").value(user.phoneNumber.number))
-            .andExpect(jsonPath("$.data.countryCode").value(user.phoneNumber.countryCode))
-            .andExpect(jsonPath("$.data.birth").value(user.birth))
     }
 }

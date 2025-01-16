@@ -15,16 +15,16 @@ import java.util.*
 internal class FeedJpaEntity(
     @Id
     private val feedId: String = UUID.randomUUID().toString(),
-    private val feedTopic: String,
+    private val feedContent: String,
     private val userId: String,
 ) : BaseEntity() {
     companion object {
         fun generate(
-            topic: String,
+            content: String,
             userId: String,
         ): FeedJpaEntity {
             return FeedJpaEntity(
-                feedTopic = topic,
+                feedContent = content,
                 userId = userId,
             )
         }
@@ -37,7 +37,7 @@ internal class FeedJpaEntity(
         return FeedInfo
             .of(
                 feedId = feedId,
-                topic = feedTopic,
+                content = feedContent,
                 uploadAt = createdAt,
                 userId = userId,
             )

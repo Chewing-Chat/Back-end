@@ -87,7 +87,7 @@ object TestDataFactory {
     fun createFeedInfo(): FeedInfo {
         return FeedInfo.of(
             "feedId",
-            "testTopic",
+            "testContent",
             LocalDateTime.now(),
             "testUserId",
         )

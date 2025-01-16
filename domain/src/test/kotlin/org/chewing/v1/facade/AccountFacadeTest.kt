@@ -24,17 +24,17 @@ class AccountFacadeTest {
         val userId = "123"
         val user = TestDataFactory.createAccessUser(userId)
         val phoneNumber = TestDataFactory.createPhoneNumber()
-        val loginInfo = TestDataFactory.createLoginInfo(user)
         val device = TestDataFactory.createDevice()
+        val jwtToken = TestDataFactory.createJwtToken()
 
         every { authService.verify(any(), any()) } just Runs
         every { userService.createUser(any(), any(), any(), any()) } returns user
-        every { authService.createLoginInfo(user) } returns loginInfo
+        every { authService.createToken(user) } returns jwtToken
 
         val result = assertDoesNotThrow {
             accountFacade.createUser(phoneNumber, "123", "testAppToken", device, "testUserName")
         }
-        assert(result == loginInfo)
+        assert(result == jwtToken)
     }
 
     @Test

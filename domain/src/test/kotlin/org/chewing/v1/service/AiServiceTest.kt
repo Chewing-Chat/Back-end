@@ -63,8 +63,8 @@ class AiServiceTest {
                     assert(prompt is TextPrompt, { "두 번째 프롬프트는 TextPrompt 타입이어야 합니다." })
                     prompt as TextPrompt
                     assert(
-                        prompt.text.contains(feeds[0].feed.topic),
-                        { "두 번째 프롬프트는 피드의 주제 '${feeds[0].feed.topic}'을 포함해야 합니다." },
+                        prompt.text.contains(feeds[0].feed.content),
+                        { "두 번째 프롬프트는 피드의 주제 '${feeds[0].feed.content}'을 포함해야 합니다." },
                     )
                 }
                 2 -> {

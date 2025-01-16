@@ -38,8 +38,8 @@ internal class FeedRepositoryImpl(
         feedJpaRepository.deleteAllByUserId(userId)
     }
 
-    override fun append(userId: String, topic: String): String =
-        feedJpaRepository.save(FeedJpaEntity.generate(topic, userId)).toFeedId()
+    override fun append(userId: String, content: String): String =
+        feedJpaRepository.save(FeedJpaEntity.generate(content, userId)).toFeedId()
 
     override fun isOwners(feedIds: List<String>, userId: String): Boolean {
         return feedJpaRepository.existsByFeedIdInAndUserId(feedIds, userId)

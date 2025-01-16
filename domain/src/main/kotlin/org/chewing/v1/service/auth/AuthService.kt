@@ -3,7 +3,6 @@ package org.chewing.v1.service.auth
 import org.chewing.v1.implementation.auth.*
 import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.JwtToken
-import org.chewing.v1.model.auth.LoginInfo
 import org.chewing.v1.model.user.User
 import org.springframework.stereotype.Service
 
@@ -36,10 +35,10 @@ class AuthService(
         )
     }
 
-    fun createLoginInfo(user: User): LoginInfo {
+    fun createToken(user: User): JwtToken {
         val token = jwtTokenProvider.createJwtToken(user.userId)
         authAppender.appendLoggedIn(token.refreshToken, user.userId)
-        return LoginInfo.of(token, user)
+        return token
     }
 
     fun logout(refreshToken: String) {

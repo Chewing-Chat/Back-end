@@ -7,8 +7,6 @@ import io.mockk.just
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.config.IntegrationTest
 import org.chewing.v1.implementation.auth.JwtTokenProvider
-import org.chewing.v1.model.auth.LoginInfo
-import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.util.security.JwtAuthenticationEntryPoint
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -53,7 +51,6 @@ class SpringSecurityTest2 : IntegrationTest() {
     @DisplayName("휴대폰 인증번호 확인- 인증 없이 통과해야함")
     fun verifyPhone() {
         val jwtToken = TestDataFactory.createJwtToken()
-        val user = TestDataFactory.createUser(AccessStatus.ACCESS)
 
         val requestBody = mapOf(
             "countryCode" to "82",
@@ -64,7 +61,7 @@ class SpringSecurityTest2 : IntegrationTest() {
             "provider" to "IOS",
             "userName" to "testUserName",
         )
-        every { accountFacade.createUser(any(), any(), any(), any(), any()) } returns LoginInfo.of(jwtToken, user)
+        every { accountFacade.createUser(any(), any(), any(), any(), any()) } returns jwtToken
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/auth/create/verify")

@@ -4,7 +4,6 @@ import org.chewing.v1.dto.request.auth.LoginRequest
 import org.chewing.v1.dto.request.auth.SignUpRequest
 import org.chewing.v1.dto.request.auth.VerificationRequest
 import org.chewing.v1.dto.request.auth.VerifyOnlyRequest
-import org.chewing.v1.dto.response.auth.LogInfoResponse
 import org.chewing.v1.dto.response.auth.TokenResponse
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.auth.CredentialTarget
@@ -39,26 +38,26 @@ class AuthController(
     @PostMapping("/create/verify")
     fun signUp(
         @RequestBody request: SignUpRequest.Phone,
-    ): SuccessResponseEntity<LogInfoResponse> {
-        val loginInfo = accountFacade.createUser(
+    ): SuccessResponseEntity<TokenResponse> {
+        val jwtToken = accountFacade.createUser(
             request.toPhoneNumber(),
             request.toVerificationCode(),
             request.toAppToken(),
             request.toDevice(),
             request.toUserName(),
         )
-        return ResponseHelper.success(LogInfoResponse.of(loginInfo))
+        return ResponseHelper.success(TokenResponse.of(jwtToken))
     }
 
     @PostMapping("/reset/verify")
     fun resetCredential(
         @RequestBody request: VerifyOnlyRequest,
-    ): SuccessResponseEntity<LogInfoResponse> {
-        val loginInfo = accountFacade.resetCredential(
+    ): SuccessResponseEntity<TokenResponse> {
+        val jwtToken = accountFacade.resetCredential(
             request.toPhoneNumber(),
             request.toVerificationCode(),
         )
-        return ResponseHelper.success(LogInfoResponse.of(loginInfo))
+        return ResponseHelper.success(TokenResponse.of(jwtToken))
     }
 
     @PostMapping("/change/password")
@@ -88,10 +87,10 @@ class AuthController(
     @PostMapping("/login")
     fun login(
         @RequestBody request: LoginRequest,
-    ): SuccessResponseEntity<LogInfoResponse> {
-        val loginInfo =
+    ): SuccessResponseEntity<TokenResponse> {
+        val jwtToken =
             accountFacade.login(request.toPhoneNumber(), request.toPassword(), request.toDevice(), request.toAppToken())
-        return ResponseHelper.success(LogInfoResponse.of(loginInfo))
+        return ResponseHelper.success(TokenResponse.of(jwtToken))
     }
 
     @DeleteMapping("/logout")

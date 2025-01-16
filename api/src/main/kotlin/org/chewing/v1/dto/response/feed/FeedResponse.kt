@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter
 data class FeedResponse(
     val feedId: String,
     val uploadTime: String,
-    val topic: String,
+    val content: String,
     val details: List<FeedDetailResponse>,
 ) {
     companion object {
@@ -17,7 +17,7 @@ data class FeedResponse(
             return FeedResponse(
                 feedId = feed.feed.feedId,
                 uploadTime = formattedUploadTime,
-                topic = feed.feed.topic,
+                content = feed.feed.content,
                 details = feed.feedDetails.map { FeedDetailResponse.of(it) },
             )
         }
