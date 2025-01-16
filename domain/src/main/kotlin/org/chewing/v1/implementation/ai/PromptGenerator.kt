@@ -21,7 +21,7 @@ class PromptGenerator {
         .plus(
             feeds.flatMap { feed ->
                 sequenceOf(
-                    TextPrompt.of(feed.feed.topic),
+                    TextPrompt.of(feed.feed.content),
                     TextPrompt.of("📅 ${feed.feed.uploadAt.format(dateFormatter) + "에 올린 사진 📸"}"),
                 )
                     .plus(feed.feedDetails.map { detail -> ImagePrompt.of(detail.media.url) })

@@ -132,8 +132,6 @@ object TestDataFactory {
 
     fun createUserSearch(userId: String): UserSearch = UserSearch.of(userId, LocalDateTime.now())
 
-    fun createLoginInfo(user: User): LoginInfo = LoginInfo.of(createJwtToken(), user)
-
     fun createChatNormalLog(
         messageId: String,
         chatRoomId: String,

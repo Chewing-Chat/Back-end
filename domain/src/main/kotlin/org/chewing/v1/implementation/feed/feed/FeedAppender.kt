@@ -14,8 +14,8 @@ class FeedAppender(
     private val feedVisibilityRepository: FeedVisibilityRepository,
 ) {
     @Transactional
-    fun append(medias: List<Media>, userId: String, topic: String): String {
-        val feedId = feedRepository.append(userId, topic)
+    fun append(medias: List<Media>, userId: String, content: String): String {
+        val feedId = feedRepository.append(userId, content)
         feedDetailRepository.append(medias, feedId)
         return feedId
     }

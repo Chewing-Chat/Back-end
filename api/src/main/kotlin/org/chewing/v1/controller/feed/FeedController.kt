@@ -29,7 +29,7 @@ class FeedController(
     }
 
     @GetMapping("/owned/list")
-    fun getOwnedFeedsThumbnail(
+    fun getOwnedFeedThumbnails(
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<ThumbnailFeedsResponse> {
         val feeds = feedService.getFeeds(userId, userId)
@@ -37,7 +37,7 @@ class FeedController(
     }
 
     @GetMapping("/friend/{friendId}/list")
-    fun getFriendFeedsThumbnail(
+    fun getFriendFeedThumbnails(
         @RequestAttribute("userId") userId: String,
         @PathVariable("friendId") friendId: String,
     ): SuccessResponseEntity<ThumbnailFeedsResponse> {
@@ -58,11 +58,11 @@ class FeedController(
     fun createFeed(
         @RequestAttribute("userId") userId: String,
         @RequestPart("files") files: List<MultipartFile>,
-        @RequestParam("topic") topic: String,
+        @RequestParam("content") content: String,
         @RequestParam("friendIds") friendIds: List<String>,
     ): SuccessResponseEntity<FeedIdResponse> {
         val convertFiles = FileHelper.convertMultipartFileToFileDataList(files)
-        val feedId = feedService.make(userId, friendIds, convertFiles, topic, FileCategory.FEED)
+        val feedId = feedService.make(userId, friendIds, convertFiles, content, FileCategory.FEED)
         return ResponseHelper.successCreate(FeedIdResponse(feedId))
     }
 }

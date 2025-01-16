@@ -153,11 +153,11 @@ class JpaDataGenerator {
     }
 
     fun feedEntityData(userId: String): FeedInfo =
-        feedJpaRepository.save(FeedJpaEntity.generate("topic", userId)).toFeedInfo()
+        feedJpaRepository.save(FeedJpaEntity.generate("content", userId)).toFeedInfo()
 
     fun feedEntityDataList(userId: String): List<FeedInfo> {
         val feedJpaEntityList = (1..10).map {
-            FeedJpaEntity.generate("topic $it", userId)
+            FeedJpaEntity.generate("content $it", userId)
         }
         feedJpaRepository.saveAll(feedJpaEntityList)
         return feedJpaEntityList.map { it.toFeedInfo() }

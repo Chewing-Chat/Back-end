@@ -4,18 +4,18 @@ import java.time.LocalDateTime
 
 class FeedInfo private constructor(
     val feedId: String,
-    val topic: String,
+    val content: String,
     val uploadAt: LocalDateTime,
     val userId: String,
 ) {
     companion object {
         fun of(
             feedId: String,
-            topic: String,
+            content: String,
             uploadAt: LocalDateTime,
             userId: String,
         ): FeedInfo {
-            return FeedInfo(feedId, topic, uploadAt, userId)
+            return FeedInfo(feedId, content, uploadAt, userId)
         }
     }
 }

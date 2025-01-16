@@ -21,8 +21,8 @@ internal class FeedRepositoryTest : JpaContextTest() {
     @Test
     fun `피드를 추가해야 한다`() {
         val userId = generateUserId()
-        val topic = "topic"
-        val result = feedRepositoryImpl.append(userId, topic)
+        val content = "content"
+        val result = feedRepositoryImpl.append(userId, content)
         assert(result.isNotEmpty())
     }
 
@@ -32,7 +32,7 @@ internal class FeedRepositoryTest : JpaContextTest() {
         val feedInfo = jpaDataGenerator.feedEntityData(userId)
         val result = feedRepositoryImpl.read(feedInfo.feedId)
         assert(result != null)
-        assert(result!!.topic == feedInfo.topic)
+        assert(result!!.content == feedInfo.content)
     }
 
     @Test
