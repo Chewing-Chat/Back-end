@@ -28,8 +28,8 @@ class UserService(
         return userReader.read(userId)
     }
 
-    fun getUserByCredential(credential: Credential): User {
-        return userReader.readByCredential(credential)
+    fun getUserByCredential(credential: Credential ,accessStatus : AccessStatus): User {
+        return userReader.readByCredential(credential,accessStatus)
     }
 
     fun createUser(
@@ -45,7 +45,7 @@ class UserService(
         return user
     }
 
-    fun loginUser(
+    fun createDeviceInfo(
         user: User,
         device: PushToken.Device,
         appToken: String,

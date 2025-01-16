@@ -59,11 +59,11 @@ internal class UserRepositoryImpl(
         userId
     }.orElse(null)
 
-    override fun readByCredential(credential: Credential): User? = when (credential) {
+    override fun readByCredential(credential: Credential, accessStatus: AccessStatus): User? = when (credential) {
         is PhoneNumber -> userJpaRepository.findUserJpaEntityByCountryCodeAndPhoneNumberAndType(
             credential.countryCode,
             credential.number,
-            AccessStatus.ACCESS,
+            accessStatus,
         ).map {
             it.toUser()
         }.orElse(null)

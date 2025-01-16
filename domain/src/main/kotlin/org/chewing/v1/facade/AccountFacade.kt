@@ -5,6 +5,7 @@ import org.chewing.v1.model.auth.CredentialTarget
 import org.chewing.v1.model.auth.LoginInfo
 import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.service.user.ScheduleService
 import org.chewing.v1.service.user.UserService
@@ -38,7 +39,7 @@ class AccountFacade(
         verificationCode: String,
     ): LoginInfo {
         authService.verify(phoneNumber, verificationCode)
-        val user = userService.getUserByCredential(phoneNumber)
+        val user = userService.getUserByCredential(phoneNumber, AccessStatus.ACCESS)
         return authService.createLoginInfo(user)
     }
 
@@ -61,9 +62,9 @@ class AccountFacade(
         device: PushToken.Device,
         appToken: String,
     ): LoginInfo {
-        val user = userService.getUserByCredential(phoneNumber)
+        val user = userService.getUserByCredential(phoneNumber, AccessStatus.ACCESS)
         authService.validatePassword(user, password)
-        userService.loginUser(user, device, appToken)
+        userService.createDeviceInfo(user, device, appToken)
         return authService.createLoginInfo(user)
     }
 }

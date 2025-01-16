@@ -49,7 +49,7 @@ class UserRepositoryTest : JpaContextTest() {
         val userName = UserProvider.buildUserName()
         val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
-        val result = userRepositoryImpl.readByCredential(phoneNumber)
+        val result = userRepositoryImpl.readByCredential(phoneNumber,AccessStatus.ACCESS)
 
         assert(result!!.userId == user.userId)
     }
@@ -60,7 +60,7 @@ class UserRepositoryTest : JpaContextTest() {
         val userName = UserProvider.buildUserName()
         jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.DELETE)
 
-        val result = userRepositoryImpl.readByCredential(phoneNumber)
+        val result = userRepositoryImpl.readByCredential(phoneNumber,AccessStatus.ACCESS)
 
         assert(result == null)
     }

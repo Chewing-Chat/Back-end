@@ -161,6 +161,7 @@ class UserControllerTest : RestDocsTest() {
                     "{class-name}/{method-name}",
                     requestPreprocessor(),
                     responsePreprocessor(),
+                    requestAccessTokenFields(),
                     responseFields(
                         fieldWithPath("status").description("상태 코드"),
                         fieldWithPath("data.name").description("사용자 이름"),
