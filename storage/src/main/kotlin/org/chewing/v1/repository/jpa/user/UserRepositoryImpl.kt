@@ -41,16 +41,10 @@ internal class UserRepositoryImpl(
 
     override fun updateMedia(userId: String, media: Media): Media? = userJpaRepository.findById(userId).map { user ->
         // 수정 전 기존 미디어 정보를 반환
-        val previousMedia = when (media.category) {
-            FileCategory.PROFILE -> user.toUser().image
-            else -> null
-        }
+        val previousMedia = user.toUser().image
 
         // 새로운 미디어 정보 업데이트
-        when (media.category) {
-            FileCategory.PROFILE -> user.updateUserPictureUrl(media)
-            else -> {}
-        }
+        user.updateUserPictureUrl(media)
 
         // 사용자 정보 저장
         userJpaRepository.save(user)

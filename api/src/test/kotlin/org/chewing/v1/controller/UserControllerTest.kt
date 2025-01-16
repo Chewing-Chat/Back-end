@@ -70,7 +70,6 @@ class UserControllerTest : RestDocsTest() {
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .requestAttr("userId", "testUserId")
                 .header("Authorization", "Bearer accessToken")
-                .queryParam("category", "profile"),
         )
             .andDo(
                 document(
@@ -79,9 +78,6 @@ class UserControllerTest : RestDocsTest() {
                     responsePreprocessor(),
                     requestParts(
                         partWithName("file").description("프로필 이미지 파일 (image/jpeg)"),
-                    ),
-                    queryParameters(
-                        parameterWithName("category").description("파일 카테고리"),
                     ),
                     requestHeaders(
                         headerWithName("Content-Type").description("멀티파트 폼 데이터 타입 (image/*)"),

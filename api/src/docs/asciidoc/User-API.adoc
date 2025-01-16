@@ -12,9 +12,6 @@ include::{snippets}/user-controller-test/change-profile-image/request-headers.ad
 === 요청 파트 설명(Request Parts)
 include::{snippets}/user-controller-test/change-profile-image/request-parts.adoc[]
 
-=== 요청 쿼리 파라미터 설명(Request Parameters)
-include::{snippets}/user-controller-test/change-profile-image/query-parameters.adoc[]
-
 === 응답(Response)
 include::{snippets}/user-controller-test/change-profile-image/http-response.adoc[]
 

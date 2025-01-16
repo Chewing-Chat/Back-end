@@ -34,10 +34,9 @@ class UserController(
     fun changeUserImage(
         @RequestPart("file") file: MultipartFile,
         @RequestAttribute("userId") userId: String,
-        @RequestParam("category") category: FileCategory,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         val convertedFile = FileHelper.convertMultipartFileToFileData(file)
-        userService.updateFile(convertedFile, userId, category)
+        userService.updateFile(convertedFile, userId, FileCategory.PROFILE)
         return ResponseHelper.successOnly()
     }
 
