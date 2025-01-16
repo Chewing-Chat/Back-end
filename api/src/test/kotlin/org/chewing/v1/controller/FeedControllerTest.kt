@@ -230,8 +230,8 @@ class FeedControllerTest : RestDocsTest() {
             "Test content".toByteArray(),
         )
 
-        val feedId = "testFeedId"
-        val testFriendIds = listOf<String>("testFriendId")
+        val feedId = "testFeedId1"
+        val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
         every { feedService.make(any(), any(), any(), any(), any()) } returns feedId
 
@@ -259,7 +259,7 @@ class FeedControllerTest : RestDocsTest() {
                     ),
                     queryParameters(
                         parameterWithName("content").description("피드 내용"),
-                        parameterWithName("friendIds").description("피드를 공유할 친구 ID 목록"),
+                        parameterWithName("friendIds").description("피드를 공유할 친구 ID 목록(POST /api/feed?content=testContent&friendIds=testFriendId&friendIds=testFriendId2) 형식"),
                     ),
                     responseFields(
                         fieldWithPath("status").description("상태 코드"),
