@@ -42,7 +42,10 @@ jobs:
         env:
           SPRING_PROFILES_ACTIVE: live
         run: ./gradlew build
-            
+        
+      - name: List all files in directory
+        run: ls -R ./api/build
+        
       - name: Build Docker Image
         env:
           SPRING_PROFILES_ACTIVE: live
