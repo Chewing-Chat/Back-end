@@ -60,18 +60,10 @@ API 문서에서 공통으로 사용되는 내용을 정의합니다.
 * 인증이 필요한 API 호출 시 반드시 포함
 
 
-== Announcement API
-:api-title: Announcement API
 include::Announcement-API.adoc[]
 
-== Auth API
-:api-title: Auth API
 include::Auth-API.adoc[]
 
-== User API
-:api-title: User API
 include::User-API.adoc[]
 
-== Feed API
-:api-title: Feed API
 include::Feed-API.adoc[]
