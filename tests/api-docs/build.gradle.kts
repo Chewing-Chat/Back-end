@@ -20,7 +20,7 @@ tasks {
     }
 
     asciidoctor {
-        dependsOn(":api:test")
+        dependsOn("test")
         outputs.dir(snippetsDir)
         inputs.dir(apiProject.file("src/docs/asciidoc"))
         setOutputDir(snippetsDir)
