@@ -24,7 +24,7 @@ out/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-
+api/src/main/resources/static/docs/*.html
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
