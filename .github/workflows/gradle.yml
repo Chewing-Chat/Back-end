@@ -34,7 +34,7 @@ jobs:
       - name: Build with Gradle
         env:
           SPRING_PROFILES_ACTIVE: live
-        run: ./gradlew build
+        run: ./gradlew clean build --no-build-cache
         
       - name: List all files in directory
         run: ls -R ./api/build
