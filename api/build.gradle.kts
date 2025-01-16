@@ -22,3 +22,38 @@ tasks {
         enabled = true
     }
 }
+
+val snippetsDir by extra { file("build/generated-snippets") }
+
+tasks {
+    test {
+        outputs.dir(snippetsDir)
+        useJUnitPlatform()
+    }
+
+    asciidoctor {
+        inputs.dir(snippetsDir)
+        dependsOn(test)
+
+        attributes(
+            mapOf("snippets" to snippetsDir.absolutePath),
+        )
+        baseDirFollowsSourceDir()
+    }
+
+    bootJar {
+        dependsOn(asciidoctor)
+        from("build/docs/asciidoc") {
+            into("static/docs")
+        }
+    }
+    register<Copy>("copyAsciidoctor") {
+        dependsOn(asciidoctor)
+        from(layout.buildDirectory.dir("docs/asciidoc"))
+        into(layout.projectDirectory.dir("src/main/resources/static/docs"))
+    }
+
+    build {
+        dependsOn("copyAsciidoctor")
+    }
+}
