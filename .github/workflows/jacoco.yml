@@ -27,6 +27,9 @@ jobs:
 
       - name: Test with Gradle
         run: ./gradlew --info test asciidoctor
+
+      - name: Asciidoctor with Gradle
+        run: ./gradlew --info asciidoctor
         
       - name: List all files in directory
         run: ls -R
