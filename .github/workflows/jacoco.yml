@@ -27,6 +27,9 @@ jobs:
 
       - name: Test with Gradle
         run: ./gradlew --info test
+        
+      - name: List all files in directory
+        run: ls -R
 
       - name: Test Coverage Report
         id: jacoco
