@@ -15,7 +15,7 @@ import org.springframework.restdocs.payload.ResponseFieldsSnippet
 object RestDocsUtils {
 
     fun requestPreprocessor(): OperationRequestPreprocessor = Preprocessors.preprocessRequest(
-        Preprocessors.modifyUris().scheme("http").host("org.chewing").removePort(),
+        Preprocessors.modifyUris().scheme("http").host("118.67.142.14").removePort(),
         Preprocessors.prettyPrint(),
     )
 

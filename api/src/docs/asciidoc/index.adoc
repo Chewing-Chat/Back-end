@@ -71,3 +71,7 @@ include::Auth-API.adoc[]
 == User API
 :api-title: User API
 include::User-API.adoc[]
+
+== Feed API
+:api-title: Feed API
+include::Feed-API.adoc[]
