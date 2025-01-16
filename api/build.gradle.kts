@@ -21,4 +21,8 @@ tasks {
     bootJar {
         enabled = true
     }
+
+    test {
+        finalizedBy(":tests:api-docs:asciidoctor")
+    }
 }
