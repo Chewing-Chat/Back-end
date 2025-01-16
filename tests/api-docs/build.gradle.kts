@@ -15,7 +15,6 @@ val resultDir = apiProject.file("src/main/resources/static/docs")
 
 tasks {
     asciidoctor {
-        dependsOn(":api:test")
         outputs.dir(snippetsDir)
         inputs.dir(apiProject.file("src/docs/asciidoc"))
         setOutputDir(snippetsDir)
