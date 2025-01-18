@@ -1,8 +1,9 @@
 package org.chewing.v1.jpaentity.user
 
 import jakarta.persistence.*
-import org.chewing.v1.model.schedule.Schedule
+import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
+import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleTime
 import java.time.LocalDateTime
 import java.util.*
@@ -17,34 +18,47 @@ import java.util.*
 internal class ScheduleJpaEntity(
     @Id
     private val scheduleId: String = UUID.randomUUID().toString(),
-    private val name: String,
-    private val content: String,
-    private val dateTime: LocalDateTime,
-    private val userId: String,
-    private val timeDecided: Boolean,
-    private val location: String,
+    private var name: String,
+    private var content: String,
+    private var dateTime: LocalDateTime,
+    private var timeDecided: Boolean,
+    private var location: String,
+    @Enumerated(EnumType.STRING)
+    private var status: ScheduleStatus,
 ) {
     companion object {
         fun generate(
             scheduleContent: ScheduleContent,
             scheduleTime: ScheduleTime,
-            userId: String,
         ): ScheduleJpaEntity = ScheduleJpaEntity(
             name = scheduleContent.title,
             content = scheduleContent.memo,
             dateTime = scheduleTime.dateTime,
-            userId = userId,
             location = scheduleContent.location,
             timeDecided = scheduleTime.timeDecided,
+            status = ScheduleStatus.ACTIVE,
         )
     }
 
-    fun toSchedule(): Schedule = Schedule.of(
+    fun toScheduleInfo(): ScheduleInfo = ScheduleInfo.of(
         scheduleId,
         name,
         content,
         dateTime,
         location,
         timeDecided,
+        status,
     )
+
+    fun updateStatus(status: ScheduleStatus) {
+        this.status = status
+    }
+
+    fun updateInfo(scheduleTime: ScheduleTime, scheduleContent: ScheduleContent) {
+        this.name = scheduleContent.title
+        this.content = scheduleContent.memo
+        this.dateTime = scheduleTime.dateTime
+        this.location = scheduleContent.location
+        this.timeDecided = scheduleTime.timeDecided
+    }
 }

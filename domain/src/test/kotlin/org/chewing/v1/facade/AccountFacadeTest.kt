@@ -42,7 +42,7 @@ class AccountFacadeTest {
         val userId = "123"
 
         every { userService.deleteUser(any()) } just Runs
-        every { scheduleService.deleteUsers(any()) } just Runs
+        every { scheduleService.deleteParticipant(any()) } just Runs
 
         accountFacade.deleteAccount(userId)
 

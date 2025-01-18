@@ -53,7 +53,7 @@ class AccountFacade(
 
     fun deleteAccount(userId: String) {
         userService.deleteUser(userId)
-        scheduleService.deleteUsers(userId)
+        scheduleService.deleteParticipant(userId)
     }
 
     fun login(

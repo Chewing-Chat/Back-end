@@ -32,7 +32,7 @@ class UserScheduleController(
         @RequestBody request: ScheduleRequest.Delete,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         val scheduleId = request.toScheduleId()
-        scheduleService.delete(scheduleId)
+        scheduleService.delete(userId, scheduleId)
         return ResponseHelper.successOnly()
     }
 
@@ -41,7 +41,8 @@ class UserScheduleController(
         @RequestAttribute("userId") userId: String,
         @RequestBody request: ScheduleRequest.Create,
     ): SuccessResponseEntity<ScheduleIdResponse> {
-        val scheduleId = scheduleService.create(userId, request.toScheduleTime(), request.toScheduleContent(), request.toFriendIds())
+        val scheduleId =
+            scheduleService.create(userId, request.toScheduleTime(), request.toScheduleContent(), request.toFriendIds())
         return ResponseHelper.successCreate(ScheduleIdResponse(scheduleId))
     }
 }

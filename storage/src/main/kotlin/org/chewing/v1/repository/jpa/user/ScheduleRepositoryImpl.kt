@@ -13,26 +13,39 @@ import java.time.temporal.TemporalAdjusters
 internal class ScheduleRepositoryImpl(
     private val scheduleJpaRepository: ScheduleJpaRepository,
 ) : ScheduleRepository {
-    override fun append(scheduleTime: ScheduleTime, scheduleContent: ScheduleContent, userId: String): String {
-        return scheduleJpaRepository.save(ScheduleJpaEntity.generate(scheduleContent, scheduleTime, userId)).toSchedule().id
+    override fun append(scheduleTime: ScheduleTime, scheduleContent: ScheduleContent): String {
+        return scheduleJpaRepository.save(ScheduleJpaEntity.generate(scheduleContent, scheduleTime)).toScheduleInfo().id
     }
 
     @Transactional
     override fun remove(scheduleId: String) {
-        scheduleJpaRepository.deleteById(scheduleId)
+        scheduleJpaRepository.findById(scheduleId)
+            .ifPresent {
+                    scheduleEntity ->
+                scheduleEntity.updateStatus(ScheduleStatus.DELETED)
+                scheduleJpaRepository.save(scheduleEntity)
+            }
     }
 
-    @Transactional
-    override fun removeUsers(userId: String) {
-        scheduleJpaRepository.deleteAllByUserId(userId)
+    override fun update(
+        scheduleId: String,
+        scheduleTime: ScheduleTime,
+        scheduleContent: ScheduleContent,
+    ) {
+        scheduleJpaRepository.findById(scheduleId)
+            .ifPresent {
+                    scheduleEntity ->
+                scheduleEntity.updateInfo(scheduleTime, scheduleContent)
+                scheduleJpaRepository.save(scheduleEntity)
+            }
     }
 
-    override fun reads(userId: String, type: ScheduleType): List<Schedule> {
+    override fun reads(scheduleIds: List<String>, type: ScheduleType, status: ScheduleStatus): List<ScheduleInfo> {
         val startDateTime = LocalDateTime.of(type.year, type.month, 1, 0, 0)
         val endDateTime = startDateTime
             .with(TemporalAdjusters.firstDayOfNextMonth()) // 다음 달의 첫 날로 설정
             .minusSeconds(1) // 1초 전으로 설정
-        return scheduleJpaRepository.findSchedules(userId, startDateTime, endDateTime)
-            .map { it.toSchedule() }
+        return scheduleJpaRepository.findSchedules(scheduleIds, startDateTime, endDateTime, status)
+            .map { it.toScheduleInfo() }
     }
 }

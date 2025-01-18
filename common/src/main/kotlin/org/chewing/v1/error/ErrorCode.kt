@@ -48,11 +48,6 @@ enum class ErrorCode(
     FEED_IS_OWNED("FEED_5", "피드 작성자입니다."),
     FEED_IS_NOT_VISIBLE("FEED_6", "피드를 볼 수 없습니다."),
 
-    FEED_COMMENT_IS_NOT_OWNED("COMMENT_1", "댓글 작성자가 아닙니다."),
-    FEED_COMMENT_NOT_FOUND("COMMENT_2", "댓글을 찾을 수 없음."),
-    FEED_COMMENT_FAILED("COMMENT_3", "댓글 작성을 실패하였습니다."),
-    FEED_UNCOMMENT_FAILED("COMMENT_4", "댓글 삭제를 실패하였습니다."),
-
     EMOTICON_NOT_FOUND("EMOTICON_1", "이모티콘을 찾을 수 없음."),
 
     CHATROOM_NOT_FOUND("CHATROOM_1", "채팅방을 찾을 수 없음."),
@@ -64,6 +59,8 @@ enum class ErrorCode(
     ANNOUNCEMENT_NOT_FOUND("ANNOUNCEMENT_1", "공지사항을 찾을 수 없음."),
 
     SCHEDULE_NOT_FOUND("SCHEDULE_1", "일정을 찾을 수 없음."),
+    SCHEDULE_UPDATE_FAILED("SCHEDULE_3", "일정 수정을 실패하였습니다."),
+    SCHEDULE_NOT_PARTICIPANT("SCHEDULE_4", "참여자가 아닙니다."),
     SCHEDULE_CREATE_FAILED("SCHEDULE_2", "일정 생성을 실패하였습니다."),
 
     AI_CREATE_FAILED("AI_1", "AI 생성을 실패하였습니다."),

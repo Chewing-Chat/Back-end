@@ -41,8 +41,10 @@ import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedInfo
-import org.chewing.v1.model.schedule.Schedule
+import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
+import org.chewing.v1.model.schedule.ScheduleParticipantStatus
+import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleTime
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.AccessStatus
@@ -100,6 +102,9 @@ class JpaDataGenerator {
     @Autowired
     private lateinit var feedVisibilityJpaRepository: FeedVisibilityJpaRepository
 
+    @Autowired
+    private lateinit var scheduleParticipantJpaRepository: ScheduleParticipantJpaRepository
+
     fun userEntityData(credential: PhoneNumber, userName: String, access: AccessStatus): User {
         val user = UserJpaEntity.generate(credential, userName, access)
         userJpaRepository.save(user)
@@ -125,10 +130,26 @@ class JpaDataGenerator {
         }
     }
 
-    fun scheduleEntityData(content: ScheduleContent, time: ScheduleTime, userId: String): Schedule {
-        val scheduleEntity = ScheduleJpaEntity.generate(content, time, userId)
+    fun scheduleEntityData(content: ScheduleContent, time: ScheduleTime): ScheduleInfo {
+        val scheduleEntity = ScheduleJpaEntity.generate(content, time)
         scheduleJpaRepository.save(scheduleEntity)
-        return scheduleEntity.toSchedule()
+        return scheduleEntity.toScheduleInfo()
+    }
+
+    fun scheduleParticipantEntityData(scheduleId: String, userId: String, status: ScheduleParticipantStatus) {
+        val entity = ScheduleParticipantJpaEntity.generate(
+            userId = userId,
+            scheduleId = scheduleId,
+        )
+        entity.updateStatus(status)
+        scheduleParticipantJpaRepository.save(entity)
+    }
+
+    fun scheduleDeleteEntityData(content: ScheduleContent, time: ScheduleTime): ScheduleInfo {
+        val scheduleEntity = ScheduleJpaEntity.generate(content, time)
+        scheduleEntity.updateStatus(ScheduleStatus.DELETED)
+        scheduleJpaRepository.save(scheduleEntity)
+        return scheduleEntity.toScheduleInfo()
     }
 
     fun feedVisibilityEntityData(feedId: String, userId: String) {

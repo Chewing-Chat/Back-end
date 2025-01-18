@@ -22,7 +22,11 @@ import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.schedule.Schedule
+import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
+import org.chewing.v1.model.schedule.ScheduleParticipant
+import org.chewing.v1.model.schedule.ScheduleParticipantStatus
+import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleTime
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.*
@@ -106,14 +110,28 @@ object TestDataFactory {
 
     fun createScheduleContent(): ScheduleContent = ScheduleContent.of("testTitle", "memo", "location")
 
-    fun createSchedule(): Schedule = Schedule.of(
-        "scheduleId",
+    fun createScheduleInfo(scheduleId: String, status: ScheduleStatus): ScheduleInfo = ScheduleInfo.of(
+        scheduleId,
         "title",
         "memo",
         LocalDateTime.now(),
         "location",
         true,
+        status,
     )
+
+    fun createScheduleParticipant(
+        userId: String,
+        scheduleId: String,
+        status: ScheduleParticipantStatus,
+    ): ScheduleParticipant = ScheduleParticipant.of(userId, scheduleId, status)
+
+    fun createSchedule(
+        scheduleInfo: ScheduleInfo,
+        scheduleParticipant: List<ScheduleParticipant>,
+    ): Schedule {
+        return Schedule.of(scheduleInfo, scheduleParticipant)
+    }
 
     fun createFriendShip(friendId: String, accessStatus: AccessStatus): FriendShip =
         FriendShip.of(friendId, createUserName(), true, accessStatus)
