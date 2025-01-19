@@ -67,3 +67,5 @@ include::Auth-API.adoc[]
 include::User-API.adoc[]
 
 include::Feed-API.adoc[]
+
+include::Schedule-API.adoc[]

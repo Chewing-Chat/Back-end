@@ -30,4 +30,26 @@ class ScheduleRequest {
 
         fun toFriendIds(): List<String> = friendIds
     }
+
+    data class Update(
+        val scheduleId: String,
+        val title: String,
+        val friendIds: List<String>,
+        val dateTime: String,
+        val timeDecided: Boolean,
+        val memo: String,
+        val location: String,
+    ) {
+        fun toScheduleId(): String = scheduleId
+
+        fun toScheduleContent(): ScheduleContent = ScheduleContent.of(title, memo, location)
+
+        fun toScheduleTime(): ScheduleTime {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            val date = LocalDateTime.parse(dateTime, formatter)
+            return ScheduleTime.of(date, timeDecided)
+        }
+
+        fun toFriendIds(): List<String> = friendIds
+    }
 }

@@ -45,4 +45,13 @@ class UserScheduleController(
             scheduleService.create(userId, request.toScheduleTime(), request.toScheduleContent(), request.toFriendIds())
         return ResponseHelper.successCreate(ScheduleIdResponse(scheduleId))
     }
+
+    @PutMapping("")
+    fun updateSchedule(
+        @RequestAttribute("userId") userId: String,
+        @RequestBody request: ScheduleRequest.Update,
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
+        scheduleService.update(userId, request.toScheduleId(), request.toScheduleTime(), request.toScheduleContent(), request.toFriendIds())
+        return ResponseHelper.successOnly()
+    }
 }

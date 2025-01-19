@@ -24,6 +24,7 @@ import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.notification.Notification
 import org.chewing.v1.model.notification.NotificationType
+import org.chewing.v1.model.schedule.Schedule
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleParticipant
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
@@ -68,7 +69,7 @@ object TestDataFactory {
         )
     }
 
-    fun createSchedule(status: ScheduleStatus): ScheduleInfo {
+    fun createScheduleInfo(status: ScheduleStatus): ScheduleInfo {
         return ScheduleInfo.of(
             "testScheduleId",
             "testScheduleTitle",
@@ -76,7 +77,7 @@ object TestDataFactory {
             LocalDateTime.now(),
             "testLocation",
             true,
-            ScheduleStatus.ACTIVE,
+            status,
         )
     }
 
@@ -85,6 +86,16 @@ object TestDataFactory {
             "testScheduleId",
             "testUserId",
             status,
+        )
+    }
+
+    fun createSchedule(
+        scheduleInfo: ScheduleInfo,
+        scheduleParticipants: List<ScheduleParticipant>,
+    ): Schedule {
+        return Schedule.of(
+            scheduleInfo,
+            scheduleParticipants,
         )
     }
 
