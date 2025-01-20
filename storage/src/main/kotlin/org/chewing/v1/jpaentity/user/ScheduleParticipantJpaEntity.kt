@@ -8,6 +8,7 @@ import jakarta.persistence.Table
 import org.chewing.v1.jpaentity.common.BaseEntity
 import org.chewing.v1.model.schedule.ScheduleParticipant
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
+import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
 
 @DynamicInsert
@@ -23,15 +24,15 @@ internal class ScheduleParticipantJpaEntity(
 ) : BaseEntity() {
     companion object {
         fun generate(
-            userId: String,
+            userId: UserId,
             scheduleId: String,
         ): ScheduleParticipantJpaEntity = ScheduleParticipantJpaEntity(
-            id = ScheduleParticipantId(userId, scheduleId),
+            id = ScheduleParticipantId.of(userId, scheduleId),
             status = ScheduleParticipantStatus.ACTIVE,
         )
     }
     fun toParticipant(): ScheduleParticipant = ScheduleParticipant.of(
-        id.userId,
+        UserId.of(id.userId),
         id.scheduleId,
         status,
     )

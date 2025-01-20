@@ -21,7 +21,7 @@ class SearchServiceTest {
 
     @Test
     fun `유저의 검색 키워드를 추가한다`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val keyword = "keyword"
         every { userSearchRepository.appendHistory(userId, keyword) } just Runs
 
@@ -32,7 +32,7 @@ class SearchServiceTest {
 
     @Test
     fun `유저의 검색 키워드를 가져온다`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val userSearch = TestDataFactory.createUserSearch(userId)
 
         every { userSearchRepository.readSearchHistory(userId) }.returns(listOf(userSearch))

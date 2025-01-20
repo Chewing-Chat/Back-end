@@ -1,7 +1,9 @@
 package org.chewing.v1.model.chat.member
 
+import org.chewing.v1.model.user.UserId
+
 class ChatRoomMemberInfo private constructor(
-    val memberId: String,
+    val memberId: UserId,
     val chatRoomId: String,
     val readSeqNumber: Int,
     val startSeqNumber: Int,
@@ -9,7 +11,7 @@ class ChatRoomMemberInfo private constructor(
 ) {
     companion object {
         fun of(
-            memberId: String,
+            memberId: UserId,
             chatRoomId: String,
             readSeqNumber: Int,
             startSeqNumber: Int,

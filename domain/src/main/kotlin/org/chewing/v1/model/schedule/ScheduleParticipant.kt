@@ -1,13 +1,15 @@
 package org.chewing.v1.model.schedule
 
+import org.chewing.v1.model.user.UserId
+
 class ScheduleParticipant private constructor(
-    val userId: String,
+    val userId: UserId,
     val scheduleId: String,
     val status: ScheduleParticipantStatus,
 ) {
     companion object {
         fun of(
-            userId: String,
+            userId: UserId,
             scheduleId: String,
             status: ScheduleParticipantStatus,
         ): ScheduleParticipant {

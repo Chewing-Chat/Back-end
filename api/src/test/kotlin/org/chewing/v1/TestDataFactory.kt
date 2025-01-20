@@ -33,6 +33,7 @@ import org.chewing.v1.model.search.Search
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
 object TestDataFactory {
@@ -47,7 +48,7 @@ object TestDataFactory {
 
     fun createUser(accessStatus: AccessStatus): User {
         return User.of(
-            "testUserId",
+            UserId.of("testUserId"),
             "testUserName",
             "20000101",
             Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
@@ -83,8 +84,8 @@ object TestDataFactory {
 
     fun createScheduleParticipant(status: ScheduleParticipantStatus): ScheduleParticipant {
         return ScheduleParticipant.of(
+            UserId.of("testUserId"),
             "testScheduleId",
-            "testUserId",
             status,
         )
     }
@@ -112,7 +113,7 @@ object TestDataFactory {
             "feedId",
             "testContent",
             LocalDateTime.now(),
-            "testUserId",
+            UserId.of("testUserId"),
         )
     }
 
@@ -139,7 +140,7 @@ object TestDataFactory {
         return ChatNormalMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
-            senderId = "sender",
+            senderId = UserId.of("senderId"),
             text = "text",
             number = ChatNumber.of(chatRoomId, 1, 1),
             timestamp = LocalDateTime.now(),
@@ -150,7 +151,7 @@ object TestDataFactory {
         return ChatBombMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
-            senderId = "sender",
+            senderId = UserId.of("senderId"),
             text = "text",
             number = ChatNumber.of(chatRoomId, 1, 1),
             timestamp = LocalDateTime.now(),
@@ -162,10 +163,10 @@ object TestDataFactory {
         return ChatInviteMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
-            senderId = "sender",
+            senderId = UserId.of("senderId"),
             number = ChatNumber.of(chatRoomId, 1, 1),
             timestamp = LocalDateTime.now(),
-            targetUserIds = listOf("targetUserId"),
+            targetUserIds = listOf(UserId.of("targetUserId")),
         )
     }
 
@@ -173,7 +174,7 @@ object TestDataFactory {
         return ChatFileMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
-            senderId = "sender",
+            senderId = UserId.of("senderId"),
             number = ChatNumber.of(chatRoomId, 1, 1),
             timestamp = LocalDateTime.now(),
             medias = listOf(Media.of(FileCategory.CHAT, "www.example.com", 0, MediaType.IMAGE_PNG)),
@@ -184,7 +185,7 @@ object TestDataFactory {
         return ChatLeaveMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
-            senderId = "sender",
+            senderId = UserId.of("senderId"),
             number = ChatNumber.of(chatRoomId, 1, 1),
             timestamp = LocalDateTime.now(),
         )
@@ -193,7 +194,7 @@ object TestDataFactory {
     fun createReadMessage(chatRoomId: String): ChatReadMessage {
         return ChatReadMessage.of(
             chatRoomId = chatRoomId,
-            senderId = "sender",
+            senderId = UserId.of("senderId"),
             number = ChatNumber.of(chatRoomId, 1, 1),
             timestamp = LocalDateTime.now(),
         )
@@ -203,7 +204,7 @@ object TestDataFactory {
         return ChatReplyMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
-            senderId = "sender",
+            senderId = UserId.of("senderId"),
             number = ChatNumber.of(chatRoomId, 1, 1),
             timestamp = LocalDateTime.now(),
             parentMessageId = "parentMessageId",
@@ -220,211 +221,9 @@ object TestDataFactory {
         return ChatDeleteMessage.of(
             targetMessageId = messageId,
             chatRoomId = chatRoomId,
-            senderId = "sender",
+            senderId = UserId.of("senderId"),
             number = ChatNumber.of(chatRoomId, 1, 1),
             timestamp = LocalDateTime.now(),
-        )
-    }
-
-    fun createReplyLog(
-        messageId: String,
-        chatRoomId: String,
-        userId: String,
-    ): ChatReplyLog {
-        return ChatReplyLog.of(
-            messageId = messageId,
-            chatRoomId = chatRoomId,
-            senderId = userId,
-            number = ChatNumber.of(chatRoomId, 1, 1),
-            timestamp = LocalDateTime.now(),
-            parentMessageId = "parentMessageId",
-            parentMessageText = "parentMessageText",
-            parentMessagePage = 1,
-            parentMessageType = ChatLogType.NORMAL,
-            parentSeqNumber = 1,
-            text = "text",
-            type = ChatLogType.REPLY,
-        )
-    }
-
-    fun createNormalLog(
-        messageId: String,
-        chatRoomId: String,
-        userId: String,
-    ): ChatNormalLog {
-        return ChatNormalLog.of(
-            messageId = messageId,
-            chatRoomId = chatRoomId,
-            senderId = userId,
-            number = ChatNumber.of(chatRoomId, 1, 1),
-            timestamp = LocalDateTime.now(),
-            text = "text",
-            type = ChatLogType.NORMAL,
-        )
-    }
-
-    fun createFileLog(
-        messageId: String,
-        chatRoomId: String,
-        userId: String,
-    ): ChatFileLog {
-        return ChatFileLog.of(
-            messageId = messageId,
-            chatRoomId = chatRoomId,
-            senderId = userId,
-            number = ChatNumber.of(chatRoomId, 1, 1),
-            timestamp = LocalDateTime.now(),
-            medias = listOf(Media.of(FileCategory.CHAT, "www.example.com", 0, MediaType.IMAGE_PNG)),
-            type = ChatLogType.FILE,
-        )
-    }
-
-    fun createLeaveLog(
-        messageId: String,
-        chatRoomId: String,
-        userId: String,
-    ): ChatLeaveLog {
-        return ChatLeaveLog.of(
-            messageId = messageId,
-            chatRoomId = chatRoomId,
-            senderId = userId,
-            number = ChatNumber.of(chatRoomId, 1, 1),
-            timestamp = LocalDateTime.now(),
-            type = ChatLogType.LEAVE,
-        )
-    }
-
-    fun createInviteLog(
-        messageId: String,
-        chatRoomId: String,
-        userId: String,
-    ): ChatInviteLog {
-        return ChatInviteLog.of(
-            messageId = messageId,
-            chatRoomId = chatRoomId,
-            senderId = userId,
-            number = ChatNumber.of(chatRoomId, 1, 1),
-            timestamp = LocalDateTime.now(),
-            targetUserIds = listOf("targetUserId"),
-            type = ChatLogType.INVITE,
-        )
-    }
-
-    fun createBombLog(
-        messageId: String,
-        chatRoomId: String,
-        userId: String,
-    ): ChatBombLog {
-        return ChatBombLog.of(
-            messageId = messageId,
-            chatRoomId = chatRoomId,
-            senderId = userId,
-            number = ChatNumber.of(chatRoomId, 1, 1),
-            timestamp = LocalDateTime.now(),
-            expiredAt = LocalDateTime.now().plusMinutes(1),
-            text = "text",
-            type = ChatLogType.BOMB,
-        )
-    }
-
-    fun createEmoticon(
-        emoticonId: String,
-    ): Emoticon {
-        return Emoticon.of(
-            id = emoticonId,
-            name = "emoticonName",
-            url = "www.example.com",
-        )
-    }
-
-    fun createEmoticonPack(
-        emoticonPackId: String,
-        emoticons: List<Emoticon>,
-    ): EmoticonPack {
-        return EmoticonPack.of(
-            id = emoticonPackId,
-            name = "emoticonPackName",
-            url = "www.example.com",
-            emoticons = emoticons,
-        )
-    }
-
-    fun createFriendShip(): FriendShip {
-        return FriendShip.of(
-            "testFriendId",
-            createFriendName(),
-            isFavorite = true,
-            AccessStatus.ACCESS,
-        )
-    }
-
-    fun createRoomInfo(): ChatRoomInfo {
-        return ChatRoomInfo.of(
-            "chatRoomId",
-            true,
-        )
-    }
-
-    fun createChatRoomMemberInfo(
-        userId: String,
-    ): ChatRoomMemberInfo {
-        return ChatRoomMemberInfo.of(
-            userId,
-            "chatRoomId",
-            1,
-            1,
-            true,
-        )
-    }
-
-    fun createChatRoomMember(
-        userId: String,
-        isOwned: Boolean,
-    ): ChatRoomMember {
-        return ChatRoomMember.of(
-            userId,
-            1,
-            isOwned,
-        )
-    }
-
-    fun createRoom(): Room {
-        return Room.of(
-            createRoomInfo(),
-            createChatRoomMemberInfo("userId"),
-            listOf(createChatRoomMember("userId", true), createChatRoomMember("friendId", false)),
-        )
-    }
-
-    fun createChatRoom(): ChatRoom {
-        return ChatRoom.of(
-            room = createRoom(),
-            chatLog = createNormalLog("messageId", "chatRoomId", "userId"),
-        )
-    }
-
-    fun createSearch(
-        chatRooms: List<ChatRoom>,
-        friends: List<FriendShip>,
-    ): Search {
-        return Search.of(
-            chatRooms,
-            friends,
-        )
-    }
-
-    fun createNotification(): Notification {
-        return Notification.of(
-            createUser(AccessStatus.ACCESS),
-            PushToken.of(
-                "pushToken",
-                "platform",
-                PushToken.Provider.ANDROID,
-                "deviceId",
-            ),
-            NotificationType.COMMENT,
-            "testId",
-            "content",
         )
     }
 }

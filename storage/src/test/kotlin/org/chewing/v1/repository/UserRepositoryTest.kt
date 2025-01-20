@@ -3,6 +3,7 @@ package org.chewing.v1.repository
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.user.AccessStatus
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.user.UserRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.chewing.v1.repository.support.MediaProvider
@@ -10,6 +11,7 @@ import org.chewing.v1.repository.support.PhoneNumberProvider
 import org.chewing.v1.repository.support.UserProvider
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import java.util.UUID
 
 class UserRepositoryTest : JpaContextTest() {
     @Autowired
@@ -38,7 +40,7 @@ class UserRepositoryTest : JpaContextTest() {
         val userName = UserProvider.buildUserName()
         jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
-        val result = userRepositoryImpl.read("notExistUserId")
+        val result = userRepositoryImpl.read(generateUserId())
 
         assert(result == null)
     }
@@ -86,7 +88,7 @@ class UserRepositoryTest : JpaContextTest() {
 
         userRepositoryImpl.remove(user.userId)
 
-        assert(userJpaRepository.findById(user.userId).get().toUser().status == AccessStatus.DELETE)
+        assert(userJpaRepository.findById(user.userId.id).get().toUser().status == AccessStatus.DELETE)
     }
 
     @Test
@@ -96,7 +98,7 @@ class UserRepositoryTest : JpaContextTest() {
 
         jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
-        val result = userRepositoryImpl.remove("notExistUserId")
+        val result = userRepositoryImpl.remove(generateUserId())
 
         assert(result == null)
     }
@@ -111,7 +113,7 @@ class UserRepositoryTest : JpaContextTest() {
         val media = MediaProvider.buildProfileContent()
 
         userRepositoryImpl.updateMedia(user.userId, media)
-        val result = userJpaRepository.findById(user.userId).get().toUser()
+        val result = userJpaRepository.findById(user.userId.id).get().toUser()
 
         assert(result.image.type == media.type)
     }
@@ -120,7 +122,7 @@ class UserRepositoryTest : JpaContextTest() {
     fun `유저 이미지 업데이트 실패 - 유저가 존재하지 않음`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()
-        val userId = "notExistUserId"
+        val userId = generateUserId()
 
         jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
@@ -166,7 +168,7 @@ class UserRepositoryTest : JpaContextTest() {
         val newPassword = "newPassword"
         userRepositoryImpl.updatePassword(user.userId, newPassword)
 
-        val result = userJpaRepository.findById(user.userId)
+        val result = userJpaRepository.findById(user.userId.id)
 
         assert(result.get().toUser().password == newPassword)
     }
@@ -179,7 +181,7 @@ class UserRepositoryTest : JpaContextTest() {
         jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
         val newPassword = "newPassword"
-        val result = userRepositoryImpl.updatePassword("notExistUserId", newPassword)
+        val result = userRepositoryImpl.updatePassword(generateUserId(), newPassword)
 
         assert(result == null)
     }
@@ -194,7 +196,7 @@ class UserRepositoryTest : JpaContextTest() {
         val newStatusMessage = "newStatusMessage"
         userRepositoryImpl.updateStatusMessage(user.userId, newStatusMessage)
 
-        val result = userJpaRepository.findById(user.userId)
+        val result = userJpaRepository.findById(user.userId.id)
 
         assert(result.get().toUser().statusMessage == newStatusMessage)
     }
@@ -207,8 +209,11 @@ class UserRepositoryTest : JpaContextTest() {
         jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
         val newStatusMessage = "newStatusMessage"
-        val result = userRepositoryImpl.updateStatusMessage("notExistUserId", newStatusMessage)
+        val result = userRepositoryImpl.updateStatusMessage(generateUserId(), newStatusMessage)
 
         assert(result == null)
     }
+
+    private fun generateUserId(): UserId = UserId.of(UUID.randomUUID().toString())
+
 }

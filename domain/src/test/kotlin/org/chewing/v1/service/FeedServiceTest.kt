@@ -37,7 +37,7 @@ class FeedServiceTest {
     @Test
     fun `피드를 가져온다`() {
         val feedId = "feedId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val feedDetailId = "feedDetailId"
         val feed = TestDataFactory.createFeedInfo(feedId, userId)
         val feedDetail = TestDataFactory.createFeedDetail(feedId, feedDetailId, 0)
@@ -58,7 +58,7 @@ class FeedServiceTest {
     @Test
     fun `피드를 가져온다 - 피드가 존재 하지 않음`() {
         val feedId = "feedId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
 
         every { feedRepository.read(feedId) } returns null
         every { feedVisibilityRepository.isVisible(feedId, userId) } returns true
@@ -73,7 +73,7 @@ class FeedServiceTest {
     @Test
     fun `피드를 가져온다 - 공개 되지 않은 피드`() {
         val feedId = "feedId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
 
         every { feedRepository.read(feedId) } returns null
         every { feedVisibilityRepository.isVisible(feedId, userId) } returns false
@@ -88,7 +88,7 @@ class FeedServiceTest {
     @Test
     fun `자신의 피드들을 가져온다`() {
         // given
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val feedIds = listOf("feedId1", "feedId2")
         val feedDetailsByFeedId = mapOf(
             "feedId1" to listOf(
@@ -127,8 +127,8 @@ class FeedServiceTest {
     @Test
     fun `친구의 피드들을 가져온다`() {
         // given
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val feedIds = listOf("feedId1", "feedId2")
         val visibleFeedIds = listOf("feedId1")
         val feedDetailsByFeedId = mapOf(
@@ -163,7 +163,7 @@ class FeedServiceTest {
 
     @Test
     fun `피드들을 삭제에 성공한다`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val feedIds = listOf("feedId1", "feedId2")
 
         every { feedRepository.isOwners(feedIds, userId) } returns true
@@ -177,7 +177,7 @@ class FeedServiceTest {
 
     @Test
     fun `피드들 삭제 에 실패 - 잘봇된 접근 본인 소유의 피드가 아님`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val feedIds = listOf("feedId1", "feedId2")
 
         every { feedRepository.isOwners(feedIds, userId) } returns false
@@ -190,12 +190,12 @@ class FeedServiceTest {
 
     @Test
     fun `피드를 추가한다`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val topic = "topic"
         val feedId = "feedId"
         val fileData = TestDataFactory.createFileData()
         val media = TestDataFactory.createProfileMedia()
-        val visibleFriendIds = listOf("friendId1", "friendId2")
+        val visibleFriendIds = listOf(TestDataFactory.createFriendId())
 
         every { feedRepository.append(userId, topic) } returns feedId
         every { feedDetailRepository.append(listOf(media), feedId) } just Runs

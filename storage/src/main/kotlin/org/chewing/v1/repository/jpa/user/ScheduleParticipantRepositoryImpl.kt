@@ -6,6 +6,7 @@ import org.chewing.v1.jpaentity.user.ScheduleParticipantJpaEntity
 import org.chewing.v1.jparepository.user.ScheduleParticipantJpaRepository
 import org.chewing.v1.model.schedule.ScheduleParticipant
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.ScheduleParticipantRepository
 import org.springframework.stereotype.Repository
 
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository
 internal class ScheduleParticipantRepositoryImpl(
     private val scheduleParticipantJpaRepository: ScheduleParticipantJpaRepository,
 ) : ScheduleParticipantRepository {
-    override fun appendParticipants(scheduleId: String, userIds: List<String>) {
+    override fun appendParticipants(scheduleId: String, userIds: List<UserId>) {
         val entities = userIds.map { userId ->
             ScheduleParticipantJpaEntity.generate(
                 userId = userId,
@@ -32,10 +33,10 @@ internal class ScheduleParticipantRepositoryImpl(
     }
 
     override fun readParticipant(
-        userId: String,
+        userId: UserId,
         scheduleId: String,
     ): ScheduleParticipant? {
-        val scheduleParticipantId = ScheduleParticipantId(userId, scheduleId)
+        val scheduleParticipantId = ScheduleParticipantId(userId.id, scheduleId)
         val entity = scheduleParticipantJpaRepository.findById(scheduleParticipantId).orElse(null)
         return entity?.toParticipant()
     }
@@ -46,16 +47,16 @@ internal class ScheduleParticipantRepositoryImpl(
     }
 
     override fun readParticipantScheduleIds(
-        userId: String,
+        userId: UserId,
         status: ScheduleParticipantStatus,
     ): List<String> {
-        val entities = scheduleParticipantJpaRepository.findAllByIdUserIdAndStatus(userId, status)
+        val entities = scheduleParticipantJpaRepository.findAllByIdUserIdAndStatus(userId.id, status)
         return entities.map { it.toParticipant().scheduleId }
     }
 
     @Transactional
-    override fun removeParticipated(userId: String) {
-        val entities = scheduleParticipantJpaRepository.findAllByIdUserId(userId)
+    override fun removeParticipated(userId: UserId) {
+        val entities = scheduleParticipantJpaRepository.findAllByIdUserId(userId.id)
         entities.forEach {
             it.updateStatus(ScheduleParticipantStatus.DELETED)
         }
@@ -70,9 +71,9 @@ internal class ScheduleParticipantRepositoryImpl(
     }
 
     @Transactional
-    override fun removeParticipants(scheduleId: String, userIds: List<String>) {
+    override fun removeParticipants(scheduleId: String, userIds: List<UserId>) {
         val scheduleParticipantIds = userIds.map { userId ->
-            ScheduleParticipantId(userId, scheduleId)
+            ScheduleParticipantId(userId.id, scheduleId)
         }
         val entities = scheduleParticipantJpaRepository.findAllByIdIn(scheduleParticipantIds)
         entities.forEach {

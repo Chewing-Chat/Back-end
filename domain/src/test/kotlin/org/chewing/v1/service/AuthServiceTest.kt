@@ -104,7 +104,7 @@ class AuthServiceTest {
 
     @Test
     fun `로그인 정보 생성`() {
-        val userId = "1234"
+        val userId = TestDataFactory.createUserId()
         val user = TestDataFactory.createAccessUser(userId)
 
         every { loggedInRepository.append(any(), any()) } just Runs
@@ -116,7 +116,7 @@ class AuthServiceTest {
 
     @Test
     fun `로그 아웃시 토큰이 삭제 되어야함 - 성공`() {
-        val userId = "1234"
+        val userId = TestDataFactory.createUserId()
         val refreshToken = jwtTokenProvider.createRefreshToken(userId)
 
         every { loggedInRepository.remove(any()) } just Runs
@@ -128,7 +128,7 @@ class AuthServiceTest {
 
     @Test
     fun `jwt 토큰 refresh에 성공해야 한다`() {
-        val userId = "1234"
+        val userId = TestDataFactory.createUserId()
         val refreshToken = jwtTokenProvider.createRefreshToken(userId)
 
         every { loggedInRepository.read(refreshToken.token, userId) } returns refreshToken
@@ -141,8 +141,8 @@ class AuthServiceTest {
 
     @Test
     fun `저장된 jwt 토큰이 없어서 에러가 발생해야 함`() {
-        val userId = "1234"
-        val refreshToken = jwtTokenProvider.createRefreshToken("1234")
+        val userId = TestDataFactory.createUserId()
+        val refreshToken = jwtTokenProvider.createRefreshToken(userId)
 
         every { loggedInRepository.read(refreshToken.token, userId) } returns null
 
@@ -163,8 +163,9 @@ class AuthServiceTest {
     @Test
     fun `비밀번호 검증 - 성공`() {
         val password = "1234"
+        val userId  = TestDataFactory.createUserId()
         val encryptPassword = authGenerator.hashPassword(password)
-        val user = TestDataFactory.createEncryptedUser("userId", encryptPassword)
+        val user = TestDataFactory.createEncryptedUser(userId, encryptPassword)
         assertDoesNotThrow {
             authService.validatePassword(user, password)
         }
@@ -174,8 +175,9 @@ class AuthServiceTest {
     fun `비밀번호 검증 - 실패`() {
         val password = "1234"
         val wrongPassword = "5678"
+        val userId  = TestDataFactory.createUserId()
         val encryptPassword = authGenerator.hashPassword(password)
-        val user = TestDataFactory.createEncryptedUser("userId", encryptPassword)
+        val user = TestDataFactory.createEncryptedUser(userId, encryptPassword)
 
         val exception = assertThrows<AuthorizationException> {
             authService.validatePassword(user, wrongPassword)

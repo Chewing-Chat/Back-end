@@ -12,6 +12,7 @@ import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory.createFeed
 import org.chewing.v1.controller.feed.FeedController
 import org.chewing.v1.dto.request.feed.FeedRequest
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.feed.FeedService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.hamcrest.CoreMatchers.equalTo
@@ -52,7 +53,7 @@ class FeedControllerTest : RestDocsTest() {
     fun getOwnedFeedThumbnails() {
         val userId = "testUserId"
         val feeds = listOf(createFeed())
-        every { feedService.getFeeds(userId, userId) } returns feeds
+        every { feedService.getFeeds(UserId.of(userId), UserId.of(userId)) } returns feeds
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -91,7 +92,7 @@ class FeedControllerTest : RestDocsTest() {
         val userId = "testUserId"
         val friendId = "testFriendId"
         val feeds = listOf(createFeed())
-        every { feedService.getFeeds(userId, friendId) } returns feeds
+        every { feedService.getFeeds(UserId.of(userId), UserId.of(friendId)) } returns feeds
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -134,7 +135,7 @@ class FeedControllerTest : RestDocsTest() {
         val userId = "testUserId"
         val feed = createFeed()
         val uploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
-        every { feedService.getFeed(testFeedId, userId) } returns feed
+        every { feedService.getFeed(testFeedId, UserId.of(userId)) } returns feed
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -188,7 +189,7 @@ class FeedControllerTest : RestDocsTest() {
                 feedId = "testFeedId2",
             ),
         )
-        every { feedService.removes(userId, requestBody.map { it.toFeedId() }) } just Runs
+        every { feedService.removes(any(), requestBody.map { it.toFeedId() }) } just Runs
 
         val result = given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)

@@ -4,6 +4,7 @@ import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.user.AccessStatus
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.friend.FriendShipRepository
 import org.springframework.stereotype.Component
 
@@ -23,13 +24,13 @@ class FriendShipValidator(
         }
     }
 
-    private fun validateMyself(userId: String, friendId: String) {
+    private fun validateMyself(userId: UserId, friendId: UserId) {
         if (userId == friendId) {
             throw ConflictException(ErrorCode.FRIEND_MYSELF)
         }
     }
 
-    fun validateCreationAllowed(userId: String, friendId: String) {
+    fun validateCreationAllowed(userId: UserId, friendId: UserId) {
         validateMyself(userId, friendId)
         friendShipRepository.read(userId, friendId)?.let {
             validateBlock(it)

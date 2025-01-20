@@ -5,6 +5,7 @@ import org.chewing.v1.jpaentity.chat.PersonalChatRoomMemberJpaEntity
 import org.chewing.v1.jparepository.chat.PersonalChatRoomMemberJpaRepository
 import org.chewing.v1.model.chat.member.ChatRoomMemberInfo
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.chat.PersonalChatRoomMemberRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -13,20 +14,23 @@ import org.springframework.transaction.annotation.Transactional
 internal class PersonalChatRoomMemberRepositoryImpl(
     private val personalChatRoomMemberJpaRepository: PersonalChatRoomMemberJpaRepository,
 ) : PersonalChatRoomMemberRepository {
-    override fun readFriend(chatRoomId: String, userId: String): ChatRoomMemberInfo? = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, userId)).orElse(null)
+    override fun readFriend(chatRoomId: String, userId: UserId): ChatRoomMemberInfo? =
+        personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId)).orElse(null)
         ?.toRoomFriend()
 
-    override fun readIdIfExist(userId: String, friendId: String): String? = personalChatRoomMemberJpaRepository.findPersonalChatRoomId(userId, friendId)
+    override fun readIdIfExist(userId: UserId, friendId: UserId): String? =
+        personalChatRoomMemberJpaRepository.findPersonalChatRoomId(userId.id, friendId.id)
 
-    override fun reads(userId: String): List<ChatRoomMemberInfo> = personalChatRoomMemberJpaRepository.findAllByIdUserId(userId).flatMap {
+    override fun reads(userId: UserId): List<ChatRoomMemberInfo> =
+        personalChatRoomMemberJpaRepository.findAllByIdUserId(userId.id).flatMap {
         listOf(it.toRoomOwned(), it.toRoomFriend())
     }
 
-    override fun appendIfNotExist(chatRoomId: String, userId: String, friendId: String, number: ChatNumber) {
-        personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, friendId)).orElseGet {
+    override fun appendIfNotExist(chatRoomId: String, userId: UserId, friendId: UserId, number: ChatNumber) {
+        personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId)).orElseGet {
             val entity = PersonalChatRoomMemberJpaEntity.generate(
-                friendId,
                 userId,
+                friendId,
                 chatRoomId,
                 number,
             )
@@ -34,23 +38,23 @@ internal class PersonalChatRoomMemberRepositoryImpl(
         }
     }
 
-    override fun updateRead(userId: String, number: ChatNumber) {
-        personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId(number.chatRoomId, userId)).ifPresent {
+    override fun updateRead(userId: UserId, number: ChatNumber) {
+        personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(number.chatRoomId, userId)).ifPresent {
             it.updateRead(number)
             personalChatRoomMemberJpaRepository.save(it)
         }
     }
 
-    override fun updateFavorite(chatRoomId: String, userId: String, isFavorite: Boolean) {
-        personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, userId)).ifPresent {
+    override fun updateFavorite(chatRoomId: String, userId: UserId, isFavorite: Boolean) {
+        personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId)).ifPresent {
             it.updateFavorite(isFavorite)
             personalChatRoomMemberJpaRepository.save(it)
         }
     }
 
     @Transactional
-    override fun removes(chatRoomIds: List<String>, userId: String) {
-        val chatRoomMemberIds = chatRoomIds.map { ChatRoomMemberId(it, userId) }
+    override fun removes(chatRoomIds: List<String>, userId: UserId) {
+        val chatRoomMemberIds = chatRoomIds.map { ChatRoomMemberId.of(it, userId) }
         personalChatRoomMemberJpaRepository.deleteAllById(chatRoomMemberIds)
     }
 }

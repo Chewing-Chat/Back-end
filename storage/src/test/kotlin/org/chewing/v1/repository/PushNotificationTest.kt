@@ -2,6 +2,7 @@ package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.user.PushNotificationJpaRepository
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.user.PushNotificationRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.chewing.v1.repository.support.PushTokenProvider
@@ -27,7 +28,7 @@ class PushNotificationTest : JpaContextTest() {
         val device = PushTokenProvider.buildDeviceNormal()
         val appToken = PushTokenProvider.buildAppTokenNormal()
         pushNotificationRepositoryImpl.append(device, appToken, user)
-        assert(pushNotificationJpaRepository.findAllByUserId(userId).isNotEmpty())
+        assert(pushNotificationJpaRepository.findAllByUserId(userId.id).isNotEmpty())
     }
 
     @Test
@@ -46,5 +47,5 @@ class PushNotificationTest : JpaContextTest() {
         assert(result.size == 1)
     }
 
-    fun generateUserId(): String = UUID.randomUUID().toString()
+    private fun generateUserId() = UserId.of(UUID.randomUUID().toString())
 }

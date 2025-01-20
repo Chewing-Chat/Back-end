@@ -6,6 +6,7 @@ import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.PushNotificationRepository
 import org.chewing.v1.repository.user.UserRepository
 import org.springframework.stereotype.Component
@@ -25,7 +26,7 @@ class UserReader(
      * @throws NotFoundException 사용자가 존재하지 않는 경우,
      * USER_NOT_FOUND 오류 코드와 함께 예외를 발생시킵니다.
      */
-    fun read(userId: String): User {
+    fun read(userId: UserId): User {
         return userRepository.read(userId) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 
@@ -33,11 +34,11 @@ class UserReader(
         return userRepository.readByCredential(credential, accessStatus) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 
-    fun reads(userIds: List<String>): List<User> {
+    fun reads(userIds: List<UserId>): List<User> {
         return userRepository.reads(userIds)
     }
 
-    fun readsPushToken(userId: String): List<PushToken> {
+    fun readsPushToken(userId: UserId): List<PushToken> {
         return pushNotificationRepository.reads(userId)
     }
 }

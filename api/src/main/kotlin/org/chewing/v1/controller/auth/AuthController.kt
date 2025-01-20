@@ -7,6 +7,7 @@ import org.chewing.v1.dto.request.auth.VerifyOnlyRequest
 import org.chewing.v1.dto.response.auth.TokenResponse
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.auth.CredentialTarget
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.HttpResponse
 import org.chewing.v1.response.SuccessCreateResponse
 import org.chewing.v1.response.SuccessOnlyResponse
@@ -66,7 +67,7 @@ class AuthController(
         @RequestAttribute("userId") userId: String,
     ): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
         accountFacade.changePassword(
-            userId,
+            UserId.of(userId),
             request.password,
         )
         return ResponseHelper.successOnly()
@@ -78,7 +79,7 @@ class AuthController(
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<SuccessCreateResponse> {
         accountFacade.changePassword(
-            userId,
+            UserId.of(userId),
             request.password,
         )
         return ResponseHelper.successCreateOnly()

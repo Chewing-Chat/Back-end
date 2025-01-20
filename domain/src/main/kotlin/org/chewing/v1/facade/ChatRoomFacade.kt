@@ -4,6 +4,7 @@ import org.chewing.v1.implementation.chat.room.ChatRoomAggregator
 import org.chewing.v1.implementation.chat.room.ChatRoomSortEngine
 import org.chewing.v1.model.chat.room.ChatRoom
 import org.chewing.v1.model.chat.room.ChatRoomSortCriteria
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.chat.ChatLogService
 import org.chewing.v1.service.chat.RoomService
 import org.chewing.v1.service.notification.NotificationService
@@ -16,7 +17,7 @@ class ChatRoomFacade(
     private val chatRoomAggregator: ChatRoomAggregator,
     private val notificationService: NotificationService,
 ) {
-    fun leavesChatRoom(chatRoomIds: List<String>, userId: String) {
+    fun leavesChatRoom(chatRoomIds: List<String>, userId: UserId) {
         roomService.deleteGroupChatRooms(chatRoomIds, userId)
         val chatMessages = chatLogService.leaveMessages(chatRoomIds, userId)
         chatMessages.forEach {
@@ -26,21 +27,21 @@ class ChatRoomFacade(
         }
     }
 
-    fun createGroupChatRoom(userId: String, friendIds: List<String>): String {
+    fun createGroupChatRoom(userId: UserId, friendIds: List<UserId>): String {
         val newRoomId = roomService.createGroupChatRoom(userId, friendIds)
         val chatMessage = chatLogService.inviteMessages(friendIds, newRoomId, userId)
         notificationService.handleMessagesNotification(chatMessage, friendIds, userId)
         return newRoomId
     }
 
-    fun getChatRooms(userId: String, sort: ChatRoomSortCriteria): List<ChatRoom> {
+    fun getChatRooms(userId: UserId, sort: ChatRoomSortCriteria): List<ChatRoom> {
         val roomInfos = roomService.getChatRooms(userId)
         val latestChatLogs = chatLogService.getLatestChat(roomInfos.map { it.chatRoomId })
         val chatRooms = chatRoomAggregator.aggregateChatRoom(roomInfos, latestChatLogs)
         return ChatRoomSortEngine.sortChatRoom(chatRooms, sort)
     }
 
-    fun inviteChatRoom(userId: String, chatRoomId: String, friendId: String) {
+    fun inviteChatRoom(userId: UserId, chatRoomId: String, friendId: UserId) {
         roomService.inviteChatRoom(chatRoomId, friendId, userId)
         val chatMessage = chatLogService.inviteMessage(chatRoomId, friendId, userId)
         val chatRoomInfo = roomService.activateChatRoom(chatRoomId, userId, chatMessage.number)

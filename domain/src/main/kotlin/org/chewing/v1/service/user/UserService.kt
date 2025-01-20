@@ -20,11 +20,11 @@ class UserService(
     private val userAppender: UserAppender,
 ) {
 
-    fun getUsers(userIds: List<String>): List<User> {
+    fun getUsers(userIds: List<UserId>): List<User> {
         return userReader.reads(userIds)
     }
 
-    fun getUser(userId: String): User {
+    fun getUser(userId: UserId): User {
         return userReader.read(userId)
     }
 
@@ -53,17 +53,17 @@ class UserService(
         userAppender.appendUserPushToken(user, appToken, device)
     }
 
-    fun updatePassword(userId: String, password: String) {
+    fun updatePassword(userId: UserId, password: String) {
         userUpdater.updatePassword(userId, password)
     }
 
-    fun updateFile(file: FileData, userId: String, category: FileCategory) {
+    fun updateFile(file: FileData, userId: UserId, category: FileCategory) {
         val media = fileHandler.handleNewFile(userId, file, category)
         val oldMedia = userUpdater.updateFileUrl(userId, media)
         fileHandler.handleOldFile(oldMedia)
     }
 
-    fun updateStatusMessage(userId: String, statusMessage: String) {
+    fun updateStatusMessage(userId: UserId, statusMessage: String) {
         userUpdater.updateStatusMessage(userId, statusMessage)
     }
 
@@ -74,13 +74,13 @@ class UserService(
         }
     }
 
-    fun getAccessUser(userId: String): User {
+    fun getAccessUser(userId: UserId): User {
         val user = userReader.read(userId)
         userValidator.isAccess(user)
         return user
     }
 
-    fun deleteUser(userId: String) {
+    fun deleteUser(userId: UserId) {
         val removedUser = userRemover.remove(userId)
         fileHandler.handleOldFile(removedUser.image)
     }

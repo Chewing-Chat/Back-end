@@ -1,5 +1,7 @@
 package org.chewing.v1.service.web
 
+import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
 import java.util.concurrent.ConcurrentHashMap
 

@@ -4,6 +4,7 @@ import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.chat.ChatRoomMemberId
 import org.chewing.v1.jparepository.chat.PersonalChatRoomMemberJpaRepository
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.chat.PersonalChatRoomMemberRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.junit.jupiter.api.Test
@@ -45,10 +46,10 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
 
         // friendId2가 userId2의 채팅방에 속해있지 않은 상태
         chatRoomMemberRepositoryImpl.appendIfNotExist(chatRoomId, userId, friendId, number)
-        val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, friendId))
+        val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId))
         assert(result.isPresent)
         // 친구 입장에서 확인
-        assert(result.get().toRoomOwned().memberId == friendId)
+        assert(result.get().toRoomOwned().memberId == userId)
         assert(result.get().toRoomOwned().chatRoomId == chatRoomId)
         assert(result.get().toRoomOwned().readSeqNumber == number.sequenceNumber)
         assert(!result.get().toRoomOwned().favorite)
@@ -66,7 +67,7 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         // friendId3이 userId3의 채팅방에 속해있는 상태
         jpaDataGenerator.personalChatRoomMemberEntityData(friendId, userId, chatRoomId, number)
         chatRoomMemberRepositoryImpl.appendIfNotExist(chatRoomId, userId, friendId, newNumber)
-        val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, friendId))
+        val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, friendId))
         assert(result.isPresent)
         // 친구 입장에서 확인
         assert(result.get().toRoomOwned().memberId == friendId)
@@ -85,7 +86,7 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         val number = ChatNumber.of(chatRoomId, 1, 1)
         jpaDataGenerator.personalChatRoomMemberEntityData(userId, friendId, chatRoomId, number)
         chatRoomMemberRepositoryImpl.removes(listOf(chatRoomId), userId)
-        val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, friendId))
+        val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, friendId))
         assert(result.isEmpty)
     }
 
@@ -109,7 +110,7 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         val number = ChatNumber.of(chatRoomId, 1, 1)
         jpaDataGenerator.personalChatRoomMemberEntityData(userId, friendId, chatRoomId, number)
         chatRoomMemberRepositoryImpl.updateFavorite(chatRoomId, userId, true)
-        val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, userId))
+        val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId))
         assert(result.isPresent)
         assert(result.get().toRoomOwned().favorite)
     }
@@ -123,7 +124,7 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         val chatNumber = ChatNumber.of(chatRoomId, 50, 1)
         jpaDataGenerator.personalChatRoomMemberEntityData(userId, friendId, chatRoomId, preChatNumber)
         chatRoomMemberRepositoryImpl.updateRead(userId, chatNumber)
-        val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, userId))
+        val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId))
         assert(result.isPresent)
         assert(result.get().toRoomOwned().readSeqNumber == chatNumber.sequenceNumber)
     }
@@ -147,7 +148,7 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         assert(chatRoomMemberInfo == null)
     }
 
-    private fun generateUserId() = UUID.randomUUID().toString()
+    private fun generateUserId() = UserId.of(UUID.randomUUID().toString())
     private fun generateUserIds() = listOf(generateUserId(), generateUserId())
     private fun generateChatRoomId() = UUID.randomUUID().toString()
 }

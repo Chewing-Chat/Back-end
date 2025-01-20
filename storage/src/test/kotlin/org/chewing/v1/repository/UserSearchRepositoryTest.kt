@@ -3,6 +3,7 @@ package org.chewing.v1.repository
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.friend.UserSearchJpaEntity
 import org.chewing.v1.jparepository.user.UserSearchJpaRepository
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.user.UserSearchRepositoryImpl
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +26,7 @@ class UserSearchRepositoryTest : JpaContextTest() {
         userSearchRepositoryImpl.appendHistory(userId, keyword)
 
         // then
-        val searchHistory = userSearchJpaRepository.findAllByUserIdOrderByCreatedAt(userId)
+        val searchHistory = userSearchJpaRepository.findAllByUserIdOrderByCreatedAt(userId.id)
         assert(searchHistory.size == 1)
     }
 
@@ -43,5 +44,5 @@ class UserSearchRepositoryTest : JpaContextTest() {
         assert(searchHistory.size == 1)
     }
 
-    fun generateUserId(): String = UUID.randomUUID().toString()
+    private fun generateUserId(): UserId = UserId.of(UUID.randomUUID().toString())
 }

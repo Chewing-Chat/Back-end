@@ -25,7 +25,7 @@ class ChatRoomFacadeTest {
     @Test
     fun `채팅방 들 에서 나가야 함`() {
         val chatRoomIds = listOf("1", "2", "3")
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val messageId = "messageId"
         val chatRoomId = "chatRoomId"
         val chatMessage = TestDataFactory.createLeaveMessage(messageId, chatRoomId)
@@ -46,10 +46,12 @@ class ChatRoomFacadeTest {
 
     @Test
     fun `그룹 채팅방을 만들어야 함`() {
-        val userId = "userId"
-        val friendIds = listOf("friendId1", "friendId2")
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
+        val friendIds = listOf(friendId)
         val newRoomId = "newRoomId"
-        val chatMessage = TestDataFactory.createInviteMessage(newRoomId, userId)
+        val messageId = "messageId"
+        val chatMessage = TestDataFactory.createInviteMessage(messageId, newRoomId)
 
         every { roomService.createGroupChatRoom(any(), any()) } returns newRoomId
         every { chatLogService.inviteMessages(any(), any(), any()) } returns chatMessage
@@ -63,10 +65,10 @@ class ChatRoomFacadeTest {
 
     @Test
     fun `채팅방 목록을 가져와야 함 - 일반 메시지`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
         val messageId = "messageId"
-        val friendId = "friendId"
+       val friendId = TestDataFactory.createFriendId()
         val sort = ChatRoomSortCriteria.DATE
         val time = LocalDateTime.now()
 
@@ -87,10 +89,10 @@ class ChatRoomFacadeTest {
 
     @Test
     fun `채팅방 목록을 가져와야 함 - 파일 메시지`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
         val messageId = "messageId"
-        val friendId = "friendId"
+       val friendId = TestDataFactory.createFriendId()
         val sort = ChatRoomSortCriteria.DATE
 
         val chatRoomInfo = TestDataFactory.createRoom(chatRoomId, userId, friendId, false)
@@ -109,10 +111,10 @@ class ChatRoomFacadeTest {
 
     @Test
     fun `채팅방 목록을 가져와야 함 - 초대 메시지`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
         val messageId = "messageId"
-        val friendId = "friendId"
+       val friendId = TestDataFactory.createFriendId()
         val sort = ChatRoomSortCriteria.DATE
 
         // chatRoomId2 가 더 최근에 대화가 있음
@@ -132,10 +134,10 @@ class ChatRoomFacadeTest {
 
     @Test
     fun `채팅방 목록을 가져와야 함 - 폭탄 메시지`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
         val messageId = "messageId"
-        val friendId = "friendId"
+       val friendId = TestDataFactory.createFriendId()
         val sort = ChatRoomSortCriteria.DATE
 
         // chatRoomId2 가 더 최근에 대화가 있음
@@ -155,10 +157,10 @@ class ChatRoomFacadeTest {
 
     @Test
     fun `채팅방 목록을 가져와야 함 - 답글 메시지`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
         val messageId = "messageId"
-        val friendId = "friendId"
+       val friendId = TestDataFactory.createFriendId()
         val sort = ChatRoomSortCriteria.DATE
 
         // chatRoomId2 가 더 최근에 대화가 있음
@@ -178,10 +180,10 @@ class ChatRoomFacadeTest {
 
     @Test
     fun `채팅방 목록을 가져와야 함 - 방 나감 메시지`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
         val messageId = "messageId"
-        val friendId = "friendId"
+       val friendId = TestDataFactory.createFriendId()
         val sort = ChatRoomSortCriteria.DATE
 
         // chatRoomId2 가 더 최근에 대화가 있음
@@ -201,12 +203,12 @@ class ChatRoomFacadeTest {
 
     @Test
     fun `채팅방 목록을 가져와야 함 - 최근 메시지 보낸 순`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
         val chatRoomId2 = "chatRoomId2"
         val messageId = "messageId"
         val messageId2 = "messageId2"
-        val friendId = "friendId"
+       val friendId = TestDataFactory.createFriendId()
         val sort = ChatRoomSortCriteria.DATE
         val time = LocalDateTime.now()
         val time2 = LocalDateTime.now().plusDays(1)
@@ -222,7 +224,10 @@ class ChatRoomFacadeTest {
             TestDataFactory.createChatNormalLog(messageId2, chatRoomId2, userId, chatNumber2, time2)
 
         every { roomService.getChatRooms(userId) } returns listOf(chatRoomInfo2, chatRoomInfo)
-        every { chatLogService.getLatestChat(listOf(chatRoomId2, chatRoomId)) } returns listOf(latestChatLog2, latestChatLog)
+        every { chatLogService.getLatestChat(listOf(chatRoomId2, chatRoomId)) } returns listOf(
+            latestChatLog2,
+            latestChatLog,
+        )
 
         val result = chatRoomFacade.getChatRooms(userId, sort)
 
@@ -235,14 +240,14 @@ class ChatRoomFacadeTest {
 
     @Test
     fun `채티방 목록을 가져와야함 - 즐겨찾기를 한 순, 갖다면 최근 메시지 순으로`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
         val chatRoomId2 = "chatRoomId2"
         val messageId = "messageId"
         val messageId2 = "messageId2"
         val chatRoomId3 = "chatRoomId3"
         val messageId3 = "messageId3"
-        val friendId = "friendId"
+       val friendId = TestDataFactory.createFriendId()
         val sort = ChatRoomSortCriteria.FAVORITE
         val time = LocalDateTime.now()
         val time2 = LocalDateTime.now().plusDays(1)
@@ -284,14 +289,14 @@ class ChatRoomFacadeTest {
 
     @Test
     fun `채티방 목록을 가져와야함 - 안 읽은 메시지를 한 순, 갖다면 최근 메시지 순으로`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
         val chatRoomId2 = "chatRoomId2"
         val messageId = "messageId"
         val messageId2 = "messageId2"
         val chatRoomId3 = "chatRoomId3"
         val messageId3 = "messageId3"
-        val friendId = "friendId"
+       val friendId = TestDataFactory.createFriendId()
         val sort = ChatRoomSortCriteria.NOT_READ
         val time = LocalDateTime.now()
         val time2 = LocalDateTime.now().plusDays(1)

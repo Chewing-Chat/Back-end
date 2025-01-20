@@ -1,5 +1,6 @@
 package org.chewing.v1.client
 
+import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
@@ -8,18 +9,18 @@ class SessionClient {
 
     private val sessions = ConcurrentHashMap<String, MutableSet<String>>()
 
-    fun addSession(userId: String, sessionId: String) {
-        sessions.computeIfAbsent(userId) { ConcurrentHashMap.newKeySet() }.add(sessionId)
+    fun addSession(userId: UserId, sessionId: String) {
+        sessions.computeIfAbsent(userId.id) { ConcurrentHashMap.newKeySet() }.add(sessionId)
     }
 
-    fun removeSession(userId: String, sessionId: String) {
-        sessions[userId]?.remove(sessionId)
-        if (sessions[userId]?.isEmpty() == true) {
-            sessions.remove(userId)
+    fun removeSession(userId: UserId, sessionId: String) {
+        sessions[userId.id]?.remove(sessionId)
+        if (sessions[userId.id]?.isEmpty() == true) {
+            sessions.remove(userId.id)
         }
     }
 
-    fun isUserOnline(userId: String): Boolean = sessions.containsKey(userId)
+    fun isUserOnline(userId: UserId): Boolean = sessions.containsKey(userId.id)
 
-    fun getSessionId(userId: String): String = sessions[userId]?.firstOrNull() ?: ""
+    fun getSessionId(userId: UserId): String = sessions[userId.id]?.firstOrNull() ?: ""
 }

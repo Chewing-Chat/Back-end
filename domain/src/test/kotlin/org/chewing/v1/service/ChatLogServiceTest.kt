@@ -47,7 +47,7 @@ class ChatLogServiceTest {
     @Test
     fun `파일 업로드 메시지를 생성하고 저장해야함`() {
         val fileDataList = listOf(TestDataFactory.createFileData())
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
         val seqNumber = TestDataFactory.createChatSequenceNumber(chatRoomId)
 
@@ -79,7 +79,7 @@ class ChatLogServiceTest {
     @Test
     fun `읽음 확인 메시지 생성`() {
         val chatRoomId = "chatRoomId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val seqNumber = TestDataFactory.createChatSequenceNumber(chatRoomId)
 
         every { chatSequenceRepository.readCurrent(chatRoomId) } returns seqNumber
@@ -97,7 +97,7 @@ class ChatLogServiceTest {
     @Test
     fun `삭제 메시지 생성 및 기존 메시지 삭제`() {
         val chatRoomId = "chatRoomId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val messageId = "messageId"
         val seqNumber = TestDataFactory.createChatSequenceNumber(chatRoomId)
 
@@ -118,7 +118,7 @@ class ChatLogServiceTest {
     @Test
     fun `답장 메시지 생성 및 저장 - 일반 메시지`() {
         val chatRoomId = "chatRoomId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val parentMessageId = "parentMessageId"
         val text = "text"
         val time = LocalDateTime.now()
@@ -151,7 +151,7 @@ class ChatLogServiceTest {
     @Test
     fun `답장 메시지 생성 및 저장 - 파일 메시지`() {
         val chatRoomId = "chatRoomId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val parentMessageId = "parentMessageId"
         val text = "text"
         val seqNumber = TestDataFactory.createChatSequenceNumber(chatRoomId)
@@ -182,7 +182,7 @@ class ChatLogServiceTest {
     @Test
     fun `일반 메시지 생성 및 저장`() {
         val chatRoomId = "chatRoomId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val text = "text"
         val seqNumber = TestDataFactory.createChatSequenceNumber(chatRoomId)
 
@@ -203,7 +203,7 @@ class ChatLogServiceTest {
     @Test
     fun `채팅방 나가기 메시지 생성 및 저장`() {
         val chatRoomIds = listOf("chatRoomId")
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val seqNumber = listOf(TestDataFactory.createChatSequenceNumber(chatRoomIds[0]))
 
         every { chatSequenceRepository.updateSequenceIncrements(chatRoomIds) } returns seqNumber
@@ -222,9 +222,9 @@ class ChatLogServiceTest {
 
     @Test
     fun `초대 메시지 리스트 생성 및 저장`() {
-        val friendIds = listOf("friendId")
+        val friendIds = listOf(TestDataFactory.createFriendId())
         val chatRoomId = "chatRoomId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val seqNumber = TestDataFactory.createChatSequenceNumber(chatRoomId)
 
         every { chatSequenceRepository.updateSequenceIncrement(chatRoomId) } returns seqNumber
@@ -244,8 +244,8 @@ class ChatLogServiceTest {
     @Test
     fun `초대 메시지 생성 및 저장`() {
         val chatRoomId = "chatRoomId"
-        val friendId = "friendId"
-        val userId = "userId"
+        val friendId = TestDataFactory.createFriendId()
+        val userId = TestDataFactory.createUserId()
         val seqNumber = TestDataFactory.createChatSequenceNumber(chatRoomId)
 
         every { chatSequenceRepository.updateSequenceIncrement(chatRoomId) } returns seqNumber
@@ -265,7 +265,7 @@ class ChatLogServiceTest {
     @Test
     fun `폭탄 메시지 생성 및 저장`() {
         val chatRoomId = "chatRoomId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val text = "text"
         val expiredAt = LocalDateTime.now()
         val seqNumber = TestDataFactory.createChatSequenceNumber(chatRoomId)
@@ -288,11 +288,12 @@ class ChatLogServiceTest {
     @Test
     fun `최신 채팅 로그 가져오기`() {
         val chatRoomIds = listOf("chatRoomId")
+        val userId = TestDataFactory.createUserId()
         val seqNumbers = listOf(TestDataFactory.createChatSequenceNumber(chatRoomIds[0]))
         val chatNumbers = listOf(TestDataFactory.createChatNumber(chatRoomIds[0]))
         val time = LocalDateTime.now()
         val chatNormalLog =
-            TestDataFactory.createChatNormalLog("messageId", chatRoomIds[0], "userId", chatNumbers[0], time)
+            TestDataFactory.createChatNormalLog("messageId", chatRoomIds[0], userId, chatNumbers[0], time)
 
         every { chatSequenceRepository.readCurrentSeqNumbers(chatRoomIds) } returns seqNumbers
         every { chatLogRepository.readLatestMessages(any()) } returns listOf(chatNormalLog)
@@ -313,10 +314,11 @@ class ChatLogServiceTest {
         val chatRoomId = "chatRoomId"
         val page = 0
         val time = LocalDateTime.now()
+        val userId = TestDataFactory.createUserId()
         val chatNormalLog = TestDataFactory.createChatNormalLog(
             "messageId",
             chatRoomId,
-            "userId",
+            userId,
             TestDataFactory.createChatNumber(chatRoomId),
             time,
         )

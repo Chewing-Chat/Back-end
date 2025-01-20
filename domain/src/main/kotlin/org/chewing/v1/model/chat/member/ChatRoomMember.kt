@@ -1,13 +1,15 @@
 package org.chewing.v1.model.chat.member
 
+import org.chewing.v1.model.user.UserId
+
 class ChatRoomMember private constructor(
-    val memberId: String,
+    val memberId: UserId,
     val readSeqNumber: Int,
     val isOwned: Boolean,
 ) {
     companion object {
         fun of(
-            memberId: String,
+            memberId: UserId,
             readSeqNumber: Int,
             isOwned: Boolean,
         ): ChatRoomMember {

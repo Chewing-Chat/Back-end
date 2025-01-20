@@ -1,6 +1,7 @@
 package org.chewing.v1.implementation.feed.feed
 
 import org.chewing.v1.model.media.Media
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.feed.FeedDetailRepository
 import org.chewing.v1.repository.feed.FeedRepository
 import org.chewing.v1.repository.feed.FeedVisibilityRepository
@@ -14,12 +15,12 @@ class FeedAppender(
     private val feedVisibilityRepository: FeedVisibilityRepository,
 ) {
     @Transactional
-    fun append(medias: List<Media>, userId: String, content: String): String {
+    fun append(medias: List<Media>, userId: UserId, content: String): String {
         val feedId = feedRepository.append(userId, content)
         feedDetailRepository.append(medias, feedId)
         return feedId
     }
-    fun appendVisibility(feedId: String, targetUserIds: List<String>) {
+    fun appendVisibility(feedId: String, targetUserIds: List<UserId>) {
         feedVisibilityRepository.append(feedId, targetUserIds)
     }
 }

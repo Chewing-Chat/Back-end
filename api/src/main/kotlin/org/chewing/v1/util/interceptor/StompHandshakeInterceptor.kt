@@ -28,7 +28,7 @@ class StompHandshakeInterceptor(
         val token = servletRequest.getHeader("Authorization")?.substringAfter("Bearer ")
         if (token != null) {
             return try {
-                val userId = jwtTokenProvider.getUserIdFromToken(token)
+                val userId = jwtTokenProvider.getUserIdFromToken(token).id
                 // 사용자 정보를 attributes에 추가할 수 있습니다.
                 attributes["user"] = Principal { userId }
                 true

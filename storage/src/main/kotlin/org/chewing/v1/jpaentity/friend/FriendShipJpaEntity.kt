@@ -4,6 +4,7 @@ import jakarta.persistence.*
 import org.chewing.v1.jpaentity.common.BaseEntity
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.user.AccessStatus
+import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
 
 @DynamicInsert
@@ -18,9 +19,9 @@ internal class FriendShipJpaEntity(
     private var type: AccessStatus,
 ) : BaseEntity() {
     companion object {
-        fun generate(userId: String, targetUserId: String, name: String): FriendShipJpaEntity {
+        fun generate(userId: UserId, targetUserId: UserId, name: String): FriendShipJpaEntity {
             return FriendShipJpaEntity(
-                id = FriendShipId(userId, targetUserId),
+                id = FriendShipId(userId.id, targetUserId.id),
                 favorite = false,
                 name = name,
                 type = AccessStatus.ACCESS,
@@ -38,7 +39,7 @@ internal class FriendShipJpaEntity(
 
     fun toFriendShip(): FriendShip {
         return FriendShip.of(
-            friendId = id.friendId,
+            friendId = UserId.of(id.friendId),
             friendName = name,
             isFavorite = favorite,
             type = type,

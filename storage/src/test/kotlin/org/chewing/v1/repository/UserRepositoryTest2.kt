@@ -3,6 +3,7 @@ package org.chewing.v1.repository
 import io.mockk.every
 import io.mockk.mockk
 import org.chewing.v1.jparepository.user.UserJpaRepository
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.user.UserRepositoryImpl
 import org.chewing.v1.repository.support.MediaProvider
 import org.chewing.v1.repository.support.UserProvider
@@ -17,7 +18,7 @@ class UserRepositoryTest2 {
     @Test
     fun `유저 아이디로 읽기 - 실패(유저를 찾을 수 없음)`() {
         val userId = generateUserId()
-        every { userJpaRepository.findById(userId) } returns Optional.empty()
+        every { userJpaRepository.findById(userId.id) } returns Optional.empty()
 
         val result = userRepositoryImpl.read(userId)
 
@@ -28,7 +29,7 @@ class UserRepositoryTest2 {
     fun `유저 삭제 - 실패(유저를 찾을 수 없음)`() {
         val userId = generateUserId()
 
-        every { userJpaRepository.findById(userId) } returns Optional.empty()
+        every { userJpaRepository.findById(userId.id) } returns Optional.empty()
 
         val result = userRepositoryImpl.remove(userId)
         assert(result == null)
@@ -40,11 +41,11 @@ class UserRepositoryTest2 {
         val userId = generateUserId()
         val user = UserProvider.buildNormal(userId)
 
-        every { userJpaRepository.findById(user.userId) } returns Optional.empty()
+        every { userJpaRepository.findById(user.userId.id) } returns Optional.empty()
 
         val result = userRepositoryImpl.updateMedia(user.userId, media)
         assert(result == null)
     }
 
-    private fun generateUserId(): String = UUID.randomUUID().toString()
+    private fun generateUserId(): UserId = UserId.of(UUID.randomUUID().toString())
 }

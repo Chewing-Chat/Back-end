@@ -4,6 +4,7 @@ import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.user.ScheduleJpaRepository
 import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleType
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.user.ScheduleRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.chewing.v1.repository.support.ScheduleProvider
@@ -103,5 +104,5 @@ class ScheduleRepositoryTest : JpaContextTest() {
         assert(schedules.isEmpty())
     }
 
-    fun generateUserId(): String = UUID.randomUUID().toString()
+    fun generateUserId(): UserId = UserId.of(UUID.randomUUID().toString())
 }

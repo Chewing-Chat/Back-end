@@ -4,6 +4,7 @@ import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.chat.ChatRoomMemberId
 import org.chewing.v1.jparepository.chat.GroupChatRoomMemberJpaRepository
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.chat.GroupChatRoomMemberRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.junit.jupiter.api.Test
@@ -50,7 +51,7 @@ internal class GroupChatRoomMemberRepositoryTest : JpaContextTest() {
 
         jpaDataGenerator.groupChatRoomMemberEntityData(chatRoomId, userId, number)
         chatRoomMemberRepositoryImpl.updateFavorite(chatRoomId, userId, true)
-        val result = groupChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, userId))
+        val result = groupChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId))
         assert(result.isPresent)
         assert(result.get().toRoomMember().favorite)
     }
@@ -65,7 +66,7 @@ internal class GroupChatRoomMemberRepositoryTest : JpaContextTest() {
 
         chatRoomMemberRepositoryImpl.updateRead(userId, chatNumber)
 
-        val result = groupChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, userId))
+        val result = groupChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId))
         assert(result.isPresent)
         assert(result.get().toRoomMember().readSeqNumber == chatNumber.sequenceNumber)
     }
@@ -79,7 +80,7 @@ internal class GroupChatRoomMemberRepositoryTest : JpaContextTest() {
         jpaDataGenerator.groupChatRoomMemberEntityData(chatRoomId, userId, chatNumber)
         chatRoomMemberRepositoryImpl.removes(listOf(chatRoomId), userId)
 
-        val result = groupChatRoomMemberJpaRepository.findAllByIdUserId(userId)
+        val result = groupChatRoomMemberJpaRepository.findAllByIdUserId(userId.id)
         assert(result.isEmpty())
     }
 
@@ -90,7 +91,7 @@ internal class GroupChatRoomMemberRepositoryTest : JpaContextTest() {
         val chatNumber = ChatNumber.of(chatRoomId, 50, 1)
 
         chatRoomMemberRepositoryImpl.append(chatRoomId, userId, chatNumber)
-        val result = groupChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, userId))
+        val result = groupChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId))
         assert(result.isPresent)
         assert(result.get().toRoomMember().chatRoomId == chatRoomId)
         assert(result.get().toRoomMember().memberId == userId)
@@ -104,7 +105,7 @@ internal class GroupChatRoomMemberRepositoryTest : JpaContextTest() {
         val chatNumber = ChatNumber.of(chatRoomId, 50, 1)
 
         chatRoomMemberRepositoryImpl.appends(chatRoomId, userIds, chatNumber)
-        val results = userIds.map { groupChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, it)) }
+        val results = userIds.map { groupChatRoomMemberJpaRepository.findById(ChatRoomMemberId(chatRoomId, it.id)) }
         assert(results.all { it.isPresent })
     }
 
@@ -120,7 +121,7 @@ internal class GroupChatRoomMemberRepositoryTest : JpaContextTest() {
         assert(chatRoomMemberInfo.size == 2)
     }
 
-    private fun generateUserId() = UUID.randomUUID().toString()
+    private fun generateUserId() = UserId.of(UUID.randomUUID().toString())
     private fun generateUserIds() = listOf(generateUserId(), generateUserId())
     private fun generateChatRoomId() = UUID.randomUUID().toString()
 }

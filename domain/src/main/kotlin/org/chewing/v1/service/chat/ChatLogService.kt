@@ -10,6 +10,7 @@ import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
+import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -22,7 +23,7 @@ class ChatLogService(
     private val chatGenerator: ChatGenerator,
     private val chatRemover: ChatRemover,
 ) {
-    fun uploadFiles(fileDataList: List<FileData>, userId: String, chatRoomId: String): ChatFileMessage {
+    fun uploadFiles(fileDataList: List<FileData>, userId: UserId, chatRoomId: String): ChatFileMessage {
         val medias = fileHandler.handleNewFiles(userId, fileDataList, FileCategory.CHAT)
         val chatRoomNumber = chatFinder.findNextNumber(chatRoomId)
         val chatMessage = chatGenerator.generateFileMessage(chatRoomId, userId, chatRoomNumber, medias)
@@ -30,19 +31,19 @@ class ChatLogService(
         return chatMessage
     }
 
-    fun readMessage(chatRoomId: String, userId: String): ChatReadMessage {
+    fun readMessage(chatRoomId: String, userId: UserId): ChatReadMessage {
         val chatRoomNumber = chatFinder.findCurrentNumber(chatRoomId)
         return chatGenerator.generateReadMessage(chatRoomId, userId, chatRoomNumber)
     }
 
-    fun deleteMessage(chatRoomId: String, userId: String, messageId: String): ChatDeleteMessage {
+    fun deleteMessage(chatRoomId: String, userId: UserId, messageId: String): ChatDeleteMessage {
         val chatRoomNumber = chatFinder.findNextNumber(chatRoomId)
         val chatMessage = chatGenerator.generateDeleteMessage(chatRoomId, userId, chatRoomNumber, messageId)
         chatRemover.removeChatLog(messageId)
         return chatMessage
     }
 
-    fun replyMessage(chatRoomId: String, userId: String, parentMessageId: String, text: String): ChatReplyMessage {
+    fun replyMessage(chatRoomId: String, userId: UserId, parentMessageId: String, text: String): ChatReplyMessage {
         val chatRoomNumber = chatFinder.findNextNumber(chatRoomId)
         val parentMessage = chatReader.readChatMessage(parentMessageId)
         val chatMessage = chatGenerator.generateReplyMessage(chatRoomId, userId, chatRoomNumber, text, parentMessage)
@@ -50,14 +51,14 @@ class ChatLogService(
         return chatMessage
     }
 
-    fun chatNormalMessage(chatRoomId: String, userId: String, text: String): ChatNormalMessage {
+    fun chatNormalMessage(chatRoomId: String, userId: UserId, text: String): ChatNormalMessage {
         val chatRoomNumber = chatFinder.findNextNumber(chatRoomId)
         val chatMessage = chatGenerator.generateNormalMessage(chatRoomId, userId, chatRoomNumber, text)
         chatAppender.appendChatLog(chatMessage)
         return chatMessage
     }
 
-    fun leaveMessages(chatRoomIds: List<String>, userId: String): List<ChatLeaveMessage> {
+    fun leaveMessages(chatRoomIds: List<String>, userId: UserId): List<ChatLeaveMessage> {
         return chatFinder.findNextNumbers(chatRoomIds).map { number ->
             val chatMessage = chatGenerator.generateLeaveMessage(number.chatRoomId, userId, number)
             chatAppender.appendChatLog(chatMessage)
@@ -65,21 +66,21 @@ class ChatLogService(
         }
     }
 
-    fun inviteMessages(friendIds: List<String>, chatRoomId: String, userId: String): ChatInviteMessage {
+    fun inviteMessages(friendIds: List<UserId>, chatRoomId: String, userId: UserId): ChatInviteMessage {
         val number = chatFinder.findNextNumber(chatRoomId)
         val chatMessage = chatGenerator.generateInviteMessage(chatRoomId, userId, number, friendIds)
         chatAppender.appendChatLog(chatMessage)
         return chatMessage
     }
 
-    fun inviteMessage(chatRoomId: String, friendId: String, userId: String): ChatInviteMessage {
+    fun inviteMessage(chatRoomId: String, friendId: UserId, userId: UserId): ChatInviteMessage {
         val number = chatFinder.findNextNumber(chatRoomId)
         val chatMessage = chatGenerator.generateInviteMessage(chatRoomId, userId, number, listOf(friendId))
         chatAppender.appendChatLog(chatMessage)
         return chatMessage
     }
 
-    fun bombingMessage(chatRoomId: String, userId: String, text: String, expiredAt: LocalDateTime): ChatBombMessage {
+    fun bombingMessage(chatRoomId: String, userId: UserId, text: String, expiredAt: LocalDateTime): ChatBombMessage {
         val number = chatFinder.findNextNumber(chatRoomId)
         val chatMessage = chatGenerator.generateBombMessage(chatRoomId, userId, number, text, expiredAt)
         chatAppender.appendChatLog(chatMessage)

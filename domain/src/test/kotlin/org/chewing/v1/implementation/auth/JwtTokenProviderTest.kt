@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
+import org.chewing.v1.TestDataFactory
 import org.chewing.v1.error.AuthorizationException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.auth.JwtToken
@@ -40,7 +41,7 @@ class JwtTokenProviderTest {
     @Test
     @DisplayName("JWT 토큰 생성 테스트")
     fun `test createJwtToken`() {
-        val userId = "testUser"
+        val userId = TestDataFactory.createUserId()
         val jwtToken: JwtToken = jwtTokenProvider.createJwtToken(userId)
 
         // Validate the token structure
@@ -51,7 +52,7 @@ class JwtTokenProviderTest {
     @Test
     @DisplayName("유효한 토큰에 대해 검증이 성공하는지 테스트`")
     fun `test validateToken with valid token`() {
-        val userId = "testUser"
+        val userId = TestDataFactory.createUserId()
         val token = jwtTokenProvider.createAccessToken(userId)
 
         // Should not throw exception
@@ -91,7 +92,7 @@ class JwtTokenProviderTest {
     @Test
     @DisplayName("토큰에서 사용자 ID를 올바르게 추출하는지 테스트")
     fun `test getUserIdFromToken`() {
-        val userId = "testUser"
+        val userId = TestDataFactory.createUserId()
         val token = jwtTokenProvider.createAccessToken(userId)
         val extractedUserId = jwtTokenProvider.getUserIdFromToken(token)
         assert(extractedUserId == userId)

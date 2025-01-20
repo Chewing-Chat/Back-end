@@ -4,6 +4,7 @@ import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.util.AsyncJobExecutor
 import org.springframework.stereotype.Component
 
@@ -15,7 +16,7 @@ class FileHandler(
     private val fileValidator: FileValidator,
     private val asyncJobExecutor: AsyncJobExecutor,
 ) {
-    fun handleNewFiles(userId: String, files: List<FileData>, category: FileCategory): List<Media> {
+    fun handleNewFiles(userId: UserId, files: List<FileData>, category: FileCategory): List<Media> {
         fileValidator.validateFilesNameCorrect(files)
         val mediaWithFiles = fileGenerator.generateMedias(files, userId, category)
         asyncJobExecutor.executeAsyncJobs(mediaWithFiles) { (file, media) ->
@@ -24,7 +25,7 @@ class FileHandler(
         return mediaWithFiles.map { it.second }
     }
 
-    fun handleNewFile(userId: String, file: FileData, category: FileCategory): Media {
+    fun handleNewFile(userId: UserId, file: FileData, category: FileCategory): Media {
         fileValidator.validateFileNameCorrect(file)
         val media = fileGenerator.generateMedia(file, userId, category)
         asyncJobExecutor.executeAsyncJob(media) {

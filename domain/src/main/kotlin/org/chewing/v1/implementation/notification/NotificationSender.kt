@@ -4,6 +4,7 @@ import org.chewing.v1.external.ExternalChatNotificationClient
 import org.chewing.v1.external.ExternalPushNotificationClient
 import org.chewing.v1.model.chat.message.ChatMessage
 import org.chewing.v1.model.notification.Notification
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.util.AsyncJobExecutor
 import org.springframework.stereotype.Component
 
@@ -18,7 +19,7 @@ class NotificationSender(
             externalPushNotificationClient.sendFcmNotification(notification)
         }
     }
-    fun sendChatNotification(chatMessage: ChatMessage, userId: String) {
+    fun sendChatNotification(chatMessage: ChatMessage, userId: UserId) {
         externalChatNotificationClient.sendMessage(chatMessage, userId)
     }
 }

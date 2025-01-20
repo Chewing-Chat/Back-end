@@ -6,6 +6,7 @@ import org.chewing.v1.model.ai.DateTarget
 import org.chewing.v1.model.feed.*
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
+import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,36 +18,36 @@ class FeedService(
     private val feedEnricher: FeedEnricher,
     private val feedRemover: FeedRemover,
 ) {
-    fun getFeed(feedId: String, userId: String): Feed {
+    fun getFeed(feedId: String, userId: UserId): Feed {
         feedValidator.isFeedVisible(feedId, userId)
         val feed = feedReader.readInfo(feedId)
         val feedDetails = feedReader.readDetails(feedId)
         return Feed.of(feed, feedDetails)
     }
 
-    fun getFeeds(userId: String, targetUserId: String): List<Feed> {
+    fun getFeeds(userId: UserId, targetUserId: UserId): List<Feed> {
         val feeds = feedReader.readsInfo(targetUserId)
         val visibleFeedIds = feedReader.readVisibleFeedIds(userId, feeds.map { it.feedId })
         val feedsDetails = feedReader.readsThumbnail(visibleFeedIds)
         return feedEnricher.enriches(feeds, visibleFeedIds, feedsDetails)
     }
 
-    fun getFriendFulledFeeds(userId: String, friendId: String, dateTarget: DateTarget): List<Feed> {
+    fun getFriendFulledFeeds(userId: UserId, friendId: UserId, dateTarget: DateTarget): List<Feed> {
         val feeds = feedReader.readsFriendBetween(friendId, dateTarget)
         val visibleFeedIds = feedReader.readVisibleFeedIds(userId, feeds.map { it.feedId })
         val feedsDetail = feedReader.readsDetails(visibleFeedIds)
         return feedEnricher.enriches(feeds, visibleFeedIds, feedsDetail)
     }
 
-    fun removes(userId: String, feedIds: List<String>) {
+    fun removes(userId: UserId, feedIds: List<String>) {
         feedValidator.isFeedsOwner(feedIds, userId)
         val oldMedias = feedRemover.removes(feedIds)
         fileHandler.handleOldFiles(oldMedias)
     }
 
     fun make(
-        userId: String,
-        targetFriends: List<String>,
+        userId: UserId,
+        targetFriends: List<UserId>,
         files: List<FileData>,
         content: String,
         category: FileCategory,

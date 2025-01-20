@@ -50,6 +50,7 @@ import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
 import org.chewing.v1.model.user.UserEmoticonPackInfo
+import org.chewing.v1.model.user.UserId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -111,7 +112,7 @@ class JpaDataGenerator {
         return user.toUser()
     }
 
-    fun loggedInEntityData(refreshToken: RefreshToken, userId: String) {
+    fun loggedInEntityData(refreshToken: RefreshToken, userId: UserId) {
         val loggedIn = LoggedInJpaEntity.generate(refreshToken, userId)
         loggedInJpaRepository.save(loggedIn)
     }
@@ -136,7 +137,7 @@ class JpaDataGenerator {
         return scheduleEntity.toScheduleInfo()
     }
 
-    fun scheduleParticipantEntityData(scheduleId: String, userId: String, status: ScheduleParticipantStatus) {
+    fun scheduleParticipantEntityData(scheduleId: String, userId: UserId, status: ScheduleParticipantStatus) {
         val entity = ScheduleParticipantJpaEntity.generate(
             userId = userId,
             scheduleId = scheduleId,
@@ -152,15 +153,15 @@ class JpaDataGenerator {
         return scheduleEntity.toScheduleInfo()
     }
 
-    fun feedVisibilityEntityData(feedId: String, userId: String) {
-        feedVisibilityJpaRepository.save(FeedVisibilityEntity(FeedVisibilityId(feedId, userId)))
+    fun feedVisibilityEntityData(feedId: String, userId: UserId) {
+        feedVisibilityJpaRepository.save(FeedVisibilityEntity(FeedVisibilityId.of(feedId, userId)))
     }
 
-    fun feedVisibilityEntityDataList(feedId: String, userIds: List<String>) {
-        feedVisibilityJpaRepository.saveAll(userIds.map { FeedVisibilityEntity(FeedVisibilityId(feedId, it)) })
+    fun feedVisibilityEntityDataList(feedId: String, userIds: List<UserId>) {
+        feedVisibilityJpaRepository.saveAll(userIds.map { FeedVisibilityEntity(FeedVisibilityId.of(feedId, it)) })
     }
 
-    fun pushNotificationData(userId: String): PushToken {
+    fun pushNotificationData(userId: UserId): PushToken {
         val user = UserProvider.buildNormal(userId)
         val device = PushTokenProvider.buildDeviceNormal()
         val appToken = PushTokenProvider.buildAppTokenNormal()
@@ -173,10 +174,10 @@ class JpaDataGenerator {
         ).toPushToken()
     }
 
-    fun feedEntityData(userId: String): FeedInfo =
+    fun feedEntityData(userId: UserId): FeedInfo =
         feedJpaRepository.save(FeedJpaEntity.generate("content", userId)).toFeedInfo()
 
-    fun feedEntityDataList(userId: String): List<FeedInfo> {
+    fun feedEntityDataList(userId: UserId): List<FeedInfo> {
         val feedJpaEntityList = (1..10).map {
             FeedJpaEntity.generate("content $it", userId)
         }
@@ -191,7 +192,7 @@ class JpaDataGenerator {
         return feedEntities.map { it.toFeedDetail() }
     }
 
-    fun friendShipEntityData(userId: String, friendId: String, access: AccessStatus) {
+    fun friendShipEntityData(userId: UserId, friendId: UserId, access: AccessStatus) {
         val friendName = UserProvider.buildFriendName()
         val entity = FriendShipJpaEntity.generate(userId, friendId, friendName)
         when (access) {
@@ -203,8 +204,8 @@ class JpaDataGenerator {
         friendShipJpaRepository.save(entity)
     }
 
-    fun userEmoticonEntityData(userId: String, emoticonPackId: String): UserEmoticonPackInfo {
-        val emoticon = UserEmoticonJpaEntity(UserEmoticonId(userId, emoticonPackId), LocalDateTime.now())
+    fun userEmoticonEntityData(userId: UserId, emoticonPackId: String): UserEmoticonPackInfo {
+        val emoticon = UserEmoticonJpaEntity(UserEmoticonId.of(userId, emoticonPackId), LocalDateTime.now())
         userEmoticonJpaRepository.save(emoticon)
         return emoticon.toUserEmoticon()
     }
@@ -235,11 +236,11 @@ class JpaDataGenerator {
         return chatRoom.toChatRoomInfo()
     }
 
-    fun groupChatRoomMemberEntityData(chatRoomId: String, userId: String, number: ChatNumber) {
+    fun groupChatRoomMemberEntityData(chatRoomId: String, userId: UserId, number: ChatNumber) {
         groupChatRoomMemberJpaRepository.save(GroupChatRoomMemberJpaEntity.generate(userId, chatRoomId, number))
     }
 
-    fun groupChatRoomMemberEntityDataList(chatRoomId: String, userIds: List<String>, number: ChatNumber) {
+    fun groupChatRoomMemberEntityDataList(chatRoomId: String, userIds: List<UserId>, number: ChatNumber) {
         groupChatRoomMemberJpaRepository.saveAll(
             userIds.map {
                 GroupChatRoomMemberJpaEntity.generate(
@@ -251,7 +252,7 @@ class JpaDataGenerator {
         )
     }
 
-    fun personalChatRoomMemberEntityData(userId: String, friendId: String, chatRoomId: String, number: ChatNumber) {
+    fun personalChatRoomMemberEntityData(userId: UserId, friendId: UserId, chatRoomId: String, number: ChatNumber) {
         personalChatRoomMemberJpaRepository.save(
             PersonalChatRoomMemberJpaEntity.generate(
                 userId,

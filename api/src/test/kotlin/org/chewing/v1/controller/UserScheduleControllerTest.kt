@@ -81,7 +81,7 @@ class UserScheduleControllerTest : RestDocsTest() {
                     schedules[index].participants.forEachIndexed { participantIndex, participant ->
                         body(
                             "data.schedules[$index].participants[$participantIndex].friendId",
-                            equalTo(participant.userId),
+                            equalTo(participant.userId.id),
                         )
                     }
                 }

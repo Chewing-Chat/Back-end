@@ -3,6 +3,7 @@ package org.chewing.v1.repository
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.feed.FeedVisibilityId
 import org.chewing.v1.jparepository.feed.FeedVisibilityJpaRepository
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.feed.FeedVisibilityRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.junit.jupiter.api.Test
@@ -24,8 +25,8 @@ internal class FeedVisibilityRepositoryTest : JpaContextTest() {
         val feedId = generateFeedId()
         val targetUserIds = listOf(generateUserId(), generateUserId())
         feedVisibilityRepositoryImpl.append(feedId, targetUserIds)
-        val result1 = feedVisibilityJpaRepository.findById(FeedVisibilityId(feedId, targetUserIds[0]))
-        val result2 = feedVisibilityJpaRepository.findById(FeedVisibilityId(feedId, targetUserIds[1]))
+        val result1 = feedVisibilityJpaRepository.findById(FeedVisibilityId(feedId, targetUserIds[0].id))
+        val result2 = feedVisibilityJpaRepository.findById(FeedVisibilityId(feedId, targetUserIds[1].id))
         assert(result1.isPresent)
         assert(result2.isPresent)
     }
@@ -65,9 +66,7 @@ internal class FeedVisibilityRepositoryTest : JpaContextTest() {
         return UUID.randomUUID().toString()
     }
 
-    fun generateUserId(): String {
-        return UUID.randomUUID().toString()
-    }
+    private fun generateUserId() = UserId.of(UUID.randomUUID().toString())
 
     @Test
     fun `피드 공개범위를 삭제해야 한다`() {
@@ -77,9 +76,9 @@ internal class FeedVisibilityRepositoryTest : JpaContextTest() {
             jpaDataGenerator.feedVisibilityEntityDataList(it, userIds)
         }
         feedVisibilityRepositoryImpl.removes(feedIds)
-        feedIds.forEach {
+        feedIds.forEach { feedId ->
             userIds.forEach {
-                val result = feedVisibilityJpaRepository.findById(FeedVisibilityId(it, it))
+                val result = feedVisibilityJpaRepository.findById(FeedVisibilityId.of(feedId, it))
                 assert(result.isEmpty)
             }
         }

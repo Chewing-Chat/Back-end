@@ -31,7 +31,7 @@ internal class PushNotificationJpaEntity(
                 appToken = appToken,
                 deviceId = device.deviceId,
                 provider = device.provider,
-                userId = user.userId,
+                userId = user.userId.id,
             )
         }
     }

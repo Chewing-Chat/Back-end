@@ -5,6 +5,7 @@ import org.chewing.v1.jpaentity.friend.FriendShipId
 import org.chewing.v1.jparepository.friend.FriendShipJpaRepository
 import org.chewing.v1.model.friend.FriendSortCriteria
 import org.chewing.v1.model.user.AccessStatus
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.friend.FriendShipRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.chewing.v1.repository.support.UserProvider
@@ -33,7 +34,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         friendShipRepositoryImpl.append(userId, friendId, friendName)
 
         // then
-        val friendShipTarget = friendShipJpaRepository.findById(FriendShipId(userId, friendId)).get().toFriendShip()
+        val friendShipTarget = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId)).get().toFriendShip()
         assert(friendShipTarget.friendName == friendName)
         assert(friendShipTarget.friendId == friendId)
         assert(!friendShipTarget.isFavorite)
@@ -47,7 +48,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
         friendShipRepositoryImpl.remove(userId, friendId)
 
-        val entity = friendShipJpaRepository.findById(FriendShipId(userId, friendId))
+        val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
         assert(entity.get().toFriendShip().type == AccessStatus.DELETE)
     }
 
@@ -58,7 +59,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
         friendShipRepositoryImpl.block(userId, friendId)
 
-        val entity = friendShipJpaRepository.findById(FriendShipId(userId, friendId))
+        val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
 
         assert(entity.get().toFriendShip().type == AccessStatus.BLOCK)
     }
@@ -71,7 +72,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
         friendShipRepositoryImpl.blocked(userId, friendId)
 
-        val entity = friendShipJpaRepository.findById(FriendShipId(userId, friendId))
+        val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
 
         assert(entity.get().toFriendShip().type == AccessStatus.BLOCKED)
     }
@@ -96,7 +97,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
         friendShipRepositoryImpl.updateFavorite(userId, friendId, true)
 
-        val entity = friendShipJpaRepository.findById(FriendShipId(userId, friendId))
+        val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
 
         assert(entity.get().toFriendShip().isFavorite)
     }
@@ -110,7 +111,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
         friendShipRepositoryImpl.updateName(userId, friendId, newName)
 
-        val entity = friendShipJpaRepository.findById(FriendShipId(userId, friendId))
+        val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
 
         assert(entity.get().toFriendShip().friendName == newName)
     }
@@ -145,5 +146,5 @@ class FriendShipRepositoryTest : JpaContextTest() {
         assert(friendShips.size == 1)
     }
 
-    private fun generateUserId() = UUID.randomUUID().toString()
+    private fun generateUserId() = UserId.of(UUID.randomUUID().toString())
 }

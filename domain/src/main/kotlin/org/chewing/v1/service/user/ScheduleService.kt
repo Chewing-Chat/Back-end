@@ -9,6 +9,7 @@ import org.chewing.v1.implementation.user.schedule.ScheduleRemover
 import org.chewing.v1.implementation.user.schedule.ScheduleUpdater
 import org.chewing.v1.implementation.user.schedule.ScheduleValidator
 import org.chewing.v1.model.schedule.*
+import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,27 +24,27 @@ class ScheduleService(
     private val scheduleFilter: ScheduleFilter,
 ) {
     fun create(
-        userId: String,
+        userId: UserId,
         scheduleTime: ScheduleTime,
         scheduleContent: ScheduleContent,
-        friendIds: List<String>,
+        friendIds: List<UserId>,
     ): String {
         val scheduleId = scheduleAppender.appendInfo(scheduleTime, scheduleContent)
         scheduleAppender.appendParticipants(scheduleId, friendIds.plus(userId))
         return scheduleId
     }
 
-    fun delete(userId: String, scheduleId: String) {
+    fun delete(userId: UserId, scheduleId: String) {
         scheduleValidator.isParticipate(userId, scheduleId)
         scheduleRemover.removeInfo(scheduleId)
         scheduleRemover.removeAllParticipants(scheduleId)
     }
 
-    fun deleteParticipant(userId: String) {
+    fun deleteParticipant(userId: UserId) {
         scheduleRemover.removeParticipated(userId)
     }
 
-    fun fetches(userId: String, type: ScheduleType): List<Schedule> {
+    fun fetches(userId: UserId, type: ScheduleType): List<Schedule> {
         val scheduleIds = scheduleReader.readParticipantScheduleIds(userId, ScheduleParticipantStatus.ACTIVE)
         val scheduleInfos = scheduleReader.readInfos(scheduleIds, type, ScheduleStatus.ACTIVE)
         val participants =
@@ -52,11 +53,11 @@ class ScheduleService(
     }
 
     fun update(
-        userId: String,
+        userId: UserId,
         scheduleId: String,
         scheduleTime: ScheduleTime,
         scheduleContent: ScheduleContent,
-        friendIds: List<String>,
+        friendIds: List<UserId>,
     ) {
         scheduleValidator.isParticipate(userId, scheduleId)
         scheduleUpdater.updateInfo(scheduleId, scheduleTime, scheduleContent)

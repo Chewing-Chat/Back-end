@@ -6,6 +6,7 @@ import org.chewing.v1.model.auth.JwtToken
 import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.user.AccessStatus
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.service.user.ScheduleService
 import org.chewing.v1.service.user.UserService
@@ -44,14 +45,14 @@ class AccountFacade(
     }
 
     fun changePassword(
-        userId: String,
+        userId: UserId,
         password: String,
     ) {
         val password = authService.encryptPassword(password)
         userService.updatePassword(userId, password)
     }
 
-    fun deleteAccount(userId: String) {
+    fun deleteAccount(userId: UserId) {
         userService.deleteUser(userId)
         scheduleService.deleteParticipant(userId)
     }

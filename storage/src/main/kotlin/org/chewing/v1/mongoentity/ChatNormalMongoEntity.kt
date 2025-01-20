@@ -5,6 +5,7 @@ import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.message.ChatNormalMessage
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.user.UserId
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
@@ -33,7 +34,7 @@ internal class ChatNormalMongoEntity(
             return ChatNormalMongoEntity(
                 messageId = chatNormalMessage.messageId,
                 chatRoomId = chatNormalMessage.chatRoomId,
-                senderId = chatNormalMessage.senderId,
+                senderId = chatNormalMessage.senderId.id,
                 seqNumber = chatNormalMessage.number.sequenceNumber,
                 page = chatNormalMessage.number.page,
                 sendTime = chatNormalMessage.timestamp,
@@ -46,7 +47,7 @@ internal class ChatNormalMongoEntity(
         return ChatNormalLog.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
-            senderId = senderId,
+            senderId = UserId.of(senderId),
             timestamp = sendTime,
             number = ChatNumber.of(chatRoomId, seqNumber, page),
             text = message,

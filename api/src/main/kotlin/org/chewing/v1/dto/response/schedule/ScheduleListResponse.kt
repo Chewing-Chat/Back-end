@@ -50,7 +50,7 @@ data class ScheduleListResponse(
         companion object {
             fun of(friendId: ScheduleParticipant): ParticipantResponse {
                 return ParticipantResponse(
-                    friendId.userId,
+                    friendId.userId.id,
                 )
             }
         }

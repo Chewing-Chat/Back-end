@@ -2,6 +2,7 @@ package org.chewing.v1.dto.request.user
 
 import org.chewing.v1.model.schedule.ScheduleContent
 import org.chewing.v1.model.schedule.ScheduleTime
+import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -28,7 +29,7 @@ class ScheduleRequest {
             return ScheduleTime.of(date, timeDecided)
         }
 
-        fun toFriendIds(): List<String> = friendIds
+        fun toFriendIds(): List<UserId> = friendIds.map { UserId.of(it) }
     }
 
     data class Update(
@@ -50,6 +51,6 @@ class ScheduleRequest {
             return ScheduleTime.of(date, timeDecided)
         }
 
-        fun toFriendIds(): List<String> = friendIds
+        fun toFriendIds(): List<UserId> = friendIds.map{ UserId.of(it) }
     }
 }

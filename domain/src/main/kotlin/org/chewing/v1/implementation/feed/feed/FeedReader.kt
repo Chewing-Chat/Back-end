@@ -5,6 +5,7 @@ import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.model.ai.DateTarget
 import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedInfo
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.feed.FeedDetailRepository
 import org.chewing.v1.repository.feed.FeedRepository
 import org.chewing.v1.repository.feed.FeedVisibilityRepository
@@ -19,9 +20,9 @@ class FeedReader(
     fun readInfo(feedId: String): FeedInfo =
         feedRepository.read(feedId) ?: throw NotFoundException(ErrorCode.FEED_NOT_FOUND)
 
-    fun readsInfo(userId: String): List<FeedInfo> = feedRepository.reads(userId)
+    fun readsInfo(userId: UserId): List<FeedInfo> = feedRepository.reads(userId)
 
-    fun readVisibleFeedIds(userId: String, feedIds: List<String>): List<String> =
+    fun readVisibleFeedIds(userId: UserId, feedIds: List<String>): List<String> =
         feedVisibilityRepository.readVisibleFeedIds(userId, feedIds)
 
     fun readDetails(feedId: String): List<FeedDetail> = feedDetailRepository.read(feedId)
@@ -30,6 +31,6 @@ class FeedReader(
 
     fun readsDetails(feedIds: List<String>): List<FeedDetail> = feedDetailRepository.reads(feedIds)
 
-    fun readsFriendBetween(userId: String, dateTarget: DateTarget): List<FeedInfo> =
+    fun readsFriendBetween(userId: UserId, dateTarget: DateTarget): List<FeedInfo> =
         feedRepository.readsFriendBetween(userId, dateTarget)
 }

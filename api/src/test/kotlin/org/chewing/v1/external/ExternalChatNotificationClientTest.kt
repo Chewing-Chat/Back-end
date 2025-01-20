@@ -8,6 +8,7 @@ import org.chewing.v1.config.IntegrationTest
 import org.chewing.v1.dto.ChatMessageDto
 import org.chewing.v1.implementation.auth.JwtTokenProvider
 import org.chewing.v1.implementation.session.SessionProvider
+import org.chewing.v1.model.user.UserId
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -44,7 +45,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
     private var port: Int = 0
     private lateinit var latch: CountDownLatch
     private lateinit var session: StompSession
-    private val userId = "testUserId"
+    private val userId = UserId.of("testUserId")
     private lateinit var token: String
     private val chatMessages: ConcurrentLinkedQueue<ChatMessageDto> = ConcurrentLinkedQueue()
 

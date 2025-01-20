@@ -1,5 +1,6 @@
 package org.chewing.v1.controller.web
 
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.model.webrtc.IceCandidateMessage
 import org.chewing.v1.model.webrtc.WebRTCMessage
 import org.chewing.v1.service.web.WebRTCSessionManager

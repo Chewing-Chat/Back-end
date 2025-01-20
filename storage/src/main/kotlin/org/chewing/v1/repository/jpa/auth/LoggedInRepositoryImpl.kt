@@ -3,6 +3,7 @@ package org.chewing.v1.repository.jpa.auth
 import org.chewing.v1.jpaentity.auth.LoggedInJpaEntity
 import org.chewing.v1.jparepository.auth.LoggedInJpaRepository
 import org.chewing.v1.model.token.RefreshToken
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.auth.LoggedInRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -16,7 +17,7 @@ internal class LoggedInRepositoryImpl(
         loggedInJpaRepository.deleteByRefreshToken(refreshToken)
     }
 
-    override fun append(refreshToken: RefreshToken, userId: String) {
+    override fun append(refreshToken: RefreshToken, userId: UserId) {
         loggedInJpaRepository.save(LoggedInJpaEntity.generate(refreshToken, userId))
     }
 
@@ -27,5 +28,5 @@ internal class LoggedInRepositoryImpl(
         }
     }
 
-    override fun read(refreshToken: String, userId: String): RefreshToken? = loggedInJpaRepository.findByRefreshTokenAndUserId(refreshToken, userId).orElse(null).toRefreshToken()
+    override fun read(refreshToken: String, userId: UserId): RefreshToken? = loggedInJpaRepository.findByRefreshTokenAndUserId(refreshToken, userId.id).orElse(null).toRefreshToken()
 }

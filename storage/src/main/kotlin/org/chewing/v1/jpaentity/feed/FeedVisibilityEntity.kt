@@ -4,6 +4,7 @@ import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 import org.chewing.v1.jpaentity.common.BaseEntity
+import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
 
 @DynamicInsert
@@ -17,9 +18,9 @@ internal class FeedVisibilityEntity(
     val id: FeedVisibilityId,
 ) : BaseEntity() {
     companion object {
-        fun generate(feedId: String, userId: String): FeedVisibilityEntity {
+        fun generate(feedId: String, userId: UserId): FeedVisibilityEntity {
             return FeedVisibilityEntity(
-                id = FeedVisibilityId(feedId, userId),
+                id = FeedVisibilityId.of(feedId, userId),
             )
         }
     }

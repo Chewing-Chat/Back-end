@@ -39,6 +39,10 @@ object TestDataFactory {
     fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "1234567890")
 
     fun createUserName(): String = "testUserName"
+    fun createUserId(): UserId = UserId.of("testUserId")
+    fun createTargetUserId(): UserId = UserId.of("targetUserId")
+    fun createFriendId(): UserId = UserId.of("testFriendId")
+    fun createSecondFriendId(): UserId = UserId.of("testSecondFriendId")
 
     fun createProfileMedia(): Media = Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG)
 
@@ -61,7 +65,7 @@ object TestDataFactory {
 
     fun createJwtToken(): JwtToken = JwtToken.of("accessToken", RefreshToken.of("refreshToken", LocalDateTime.now()))
 
-    fun createAccessUser(userId: String): User = User.of(
+    fun createAccessUser(userId: UserId): User = User.of(
         userId,
         "testName",
         "2000-00-00",
@@ -72,7 +76,7 @@ object TestDataFactory {
         "test",
     )
 
-    fun createNotAccessUser(userId: String): User = User.of(
+    fun createNotAccessUser(userId: UserId): User = User.of(
         userId,
         "testName",
         "2000-00-00",
@@ -83,7 +87,7 @@ object TestDataFactory {
         "testStatusMessage",
     )
 
-    fun createEncryptedUser(userId: String, password: String): User = User.of(
+    fun createEncryptedUser(userId: UserId, password: String): User = User.of(
         userId,
         "testName",
         "2000-00-00",
@@ -95,7 +99,7 @@ object TestDataFactory {
     )
 
     fun createNotAccessUser(): User = User.of(
-        "testUserId",
+        UserId.of("testUserId"),
         "testName",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
@@ -121,7 +125,7 @@ object TestDataFactory {
     )
 
     fun createScheduleParticipant(
-        userId: String,
+        userId: UserId,
         scheduleId: String,
         status: ScheduleParticipantStatus,
     ): ScheduleParticipant = ScheduleParticipant.of(userId, scheduleId, status)
@@ -133,10 +137,10 @@ object TestDataFactory {
         return Schedule.of(scheduleInfo, scheduleParticipant)
     }
 
-    fun createFriendShip(friendId: String, accessStatus: AccessStatus): FriendShip =
+    fun createFriendShip(friendId: UserId, accessStatus: AccessStatus): FriendShip =
         FriendShip.of(friendId, createUserName(), true, accessStatus)
 
-    fun createFeedInfo(feedId: String, userId: String): FeedInfo =
+    fun createFeedInfo(feedId: String, userId: UserId): FeedInfo =
         FeedInfo.of(feedId, "topic", LocalDateTime.now(), userId)
 
     private fun createFeedMedia(index: Int): Media =
@@ -148,12 +152,12 @@ object TestDataFactory {
     fun createAnnouncement(announcementId: String): Announcement =
         Announcement.of(announcementId, "title", LocalDateTime.now(), "content")
 
-    fun createUserSearch(userId: String): UserSearch = UserSearch.of(userId, LocalDateTime.now())
+    fun createUserSearch(userId: UserId): UserSearch = UserSearch.of(userId.id, LocalDateTime.now())
 
     fun createChatNormalLog(
         messageId: String,
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         chatRoomNumber: ChatNumber,
         time: LocalDateTime,
     ): ChatNormalLog = ChatNormalLog.of(
@@ -169,7 +173,7 @@ object TestDataFactory {
     fun createChatInviteLog(
         messageId: String,
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         chatRoomNumber: ChatNumber,
     ): ChatInviteLog = ChatInviteLog.of(
         messageId,
@@ -184,7 +188,7 @@ object TestDataFactory {
     fun createChatReplyLog(
         messageId: String,
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         chatRoomNumber: ChatNumber,
     ): ChatReplyLog = ChatReplyLog.of(
         messageId,
@@ -204,7 +208,7 @@ object TestDataFactory {
     fun createChatLeaveLog(
         messageId: String,
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         chatRoomNumber: ChatNumber,
     ): ChatLeaveLog = ChatLeaveLog.of(
         messageId,
@@ -218,7 +222,7 @@ object TestDataFactory {
     fun createChatBombLog(
         messageId: String,
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         chatRoomNumber: ChatNumber,
     ): ChatBombLog = ChatBombLog.of(
         messageId,
@@ -234,7 +238,7 @@ object TestDataFactory {
     fun createChatFileLog(
         messageId: String,
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         chatRoomNumber: ChatNumber,
     ): ChatFileLog = ChatFileLog.of(
         messageId,
@@ -260,7 +264,7 @@ object TestDataFactory {
 
     fun createChatRoomMemberInfo(
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         readNumber: Int,
         favorite: Boolean,
     ): ChatRoomMemberInfo = ChatRoomMemberInfo.of(userId, chatRoomId, readNumber, readNumber, favorite)
@@ -271,7 +275,7 @@ object TestDataFactory {
     fun createChatNormalMessage(
         messageId: String,
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
     ): ChatNormalMessage = ChatNormalMessage.of(
         messageId,
         chatRoomId,
@@ -284,7 +288,7 @@ object TestDataFactory {
     fun createNormalMessage(messageId: String, chatRoomId: String): ChatNormalMessage = ChatNormalMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         text = "text",
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
@@ -293,7 +297,7 @@ object TestDataFactory {
     fun createBombMessage(messageId: String, chatRoomId: String): ChatBombMessage = ChatBombMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         text = "text",
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
@@ -303,16 +307,16 @@ object TestDataFactory {
     fun createInviteMessage(messageId: String, chatRoomId: String): ChatInviteMessage = ChatInviteMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
-        targetUserIds = listOf("targetUserId"),
+        targetUserIds = listOf(UserId.of("targetUserId")),
     )
 
     fun createFileMessage(messageId: String, chatRoomId: String): ChatFileMessage = ChatFileMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
         medias = listOf(Media.of(FileCategory.CHAT, "www.example.com", 0, MediaType.IMAGE_PNG)),
@@ -321,14 +325,14 @@ object TestDataFactory {
     fun createLeaveMessage(messageId: String, chatRoomId: String): ChatLeaveMessage = ChatLeaveMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
 
     fun createReadMessage(chatRoomId: String): ChatReadMessage = ChatReadMessage.of(
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
@@ -336,7 +340,7 @@ object TestDataFactory {
     fun createReplyMessage(messageId: String, chatRoomId: String): ChatReplyMessage = ChatReplyMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
         parentMessageId = "parentMessageId",
@@ -351,7 +355,7 @@ object TestDataFactory {
     fun createDeleteMessage(messageId: String, chatRoomId: String): ChatDeleteMessage = ChatDeleteMessage.of(
         targetMessageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
@@ -365,25 +369,25 @@ object TestDataFactory {
 
     fun createUserEmoticonPackInfo(
         emoticonPackId: String,
-        userId: String,
-    ): UserEmoticonPackInfo = UserEmoticonPackInfo.of(emoticonPackId, userId, LocalDateTime.now())
+        userId: UserId,
+    ): UserEmoticonPackInfo = UserEmoticonPackInfo.of(userId, emoticonPackId, LocalDateTime.now())
 
     fun createFeed(
         feedId: String,
-        userId: String,
+        userId: UserId,
     ): Feed = Feed.of(
         createFeedInfo(feedId, userId),
         listOf(createFeedDetail(feedId, "feedDetailId", 0)),
     )
 
     fun createChatRoomMember(
-        userId: String,
+        userId: UserId,
     ): ChatRoomMember = ChatRoomMember.of(userId, 0, false)
 
     fun createRoom(
         chatRoomId: String,
-        userId: String,
-        friendId: String,
+        userId: UserId,
+        friendId: UserId,
         favorite: Boolean,
     ): Room = Room.of(
         chatRoomInfo = createChatRoomInfo(chatRoomId),

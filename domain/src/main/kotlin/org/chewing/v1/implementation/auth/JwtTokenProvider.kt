@@ -6,6 +6,7 @@ import org.chewing.v1.error.AuthorizationException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.auth.JwtToken
 import org.chewing.v1.model.token.RefreshToken
+import org.chewing.v1.model.user.UserId
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -22,15 +23,15 @@ class JwtTokenProvider(
     private val secretKey: SecretKey
         get() = Keys.hmacShaKeyFor(secretKeyString.toByteArray())
 
-    fun createJwtToken(userId: String): JwtToken {
+    fun createJwtToken(userId: UserId): JwtToken {
         val accessToken = createAccessToken(userId)
         val refreshToken = createRefreshToken(userId)
         return JwtToken.of(accessToken, refreshToken)
     }
 
     // JWT Access Token 생성
-    fun createAccessToken(userId: String): String {
-        val claims: Claims = Jwts.claims().setSubject(userId)
+    fun createAccessToken(userId: UserId): String {
+        val claims: Claims = Jwts.claims().setSubject(userId.id)
         val now = Date()
         val expiryDate = Date(now.time + accessExpiration)
         return Jwts.builder()
@@ -42,8 +43,8 @@ class JwtTokenProvider(
     }
 
     // JWT Refresh Token 생성
-    fun createRefreshToken(userId: String): RefreshToken {
-        val claims: Claims = Jwts.claims().setSubject(userId)
+    fun createRefreshToken(userId: UserId): RefreshToken {
+        val claims: Claims = Jwts.claims().setSubject(userId.id)
         val now = Date()
         val expiryDate = Date(now.time + refreshExpiration)
         val token = Jwts.builder()
@@ -73,9 +74,9 @@ class JwtTokenProvider(
     }
 
     // 토큰에서 사용자 ID 추출
-    fun getUserIdFromToken(token: String): String {
+    fun getUserIdFromToken(token: String): UserId {
         val claims = getClaimsFromToken(token)
-        return claims.subject
+        return UserId.of(claims.subject)
     }
 
     // 토큰에서 클레임(사용자 관련 정보(예: 사용자 ID, 권한 등)) 추출
@@ -88,7 +89,7 @@ class JwtTokenProvider(
     // token 글자 깔끔히 정리
     fun cleanedToken(token: String): String = token.removePrefix("Bearer ").trim()
 
-    fun refresh(token: String): Pair<JwtToken, String> {
+    fun refresh(token: String): Pair<JwtToken, UserId> {
         val cleanedToken = cleanedToken(token)
         validateRefreshToken(cleanedToken)
         val userId = getUserIdFromToken(cleanedToken)

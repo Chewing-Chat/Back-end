@@ -2,6 +2,7 @@ package org.chewing.v1.jpaentity.auth
 
 import jakarta.persistence.*
 import org.chewing.v1.model.token.RefreshToken
+import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -18,10 +19,10 @@ internal class LoggedInJpaEntity(
     private var expiredAt: LocalDateTime,
 ) {
     companion object {
-        fun generate(refreshToken: RefreshToken, userId: String): LoggedInJpaEntity {
+        fun generate(refreshToken: RefreshToken, userId: UserId): LoggedInJpaEntity {
             return LoggedInJpaEntity(
                 refreshToken = refreshToken.token,
-                userId = userId,
+                userId = userId.id,
                 expiredAt = refreshToken.expiredAt,
             )
         }

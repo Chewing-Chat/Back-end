@@ -4,6 +4,7 @@ import org.chewing.v1.implementation.emoticon.EmoticonAggregator
 import org.chewing.v1.implementation.emoticon.EmoticonReader
 import org.chewing.v1.implementation.user.emoticon.UserEmoticonReader
 import org.chewing.v1.model.emoticon.EmoticonPack
+import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
 
 @Service
@@ -12,7 +13,7 @@ class EmoticonService(
     private val userEmoticonReader: UserEmoticonReader,
     private val emoticonAggregator: EmoticonAggregator,
 ) {
-    fun fetchUserEmoticonPacks(userId: String): List<EmoticonPack> {
+    fun fetchUserEmoticonPacks(userId: UserId): List<EmoticonPack> {
         val userEmoticons = userEmoticonReader.readUserEmoticonPacks(userId)
         val userEmotionsPackIds = userEmoticons.map { it.emoticonPackId }
         val emoticonPacksInfo = emoticonReader.readsPack(userEmotionsPackIds)

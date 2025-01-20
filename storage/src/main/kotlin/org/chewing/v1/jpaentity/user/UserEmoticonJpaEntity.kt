@@ -2,6 +2,7 @@ package org.chewing.v1.jpaentity.user
 
 import jakarta.persistence.*
 import org.chewing.v1.model.user.UserEmoticonPackInfo
+import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
 @Entity
@@ -13,7 +14,7 @@ internal class UserEmoticonJpaEntity(
 ) {
     fun toUserEmoticon(): UserEmoticonPackInfo {
         return UserEmoticonPackInfo.of(
-            userId = id.userId,
+            userId = UserId.of(id.userId),
             emoticonPackId = id.emoticonPackId,
             createAt = createAt,
         )

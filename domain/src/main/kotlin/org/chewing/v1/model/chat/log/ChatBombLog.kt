@@ -1,12 +1,13 @@
 package org.chewing.v1.model.chat.log
 
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
 class ChatBombLog private constructor(
     override val messageId: String,
     override val chatRoomId: String,
-    override val senderId: String,
+    override val senderId: UserId,
     override val timestamp: LocalDateTime,
     override val number: ChatNumber,
     override val type: ChatLogType,
@@ -18,7 +19,7 @@ class ChatBombLog private constructor(
         fun of(
             messageId: String,
             chatRoomId: String,
-            senderId: String,
+            senderId: UserId,
             text: String,
             number: ChatNumber,
             timestamp: LocalDateTime,

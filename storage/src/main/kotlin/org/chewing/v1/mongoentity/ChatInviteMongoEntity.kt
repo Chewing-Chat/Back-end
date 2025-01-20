@@ -5,6 +5,7 @@ import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.message.ChatInviteMessage
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.user.UserId
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
@@ -33,11 +34,11 @@ internal class ChatInviteMongoEntity(
             return ChatInviteMongoEntity(
                 messageId = chatInviteMessage.messageId,
                 chatRoomId = chatInviteMessage.chatRoomId,
-                senderId = chatInviteMessage.senderId,
+                senderId = chatInviteMessage.senderId.id,
                 seqNumber = chatInviteMessage.number.sequenceNumber,
                 page = chatInviteMessage.number.page,
                 sendTime = chatInviteMessage.timestamp,
-                targetUserIds = chatInviteMessage.targetUserIds,
+                targetUserIds = chatInviteMessage.targetUserIds.map{ it.id },
             )
         }
     }
@@ -46,7 +47,7 @@ internal class ChatInviteMongoEntity(
         return ChatInviteLog.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
-            senderId = senderId,
+            senderId = UserId.of(senderId),
             timestamp = sendTime,
             number = ChatNumber.of(chatRoomId, seqNumber, page),
             targetUserIds = targetUserIds,

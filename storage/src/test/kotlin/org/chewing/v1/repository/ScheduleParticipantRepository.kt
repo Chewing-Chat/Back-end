@@ -4,6 +4,7 @@ import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.user.ScheduleParticipantId
 import org.chewing.v1.jparepository.user.ScheduleParticipantJpaRepository
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.user.ScheduleParticipantRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.junit.jupiter.api.Test
@@ -26,7 +27,7 @@ class ScheduleParticipantRepository : JpaContextTest() {
         val scheduleId = generateScheduleId()
         scheduleParticipantRepositoryImpl.appendParticipants(scheduleId, listOf(userId))
         val result = scheduleParticipantJpaRepository.findById(
-            ScheduleParticipantId(
+            ScheduleParticipantId.of(
                 scheduleId = scheduleId,
                 userId = userId,
             ),
@@ -177,7 +178,7 @@ class ScheduleParticipantRepository : JpaContextTest() {
 
         scheduleParticipantRepositoryImpl.removeParticipants(scheduleId, listOf(userId))
         val result = scheduleParticipantJpaRepository.findById(
-            ScheduleParticipantId(
+            ScheduleParticipantId.of(
                 scheduleId = scheduleId,
                 userId = userId,
             ),
@@ -205,13 +206,13 @@ class ScheduleParticipantRepository : JpaContextTest() {
         scheduleParticipantRepositoryImpl.removeAllParticipants(scheduleId)
 
         val result1 = scheduleParticipantJpaRepository.findById(
-            ScheduleParticipantId(
+            ScheduleParticipantId.of(
                 scheduleId = scheduleId,
                 userId = userId1,
             ),
         )
         val result2 = scheduleParticipantJpaRepository.findById(
-            ScheduleParticipantId(
+            ScheduleParticipantId.of(
                 scheduleId = scheduleId,
                 userId = userId2,
             ),
@@ -241,13 +242,13 @@ class ScheduleParticipantRepository : JpaContextTest() {
         scheduleParticipantRepositoryImpl.removeParticipated(userId)
 
         val result1 = scheduleParticipantJpaRepository.findById(
-            ScheduleParticipantId(
+            ScheduleParticipantId.of(
                 scheduleId = scheduleId1,
                 userId = userId,
             ),
         )
         val result2 = scheduleParticipantJpaRepository.findById(
-            ScheduleParticipantId(
+            ScheduleParticipantId.of(
                 scheduleId = scheduleId2,
                 userId = userId,
             ),
@@ -262,7 +263,5 @@ class ScheduleParticipantRepository : JpaContextTest() {
         return UUID.randomUUID().toString()
     }
 
-    fun generateUserId(): String {
-        return UUID.randomUUID().toString()
-    }
+    private fun generateUserId() = UserId.of(UUID.randomUUID().toString())
 }

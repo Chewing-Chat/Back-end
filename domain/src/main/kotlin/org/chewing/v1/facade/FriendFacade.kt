@@ -2,6 +2,7 @@ package org.chewing.v1.facade
 
 import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.user.AccessStatus
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.friend.FriendShipService
 import org.chewing.v1.service.user.UserService
 import org.springframework.stereotype.Service
@@ -13,7 +14,7 @@ class FriendFacade(
 ) {
 
     fun addFriend(
-        userId: String,
+        userId: UserId,
         friendName: String,
         targetCredential: Credential,
     ) {

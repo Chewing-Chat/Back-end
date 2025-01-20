@@ -50,11 +50,12 @@ class ScheduleServiceTest {
 
     @Test
     fun `스케줄 추가 성공`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val scheduleId = "scheduleId"
         val scheduleTime = TestDataFactory.createScheduledTime()
         val scheduleContent = TestDataFactory.createScheduleContent()
-        val friendIds = listOf("friendId1", "friendId2")
+        val friendId = TestDataFactory.createFriendId()
+        val friendIds = listOf(friendId)
 
         every { scheduleRepository.append(scheduleTime, scheduleContent) } returns scheduleId
         every { scheduleParticipantRepository.appendParticipants(scheduleId, friendIds.plus(userId)) } just Runs
@@ -67,14 +68,14 @@ class ScheduleServiceTest {
     @Test
     fun `스케줄 삭제 성공`() {
         val scheduleId = "scheduleId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val scheduleParticipant = TestDataFactory.createScheduleParticipant(
             userId = userId,
             scheduleId = scheduleId,
             status = ScheduleParticipantStatus.ACTIVE,
         )
 
-        every { scheduleParticipantRepository.readParticipant(scheduleId, userId) } returns scheduleParticipant
+        every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns scheduleParticipant
         every { scheduleRepository.remove(scheduleId) } just Runs
         every { scheduleParticipantRepository.removeAllParticipants(scheduleId) } just Runs
 
@@ -86,14 +87,14 @@ class ScheduleServiceTest {
     @Test
     fun `스케줄 삭제 실패 - 참여하지 않는 유저(삭제됨)`() {
         val scheduleId = "scheduleId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val scheduleParticipant = TestDataFactory.createScheduleParticipant(
             userId = userId,
             scheduleId = scheduleId,
             status = ScheduleParticipantStatus.DELETED,
         )
 
-        every { scheduleParticipantRepository.readParticipant(scheduleId, userId) } returns scheduleParticipant
+        every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns scheduleParticipant
 
         val result = assertThrows<NotFoundException> {
             scheduleService.delete(userId, scheduleId)
@@ -105,9 +106,9 @@ class ScheduleServiceTest {
     @Test
     fun `스케줄 삭제 실패 - 참여하지 않는 유저(존재하지 않음)`() {
         val scheduleId = "scheduleId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
 
-        every { scheduleParticipantRepository.readParticipant(scheduleId, userId) } returns null
+        every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns null
 
         val result = assertThrows<NotFoundException> {
             scheduleService.delete(userId, scheduleId)
@@ -118,7 +119,7 @@ class ScheduleServiceTest {
 
     @Test
     fun `스케줄에서 참여 제거`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
 
         every { scheduleParticipantRepository.removeParticipated(userId) } just Runs
 
@@ -129,27 +130,22 @@ class ScheduleServiceTest {
 
     @Test
     fun `스케줄 가져오기 - 나 자신은 제외 되어야함`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val targetScheduleType = ScheduleType.of(2021, 1)
-        val scheduleIds = listOf("scheduleId1", "scheduleId2")
+        val scheduleIds = listOf("scheduleId1")
         val scheduleInfos = listOf(
             TestDataFactory.createScheduleInfo(scheduleId = "scheduleId1", ScheduleStatus.ACTIVE),
-            TestDataFactory.createScheduleInfo(scheduleId = "scheduleId2", ScheduleStatus.ACTIVE),
         )
         val participants = listOf(
             TestDataFactory.createScheduleParticipant(
                 scheduleId = "scheduleId1",
-                userId = "userId",
+                userId = userId,
                 status = ScheduleParticipantStatus.ACTIVE,
             ),
             TestDataFactory.createScheduleParticipant(
                 scheduleId = "scheduleId1",
-                userId = "userId2",
-                status = ScheduleParticipantStatus.ACTIVE,
-            ),
-            TestDataFactory.createScheduleParticipant(
-                scheduleId = "scheduleId2",
-                userId = "userId",
+                userId = friendId,
                 status = ScheduleParticipantStatus.ACTIVE,
             ),
         )
@@ -161,22 +157,27 @@ class ScheduleServiceTest {
             )
         } returns scheduleIds
         every { scheduleRepository.reads(scheduleIds, targetScheduleType, ScheduleStatus.ACTIVE) } returns scheduleInfos
-        every { scheduleParticipantRepository.readsParticipants(scheduleIds, ScheduleParticipantStatus.ACTIVE) } returns participants
+        every {
+            scheduleParticipantRepository.readsParticipants(
+                scheduleIds,
+                ScheduleParticipantStatus.ACTIVE,
+            )
+        } returns participants
 
         val result = scheduleService.fetches(userId, targetScheduleType)
 
-        assert(result.size == 2)
+        assert(result.size == 1)
         assert(result[0].participants.size == 1)
-        assert(result[1].participants.isEmpty())
     }
 
     @Test
     fun `스케줄 업데이트 - 새로운 친구가 추가 되었을 떄 성공`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val scheduleId = "scheduleId"
         val scheduleTime = TestDataFactory.createScheduledTime()
         val scheduleContent = TestDataFactory.createScheduleContent()
-        val friendIds = listOf("friendId1", "friendId2")
+        val friendId = TestDataFactory.createFriendId()
+        val friendIds = listOf(friendId)
 
         val scheduleParticipant = TestDataFactory.createScheduleParticipant(
             userId = userId,
@@ -184,7 +185,7 @@ class ScheduleServiceTest {
             status = ScheduleParticipantStatus.ACTIVE,
         )
 
-        every { scheduleParticipantRepository.readParticipant(scheduleId, userId) } returns scheduleParticipant
+        every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns scheduleParticipant
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
         every { scheduleParticipantRepository.readParticipants(scheduleId) } returns listOf(scheduleParticipant)
         every { scheduleParticipantRepository.removeParticipants(scheduleId, emptyList()) } just Runs
@@ -197,11 +198,12 @@ class ScheduleServiceTest {
 
     @Test
     fun `스케줄 업데이트 - 기존의 친구가 삭제 되었을 떄 성공`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val scheduleId = "scheduleId"
         val scheduleTime = TestDataFactory.createScheduledTime()
         val scheduleContent = TestDataFactory.createScheduleContent()
-        val friendIds = listOf("friendId1", "friendId2")
+        val friendIds = listOf(friendId)
         val userParticipant = TestDataFactory.createScheduleParticipant(
             userId = userId,
             scheduleId = scheduleId,
@@ -209,19 +211,14 @@ class ScheduleServiceTest {
         )
         val friendParticipants = listOf(
             TestDataFactory.createScheduleParticipant(
-                userId = "friendId1",
-                scheduleId = scheduleId,
-                status = ScheduleParticipantStatus.ACTIVE,
-            ),
-            TestDataFactory.createScheduleParticipant(
-                userId = "friendId2",
+                userId = friendId,
                 scheduleId = scheduleId,
                 status = ScheduleParticipantStatus.ACTIVE,
             ),
         )
         val scheduleParticipants = friendParticipants.plus(userParticipant)
 
-        every { scheduleParticipantRepository.readParticipant(scheduleId, userId) } returns userParticipant
+        every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns userParticipant
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
         every { scheduleParticipantRepository.readParticipants(scheduleId) } returns scheduleParticipants
         every { scheduleParticipantRepository.removeParticipants(scheduleId, friendIds) } just Runs

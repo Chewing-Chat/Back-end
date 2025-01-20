@@ -7,6 +7,7 @@ import org.chewing.v1.implementation.search.FriendSearchEngine
 import org.chewing.v1.model.chat.room.ChatRoomSortCriteria
 import org.chewing.v1.model.friend.FriendSortCriteria
 import org.chewing.v1.model.search.Search
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.chat.ChatLogService
 import org.chewing.v1.service.chat.RoomService
 import org.chewing.v1.service.friend.FriendShipService
@@ -21,7 +22,7 @@ class SearchFacade(
     private val friendSearchEngine: FriendSearchEngine,
     private val chatRoomSearchEngine: ChatRoomSearchEngine,
 ) {
-    fun search(userId: String, keyword: String): Search {
+    fun search(userId: UserId, keyword: String): Search {
         val friendShips = friendShipService.getAccessFriendShips(userId, FriendSortCriteria.NAME)
         val searchedFriendShips = friendSearchEngine.search(friendShips, keyword)
         val roomInfos = roomService.getChatRooms(userId)

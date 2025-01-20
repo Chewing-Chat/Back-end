@@ -21,7 +21,7 @@ class AccountFacadeTest {
 
     @Test
     fun `유저 생성`() {
-        val userId = "123"
+        val userId = TestDataFactory.createUserId()
         val user = TestDataFactory.createAccessUser(userId)
         val phoneNumber = TestDataFactory.createPhoneNumber()
         val device = TestDataFactory.createDevice()
@@ -39,7 +39,7 @@ class AccountFacadeTest {
 
     @Test
     fun `계정 삭제`() {
-        val userId = "123"
+        val userId = TestDataFactory.createUserId()
 
         every { userService.deleteUser(any()) } just Runs
         every { scheduleService.deleteParticipant(any()) } just Runs

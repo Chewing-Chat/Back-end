@@ -5,6 +5,7 @@ import org.chewing.v1.model.schedule.ScheduleParticipant
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleType
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.ScheduleParticipantRepository
 import org.chewing.v1.repository.user.ScheduleRepository
 import org.springframework.stereotype.Component
@@ -26,7 +27,7 @@ class ScheduleReader(
         return scheduleParticipantRepository.readParticipants(scheduleId)
     }
 
-    fun readParticipantScheduleIds(userId: String, status: ScheduleParticipantStatus): List<String> {
+    fun readParticipantScheduleIds(userId: UserId, status: ScheduleParticipantStatus): List<String> {
         return scheduleParticipantRepository.readParticipantScheduleIds(userId, status)
     }
 }

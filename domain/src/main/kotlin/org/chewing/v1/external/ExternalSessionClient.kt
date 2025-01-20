@@ -1,7 +1,10 @@
 package org.chewing.v1.external
+
+import org.chewing.v1.model.user.UserId
+
 interface ExternalSessionClient {
-    fun connect(userId: String, sessionId: String)
-    fun isOnline(userId: String): Boolean
-    fun getSessionId(userId: String): String
-    fun unConnect(userId: String, sessionId: String)
+    fun connect(userId: UserId, sessionId: String)
+    fun isOnline(userId: UserId): Boolean
+    fun getSessionId(userId: UserId): String
+    fun unConnect(userId: UserId, sessionId: String)
 }

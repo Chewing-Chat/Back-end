@@ -4,7 +4,7 @@ import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.media.Media
 
 class User private constructor(
-    val userId: String,
+    val userId: UserId,
     val name: String,
     val birth: String,
     val image: Media,
@@ -15,7 +15,7 @@ class User private constructor(
 ) {
     companion object {
         fun of(
-            userId: String,
+            userId: UserId,
             name: String,
             birth: String,
             image: Media,

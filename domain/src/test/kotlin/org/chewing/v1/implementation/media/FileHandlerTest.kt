@@ -39,7 +39,7 @@ class FileHandlerTest {
 
     @Test
     fun `파일 목록 생성 테스트 - 실패(파일 이름이 올바르지 않음)`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val files = listOf(
             TestDataFactory.createFileData(MediaType.IMAGE_PNG, "0.png"),
             TestDataFactory.createFileData(MediaType.VIDEO_MP4, "4.mp4"),
@@ -52,7 +52,7 @@ class FileHandlerTest {
 
     @Test
     fun `파일 목록 전송시 하나라도 실패한다면 Exception을 던져야함`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val files = listOf(
             TestDataFactory.createFileData(MediaType.IMAGE_PNG, "0.png"),
             TestDataFactory.createFileData(MediaType.IMAGE_PNG, "1.png"),
@@ -69,7 +69,7 @@ class FileHandlerTest {
 
     @Test
     fun `파일목록 생성 테스트 - 성공`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
 
         val files = listOf(
             TestDataFactory.createFileData(MediaType.IMAGE_PNG, "0.png"),
@@ -85,7 +85,7 @@ class FileHandlerTest {
 
     @Test
     fun `파일 생성 테스트 - 실패`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val file = TestDataFactory.createFileData(MediaType.IMAGE_PNG, "1.png")
 
         val exception = assertThrows<ConflictException> {
@@ -96,7 +96,7 @@ class FileHandlerTest {
 
     @Test
     fun `파일 전송 실패시 Exception을 던져야함`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val file = TestDataFactory.createFileData(MediaType.IMAGE_PNG, "0.png")
 
         coEvery { externalFileClient.uploadFile(eq(file), any()) } throws RuntimeException()
@@ -110,7 +110,7 @@ class FileHandlerTest {
 
     @Test
     fun `파일 생성 테스트 - 성공`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val file = TestDataFactory.createFileData(MediaType.IMAGE_PNG, "0.png")
 
         coEvery { externalFileClient.uploadFile(any(), any()) } just Runs

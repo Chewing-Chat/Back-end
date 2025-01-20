@@ -21,9 +21,9 @@ class FriendFacadeTest {
     @Test
     fun `친구 추가`() {
         // given
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val friendName = "friendName"
-        val friendId = "friendId"
+        val friendId = TestDataFactory.createFriendId()
         val targetCredential = TestDataFactory.createPhoneNumber()
         val targetUser = TestDataFactory.createAccessUser(friendId)
         val user = TestDataFactory.createAccessUser(userId)

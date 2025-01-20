@@ -2,6 +2,7 @@ package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.feed.FeedRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.junit.jupiter.api.Test
@@ -79,5 +80,5 @@ internal class FeedRepositoryTest : JpaContextTest() {
         assert(!result)
     }
 
-    private fun generateUserId() = UUID.randomUUID().toString()
+    private fun generateUserId() = UserId.of(UUID.randomUUID().toString())
 }
