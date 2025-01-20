@@ -17,8 +17,8 @@ internal class GroupChatRoomMemberRepositoryImpl(
 
     override fun readFriends(chatRoomId: String, userId: UserId): List<ChatRoomMemberInfo> =
         groupChatRoomMemberJpaRepository.findAllByIdChatRoomIdAndIdUserIdNot(chatRoomId, userId.id).map {
-        it.toRoomMember()
-    }
+            it.toRoomMember()
+        }
 
     override fun reads(userId: UserId): List<ChatRoomMemberInfo> {
         // Step 1: 해당 유저가 속한 채팅방 ID 목록을 조회

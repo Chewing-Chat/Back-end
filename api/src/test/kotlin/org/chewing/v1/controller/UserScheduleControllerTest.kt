@@ -69,7 +69,7 @@ class UserScheduleControllerTest : RestDocsTest() {
             .statusCode(HttpStatus.OK.value())
             .apply {
                 schedules.forEachIndexed { index, schedule ->
-                    body("data.schedules[$index].scheduleId", equalTo(schedules[index].info.id))
+                    body("data.schedules[$index].scheduleId", equalTo(schedules[index].info.scheduleId.id))
                     body("data.schedules[$index].title", equalTo(schedules[index].info.content.title))
                     body("data.schedules[$index].memo", equalTo(schedules[index].info.content.memo))
                     body(
@@ -151,7 +151,7 @@ class UserScheduleControllerTest : RestDocsTest() {
             timeDecided = true,
             friendIds = listOf("testFriendId1", "testFriendId2"),
         )
-        val scheduleId = "testScheduleId"
+        val scheduleId = TestDataFactory.createScheduleId()
         every { scheduleService.create(any(), any(), any(), any()) } returns scheduleId
 
         given()

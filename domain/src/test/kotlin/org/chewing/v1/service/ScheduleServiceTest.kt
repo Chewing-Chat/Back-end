@@ -51,7 +51,7 @@ class ScheduleServiceTest {
     @Test
     fun `스케줄 추가 성공`() {
         val userId = TestDataFactory.createUserId()
-        val scheduleId = "scheduleId"
+        val scheduleId = TestDataFactory.createScheduleId()
         val scheduleTime = TestDataFactory.createScheduledTime()
         val scheduleContent = TestDataFactory.createScheduleContent()
         val friendId = TestDataFactory.createFriendId()
@@ -67,7 +67,7 @@ class ScheduleServiceTest {
 
     @Test
     fun `스케줄 삭제 성공`() {
-        val scheduleId = "scheduleId"
+        val scheduleId = TestDataFactory.createScheduleId()
         val userId = TestDataFactory.createUserId()
         val scheduleParticipant = TestDataFactory.createScheduleParticipant(
             userId = userId,
@@ -86,7 +86,7 @@ class ScheduleServiceTest {
 
     @Test
     fun `스케줄 삭제 실패 - 참여하지 않는 유저(삭제됨)`() {
-        val scheduleId = "scheduleId"
+        val scheduleId = TestDataFactory.createScheduleId()
         val userId = TestDataFactory.createUserId()
         val scheduleParticipant = TestDataFactory.createScheduleParticipant(
             userId = userId,
@@ -105,7 +105,7 @@ class ScheduleServiceTest {
 
     @Test
     fun `스케줄 삭제 실패 - 참여하지 않는 유저(존재하지 않음)`() {
-        val scheduleId = "scheduleId"
+        val scheduleId = TestDataFactory.createScheduleId()
         val userId = TestDataFactory.createUserId()
 
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns null
@@ -133,18 +133,19 @@ class ScheduleServiceTest {
         val userId = TestDataFactory.createUserId()
         val friendId = TestDataFactory.createFriendId()
         val targetScheduleType = ScheduleType.of(2021, 1)
-        val scheduleIds = listOf("scheduleId1")
+        val scheduleId = TestDataFactory.createScheduleId()
+        val scheduleIds = listOf(scheduleId)
         val scheduleInfos = listOf(
-            TestDataFactory.createScheduleInfo(scheduleId = "scheduleId1", ScheduleStatus.ACTIVE),
+            TestDataFactory.createScheduleInfo(scheduleId = scheduleId, ScheduleStatus.ACTIVE),
         )
         val participants = listOf(
             TestDataFactory.createScheduleParticipant(
-                scheduleId = "scheduleId1",
+                scheduleId = scheduleId,
                 userId = userId,
                 status = ScheduleParticipantStatus.ACTIVE,
             ),
             TestDataFactory.createScheduleParticipant(
-                scheduleId = "scheduleId1",
+                scheduleId = scheduleId,
                 userId = friendId,
                 status = ScheduleParticipantStatus.ACTIVE,
             ),
@@ -173,7 +174,7 @@ class ScheduleServiceTest {
     @Test
     fun `스케줄 업데이트 - 새로운 친구가 추가 되었을 떄 성공`() {
         val userId = TestDataFactory.createUserId()
-        val scheduleId = "scheduleId"
+        val scheduleId = TestDataFactory.createScheduleId()
         val scheduleTime = TestDataFactory.createScheduledTime()
         val scheduleContent = TestDataFactory.createScheduleContent()
         val friendId = TestDataFactory.createFriendId()
@@ -200,7 +201,7 @@ class ScheduleServiceTest {
     fun `스케줄 업데이트 - 기존의 친구가 삭제 되었을 떄 성공`() {
         val userId = TestDataFactory.createUserId()
         val friendId = TestDataFactory.createFriendId()
-        val scheduleId = "scheduleId"
+        val scheduleId = TestDataFactory.createScheduleId()
         val scheduleTime = TestDataFactory.createScheduledTime()
         val scheduleContent = TestDataFactory.createScheduleContent()
         val friendIds = listOf(friendId)

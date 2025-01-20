@@ -24,7 +24,7 @@ internal class FeedRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val content = "content"
         val result = feedRepositoryImpl.append(userId, content)
-        assert(result.isNotEmpty())
+        assert(result.id.isNotEmpty())
     }
 
     @Test
@@ -51,7 +51,7 @@ internal class FeedRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val feedInfoList = jpaDataGenerator.feedEntityDataList(userId)
         feedRepositoryImpl.removes(feedInfoList.map { it.feedId })
-        val result = feedJpaRepository.findAllById(feedInfoList.map { it.feedId })
+        val result = feedJpaRepository.findAllById(feedInfoList.map { it.feedId.id })
         assert(result.isEmpty())
     }
 
@@ -60,7 +60,7 @@ internal class FeedRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val feedInfoList = jpaDataGenerator.feedEntityDataList(userId)
         feedRepositoryImpl.removesOwned(userId)
-        val result = feedJpaRepository.findAllById(feedInfoList.map { it.feedId })
+        val result = feedJpaRepository.findAllById(feedInfoList.map { it.feedId.id })
         assert(result.isEmpty())
     }
 

@@ -55,7 +55,7 @@ class NotificationServiceTest {
         val userId = TestDataFactory.createUserId()
         val feedId = "feedId"
         val comment = "comment"
-        val pushTokenId  = "pushTokenId"
+        val pushTokenId = "pushTokenId"
         val user = TestDataFactory.createAccessUser(userId)
         val pushToken = TestDataFactory.createPushToken(pushTokenId)
         val notificationSlot = mutableListOf<Notification>()
@@ -88,7 +88,7 @@ class NotificationServiceTest {
         val userId = TestDataFactory.createUserId()
         val feedId = "feedId"
         val comment = "comment"
-        val pushTokenId  = "pushTokenId"
+        val pushTokenId = "pushTokenId"
         val user = TestDataFactory.createAccessUser(userId)
         val pushToken = TestDataFactory.createPushToken(pushTokenId)
         val pushTokens = listOf(pushToken, pushToken)

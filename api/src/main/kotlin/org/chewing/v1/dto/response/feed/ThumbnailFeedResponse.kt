@@ -12,7 +12,7 @@ data class ThumbnailFeedResponse(
             feed: Feed,
         ): ThumbnailFeedResponse {
             return ThumbnailFeedResponse(
-                feedId = feed.feed.feedId,
+                feedId = feed.feed.feedId.id,
                 thumbnailFileUrl = feed.feedDetails[0].media.url,
                 type = feed.feedDetails[0].media.type.value().lowercase(),
             )

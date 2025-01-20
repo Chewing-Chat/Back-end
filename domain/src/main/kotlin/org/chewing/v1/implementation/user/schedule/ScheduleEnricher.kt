@@ -15,7 +15,7 @@ class ScheduleEnricher {
     ): List<Schedule> {
         return scheduleInfos.map { scheduleInfo ->
             val participants = scheduleParticipants
-                .filter { it.scheduleId == scheduleInfo.id }
+                .filter { it.scheduleId == scheduleInfo.scheduleId }
                 .filter { it.userId != userId }
             Schedule.of(scheduleInfo, participants)
         }

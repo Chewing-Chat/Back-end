@@ -13,39 +13,37 @@ import java.time.temporal.TemporalAdjusters
 internal class ScheduleRepositoryImpl(
     private val scheduleJpaRepository: ScheduleJpaRepository,
 ) : ScheduleRepository {
-    override fun append(scheduleTime: ScheduleTime, scheduleContent: ScheduleContent): String {
-        return scheduleJpaRepository.save(ScheduleJpaEntity.generate(scheduleContent, scheduleTime)).toScheduleInfo().id
+    override fun append(scheduleTime: ScheduleTime, scheduleContent: ScheduleContent): ScheduleId {
+        return scheduleJpaRepository.save(ScheduleJpaEntity.generate(scheduleContent, scheduleTime)).toScheduleInfo().scheduleId
     }
 
     @Transactional
-    override fun remove(scheduleId: String) {
-        scheduleJpaRepository.findById(scheduleId)
-            .ifPresent {
-                    scheduleEntity ->
+    override fun remove(scheduleId: ScheduleId) {
+        scheduleJpaRepository.findById(scheduleId.id)
+            .ifPresent { scheduleEntity ->
                 scheduleEntity.updateStatus(ScheduleStatus.DELETED)
                 scheduleJpaRepository.save(scheduleEntity)
             }
     }
 
     override fun update(
-        scheduleId: String,
+        scheduleId: ScheduleId,
         scheduleTime: ScheduleTime,
         scheduleContent: ScheduleContent,
     ) {
-        scheduleJpaRepository.findById(scheduleId)
-            .ifPresent {
-                    scheduleEntity ->
+        scheduleJpaRepository.findById(scheduleId.id)
+            .ifPresent { scheduleEntity ->
                 scheduleEntity.updateInfo(scheduleTime, scheduleContent)
                 scheduleJpaRepository.save(scheduleEntity)
             }
     }
 
-    override fun reads(scheduleIds: List<String>, type: ScheduleType, status: ScheduleStatus): List<ScheduleInfo> {
+    override fun reads(scheduleIds: List<ScheduleId>, type: ScheduleType, status: ScheduleStatus): List<ScheduleInfo> {
         val startDateTime = LocalDateTime.of(type.year, type.month, 1, 0, 0)
         val endDateTime = startDateTime
             .with(TemporalAdjusters.firstDayOfNextMonth()) // 다음 달의 첫 날로 설정
             .minusSeconds(1) // 1초 전으로 설정
-        return scheduleJpaRepository.findSchedules(scheduleIds, startDateTime, endDateTime, status)
+        return scheduleJpaRepository.findSchedules(scheduleIds.map { it.id }, startDateTime, endDateTime, status)
             .map { it.toScheduleInfo() }
     }
 }

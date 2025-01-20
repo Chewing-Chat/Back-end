@@ -12,6 +12,7 @@ import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory.createFeed
 import org.chewing.v1.controller.feed.FeedController
 import org.chewing.v1.dto.request.feed.FeedRequest
+import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.feed.FeedService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
@@ -65,7 +66,7 @@ class FeedControllerTest : RestDocsTest() {
             .body("status", equalTo(200))
             .apply {
                 feeds.forEachIndexed { index, feed ->
-                    body("data.feeds[$index].feedId", equalTo(feed.feed.feedId))
+                    body("data.feeds[$index].feedId", equalTo(feed.feed.feedId.id))
                     body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
                     body("data.feeds[$index].type", equalTo(feed.feedDetails[0].media.type.value().lowercase()))
                 }
@@ -104,7 +105,7 @@ class FeedControllerTest : RestDocsTest() {
             .body("status", equalTo(200))
             .apply {
                 feeds.forEachIndexed { index, feed ->
-                    body("data.feeds[$index].feedId", equalTo(feed.feed.feedId))
+                    body("data.feeds[$index].feedId", equalTo(feed.feed.feedId.id))
                     body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
                     body("data.feeds[$index].type", equalTo(feed.feedDetails[0].media.type.value().lowercase()))
                 }
@@ -135,7 +136,7 @@ class FeedControllerTest : RestDocsTest() {
         val userId = "testUserId"
         val feed = createFeed()
         val uploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
-        every { feedService.getFeed(testFeedId, UserId.of(userId)) } returns feed
+        every { feedService.getFeed(any(), UserId.of(userId)) } returns feed
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -146,7 +147,7 @@ class FeedControllerTest : RestDocsTest() {
             .statusCode(HttpStatus.OK.value())
             .body("status", equalTo(200))
             .apply {
-                body("data.feedId", equalTo(feed.feed.feedId))
+                body("data.feedId", equalTo(feed.feed.feedId.id))
                 body("data.content", equalTo(feed.feed.content))
                 body("data.uploadTime", equalTo(uploadTime))
                 feed.feedDetails.forEachIndexed { index, feedDetail ->
@@ -231,7 +232,7 @@ class FeedControllerTest : RestDocsTest() {
             "Test content".toByteArray(),
         )
 
-        val feedId = "testFeedId1"
+        val feedId = FeedId.of("testFeedId1")
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
         every { feedService.make(any(), any(), any(), any(), any()) } returns feedId
@@ -248,7 +249,7 @@ class FeedControllerTest : RestDocsTest() {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .body("status", equalTo(201))
-            .body("data.feedId", equalTo(feedId))
+            .body("data.feedId", equalTo(feedId.id))
             .apply(
                 document(
                     "{class-name}/{method-name}",

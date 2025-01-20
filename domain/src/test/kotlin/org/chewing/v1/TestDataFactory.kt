@@ -1,6 +1,7 @@
 package org.chewing.v1
 
 import org.chewing.v1.model.announcement.Announcement
+import org.chewing.v1.model.announcement.AnnouncementId
 import org.chewing.v1.model.auth.*
 import org.chewing.v1.model.chat.log.*
 import org.chewing.v1.model.chat.member.ChatRoomMember
@@ -14,6 +15,8 @@ import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.Feed
 import org.chewing.v1.model.feed.FeedDetail
+import org.chewing.v1.model.feed.FeedDetailId
+import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.friend.UserSearch
@@ -24,6 +27,7 @@ import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.schedule.Schedule
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
+import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleParticipant
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
@@ -40,10 +44,16 @@ object TestDataFactory {
 
     fun createUserName(): String = "testUserName"
     fun createUserId(): UserId = UserId.of("testUserId")
+    fun createFeedId(): FeedId = FeedId.of("testFeedId")
+    fun createSecondFeedId(): FeedId = FeedId.of("testSecondFeedId")
+    fun createFeedDetailId(): FeedDetailId = FeedDetailId.of("testFeedDetailId")
+    fun createSecondFeedDetailId(): FeedDetailId = FeedDetailId.of("testSecondFeedDetailId")
+    fun createThirdFeedDetailId(): FeedDetailId = FeedDetailId.of("testThirdFeedDetailId")
+    fun createFourthFeedDetailId(): FeedDetailId = FeedDetailId.of("testFourthFeedDetailId")
     fun createTargetUserId(): UserId = UserId.of("targetUserId")
     fun createFriendId(): UserId = UserId.of("testFriendId")
     fun createSecondFriendId(): UserId = UserId.of("testSecondFriendId")
-
+    fun createScheduleId(): ScheduleId = ScheduleId.of("testScheduleId")
     fun createProfileMedia(): Media = Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG)
 
     fun createMedia(category: FileCategory, index: Int, mediaType: MediaType): Media =
@@ -58,8 +68,6 @@ object TestDataFactory {
         val inputStream = ByteArrayInputStream(content.toByteArray())
         return FileData.of(inputStream, contentType, fileName, size)
     }
-
-    fun createAppToken(): String = "someAppToken"
 
     fun createDevice(): PushToken.Device = PushToken.Device.of("deviceId", PushToken.Provider.ANDROID)
 
@@ -114,7 +122,7 @@ object TestDataFactory {
 
     fun createScheduleContent(): ScheduleContent = ScheduleContent.of("testTitle", "memo", "location")
 
-    fun createScheduleInfo(scheduleId: String, status: ScheduleStatus): ScheduleInfo = ScheduleInfo.of(
+    fun createScheduleInfo(scheduleId: ScheduleId, status: ScheduleStatus): ScheduleInfo = ScheduleInfo.of(
         scheduleId,
         "title",
         "memo",
@@ -126,7 +134,7 @@ object TestDataFactory {
 
     fun createScheduleParticipant(
         userId: UserId,
-        scheduleId: String,
+        scheduleId: ScheduleId,
         status: ScheduleParticipantStatus,
     ): ScheduleParticipant = ScheduleParticipant.of(userId, scheduleId, status)
 
@@ -140,18 +148,18 @@ object TestDataFactory {
     fun createFriendShip(friendId: UserId, accessStatus: AccessStatus): FriendShip =
         FriendShip.of(friendId, createUserName(), true, accessStatus)
 
-    fun createFeedInfo(feedId: String, userId: UserId): FeedInfo =
+    fun createFeedInfo(feedId: FeedId, userId: UserId): FeedInfo =
         FeedInfo.of(feedId, "topic", LocalDateTime.now(), userId)
 
     private fun createFeedMedia(index: Int): Media =
         Media.of(FileCategory.FEED, "www.example.com", index, MediaType.IMAGE_PNG)
 
-    fun createFeedDetail(feedId: String, feedDetailId: String, index: Int): FeedDetail =
+    fun createFeedDetail(feedId: FeedId, feedDetailId: FeedDetailId, index: Int): FeedDetail =
         FeedDetail.of(feedDetailId, createFeedMedia(index), feedId)
 
-    fun createAnnouncement(announcementId: String): Announcement =
+    fun createAnnouncement(announcementId: AnnouncementId): Announcement =
         Announcement.of(announcementId, "title", LocalDateTime.now(), "content")
-
+    fun createAnnouncementId(): AnnouncementId = AnnouncementId.of("testAnnouncementId")
     fun createUserSearch(userId: UserId): UserSearch = UserSearch.of(userId.id, LocalDateTime.now())
 
     fun createChatNormalLog(
@@ -373,11 +381,11 @@ object TestDataFactory {
     ): UserEmoticonPackInfo = UserEmoticonPackInfo.of(userId, emoticonPackId, LocalDateTime.now())
 
     fun createFeed(
-        feedId: String,
+        feedId: FeedId,
         userId: UserId,
     ): Feed = Feed.of(
         createFeedInfo(feedId, userId),
-        listOf(createFeedDetail(feedId, "feedDetailId", 0)),
+        listOf(createFeedDetail(feedId, FeedDetailId.of("feedDetailId"), 0)),
     )
 
     fun createChatRoomMember(

@@ -84,7 +84,7 @@ class ChatRoomController(
         @RequestAttribute("userId") userId: String,
         @RequestBody request: ChatRoomRequest.Favorite,
     ): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
-        roomService.favoriteChatRoom(request.chatRoomId,UserId.of(userId), request.favorite)
+        roomService.favoriteChatRoom(request.chatRoomId, UserId.of(userId), request.favorite)
         return ResponseHelper.successOnly()
     }
 }

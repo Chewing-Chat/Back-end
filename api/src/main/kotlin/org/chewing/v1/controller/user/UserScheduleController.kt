@@ -3,6 +3,7 @@ package org.chewing.v1.controller.user
 import org.chewing.v1.dto.request.user.ScheduleRequest
 import org.chewing.v1.dto.response.schedule.ScheduleIdResponse
 import org.chewing.v1.dto.response.schedule.ScheduleListResponse
+import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleType
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.SuccessOnlyResponse
@@ -33,7 +34,7 @@ class UserScheduleController(
         @RequestBody request: ScheduleRequest.Delete,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         val scheduleId = request.toScheduleId()
-        scheduleService.delete(UserId.of(userId), scheduleId)
+        scheduleService.delete(UserId.of(userId), ScheduleId.of(scheduleId))
         return ResponseHelper.successOnly()
     }
 
@@ -44,7 +45,7 @@ class UserScheduleController(
     ): SuccessResponseEntity<ScheduleIdResponse> {
         val scheduleId =
             scheduleService.create(UserId.of(userId), request.toScheduleTime(), request.toScheduleContent(), request.toFriendIds())
-        return ResponseHelper.successCreate(ScheduleIdResponse(scheduleId))
+        return ResponseHelper.successCreate(ScheduleIdResponse(scheduleId.id))
     }
 
     @PutMapping("")

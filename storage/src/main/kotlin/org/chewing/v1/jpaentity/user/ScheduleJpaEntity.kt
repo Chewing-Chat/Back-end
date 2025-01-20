@@ -3,6 +3,7 @@ package org.chewing.v1.jpaentity.user
 import jakarta.persistence.*
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
+import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleTime
 import java.time.LocalDateTime
@@ -41,7 +42,7 @@ internal class ScheduleJpaEntity(
     }
 
     fun toScheduleInfo(): ScheduleInfo = ScheduleInfo.of(
-        scheduleId,
+        ScheduleId.of(scheduleId),
         name,
         content,
         dateTime,

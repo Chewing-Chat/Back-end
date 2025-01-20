@@ -1,6 +1,7 @@
 package org.chewing.v1.dto.request.user
 
 import org.chewing.v1.model.schedule.ScheduleContent
+import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleTime
 import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
@@ -41,7 +42,7 @@ class ScheduleRequest {
         val memo: String,
         val location: String,
     ) {
-        fun toScheduleId(): String = scheduleId
+        fun toScheduleId(): ScheduleId = ScheduleId.of(scheduleId)
 
         fun toScheduleContent(): ScheduleContent = ScheduleContent.of(title, memo, location)
 
@@ -51,6 +52,6 @@ class ScheduleRequest {
             return ScheduleTime.of(date, timeDecided)
         }
 
-        fun toFriendIds(): List<UserId> = friendIds.map{ UserId.of(it) }
+        fun toFriendIds(): List<UserId> = friendIds.map { UserId.of(it) }
     }
 }

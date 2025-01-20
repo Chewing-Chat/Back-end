@@ -28,7 +28,7 @@ class ScheduleRepositoryTest : JpaContextTest() {
         val content = ScheduleProvider.buildContent()
         val time = ScheduleProvider.buildTime()
         val result = scheduleRepositoryImpl.append(time, content)
-        assert(result.isNotEmpty())
+        assert(result.id.isNotEmpty())
     }
 
     @Test
@@ -36,8 +36,8 @@ class ScheduleRepositoryTest : JpaContextTest() {
         val content = ScheduleProvider.buildContent()
         val time = ScheduleProvider.buildTime()
         val schedule = jpaDataGenerator.scheduleEntityData(content, time)
-        scheduleRepositoryImpl.remove(schedule.id)
-        val result = scheduleJpaRepository.findById(schedule.id)
+        scheduleRepositoryImpl.remove(schedule.scheduleId)
+        val result = scheduleJpaRepository.findById(schedule.scheduleId.id)
         assert(result.isPresent)
         assert(result.get().toScheduleInfo().status == ScheduleStatus.DELETED)
     }
@@ -49,15 +49,15 @@ class ScheduleRepositoryTest : JpaContextTest() {
         val schedule = jpaDataGenerator.scheduleEntityData(content, time)
         val newContent = ScheduleProvider.buildNewContent()
         val newTime = ScheduleProvider.buildNewTime()
-        scheduleRepositoryImpl.update(schedule.id, newTime, newContent)
-        val result = scheduleJpaRepository.findById(schedule.id)
+        scheduleRepositoryImpl.update(schedule.scheduleId, newTime, newContent)
+        val result = scheduleJpaRepository.findById(schedule.scheduleId.id)
         assert(result.isPresent)
         assert(result.get().toScheduleInfo().content.memo == newContent.memo)
         assert(ChronoUnit.SECONDS.between(result.get().toScheduleInfo().time.dateTime, newTime.dateTime) <= 1)
         assert(result.get().toScheduleInfo().time.timeDecided == newTime.timeDecided)
         assert(result.get().toScheduleInfo().content.title == newContent.title)
         assert(result.get().toScheduleInfo().content.location == newContent.location)
-        assert(result.get().toScheduleInfo().id == schedule.id)
+        assert(result.get().toScheduleInfo().scheduleId == schedule.scheduleId)
     }
 
     @Test
@@ -66,7 +66,7 @@ class ScheduleRepositoryTest : JpaContextTest() {
         val time = ScheduleProvider.build1000YearTime()
         val schedule = jpaDataGenerator.scheduleEntityData(content, time)
         val schedules = scheduleRepositoryImpl.reads(
-            listOf(schedule.id),
+            listOf(schedule.scheduleId),
             ScheduleType.of(time.dateTime.year, time.dateTime.monthValue),
             ScheduleStatus.ACTIVE,
         )
@@ -80,7 +80,7 @@ class ScheduleRepositoryTest : JpaContextTest() {
         val time = ScheduleProvider.build1000YearTime()
         val schedule = jpaDataGenerator.scheduleDeleteEntityData(content, time)
         val schedules = scheduleRepositoryImpl.reads(
-            listOf(schedule.id),
+            listOf(schedule.scheduleId),
             ScheduleType.of(time.dateTime.year, time.dateTime.monthValue),
             ScheduleStatus.ACTIVE,
         )
@@ -95,8 +95,8 @@ class ScheduleRepositoryTest : JpaContextTest() {
         val schedule2 = jpaDataGenerator.scheduleEntityData(content, time)
         val schedules = scheduleRepositoryImpl.reads(
             listOf(
-                schedule1.id,
-                schedule2.id,
+                schedule1.scheduleId,
+                schedule2.scheduleId,
             ),
             ScheduleType.of(time.dateTime.year.minus(1), time.dateTime.monthValue),
             ScheduleStatus.ACTIVE,

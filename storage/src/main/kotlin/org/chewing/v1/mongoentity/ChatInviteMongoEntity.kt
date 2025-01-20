@@ -38,7 +38,7 @@ internal class ChatInviteMongoEntity(
                 seqNumber = chatInviteMessage.number.sequenceNumber,
                 page = chatInviteMessage.number.page,
                 sendTime = chatInviteMessage.timestamp,
-                targetUserIds = chatInviteMessage.targetUserIds.map{ it.id },
+                targetUserIds = chatInviteMessage.targetUserIds.map { it.id },
             )
         }
     }

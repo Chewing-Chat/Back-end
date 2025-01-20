@@ -4,14 +4,14 @@ import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
 class FeedInfo private constructor(
-    val feedId: String,
+    val feedId: FeedId,
     val content: String,
     val uploadAt: LocalDateTime,
     val userId: UserId,
 ) {
     companion object {
         fun of(
-            feedId: String,
+            feedId: FeedId,
             content: String,
             uploadAt: LocalDateTime,
             userId: UserId,

@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional
 import org.chewing.v1.jpaentity.feed.FeedJpaEntity
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
 import org.chewing.v1.model.ai.DateTarget
+import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.feed.FeedRepository
@@ -14,8 +15,8 @@ import java.time.LocalDateTime
 internal class FeedRepositoryImpl(
     private val feedJpaRepository: FeedJpaRepository,
 ) : FeedRepository {
-    override fun read(feedId: String): FeedInfo? =
-        feedJpaRepository.findById(feedId).map { it.toFeedInfo() }.orElse(null)
+    override fun read(feedId: FeedId): FeedInfo? =
+        feedJpaRepository.findById(feedId.id).map { it.toFeedInfo() }.orElse(null)
 
     override fun reads(userId: UserId): List<FeedInfo> =
         feedJpaRepository.findAllByUserIdOrderByCreatedAtAsc(userId.id).map { it.toFeedInfo() }
@@ -30,8 +31,8 @@ internal class FeedRepositoryImpl(
             .map { it.toFeedInfo() }
     }
 
-    override fun removes(feedIds: List<String>) {
-        feedJpaRepository.deleteAllById(feedIds)
+    override fun removes(feedIds: List<FeedId>) {
+        feedJpaRepository.deleteAllById(feedIds.map { it.id })
     }
 
     @Transactional
@@ -39,10 +40,10 @@ internal class FeedRepositoryImpl(
         feedJpaRepository.deleteAllByUserId(userId.id)
     }
 
-    override fun append(userId: UserId, content: String): String =
+    override fun append(userId: UserId, content: String) =
         feedJpaRepository.save(FeedJpaEntity.generate(content, userId)).toFeedId()
 
-    override fun isOwners(feedIds: List<String>, userId: UserId): Boolean {
-        return feedJpaRepository.existsByFeedIdInAndUserId(feedIds, userId.id)
+    override fun isOwners(feedIds: List<FeedId>, userId: UserId): Boolean {
+        return feedJpaRepository.existsByFeedIdInAndUserId(feedIds.map { it.id }, userId.id)
     }
 }

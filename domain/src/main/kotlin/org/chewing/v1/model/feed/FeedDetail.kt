@@ -2,12 +2,12 @@ package org.chewing.v1.model.feed
 
 import org.chewing.v1.model.media.Media
 class FeedDetail private constructor(
-    val feedDetailId: String,
+    val feedDetailId: FeedDetailId,
     val media: Media,
-    val feedId: String,
+    val feedId: FeedId,
 ) {
     companion object {
-        fun of(feedDetailId: String, media: Media, feedId: String): FeedDetail {
+        fun of(feedDetailId: FeedDetailId, media: Media, feedId: FeedId): FeedDetail {
             return FeedDetail(feedDetailId, media, feedId)
         }
     }

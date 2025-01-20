@@ -6,6 +6,7 @@ import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
 import org.chewing.v1.jpaentity.common.BaseEntity
+import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleParticipant
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.user.UserId
@@ -25,7 +26,7 @@ internal class ScheduleParticipantJpaEntity(
     companion object {
         fun generate(
             userId: UserId,
-            scheduleId: String,
+            scheduleId: ScheduleId,
         ): ScheduleParticipantJpaEntity = ScheduleParticipantJpaEntity(
             id = ScheduleParticipantId.of(userId, scheduleId),
             status = ScheduleParticipantStatus.ACTIVE,
@@ -33,7 +34,7 @@ internal class ScheduleParticipantJpaEntity(
     }
     fun toParticipant(): ScheduleParticipant = ScheduleParticipant.of(
         UserId.of(id.userId),
-        id.scheduleId,
+        ScheduleId.of(id.scheduleId),
         status,
     )
     fun updateStatus(status: ScheduleParticipantStatus) {

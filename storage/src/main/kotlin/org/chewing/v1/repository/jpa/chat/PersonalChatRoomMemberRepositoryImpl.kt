@@ -16,15 +16,15 @@ internal class PersonalChatRoomMemberRepositoryImpl(
 ) : PersonalChatRoomMemberRepository {
     override fun readFriend(chatRoomId: String, userId: UserId): ChatRoomMemberInfo? =
         personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId)).orElse(null)
-        ?.toRoomFriend()
+            ?.toRoomFriend()
 
     override fun readIdIfExist(userId: UserId, friendId: UserId): String? =
         personalChatRoomMemberJpaRepository.findPersonalChatRoomId(userId.id, friendId.id)
 
     override fun reads(userId: UserId): List<ChatRoomMemberInfo> =
         personalChatRoomMemberJpaRepository.findAllByIdUserId(userId.id).flatMap {
-        listOf(it.toRoomOwned(), it.toRoomFriend())
-    }
+            listOf(it.toRoomOwned(), it.toRoomFriend())
+        }
 
     override fun appendIfNotExist(chatRoomId: String, userId: UserId, friendId: UserId, number: ChatNumber) {
         personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId)).orElseGet {

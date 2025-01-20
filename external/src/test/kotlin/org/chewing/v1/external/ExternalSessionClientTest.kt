@@ -39,5 +39,4 @@ class ExternalSessionClientTest {
         externalSessionClient.unConnect(userId, "sessionId")
         assert(!sessionClient.isUserOnline(userId))
     }
-
 }

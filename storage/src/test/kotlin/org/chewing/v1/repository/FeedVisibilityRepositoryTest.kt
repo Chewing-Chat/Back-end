@@ -3,6 +3,7 @@ package org.chewing.v1.repository
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.feed.FeedVisibilityId
 import org.chewing.v1.jparepository.feed.FeedVisibilityJpaRepository
+import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.feed.FeedVisibilityRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
@@ -25,8 +26,8 @@ internal class FeedVisibilityRepositoryTest : JpaContextTest() {
         val feedId = generateFeedId()
         val targetUserIds = listOf(generateUserId(), generateUserId())
         feedVisibilityRepositoryImpl.append(feedId, targetUserIds)
-        val result1 = feedVisibilityJpaRepository.findById(FeedVisibilityId(feedId, targetUserIds[0].id))
-        val result2 = feedVisibilityJpaRepository.findById(FeedVisibilityId(feedId, targetUserIds[1].id))
+        val result1 = feedVisibilityJpaRepository.findById(FeedVisibilityId.of(feedId, targetUserIds[0]))
+        val result2 = feedVisibilityJpaRepository.findById(FeedVisibilityId.of(feedId, targetUserIds[1]))
         assert(result1.isPresent)
         assert(result2.isPresent)
     }
@@ -62,8 +63,8 @@ internal class FeedVisibilityRepositoryTest : JpaContextTest() {
         assert(result.containsAll(feedIds))
     }
 
-    fun generateFeedId(): String {
-        return UUID.randomUUID().toString()
+    fun generateFeedId(): FeedId {
+        return FeedId.of(UUID.randomUUID().toString())
     }
 
     private fun generateUserId() = UserId.of(UUID.randomUUID().toString())

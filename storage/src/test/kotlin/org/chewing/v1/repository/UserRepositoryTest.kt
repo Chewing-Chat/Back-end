@@ -215,5 +215,4 @@ class UserRepositoryTest : JpaContextTest() {
     }
 
     private fun generateUserId(): UserId = UserId.of(UUID.randomUUID().toString())
-
 }

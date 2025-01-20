@@ -2,6 +2,7 @@ package org.chewing.v1.repository.jpa.announcement
 
 import org.chewing.v1.jparepository.announcement.AnnouncementJpaRepository
 import org.chewing.v1.model.announcement.Announcement
+import org.chewing.v1.model.announcement.AnnouncementId
 import org.chewing.v1.repository.announcement.AnnouncementRepository
 import org.springframework.stereotype.Repository
 
@@ -13,5 +14,5 @@ internal class AnnouncementRepositoryImpl(
         it.toAnnouncement()
     }
 
-    override fun read(announcementId: String): Announcement? = announcementJpaRepository.findByAnnouncementId(announcementId)?.toAnnouncement()
+    override fun read(announcementId: AnnouncementId): Announcement? = announcementJpaRepository.findByAnnouncementId(announcementId.id)?.toAnnouncement()
 }

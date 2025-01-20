@@ -3,14 +3,14 @@ package org.chewing.v1.model.announcement
 import java.time.LocalDateTime
 
 class Announcement private constructor(
-    val id: String,
+    val announcementId: AnnouncementId,
     val topic: String,
     val uploadAt: LocalDateTime,
     val content: String,
 ) {
     companion object {
         fun of(
-            id: String,
+            id: AnnouncementId,
             topic: String,
             uploadTime: LocalDateTime,
             content: String,

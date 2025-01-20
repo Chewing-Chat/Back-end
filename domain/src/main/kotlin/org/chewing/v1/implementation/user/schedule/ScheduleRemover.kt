@@ -1,5 +1,6 @@
 package org.chewing.v1.implementation.user.schedule
 
+import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.ScheduleParticipantRepository
 import org.chewing.v1.repository.user.ScheduleRepository
@@ -10,17 +11,17 @@ class ScheduleRemover(
     private val scheduleRepository: ScheduleRepository,
     private val scheduleParticipantRepository: ScheduleParticipantRepository,
 ) {
-    fun removeInfo(scheduleId: String) {
+    fun removeInfo(scheduleId: ScheduleId) {
         scheduleRepository.remove(scheduleId)
     }
     fun removeParticipated(userId: UserId) {
         scheduleParticipantRepository.removeParticipated(userId)
     }
-    fun removeAllParticipants(scheduleId: String) {
+    fun removeAllParticipants(scheduleId: ScheduleId) {
         scheduleParticipantRepository.removeAllParticipants(scheduleId)
     }
 
-    fun removeParticipants(scheduleId: String, userIds: List<UserId>) {
+    fun removeParticipants(scheduleId: ScheduleId, userIds: List<UserId>) {
         scheduleParticipantRepository.removeParticipants(scheduleId, userIds)
     }
 }

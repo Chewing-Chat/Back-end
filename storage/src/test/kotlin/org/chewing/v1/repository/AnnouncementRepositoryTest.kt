@@ -2,6 +2,7 @@ package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.announcement.AnnouncementJpaRepository
+import org.chewing.v1.model.announcement.AnnouncementId
 import org.chewing.v1.repository.jpa.announcement.AnnouncementRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.junit.jupiter.api.Test
@@ -22,7 +23,7 @@ class AnnouncementRepositoryTest : JpaContextTest() {
     fun `공지사항 조회에 성공해야 한다`() {
         val announcement = jpaDataGenerator.announcementEntityData()
 
-        val result = announcementRepositoryImpl.read(announcement.id)
+        val result = announcementRepositoryImpl.read(announcement.announcementId)
 
         assert(result != null)
         assert(result!!.topic == announcement.topic)
@@ -51,5 +52,5 @@ class AnnouncementRepositoryTest : JpaContextTest() {
         assert(createdAtList == createdAtList.sorted())
     }
 
-    private fun generateAnnouncementId(): String = UUID.randomUUID().toString()
+    private fun generateAnnouncementId(): AnnouncementId = AnnouncementId.of(UUID.randomUUID().toString())
 }

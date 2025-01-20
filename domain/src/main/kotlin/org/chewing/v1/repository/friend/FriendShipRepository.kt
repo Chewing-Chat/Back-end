@@ -3,7 +3,6 @@ package org.chewing.v1.repository.friend
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.friend.FriendSortCriteria
 import org.chewing.v1.model.user.AccessStatus
-import org.chewing.v1.model.user.User
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Repository
 

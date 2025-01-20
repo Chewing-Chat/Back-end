@@ -163,7 +163,7 @@ class AuthServiceTest {
     @Test
     fun `비밀번호 검증 - 성공`() {
         val password = "1234"
-        val userId  = TestDataFactory.createUserId()
+        val userId = TestDataFactory.createUserId()
         val encryptPassword = authGenerator.hashPassword(password)
         val user = TestDataFactory.createEncryptedUser(userId, encryptPassword)
         assertDoesNotThrow {
@@ -175,7 +175,7 @@ class AuthServiceTest {
     fun `비밀번호 검증 - 실패`() {
         val password = "1234"
         val wrongPassword = "5678"
-        val userId  = TestDataFactory.createUserId()
+        val userId = TestDataFactory.createUserId()
         val encryptPassword = authGenerator.hashPassword(password)
         val user = TestDataFactory.createEncryptedUser(userId, encryptPassword)
 

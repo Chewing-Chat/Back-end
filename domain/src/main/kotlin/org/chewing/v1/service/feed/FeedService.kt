@@ -2,7 +2,6 @@ package org.chewing.v1.service.feed
 
 import org.chewing.v1.implementation.feed.feed.*
 import org.chewing.v1.implementation.media.FileHandler
-import org.chewing.v1.model.ai.DateTarget
 import org.chewing.v1.model.feed.*
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
@@ -18,7 +17,7 @@ class FeedService(
     private val feedEnricher: FeedEnricher,
     private val feedRemover: FeedRemover,
 ) {
-    fun getFeed(feedId: String, userId: UserId): Feed {
+    fun getFeed(feedId: FeedId, userId: UserId): Feed {
         feedValidator.isFeedVisible(feedId, userId)
         val feed = feedReader.readInfo(feedId)
         val feedDetails = feedReader.readDetails(feedId)
@@ -32,14 +31,7 @@ class FeedService(
         return feedEnricher.enriches(feeds, visibleFeedIds, feedsDetails)
     }
 
-    fun getFriendFulledFeeds(userId: UserId, friendId: UserId, dateTarget: DateTarget): List<Feed> {
-        val feeds = feedReader.readsFriendBetween(friendId, dateTarget)
-        val visibleFeedIds = feedReader.readVisibleFeedIds(userId, feeds.map { it.feedId })
-        val feedsDetail = feedReader.readsDetails(visibleFeedIds)
-        return feedEnricher.enriches(feeds, visibleFeedIds, feedsDetail)
-    }
-
-    fun removes(userId: UserId, feedIds: List<String>) {
+    fun removes(userId: UserId, feedIds: List<FeedId>) {
         feedValidator.isFeedsOwner(feedIds, userId)
         val oldMedias = feedRemover.removes(feedIds)
         fileHandler.handleOldFiles(oldMedias)
@@ -51,7 +43,7 @@ class FeedService(
         files: List<FileData>,
         content: String,
         category: FileCategory,
-    ): String {
+    ): FeedId {
         val medias = fileHandler.handleNewFiles(userId, files, category)
         val feedId = feedAppender.append(medias, userId, content)
         val targetUserIds = targetFriends.plus(userId)

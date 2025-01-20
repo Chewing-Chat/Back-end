@@ -40,9 +40,11 @@ import org.chewing.v1.model.chat.room.ChatRoomInfo
 import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.FeedDetail
+import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
+import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleTime
@@ -137,7 +139,7 @@ class JpaDataGenerator {
         return scheduleEntity.toScheduleInfo()
     }
 
-    fun scheduleParticipantEntityData(scheduleId: String, userId: UserId, status: ScheduleParticipantStatus) {
+    fun scheduleParticipantEntityData(scheduleId: ScheduleId, userId: UserId, status: ScheduleParticipantStatus) {
         val entity = ScheduleParticipantJpaEntity.generate(
             userId = userId,
             scheduleId = scheduleId,
@@ -153,11 +155,11 @@ class JpaDataGenerator {
         return scheduleEntity.toScheduleInfo()
     }
 
-    fun feedVisibilityEntityData(feedId: String, userId: UserId) {
+    fun feedVisibilityEntityData(feedId: FeedId, userId: UserId) {
         feedVisibilityJpaRepository.save(FeedVisibilityEntity(FeedVisibilityId.of(feedId, userId)))
     }
 
-    fun feedVisibilityEntityDataList(feedId: String, userIds: List<UserId>) {
+    fun feedVisibilityEntityDataList(feedId: FeedId, userIds: List<UserId>) {
         feedVisibilityJpaRepository.saveAll(userIds.map { FeedVisibilityEntity(FeedVisibilityId.of(feedId, it)) })
     }
 
@@ -185,7 +187,7 @@ class JpaDataGenerator {
         return feedJpaEntityList.map { it.toFeedInfo() }
     }
 
-    fun feedDetailEntityDataAsc(feedId: String): List<FeedDetail> {
+    fun feedDetailEntityDataAsc(feedId: FeedId): List<FeedDetail> {
         val medias = MediaProvider.buildFeedContents()
         val feedEntities = FeedDetailJpaEntity.generate(medias, feedId)
         feedDetailJpaRepository.saveAll(feedEntities)

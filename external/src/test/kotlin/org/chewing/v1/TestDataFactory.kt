@@ -1,21 +1,9 @@
 package org.chewing.v1
 
-import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.auth.*
 import org.chewing.v1.model.chat.log.*
-import org.chewing.v1.model.chat.member.ChatRoomMember
-import org.chewing.v1.model.chat.member.ChatRoomMemberInfo
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatNumber
-import org.chewing.v1.model.chat.room.ChatRoomInfo
-import org.chewing.v1.model.chat.room.ChatSequenceNumber
-import org.chewing.v1.model.chat.room.Room
-import org.chewing.v1.model.emoticon.EmoticonInfo
-import org.chewing.v1.model.emoticon.EmoticonPackInfo
-import org.chewing.v1.model.feed.Feed
-import org.chewing.v1.model.feed.FeedDetail
-import org.chewing.v1.model.feed.FeedInfo
-import org.chewing.v1.model.friend.UserSearch
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType

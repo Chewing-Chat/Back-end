@@ -28,7 +28,7 @@ data class AnnouncementListResponse(
                 val formattedUploadTime =
                     announcement.uploadAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 return AnnouncementResponse(
-                    announcementId = announcement.id,
+                    announcementId = announcement.announcementId.id,
                     topic = announcement.topic,
                     uploadTime = formattedUploadTime,
                 )

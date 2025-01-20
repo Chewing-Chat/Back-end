@@ -28,13 +28,13 @@ class ScheduleService(
         scheduleTime: ScheduleTime,
         scheduleContent: ScheduleContent,
         friendIds: List<UserId>,
-    ): String {
+    ): ScheduleId {
         val scheduleId = scheduleAppender.appendInfo(scheduleTime, scheduleContent)
         scheduleAppender.appendParticipants(scheduleId, friendIds.plus(userId))
         return scheduleId
     }
 
-    fun delete(userId: UserId, scheduleId: String) {
+    fun delete(userId: UserId, scheduleId: ScheduleId) {
         scheduleValidator.isParticipate(userId, scheduleId)
         scheduleRemover.removeInfo(scheduleId)
         scheduleRemover.removeAllParticipants(scheduleId)
@@ -48,13 +48,13 @@ class ScheduleService(
         val scheduleIds = scheduleReader.readParticipantScheduleIds(userId, ScheduleParticipantStatus.ACTIVE)
         val scheduleInfos = scheduleReader.readInfos(scheduleIds, type, ScheduleStatus.ACTIVE)
         val participants =
-            scheduleReader.readsParticipants(scheduleInfos.map { it.id }, ScheduleParticipantStatus.ACTIVE)
+            scheduleReader.readsParticipants(scheduleInfos.map { it.scheduleId }, ScheduleParticipantStatus.ACTIVE)
         return scheduleEnricher.enrich(userId, scheduleInfos, participants)
     }
 
     fun update(
         userId: UserId,
-        scheduleId: String,
+        scheduleId: ScheduleId,
         scheduleTime: ScheduleTime,
         scheduleContent: ScheduleContent,
         friendIds: List<UserId>,
@@ -69,7 +69,7 @@ class ScheduleService(
         scheduleRemover.removeParticipants(scheduleId, needToRemoveFriendIds)
     }
 
-    fun createAiSchedule(userId: String, scheduleStringInfo: String): String {
+    fun createAiSchedule(userId: String, scheduleStringInfo: String): ScheduleId {
         val (scheduleContent, scheduleTime) = scheduleGenerator.generateScheduleFromString(scheduleStringInfo)
         return scheduleAppender.appendInfo(scheduleTime, scheduleContent)
     }

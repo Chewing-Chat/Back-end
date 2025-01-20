@@ -30,7 +30,7 @@ data class ScheduleListResponse(
             fun of(schedule: Schedule): ScheduleResponse {
                 val formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss")
                 return ScheduleResponse(
-                    schedule.info.id,
+                    schedule.info.scheduleId.id,
                     schedule.info.content.title,
                     schedule.info.time.dateTime.format(formatter),
                     schedule.info.content.memo,

@@ -3,6 +3,7 @@ package org.chewing.v1.repository
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.user.ScheduleParticipantId
 import org.chewing.v1.jparepository.user.ScheduleParticipantJpaRepository
+import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.user.ScheduleParticipantRepositoryImpl
@@ -259,8 +260,8 @@ class ScheduleParticipantRepository : JpaContextTest() {
         assert(result2.get().toParticipant().status == ScheduleParticipantStatus.DELETED)
     }
 
-    fun generateScheduleId(): String {
-        return UUID.randomUUID().toString()
+    fun generateScheduleId(): ScheduleId {
+        return ScheduleId.of(UUID.randomUUID().toString())
     }
 
     private fun generateUserId() = UserId.of(UUID.randomUUID().toString())

@@ -3,14 +3,14 @@ package org.chewing.v1.model.schedule
 import java.time.LocalDateTime
 
 class ScheduleInfo private constructor(
-    val id: String,
+    val scheduleId: ScheduleId,
     val content: ScheduleContent,
     val time: ScheduleTime,
     val status: ScheduleStatus,
 ) {
     companion object {
         fun of(
-            scheduleId: String,
+            scheduleId: ScheduleId,
             title: String,
             memo: String,
             dateTime: LocalDateTime,

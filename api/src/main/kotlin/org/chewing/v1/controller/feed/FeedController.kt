@@ -4,6 +4,7 @@ import org.chewing.v1.dto.response.feed.FeedIdResponse
 import org.chewing.v1.dto.request.feed.FeedRequest
 import org.chewing.v1.dto.response.feed.FeedResponse
 import org.chewing.v1.dto.response.feed.ThumbnailFeedsResponse
+import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.SuccessOnlyResponse
@@ -25,7 +26,7 @@ class FeedController(
         @RequestAttribute("userId") userId: String,
         @PathVariable("feedId") feedId: String,
     ): SuccessResponseEntity<FeedResponse> {
-        val feed = feedService.getFeed(feedId, UserId.of(userId))
+        val feed = feedService.getFeed(FeedId.of(feedId), UserId.of(userId))
         return ResponseHelper.success(FeedResponse.of(feed))
     }
 
@@ -64,6 +65,6 @@ class FeedController(
     ): SuccessResponseEntity<FeedIdResponse> {
         val convertFiles = FileHelper.convertMultipartFileToFileDataList(files)
         val feedId = feedService.make(UserId.of(userId), friendIds.map { UserId.of(it) }, convertFiles, content, FileCategory.FEED)
-        return ResponseHelper.successCreate(FeedIdResponse(feedId))
+        return ResponseHelper.successCreate(FeedIdResponse.of(feedId))
     }
 }

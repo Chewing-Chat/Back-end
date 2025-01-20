@@ -26,7 +26,7 @@ class ChatFacadeTest {
         val chatRoomId = "chatRoomId"
 
         val chatMessage = TestDataFactory.createFileMessage(messageId, chatRoomId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId,userId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.uploadFiles(any(), any(), any()) } returns chatMessage
@@ -47,7 +47,7 @@ class ChatFacadeTest {
         val chatRoomId = "chatRoomId"
 
         val chatMessage = TestDataFactory.createReadMessage(messageId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId,userId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.readMessage(any(), any()) } returns chatMessage
@@ -68,7 +68,7 @@ class ChatFacadeTest {
         val chatRoomId = "chatRoomId"
 
         val chatMessage = TestDataFactory.createDeleteMessage(messageId, chatRoomId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId,userId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.deleteMessage(any(), any(), any()) } returns chatMessage
@@ -90,7 +90,7 @@ class ChatFacadeTest {
         val parentMessageId = "parentMessageId"
 
         val chatMessage = TestDataFactory.createReplyMessage(messageId, parentMessageId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId,userId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.replyMessage(any(), any(), any(), any()) } returns chatMessage
@@ -111,7 +111,7 @@ class ChatFacadeTest {
         val chatRoomId = "chatRoomId"
 
         val chatMessage = TestDataFactory.createBombMessage(messageId, chatRoomId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId,userId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.bombingMessage(any(), any(), any(), any()) } returns chatMessage
@@ -132,7 +132,7 @@ class ChatFacadeTest {
         val chatRoomId = "chatRoomId"
 
         val chatMessage = TestDataFactory.createNormalMessage(messageId, chatRoomId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId,userId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.chatNormalMessage(any(), any(), any()) } returns chatMessage
