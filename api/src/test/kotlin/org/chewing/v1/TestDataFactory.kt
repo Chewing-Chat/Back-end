@@ -19,6 +19,7 @@ import org.chewing.v1.model.schedule.Schedule
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleParticipant
+import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.token.RefreshToken
@@ -35,6 +36,10 @@ object TestDataFactory {
 
     fun createFriendName(): String {
         return "testFriendName"
+    }
+
+    fun createUserId(): UserId {
+        return UserId.of("testUserId")
     }
 
     fun createUser(accessStatus: AccessStatus): User {
@@ -62,11 +67,12 @@ object TestDataFactory {
         )
     }
 
-    fun createScheduleParticipant(status: ScheduleParticipantStatus): ScheduleParticipant {
+    fun createScheduleParticipant(status: ScheduleParticipantStatus, role: ScheduleParticipantRole): ScheduleParticipant {
         return ScheduleParticipant.of(
             UserId.of("testUserId"),
             ScheduleId.of("testScheduleId"),
             status,
+            role,
         )
     }
 
@@ -77,6 +83,8 @@ object TestDataFactory {
         return Schedule.of(
             scheduleInfo,
             scheduleParticipants,
+            true,
+            false,
         )
     }
 

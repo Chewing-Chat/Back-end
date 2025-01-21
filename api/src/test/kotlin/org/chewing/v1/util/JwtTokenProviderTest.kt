@@ -1,4 +1,4 @@
-package org.chewing.v1.implementation.auth
+package org.chewing.v1.util
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
@@ -8,16 +8,17 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.error.AuthorizationException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.auth.JwtToken
+import org.chewing.v1.util.security.JwtTokenUtil
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.*
+import java.util.Date
 import javax.crypto.SecretKey
 
 class JwtTokenProviderTest {
 
-    private lateinit var jwtTokenProvider: JwtTokenProvider
+    private lateinit var jwtTokenProvider: JwtTokenUtil
 
     private lateinit var secretKeyString: String
 
@@ -35,7 +36,7 @@ class JwtTokenProviderTest {
         refreshExpiration = 1000L * 60 * 60 * 24 * 30
 
         secretKey = Keys.hmacShaKeyFor(secretKeyString.toByteArray())
-        jwtTokenProvider = JwtTokenProvider(secretKeyString, accessExpiration, refreshExpiration)
+        jwtTokenProvider = JwtTokenUtil(secretKeyString, accessExpiration, refreshExpiration)
     }
 
     @Test

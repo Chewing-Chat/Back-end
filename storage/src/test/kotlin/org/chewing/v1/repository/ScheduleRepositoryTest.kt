@@ -1,11 +1,11 @@
 package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
-import org.chewing.v1.jparepository.user.ScheduleJpaRepository
+import org.chewing.v1.jparepository.schedule.ScheduleJpaRepository
 import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleType
 import org.chewing.v1.model.user.UserId
-import org.chewing.v1.repository.jpa.user.ScheduleRepositoryImpl
+import org.chewing.v1.repository.jpa.schedule.ScheduleRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.chewing.v1.repository.support.ScheduleProvider
 import org.junit.jupiter.api.Test

@@ -1,9 +1,14 @@
-package org.chewing.v1.repository.jpa.user
+package org.chewing.v1.repository.jpa.schedule
 
-import org.chewing.v1.jpaentity.user.ScheduleJpaEntity
-import org.chewing.v1.jparepository.user.ScheduleJpaRepository
-import org.chewing.v1.model.schedule.*
-import org.chewing.v1.repository.user.ScheduleRepository
+import org.chewing.v1.jpaentity.schedule.ScheduleJpaEntity
+import org.chewing.v1.jparepository.schedule.ScheduleJpaRepository
+import org.chewing.v1.model.schedule.ScheduleContent
+import org.chewing.v1.model.schedule.ScheduleId
+import org.chewing.v1.model.schedule.ScheduleInfo
+import org.chewing.v1.model.schedule.ScheduleStatus
+import org.chewing.v1.model.schedule.ScheduleTime
+import org.chewing.v1.model.schedule.ScheduleType
+import org.chewing.v1.repository.schedule.ScheduleRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime

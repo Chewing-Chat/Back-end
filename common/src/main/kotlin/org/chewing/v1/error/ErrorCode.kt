@@ -61,6 +61,8 @@ enum class ErrorCode(
     SCHEDULE_NOT_FOUND("SCHEDULE_1", "일정을 찾을 수 없음."),
     SCHEDULE_UPDATE_FAILED("SCHEDULE_3", "일정 수정을 실패하였습니다."),
     SCHEDULE_NOT_PARTICIPANT("SCHEDULE_4", "참여자가 아닙니다."),
+    SCHEDULE_NOT_OWNER("SCHEDULE_5", "일정 작성자가 아닙니다."),
+    SCHEDULE_NOT_OWNER_DELETE("SCHEDULE_6", "일정 작성자는 삭제할 수 없습니다."),
     SCHEDULE_CREATE_FAILED("SCHEDULE_2", "일정 생성을 실패하였습니다."),
 
     AI_CREATE_FAILED("AI_1", "AI 생성을 실패하였습니다."),

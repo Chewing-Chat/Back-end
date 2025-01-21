@@ -2,8 +2,9 @@ package org.chewing.v1.service.auth
 
 import org.chewing.v1.implementation.auth.*
 import org.chewing.v1.model.auth.Credential
-import org.chewing.v1.model.auth.JwtToken
+import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,7 +15,6 @@ class AuthService(
     private val authValidator: AuthValidator,
     private val authUpdater: AuthUpdater,
     private val authGenerator: AuthGenerator,
-    private val jwtTokenProvider: JwtTokenProvider,
     private val authRemover: AuthRemover,
 ) {
     fun createCredential(credential: Credential) {
@@ -35,22 +35,17 @@ class AuthService(
         )
     }
 
-    fun createToken(user: User): JwtToken {
-        val token = jwtTokenProvider.createJwtToken(user.userId)
-        authAppender.appendLoggedIn(token.refreshToken, user.userId)
-        return token
+    fun createLoginInfo(userId: UserId, refreshToken: RefreshToken) {
+        authAppender.appendLoggedIn(refreshToken, userId)
     }
 
     fun logout(refreshToken: String) {
-        jwtTokenProvider.validateToken(refreshToken)
         authRemover.removeLoginInfo(refreshToken)
     }
 
-    fun refreshJwtToken(refreshToken: String): JwtToken {
-        val (token, userId) = jwtTokenProvider.refresh(refreshToken)
-        val ownedRefreshToken = authReader.readRefreshToken(refreshToken, userId)
-        authUpdater.updateRefreshToken(token.refreshToken, ownedRefreshToken)
-        return token
+    fun updateLoginInfo(oldRefreshToken: String, newRefreshToken: RefreshToken, userId: UserId) {
+        val ownedRefreshToken = authReader.readLoginInfo(oldRefreshToken, userId)
+        authUpdater.updateLoginInfo(newRefreshToken, ownedRefreshToken)
     }
 
     fun encryptPassword(password: String): String = authGenerator.hashPassword(password)

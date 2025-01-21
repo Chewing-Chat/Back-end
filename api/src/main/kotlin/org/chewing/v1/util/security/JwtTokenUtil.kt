@@ -1,6 +1,10 @@
-package org.chewing.v1.implementation.auth
+package org.chewing.v1.util.security
 
-import io.jsonwebtoken.*
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
+import io.jsonwebtoken.JwtException
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import org.chewing.v1.error.AuthorizationException
 import org.chewing.v1.error.ErrorCode
@@ -11,11 +15,11 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.*
+import java.util.Date
 import javax.crypto.SecretKey
 
 @Component
-class JwtTokenProvider(
+class JwtTokenUtil(
     @Value("\${jwt.secret}") private val secretKeyString: String,
     @Value("\${jwt.access-expiration}") private val accessExpiration: Long,
     @Value("\${jwt.refresh-expiration}") private val refreshExpiration: Long,

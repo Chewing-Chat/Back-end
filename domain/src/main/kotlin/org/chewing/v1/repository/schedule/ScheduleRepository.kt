@@ -1,6 +1,11 @@
-package org.chewing.v1.repository.user
+package org.chewing.v1.repository.schedule
 
-import org.chewing.v1.model.schedule.*
+import org.chewing.v1.model.schedule.ScheduleContent
+import org.chewing.v1.model.schedule.ScheduleId
+import org.chewing.v1.model.schedule.ScheduleInfo
+import org.chewing.v1.model.schedule.ScheduleStatus
+import org.chewing.v1.model.schedule.ScheduleTime
+import org.chewing.v1.model.schedule.ScheduleType
 import org.springframework.stereotype.Repository
 
 @Repository

@@ -1,9 +1,9 @@
-package org.chewing.v1.implementation.user.schedule
+package org.chewing.v1.implementation.schedule
 
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.user.UserId
-import org.chewing.v1.repository.user.ScheduleParticipantRepository
-import org.chewing.v1.repository.user.ScheduleRepository
+import org.chewing.v1.repository.schedule.ScheduleParticipantRepository
+import org.chewing.v1.repository.schedule.ScheduleRepository
 import org.springframework.stereotype.Component
 
 @Component
@@ -14,8 +14,8 @@ class ScheduleRemover(
     fun removeInfo(scheduleId: ScheduleId) {
         scheduleRepository.remove(scheduleId)
     }
-    fun removeParticipated(userId: UserId) {
-        scheduleParticipantRepository.removeParticipated(userId)
+    fun removeAllParticipated(userId: UserId): List<ScheduleId> {
+        return scheduleParticipantRepository.removeParticipated(userId)
     }
     fun removeAllParticipants(scheduleId: ScheduleId) {
         scheduleParticipantRepository.removeAllParticipants(scheduleId)
@@ -23,5 +23,9 @@ class ScheduleRemover(
 
     fun removeParticipants(scheduleId: ScheduleId, userIds: List<UserId>) {
         scheduleParticipantRepository.removeParticipants(scheduleId, userIds)
+    }
+
+    fun removeParticipant(scheduleId: ScheduleId, userId: UserId) {
+        scheduleParticipantRepository.removeParticipant(scheduleId, userId)
     }
 }

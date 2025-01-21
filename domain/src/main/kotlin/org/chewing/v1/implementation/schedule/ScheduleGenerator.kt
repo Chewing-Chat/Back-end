@@ -1,4 +1,4 @@
-package org.chewing.v1.implementation.user.schedule
+package org.chewing.v1.implementation.schedule
 
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode

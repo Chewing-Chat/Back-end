@@ -24,6 +24,8 @@ data class ScheduleListResponse(
         val memo: String,
         val location: String,
         val timeDecided: Boolean,
+        val isOwned: Boolean,
+        val isParticipant: Boolean,
         val participants: List<ParticipantResponse>,
     ) {
         companion object {
@@ -36,6 +38,8 @@ data class ScheduleListResponse(
                     schedule.info.content.memo,
                     schedule.info.content.location,
                     schedule.info.time.timeDecided,
+                    schedule.isOwned,
+                    schedule.isParticipant,
                     schedule.participants.map {
                         ParticipantResponse.of(it)
                     },
@@ -46,11 +50,13 @@ data class ScheduleListResponse(
 
     data class ParticipantResponse(
         val friendId: String,
+        val friendRole: String,
     ) {
         companion object {
             fun of(friendId: ScheduleParticipant): ParticipantResponse {
                 return ParticipantResponse(
                     friendId.userId.id,
+                    friendId.role.name.lowercase(),
                 )
             }
         }

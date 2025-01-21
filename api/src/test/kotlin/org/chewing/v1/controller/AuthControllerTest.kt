@@ -13,7 +13,7 @@ import org.chewing.v1.RestDocsUtils.responseErrorFields
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory.createJwtToken
-import org.chewing.v1.TestDataFactory.createUser
+import org.chewing.v1.TestDataFactory.createUserId
 import org.chewing.v1.controller.auth.AuthController
 import org.chewing.v1.dto.request.auth.LoginRequest
 import org.chewing.v1.dto.request.auth.SignUpRequest
@@ -27,6 +27,7 @@ import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.auth.CredentialTarget
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.chewing.v1.util.security.JwtTokenUtil
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -40,9 +41,6 @@ import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 
 @ActiveProfiles("test")
 class AuthControllerTest : RestDocsTest() {
@@ -50,13 +48,15 @@ class AuthControllerTest : RestDocsTest() {
     private lateinit var authService: AuthService
     private lateinit var accountFacade: AccountFacade
     private lateinit var exceptionHandler: GlobalExceptionHandler
+    private lateinit var jwtTokenUtil: JwtTokenUtil
 
     @BeforeEach
     fun setUp() {
         authService = mockk()
         accountFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
-        authController = AuthController(authService, accountFacade)
+        jwtTokenUtil = mockk()
+        authController = AuthController(authService, accountFacade, jwtTokenUtil)
         mockMvc = mockController(authController, exceptionHandler)
     }
 
@@ -208,6 +208,7 @@ class AuthControllerTest : RestDocsTest() {
     @DisplayName("휴대폰 인증번호 확인")
     fun signUp() {
         val jwtToken = createJwtToken()
+        val userId = createUserId()
 
         val requestBody = SignUpRequest.Phone(
             phoneNumber = "01012345678",
@@ -219,7 +220,9 @@ class AuthControllerTest : RestDocsTest() {
             userName = "testName",
         )
 
-        every { accountFacade.createUser(any(), any(), any(), any(), any()) } returns jwtToken
+        every { accountFacade.createUser(any(), any(), any(), any(), any()) } returns userId
+        every { jwtTokenUtil.createJwtToken(userId) } returns jwtToken
+        every { authService.createLoginInfo(userId, jwtToken.refreshToken) } just Runs
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -401,6 +404,7 @@ class AuthControllerTest : RestDocsTest() {
     @DisplayName("비밀번호 초기화를 위한 휴대폰 인증번호 확인")
     fun resetCredential() {
         val jwtToken = createJwtToken()
+        val userId = createUserId()
 
         val requestBody = VerifyOnlyRequest(
             phoneNumber = "01012345678",
@@ -408,7 +412,9 @@ class AuthControllerTest : RestDocsTest() {
             verificationCode = "123",
         )
 
-        every { accountFacade.resetCredential(any(), any()) } returns jwtToken
+        every { accountFacade.resetCredential(any(), any()) } returns userId
+        every { jwtTokenUtil.createJwtToken(userId) } returns jwtToken
+        every { authService.createLoginInfo(userId, jwtToken.refreshToken) } just Runs
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -621,6 +627,7 @@ class AuthControllerTest : RestDocsTest() {
     @DisplayName("로그인")
     fun login() {
         val jwtToken = createJwtToken()
+        val userId = createUserId()
 
         val requestBody = LoginRequest(
             password = "testPassword",
@@ -631,7 +638,9 @@ class AuthControllerTest : RestDocsTest() {
             appToken = "testToken",
         )
 
-        every { accountFacade.login(any(), any(), any(), any()) } returns jwtToken
+        every { accountFacade.login(any(), any(), any(), any()) } returns userId
+        every { jwtTokenUtil.createJwtToken(userId) } returns jwtToken
+        every { authService.createLoginInfo(userId, jwtToken.refreshToken) } just Runs
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -753,6 +762,7 @@ class AuthControllerTest : RestDocsTest() {
     @DisplayName("로그아웃")
     fun logout() {
         every { authService.logout(any()) } just Runs
+        every { jwtTokenUtil.validateRefreshToken(any()) } just Runs
 
         val result = given()
             .header("Authorization", "Bearer refreshToken")
@@ -775,7 +785,9 @@ class AuthControllerTest : RestDocsTest() {
     @DisplayName("토큰 갱신")
     fun refreshAccessToken() {
         val jwtToken = createJwtToken()
-        every { authService.refreshJwtToken(any()) } returns jwtToken
+        val userId = createUserId()
+        every { jwtTokenUtil.refresh(any()) } returns Pair(jwtToken, userId)
+        every { authService.updateLoginInfo(any(), jwtToken.refreshToken, userId) } just Runs
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)

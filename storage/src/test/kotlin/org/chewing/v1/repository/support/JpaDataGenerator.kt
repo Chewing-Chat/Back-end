@@ -12,9 +12,10 @@ import org.chewing.v1.jpaentity.feed.FeedJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedVisibilityEntity
 import org.chewing.v1.jpaentity.feed.FeedVisibilityId
 import org.chewing.v1.jpaentity.friend.FriendShipJpaEntity
+import org.chewing.v1.jpaentity.schedule.ScheduleJpaEntity
+import org.chewing.v1.jpaentity.schedule.ScheduleParticipantJpaEntity
 import org.chewing.v1.jpaentity.user.*
 import org.chewing.v1.jpaentity.user.PushNotificationJpaEntity
-import org.chewing.v1.jpaentity.user.ScheduleJpaEntity
 import org.chewing.v1.jpaentity.user.UserEmoticonJpaEntity
 import org.chewing.v1.jpaentity.user.UserJpaEntity
 import org.chewing.v1.jparepository.announcement.AnnouncementJpaRepository
@@ -30,7 +31,8 @@ import org.chewing.v1.jparepository.feed.FeedVisibilityJpaRepository
 import org.chewing.v1.jparepository.friend.FriendShipJpaRepository
 import org.chewing.v1.jparepository.user.*
 import org.chewing.v1.jparepository.user.PushNotificationJpaRepository
-import org.chewing.v1.jparepository.user.ScheduleJpaRepository
+import org.chewing.v1.jparepository.schedule.ScheduleJpaRepository
+import org.chewing.v1.jparepository.schedule.ScheduleParticipantJpaRepository
 import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.auth.PhoneNumber
@@ -45,6 +47,7 @@ import org.chewing.v1.model.feed.FeedInfo
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
 import org.chewing.v1.model.schedule.ScheduleId
+import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleTime
@@ -143,6 +146,7 @@ class JpaDataGenerator {
         val entity = ScheduleParticipantJpaEntity.generate(
             userId = userId,
             scheduleId = scheduleId,
+            role = ScheduleParticipantRole.PARTICIPANT,
         )
         entity.updateStatus(status)
         scheduleParticipantJpaRepository.save(entity)

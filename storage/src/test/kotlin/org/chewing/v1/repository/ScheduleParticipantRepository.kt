@@ -2,11 +2,11 @@ package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.user.ScheduleParticipantId
-import org.chewing.v1.jparepository.user.ScheduleParticipantJpaRepository
+import org.chewing.v1.jparepository.schedule.ScheduleParticipantJpaRepository
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.user.UserId
-import org.chewing.v1.repository.jpa.user.ScheduleParticipantRepositoryImpl
+import org.chewing.v1.repository.jpa.schedule.ScheduleParticipantRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

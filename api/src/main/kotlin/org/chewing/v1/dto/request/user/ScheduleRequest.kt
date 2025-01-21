@@ -9,7 +9,13 @@ import java.time.format.DateTimeFormatter
 
 class ScheduleRequest {
     data class Delete(
-        val scheduleId: String,
+        val scheduleId: String = "",
+    ) {
+        fun toScheduleId(): String = scheduleId
+    }
+
+    data class Cancel(
+        val scheduleId: String = "",
     ) {
         fun toScheduleId(): String = scheduleId
     }
@@ -41,6 +47,7 @@ class ScheduleRequest {
         val timeDecided: Boolean,
         val memo: String,
         val location: String,
+        val participated: Boolean,
     ) {
         fun toScheduleId(): ScheduleId = ScheduleId.of(scheduleId)
 
@@ -53,5 +60,7 @@ class ScheduleRequest {
         }
 
         fun toFriendIds(): List<UserId> = friendIds.map { UserId.of(it) }
+
+        fun toParticipated(): Boolean = participated
     }
 }

@@ -1,4 +1,4 @@
-package org.chewing.v1.jpaentity.user
+package org.chewing.v1.jpaentity.schedule
 
 import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
@@ -6,8 +6,10 @@ import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
 import org.chewing.v1.jpaentity.common.BaseEntity
+import org.chewing.v1.jpaentity.user.ScheduleParticipantId
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleParticipant
+import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
@@ -22,20 +24,25 @@ internal class ScheduleParticipantJpaEntity(
     private val id: ScheduleParticipantId,
     @Enumerated(EnumType.STRING)
     private var status: ScheduleParticipantStatus,
+    @Enumerated(EnumType.STRING)
+    private var role: ScheduleParticipantRole,
 ) : BaseEntity() {
     companion object {
         fun generate(
             userId: UserId,
             scheduleId: ScheduleId,
+            role: ScheduleParticipantRole,
         ): ScheduleParticipantJpaEntity = ScheduleParticipantJpaEntity(
-            id = ScheduleParticipantId.of(userId, scheduleId),
+            id = ScheduleParticipantId.Companion.of(userId, scheduleId),
             status = ScheduleParticipantStatus.ACTIVE,
+            role = role,
         )
     }
-    fun toParticipant(): ScheduleParticipant = ScheduleParticipant.of(
-        UserId.of(id.userId),
-        ScheduleId.of(id.scheduleId),
+    fun toParticipant(): ScheduleParticipant = ScheduleParticipant.Companion.of(
+        UserId.Companion.of(id.userId),
+        ScheduleId.Companion.of(id.scheduleId),
         status,
+        role,
     )
     fun updateStatus(status: ScheduleParticipantStatus) {
         this.status = status

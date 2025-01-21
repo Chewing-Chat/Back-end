@@ -24,11 +24,11 @@ import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
-import org.chewing.v1.model.schedule.Schedule
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleParticipant
+import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleTime
@@ -73,6 +73,8 @@ object TestDataFactory {
 
     fun createJwtToken(): JwtToken = JwtToken.of("accessToken", RefreshToken.of("refreshToken", LocalDateTime.now()))
 
+    fun createRefreshToken(): RefreshToken = RefreshToken.of("refreshToken", LocalDateTime.now())
+    fun createOldRefreshToken(): RefreshToken = RefreshToken.of("oldRefreshToken", LocalDateTime.now().minusDays(1))
     fun createAccessUser(userId: UserId): User = User.of(
         userId,
         "testName",
@@ -136,14 +138,8 @@ object TestDataFactory {
         userId: UserId,
         scheduleId: ScheduleId,
         status: ScheduleParticipantStatus,
-    ): ScheduleParticipant = ScheduleParticipant.of(userId, scheduleId, status)
-
-    fun createSchedule(
-        scheduleInfo: ScheduleInfo,
-        scheduleParticipant: List<ScheduleParticipant>,
-    ): Schedule {
-        return Schedule.of(scheduleInfo, scheduleParticipant)
-    }
+        role: ScheduleParticipantRole,
+    ): ScheduleParticipant = ScheduleParticipant.of(userId, scheduleId, status, role)
 
     fun createFriendShip(friendId: UserId, accessStatus: AccessStatus): FriendShip =
         FriendShip.of(friendId, createUserName(), true, accessStatus)
@@ -159,6 +155,7 @@ object TestDataFactory {
 
     fun createAnnouncement(announcementId: AnnouncementId): Announcement =
         Announcement.of(announcementId, "title", LocalDateTime.now(), "content")
+
     fun createAnnouncementId(): AnnouncementId = AnnouncementId.of("testAnnouncementId")
     fun createUserSearch(userId: UserId): UserSearch = UserSearch.of(userId.id, LocalDateTime.now())
 

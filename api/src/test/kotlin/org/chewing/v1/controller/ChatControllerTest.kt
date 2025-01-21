@@ -6,7 +6,7 @@ import io.mockk.every
 import io.mockk.verify
 import org.chewing.v1.config.IntegrationTest
 import org.chewing.v1.dto.request.chat.ChatRequest
-import org.chewing.v1.implementation.auth.JwtTokenProvider
+import org.chewing.v1.util.security.JwtTokenUtil
 import org.chewing.v1.model.user.UserId
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit
 class ChatControllerTest : IntegrationTest() {
 
     @Autowired
-    private lateinit var jwtTokenProvider: JwtTokenProvider
+    private lateinit var jwtTokenUtil: JwtTokenUtil
 
     @LocalServerPort
     private var port: Int = 0
@@ -74,7 +74,7 @@ class ChatControllerTest : IntegrationTest() {
 
     @BeforeAll
     fun setup() {
-        token = jwtTokenProvider.createAccessToken(userId)
+        token = jwtTokenUtil.createAccessToken(userId)
         session = connectStompSession()
     }
 

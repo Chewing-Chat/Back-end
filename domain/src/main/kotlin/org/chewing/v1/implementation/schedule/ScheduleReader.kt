@@ -1,20 +1,23 @@
-package org.chewing.v1.implementation.user.schedule
+package org.chewing.v1.implementation.schedule
 
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleInfo
+import org.chewing.v1.model.schedule.ScheduleLog
 import org.chewing.v1.model.schedule.ScheduleParticipant
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleType
 import org.chewing.v1.model.user.UserId
-import org.chewing.v1.repository.user.ScheduleParticipantRepository
-import org.chewing.v1.repository.user.ScheduleRepository
+import org.chewing.v1.repository.schedule.ScheduleLogRepository
+import org.chewing.v1.repository.schedule.ScheduleParticipantRepository
+import org.chewing.v1.repository.schedule.ScheduleRepository
 import org.springframework.stereotype.Component
 
 @Component
 class ScheduleReader(
     private val scheduleRepository: ScheduleRepository,
     private val scheduleParticipantRepository: ScheduleParticipantRepository,
+    private val scheduleLogRepository: ScheduleLogRepository,
 ) {
     fun readsParticipants(scheduleIds: List<ScheduleId>, status: ScheduleParticipantStatus): List<ScheduleParticipant> {
         return scheduleParticipantRepository.readsParticipants(scheduleIds, status)
@@ -30,5 +33,9 @@ class ScheduleReader(
 
     fun readParticipantScheduleIds(userId: UserId, status: ScheduleParticipantStatus): List<ScheduleId> {
         return scheduleParticipantRepository.readParticipantScheduleIds(userId, status)
+    }
+
+    fun readLogs(userId: UserId): List<ScheduleLog> {
+        return scheduleLogRepository.readLogs(userId)
     }
 }

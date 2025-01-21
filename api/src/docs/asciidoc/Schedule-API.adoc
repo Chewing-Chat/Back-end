@@ -4,63 +4,63 @@
 == 1. 일정 가져오기 01/19 수정
 
 === 요청(Request)
-include::{snippets}/user-schedule-controller-test/get-schedule/http-request.adoc[]
+include::{snippets}/schedule-controller-test/get-schedule/http-request.adoc[]
 
 === 요청 헤더(Request Headers)
-include::{snippets}/user-schedule-controller-test/get-schedule/request-headers.adoc[]
+include::{snippets}/schedule-controller-test/get-schedule/request-headers.adoc[]
 
 === 요청 쿼리 파라미터(Request Query Parameters)
-include::{snippets}/user-schedule-controller-test/get-schedule/query-parameters.adoc[]
+include::{snippets}/schedule-controller-test/get-schedule/query-parameters.adoc[]
 
 === 응답(Response)
-include::{snippets}/user-schedule-controller-test/get-schedule/http-response.adoc[]
+include::{snippets}/schedule-controller-test/get-schedule/http-response.adoc[]
 
 === 응답 필드 설명(Response Fields)
-include::{snippets}/user-schedule-controller-test/get-schedule/response-fields.adoc[]
+include::{snippets}/schedule-controller-test/get-schedule/response-fields.adoc[]
 
 == 2. 일정 생성 01/19 수정
 
 === 요청(Request)
-include::{snippets}/user-schedule-controller-test/create-schedule/http-request.adoc[]
+include::{snippets}/schedule-controller-test/create-schedule/http-request.adoc[]
 
 === 요청 헤더(Request Headers)
-include::{snippets}/user-schedule-controller-test/create-schedule/request-headers.adoc[]
+include::{snippets}/schedule-controller-test/create-schedule/request-headers.adoc[]
 
 === 요청 필드 설명(Request Fields)
-include::{snippets}/user-schedule-controller-test/create-schedule/request-fields.adoc[]
+include::{snippets}/schedule-controller-test/create-schedule/request-fields.adoc[]
 
 === 응답(Response)
-include::{snippets}/user-schedule-controller-test/create-schedule/http-response.adoc[]
+include::{snippets}/schedule-controller-test/create-schedule/http-response.adoc[]
 
 === 응답 필드 설명(Response Fields)
-include::{snippets}/user-schedule-controller-test/create-schedule/response-fields.adoc[]
+include::{snippets}/schedule-controller-test/create-schedule/response-fields.adoc[]
 
 == 3. 일정 수정 01/19 수정
 
 === 요청(Request)
-include::{snippets}/user-schedule-controller-test/update-schedule/http-request.adoc[]
+include::{snippets}/schedule-controller-test/update-schedule/http-request.adoc[]
 
 === 요청 헤더(Request Headers)
-include::{snippets}/user-schedule-controller-test/update-schedule/request-headers.adoc[]
+include::{snippets}/schedule-controller-test/update-schedule/request-headers.adoc[]
 
 === 요청 필드 설명(Request Fields)
-include::{snippets}/user-schedule-controller-test/update-schedule/request-fields.adoc[]
+include::{snippets}/schedule-controller-test/update-schedule/request-fields.adoc[]
 
 === 응답(Response)
-include::{snippets}/user-schedule-controller-test/update-schedule/http-response.adoc[]
+include::{snippets}/schedule-controller-test/update-schedule/http-response.adoc[]
 
 === 응답 필드 설명(Response Fields)
-include::{snippets}/user-schedule-controller-test/update-schedule/response-fields.adoc[]
+include::{snippets}/schedule-controller-test/update-schedule/response-fields.adoc[]
 
 == 4. 일정 삭제 01/19 수정
 
 === 요청(Request)
-include::{snippets}/user-schedule-controller-test/delete-schedule/http-request.adoc[]
+include::{snippets}/schedule-controller-test/delete-schedule/http-request.adoc[]
 
 === 요청 헤더(Request Headers)
-include::{snippets}/user-schedule-controller-test/delete-schedule/request-headers.adoc[]
+include::{snippets}/schedule-controller-test/delete-schedule/request-headers.adoc[]
 
 === 응답(Response)
-include::{snippets}/user-schedule-controller-test/delete-schedule/http-response.adoc[]
+include::{snippets}/schedule-controller-test/delete-schedule/http-response.adoc[]
 
 

@@ -10,6 +10,9 @@ dependencies {
     testImplementation(project(":tests:api-docs"))
     testRuntimeOnly("com.h2database:h2")
     testRuntimeOnly("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:4.18.0")
+    implementation("io.jsonwebtoken:jjwt-api:${property("jjwtVersion")}")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:${property("jjwtVersion")}")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:${property("jjwtVersion")}")
 }
 
 tasks {

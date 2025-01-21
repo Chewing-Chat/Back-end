@@ -1,14 +1,13 @@
-package org.chewing.v1.jpaentity.user
+package org.chewing.v1.jpaentity.schedule
 
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.Table
 import jakarta.persistence.*
-import org.chewing.v1.model.schedule.ScheduleInfo
-import org.chewing.v1.model.schedule.ScheduleContent
-import org.chewing.v1.model.schedule.ScheduleId
-import org.chewing.v1.model.schedule.ScheduleStatus
-import org.chewing.v1.model.schedule.ScheduleTime
-import java.time.LocalDateTime
 import java.util.*
-
+import org.chewing.v1.model.schedule.*
+import java.time.LocalDateTime
 @Entity
 @Table(
     name = "schedule",

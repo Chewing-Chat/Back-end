@@ -14,6 +14,7 @@ import org.chewing.v1.response.SuccessOnlyResponse
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.util.helper.ResponseHelper
 import org.chewing.v1.util.aliases.SuccessResponseEntity
+import org.chewing.v1.util.security.JwtTokenUtil
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*
 class AuthController(
     private val authService: AuthService,
     private val accountFacade: AccountFacade,
+    private val jwtTokenUtil: JwtTokenUtil,
 ) {
 
     @PostMapping("/create/send")
@@ -40,13 +42,15 @@ class AuthController(
     fun signUp(
         @RequestBody request: SignUpRequest.Phone,
     ): SuccessResponseEntity<TokenResponse> {
-        val jwtToken = accountFacade.createUser(
+        val userId = accountFacade.createUser(
             request.toPhoneNumber(),
             request.toVerificationCode(),
             request.toAppToken(),
             request.toDevice(),
             request.toUserName(),
         )
+        val jwtToken = jwtTokenUtil.createJwtToken(userId)
+        authService.createLoginInfo(userId, jwtToken.refreshToken)
         return ResponseHelper.success(TokenResponse.of(jwtToken))
     }
 
@@ -54,10 +58,12 @@ class AuthController(
     fun resetCredential(
         @RequestBody request: VerifyOnlyRequest,
     ): SuccessResponseEntity<TokenResponse> {
-        val jwtToken = accountFacade.resetCredential(
+        val userId = accountFacade.resetCredential(
             request.toPhoneNumber(),
             request.toVerificationCode(),
         )
+        val jwtToken = jwtTokenUtil.createJwtToken(userId)
+        authService.createLoginInfo(userId, jwtToken.refreshToken)
         return ResponseHelper.success(TokenResponse.of(jwtToken))
     }
 
@@ -89,8 +95,10 @@ class AuthController(
     fun login(
         @RequestBody request: LoginRequest,
     ): SuccessResponseEntity<TokenResponse> {
-        val jwtToken =
+        val userId =
             accountFacade.login(request.toPhoneNumber(), request.toPassword(), request.toDevice(), request.toAppToken())
+        val jwtToken = jwtTokenUtil.createJwtToken(userId)
+        authService.createLoginInfo(userId, jwtToken.refreshToken)
         return ResponseHelper.success(TokenResponse.of(jwtToken))
     }
 
@@ -98,13 +106,15 @@ class AuthController(
     fun logout(
         @RequestHeader("Authorization") refreshToken: String,
     ): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
+        jwtTokenUtil.validateRefreshToken(refreshToken)
         authService.logout(refreshToken)
         return ResponseHelper.successOnly()
     }
 
     @GetMapping("/refresh")
     fun refreshJwtToken(@RequestHeader("Authorization") refreshToken: String): SuccessResponseEntity<TokenResponse> {
-        val token = authService.refreshJwtToken(refreshToken)
-        return ResponseHelper.success(TokenResponse.of(token))
+        val (newToken, userId) = jwtTokenUtil.refresh(refreshToken)
+        authService.updateLoginInfo(refreshToken, newToken.refreshToken, userId)
+        return ResponseHelper.success(TokenResponse.of(newToken))
     }
 }

@@ -19,5 +19,5 @@ class AuthReader(
             ?: throw AuthorizationException(ErrorCode.EXPIRED_VERIFICATION_CODE)
     }
 
-    fun readRefreshToken(refreshToken: String, userId: UserId): RefreshToken = loggedInRepository.read(refreshToken, userId) ?: throw AuthorizationException(ErrorCode.INVALID_TOKEN)
+    fun readLoginInfo(refreshToken: String, userId: UserId): RefreshToken = loggedInRepository.read(refreshToken, userId) ?: throw AuthorizationException(ErrorCode.INVALID_TOKEN)
 }
