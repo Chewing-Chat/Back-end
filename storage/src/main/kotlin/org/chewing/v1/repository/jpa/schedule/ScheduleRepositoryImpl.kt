@@ -51,4 +51,8 @@ internal class ScheduleRepositoryImpl(
         return scheduleJpaRepository.findSchedules(scheduleIds.map { it.id }, startDateTime, endDateTime, status)
             .map { it.toScheduleInfo() }
     }
+
+    override fun read(scheduleId: ScheduleId, status: ScheduleStatus): ScheduleInfo? {
+        return scheduleJpaRepository.findByScheduleIdAndStatus(scheduleId.id, status)?.toScheduleInfo()
+    }
 }

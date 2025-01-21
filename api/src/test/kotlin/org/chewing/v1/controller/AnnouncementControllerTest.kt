@@ -18,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
@@ -49,16 +48,14 @@ class AnnouncementControllerTest : RestDocsTest() {
         every { announcementService.readAnnouncements() } returns listOf(announcement)
 
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .attribute("userId", "userId")
-            .header("Authorization", "Bearer accessToken")
+            .setupAuthenticatedJsonRequest()
             .get("/api/announcement/list")
             .then()
             .statusCode(HttpStatus.OK.value())
             .body("status", equalTo(200))
             .body("data.announcements[0].announcementId", equalTo(announcement.announcementId.id))
             .body("data.announcements[0].topic", equalTo(announcement.topic))
-            .body("data.announcements[0].uploadTime", equalTo(announcement.uploadAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
+            .body("data.announcements[0].uploadAt", equalTo(announcement.uploadAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -68,7 +65,7 @@ class AnnouncementControllerTest : RestDocsTest() {
                         fieldWithPath("status").description("상태 코드"),
                         fieldWithPath("data.announcements[].announcementId").description("공지사항 ID"),
                         fieldWithPath("data.announcements[].topic").description("공지사항 제목"),
-                        fieldWithPath("data.announcements[].uploadTime")
+                        fieldWithPath("data.announcements[].uploadAt")
                             .description("공지사항 업로드 시간 - 형식 yyyy-MM-dd HH:mm:ss"),
                     ),
                     requestAccessTokenFields(),
@@ -83,9 +80,7 @@ class AnnouncementControllerTest : RestDocsTest() {
         every { announcementService.readAnnouncement(announcement.announcementId) } returns announcement
 
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .attribute("userId", "userId")
-            .header("Authorization", "Bearer accessToken")
+            .setupAuthenticatedJsonRequest()
             .get("/api/announcement/{announcementId}", announcement.announcementId.id)
             .then()
             .statusCode(HttpStatus.OK.value())
@@ -114,13 +109,12 @@ class AnnouncementControllerTest : RestDocsTest() {
         val invalidId = "invalidId"
         every { announcementService.readAnnouncement(any()) } throws NotFoundException(ErrorCode.ANNOUNCEMENT_NOT_FOUND)
 
-        val result = given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .attribute("userId", "userId")
-            .header("Authorization", "Bearer accessToken")
+        given()
+            .setupAuthenticatedJsonRequest()
             .get("/api/announcement/{announcementId}", invalidId)
             .then()
             .statusCode(HttpStatus.NOT_FOUND.value())
+            .assertErrorResponse(HttpStatus.NOT_FOUND, ErrorCode.ANNOUNCEMENT_NOT_FOUND)
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -133,6 +127,5 @@ class AnnouncementControllerTest : RestDocsTest() {
                     requestAccessTokenFields(),
                 ),
             )
-        performErrorResponse(result, HttpStatus.NOT_FOUND, ErrorCode.ANNOUNCEMENT_NOT_FOUND)
     }
 }

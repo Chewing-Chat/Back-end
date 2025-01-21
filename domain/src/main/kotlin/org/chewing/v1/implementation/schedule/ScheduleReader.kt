@@ -1,5 +1,7 @@
 package org.chewing.v1.implementation.schedule
 
+import org.chewing.v1.error.ErrorCode
+import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleLog
@@ -25,6 +27,10 @@ class ScheduleReader(
 
     fun readInfos(scheduleIds: List<ScheduleId>, type: ScheduleType, status: ScheduleStatus): List<ScheduleInfo> {
         return scheduleRepository.reads(scheduleIds, type, status)
+    }
+
+    fun readInfo(scheduleId: ScheduleId, status: ScheduleStatus): ScheduleInfo {
+        return scheduleRepository.read(scheduleId, status) ?: throw NotFoundException(ErrorCode.SCHEDULE_NOT_FOUND)
     }
 
     fun readParticipants(scheduleId: ScheduleId): List<ScheduleParticipant> {

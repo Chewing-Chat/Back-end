@@ -1,5 +1,6 @@
 package org.chewing.v1.implementation.schedule
 
+import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.model.schedule.ScheduleId
@@ -28,7 +29,7 @@ class ScheduleValidator(
         }
 
         if (scheduleParticipant.role != ScheduleParticipantRole.OWNER) {
-            throw NotFoundException(ErrorCode.SCHEDULE_NOT_OWNER)
+            throw ConflictException(ErrorCode.SCHEDULE_NOT_OWNER)
         }
     }
 }

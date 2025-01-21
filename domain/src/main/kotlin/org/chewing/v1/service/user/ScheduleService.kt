@@ -32,7 +32,7 @@ class ScheduleService(
         val scheduleId = scheduleAppender.appendInfo(scheduleTime, scheduleContent)
         scheduleAppender.appendOwner(scheduleId, userId)
         scheduleAppender.appendParticipants(scheduleId, friendIds)
-        scheduleAppender.appendLog(scheduleId, userId, ScheduleChangeStatus.CREATED)
+        scheduleAppender.appendLog(scheduleId, userId, ScheduleAction.CREATED)
         return scheduleId
     }
 
@@ -40,18 +40,18 @@ class ScheduleService(
         scheduleValidator.isOwner(userId, scheduleId)
         scheduleRemover.removeInfo(scheduleId)
         scheduleRemover.removeAllParticipants(scheduleId)
-        scheduleAppender.appendLog(scheduleId, userId, ScheduleChangeStatus.DELETED)
+        scheduleAppender.appendLog(scheduleId, userId, ScheduleAction.DELETED)
     }
 
     fun cancel(userId: UserId, scheduleId: ScheduleId) {
         scheduleValidator.isParticipate(userId, scheduleId)
         scheduleRemover.removeParticipant(scheduleId, userId)
-        scheduleAppender.appendLog(scheduleId, userId, ScheduleChangeStatus.CANCELED)
+        scheduleAppender.appendLog(scheduleId, userId, ScheduleAction.CANCELED)
     }
 
     fun deleteAllParticipant(userId: UserId) {
         val scheduleIds = scheduleRemover.removeAllParticipated(userId)
-        scheduleIds.forEach { scheduleAppender.appendLog(it, userId, ScheduleChangeStatus.CANCELED) }
+        scheduleIds.forEach { scheduleAppender.appendLog(it, userId, ScheduleAction.CANCELED) }
     }
 
     fun fetches(userId: UserId, type: ScheduleType): List<Schedule> {
@@ -59,7 +59,13 @@ class ScheduleService(
         val scheduleInfos = scheduleReader.readInfos(scheduleIds, type, ScheduleStatus.ACTIVE)
         val participants =
             scheduleReader.readsParticipants(scheduleInfos.map { it.scheduleId }, ScheduleParticipantStatus.ACTIVE)
-        return scheduleEnricher.enrich(userId, scheduleInfos, participants)
+        return scheduleEnricher.enriches(userId, scheduleInfos, participants)
+    }
+
+    fun fetch(userId: UserId, scheduleId: ScheduleId): Schedule {
+        val scheduleInfo = scheduleReader.readInfo(scheduleId, ScheduleStatus.ACTIVE)
+        val participants = scheduleReader.readParticipants(scheduleId)
+        return scheduleEnricher.enrich(userId, scheduleInfo, participants)
     }
 
     fun update(
@@ -78,10 +84,10 @@ class ScheduleService(
         scheduleAppender.appendParticipants(scheduleId, appendTargetIds)
         scheduleUpdater.updateParticipants(scheduleId, updateTargetIds, ScheduleParticipantStatus.ACTIVE)
         scheduleRemover.removeParticipants(scheduleId, removeTargetIds)
-        scheduleAppender.appendLog(scheduleId, userId, ScheduleChangeStatus.UPDATED)
+        scheduleAppender.appendLog(scheduleId, userId, ScheduleAction.UPDATED)
     }
 
-    fun getLogs(userId: UserId): List<ScheduleLog> {
+    fun fetchLogs(userId: UserId): List<ScheduleLog> {
         return scheduleReader.readLogs(userId)
     }
 

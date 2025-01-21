@@ -14,12 +14,12 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.core.convert.converter.Converter
 import org.springframework.format.support.DefaultFormattingConversionService
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder
 
@@ -82,23 +82,40 @@ abstract class RestDocsTest {
         .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         .disable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
 
-    protected fun performErrorResponse(response: ValidatableMockMvcResponse, status: HttpStatus, errorCode: ErrorCode) {
-        response
+    fun MockMvcRequestSpecification.setupAuthenticatedJsonRequest(userId: String = "testUserId", token: String = "accessToken"): MockMvcRequestSpecification {
+        return this
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .attribute("userId", userId)
+            .header("Authorization", "Bearer $token")
+    }
+
+    fun MockMvcRequestSpecification.setupAuthenticatedMultipartRequest(userId: String = "testUserId", token: String = "accessToken"): MockMvcRequestSpecification {
+        return this
+            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+            .attribute("userId", userId)
+            .header("Authorization", "Bearer $token")
+    }
+
+    protected fun ValidatableMockMvcResponse.assertErrorResponse(
+        status: HttpStatus,
+        errorCode: ErrorCode,
+    ): ValidatableMockMvcResponse {
+        return this
             .statusCode(status.value())
             .body("status", equalTo(status.value()))
             .body("data.errorCode", equalTo(errorCode.code))
             .body("data.message", equalTo(errorCode.message))
     }
 
-    protected fun performCommonSuccessResponse(response: ValidatableMockMvcResponse) {
-        response
+    protected fun ValidatableMockMvcResponse.assertCommonSuccessResponse(): ValidatableMockMvcResponse {
+        return this
             .statusCode(200)
             .body("status", equalTo(200))
             .body("data.message", equalTo("성공"))
     }
 
-    protected fun performCommonSuccessCreateResponse(response: ValidatableMockMvcResponse) {
-        response
+    protected fun ValidatableMockMvcResponse.assertCommonSuccessCreateResponse(): ValidatableMockMvcResponse {
+        return this
             .statusCode(201)
             .body("status", equalTo(201))
             .body("data.message", equalTo("생성 완료"))

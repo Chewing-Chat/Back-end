@@ -1,6 +1,6 @@
 package org.chewing.v1.implementation.schedule
 
-import org.chewing.v1.model.schedule.ScheduleChangeStatus
+import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleContent
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleTime
@@ -28,7 +28,7 @@ class ScheduleAppender(
         scheduleParticipantRepository.appendOwner(scheduleId, userId)
     }
 
-    fun appendLog(scheduleId: ScheduleId, userId: UserId, changeStatus: ScheduleChangeStatus) {
-        scheduleLogRepository.appendLog(scheduleId, userId, changeStatus)
+    fun appendLog(scheduleId: ScheduleId, userId: UserId, action: ScheduleAction) {
+        scheduleLogRepository.appendLog(scheduleId, userId, action)
     }
 }

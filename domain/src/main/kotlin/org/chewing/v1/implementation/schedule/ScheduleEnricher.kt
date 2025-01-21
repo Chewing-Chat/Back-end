@@ -10,13 +10,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class ScheduleEnricher {
-    fun enrich(
+    fun enriches(
         userId: UserId,
         scheduleInfos: List<ScheduleInfo>,
         scheduleParticipants: List<ScheduleParticipant>,
     ): List<Schedule> {
         return scheduleInfos.map { scheduleInfo ->
-
             val participants = scheduleParticipants
                 .filter { it.scheduleId == scheduleInfo.scheduleId }
                 .filter { it.userId != userId }
@@ -35,5 +34,17 @@ class ScheduleEnricher {
         } else {
             return friendIds
         }
+    }
+    fun enrich(
+        userId: UserId,
+        scheduleInfo: ScheduleInfo,
+        scheduleParticipants: List<ScheduleParticipant>,
+    ): Schedule {
+        val participants = scheduleParticipants
+            .filter { it.scheduleId == scheduleInfo.scheduleId }
+            .filter { it.userId != userId }
+        val isOwned = scheduleParticipants.any { it.userId == userId && it.role == ScheduleParticipantRole.OWNER }
+        val isParticipant = scheduleParticipants.any { it.userId == userId && it.status == ScheduleParticipantStatus.ACTIVE }
+        return Schedule.of(scheduleInfo, participants, isOwned, isParticipant)
     }
 }

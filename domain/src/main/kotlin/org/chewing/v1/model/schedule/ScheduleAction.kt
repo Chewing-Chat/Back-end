@@ -1,6 +1,6 @@
 package org.chewing.v1.model.schedule
 
-enum class ScheduleChangeStatus {
+enum class ScheduleAction {
     CREATED,
     UPDATED,
     CANCELED,

@@ -2,7 +2,7 @@ package org.chewing.v1.repository.jpa.schedule
 
 import org.chewing.v1.jpaentity.schedule.ScheduleLogJpaEntity
 import org.chewing.v1.jparepository.schedule.ScheduleLogJpaRepository
-import org.chewing.v1.model.schedule.ScheduleChangeStatus
+import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleLog
 import org.chewing.v1.model.user.UserId
@@ -17,9 +17,9 @@ internal class ScheduleLogRepositoryImpl(
     override fun appendLog(
         scheduleId: ScheduleId,
         userId: UserId,
-        changeStatus: ScheduleChangeStatus,
+        action: ScheduleAction,
     ) {
-        val entity = ScheduleLogJpaEntity.generate(userId, scheduleId, changeStatus)
+        val entity = ScheduleLogJpaEntity.generate(userId, scheduleId, action)
         scheduleLogJpaRepository.save(entity)
     }
 

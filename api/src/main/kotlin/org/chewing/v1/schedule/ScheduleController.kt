@@ -3,6 +3,7 @@ package org.chewing.v1.schedule
 import org.chewing.v1.dto.request.user.ScheduleRequest
 import org.chewing.v1.dto.response.schedule.ScheduleIdResponse
 import org.chewing.v1.dto.response.schedule.ScheduleListResponse
+import org.chewing.v1.dto.response.schedule.ScheduleListResponse.ScheduleResponse
 import org.chewing.v1.dto.response.schedule.ScheduleLogsResponse
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleType
@@ -13,6 +14,7 @@ import org.chewing.v1.util.aliases.SuccessResponseEntity
 import org.chewing.v1.util.helper.ResponseHelper
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestAttribute
@@ -26,8 +28,8 @@ import org.springframework.web.bind.annotation.RestController
 class ScheduleController(
     private val scheduleService: ScheduleService,
 ) {
-    @GetMapping("")
-    fun getSchedule(
+    @GetMapping("/list")
+    fun getSchedules(
         @RequestAttribute("userId") userId: String,
         @RequestParam("year") year: Int,
         @RequestParam("month") month: Int,
@@ -35,6 +37,15 @@ class ScheduleController(
         val type = ScheduleType.of(year, month)
         val schedules = scheduleService.fetches(UserId.of(userId), type)
         return ResponseHelper.success(ScheduleListResponse.of(schedules))
+    }
+
+    @GetMapping("/{scheduleId}")
+    fun getSchedule(
+        @RequestAttribute("userId") userId: String,
+        @PathVariable("scheduleId") scheduleId: String,
+    ): SuccessResponseEntity<ScheduleResponse> {
+        val schedule = scheduleService.fetch(UserId.of(userId), ScheduleId.of(scheduleId))
+        return ResponseHelper.success(ScheduleResponse.of(schedule))
     }
 
     @DeleteMapping("")
@@ -77,10 +88,10 @@ class ScheduleController(
     }
 
     @GetMapping("/logs")
-    fun getLogs(
+    fun getScheduleLogs(
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<ScheduleLogsResponse> {
-        val logs = scheduleService.getLogs(UserId.of(userId))
+        val logs = scheduleService.fetchLogs(UserId.of(userId))
         return ResponseHelper.success(ScheduleLogsResponse.of(logs))
     }
 }

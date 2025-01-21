@@ -16,8 +16,10 @@ import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.schedule.Schedule
+import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleInfo
+import org.chewing.v1.model.schedule.ScheduleLog
 import org.chewing.v1.model.schedule.ScheduleParticipant
 import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
@@ -36,6 +38,35 @@ object TestDataFactory {
 
     fun createFriendName(): String {
         return "testFriendName"
+    }
+
+    fun createScheduleLogs(): List<ScheduleLog> {
+        return listOf(
+            ScheduleLog.of(
+                ScheduleId.of("testScheduleId"),
+                UserId.of("testUserId"),
+                ScheduleAction.CREATED,
+                LocalDateTime.now(),
+            ),
+            ScheduleLog.of(
+                ScheduleId.of("testScheduleId"),
+                UserId.of("testUserId"),
+                ScheduleAction.UPDATED,
+                LocalDateTime.now(),
+            ),
+            ScheduleLog.of(
+                ScheduleId.of("testScheduleId"),
+                UserId.of("testUserId"),
+                ScheduleAction.DELETED,
+                LocalDateTime.now(),
+            ),
+            ScheduleLog.of(
+                ScheduleId.of("testScheduleId"),
+                UserId.of("testUserId"),
+                ScheduleAction.CANCELED,
+                LocalDateTime.now(),
+            ),
+        )
     }
 
     fun createUserId(): UserId {
@@ -67,7 +98,10 @@ object TestDataFactory {
         )
     }
 
-    fun createScheduleParticipant(status: ScheduleParticipantStatus, role: ScheduleParticipantRole): ScheduleParticipant {
+    fun createScheduleParticipant(
+        status: ScheduleParticipantStatus,
+        role: ScheduleParticipantRole,
+    ): ScheduleParticipant {
         return ScheduleParticipant.of(
             UserId.of("testUserId"),
             ScheduleId.of("testScheduleId"),

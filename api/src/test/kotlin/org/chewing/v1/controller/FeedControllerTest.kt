@@ -57,9 +57,7 @@ class FeedControllerTest : RestDocsTest() {
         every { feedService.getFeeds(UserId.of(userId), UserId.of(userId)) } returns feeds
 
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .attribute("userId", userId)
-            .header("Authorization", "Bearer accessToken")
+            .setupAuthenticatedJsonRequest()
             .get("/api/feed/owned/list")
             .then()
             .statusCode(HttpStatus.OK.value())
@@ -96,9 +94,7 @@ class FeedControllerTest : RestDocsTest() {
         every { feedService.getFeeds(UserId.of(userId), UserId.of(friendId)) } returns feeds
 
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .attribute("userId", userId)
-            .header("Authorization", "Bearer accessToken")
+            .setupAuthenticatedJsonRequest()
             .get("/api/feed/friend/{friendId}/list", friendId)
             .then()
             .statusCode(HttpStatus.OK.value())
@@ -139,9 +135,7 @@ class FeedControllerTest : RestDocsTest() {
         every { feedService.getFeed(any(), UserId.of(userId)) } returns feed
 
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .attribute("userId", userId)
-            .header("Authorization", "Bearer accessToken")
+            .setupAuthenticatedJsonRequest()
             .get("/api/feed/{feedId}/detail", testFeedId)
             .then()
             .statusCode(HttpStatus.OK.value())
@@ -181,7 +175,6 @@ class FeedControllerTest : RestDocsTest() {
     @Test
     @DisplayName("피드 삭제")
     fun deleteFeeds() {
-        val userId = "testUserId"
         val requestBody = listOf(
             FeedRequest.Delete(
                 feedId = "testFeedId",
@@ -192,15 +185,12 @@ class FeedControllerTest : RestDocsTest() {
         )
         every { feedService.removes(any(), requestBody.map { it.toFeedId() }) } just Runs
 
-        val result = given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .attribute("userId", userId)
-            .header("Authorization", "Bearer accessToken")
+        given()
+            .setupAuthenticatedJsonRequest()
             .body(requestBody)
             .delete("/api/feed")
             .then()
-            .statusCode(HttpStatus.OK.value())
-            .body("status", equalTo(200))
+            .assertCommonSuccessResponse()
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -213,7 +203,6 @@ class FeedControllerTest : RestDocsTest() {
                     responseSuccessFields(),
                 ),
             )
-        performCommonSuccessResponse(result)
     }
 
     @Test
@@ -238,9 +227,7 @@ class FeedControllerTest : RestDocsTest() {
         every { feedService.make(any(), any(), any(), any(), any()) } returns feedId
 
         given()
-            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-            .attribute("userId", "testUserId")
-            .header("Authorization", "Bearer accessToken")
+            .setupAuthenticatedMultipartRequest()
             .queryParam("content", "testContent")
             .queryParam("friendIds", *testFriendIds.toTypedArray())
             .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
@@ -257,7 +244,8 @@ class FeedControllerTest : RestDocsTest() {
                     responsePreprocessor(),
                     requestAccessTokenFields(),
                     requestParts(
-                        partWithName("files").description("피드에 추가할 이미지 파일 (image/jpeg)").description("피드에 추가할 이미지 파일 (image/jpeg) - 형식은 0.jpg, 1.jpg, ..."),
+                        partWithName("files").description("피드에 추가할 이미지 파일 (image/jpeg)")
+                            .description("피드에 추가할 이미지 파일 (image/jpeg) - 형식은 0.jpg, 1.jpg, ..."),
                     ),
                     queryParameters(
                         parameterWithName("content").description("피드 내용"),

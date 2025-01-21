@@ -13,5 +13,6 @@ interface ScheduleRepository {
     fun append(scheduleTime: ScheduleTime, scheduleContent: ScheduleContent): ScheduleId
     fun remove(scheduleId: ScheduleId)
     fun reads(scheduleIds: List<ScheduleId>, type: ScheduleType, status: ScheduleStatus): List<ScheduleInfo>
+    fun read(scheduleId: ScheduleId, status: ScheduleStatus): ScheduleInfo?
     fun update(scheduleId: ScheduleId, scheduleTime: ScheduleTime, scheduleContent: ScheduleContent)
 }

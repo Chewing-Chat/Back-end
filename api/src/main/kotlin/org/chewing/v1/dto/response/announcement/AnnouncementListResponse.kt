@@ -19,7 +19,7 @@ data class AnnouncementListResponse(
     data class AnnouncementResponse(
         val announcementId: String,
         val topic: String,
-        val uploadTime: String,
+        val uploadAt: String,
     ) {
         companion object {
             fun of(
@@ -30,7 +30,7 @@ data class AnnouncementListResponse(
                 return AnnouncementResponse(
                     announcementId = announcement.announcementId.id,
                     topic = announcement.topic,
-                    uploadTime = formattedUploadTime,
+                    uploadAt = formattedUploadTime,
                 )
             }
         }

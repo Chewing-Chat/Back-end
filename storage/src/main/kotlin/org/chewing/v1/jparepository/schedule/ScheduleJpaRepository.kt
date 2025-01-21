@@ -23,4 +23,6 @@ internal interface ScheduleJpaRepository : JpaRepository<ScheduleJpaEntity, Stri
         @Param("end") end: LocalDateTime,
         @Param("status") status: ScheduleStatus,
     ): List<ScheduleJpaEntity>
+
+    fun findByScheduleIdAndStatus(scheduleId: String, status: ScheduleStatus): ScheduleJpaEntity?
 }

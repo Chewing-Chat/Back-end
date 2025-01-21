@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import org.chewing.v1.TestDataFactory
+import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.implementation.schedule.ScheduleAppender
@@ -105,7 +106,7 @@ class ScheduleServiceTest {
 
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns scheduleParticipant
 
-        val result = assertThrows<NotFoundException> {
+        val result = assertThrows<ConflictException> {
             scheduleService.delete(userId, scheduleId)
         }
 
@@ -140,7 +141,7 @@ class ScheduleServiceTest {
     }
 
     @Test
-    fun `스케줄 가져오기 - 나 자신은 제외 되고 소유자이자 참여자라면 isParticipate,isOwned를 리턴함 - 한번은 초대 되어야함 `() {
+    fun `스케줄 목록 가져오기 - 나 자신은 제외 되고 소유자이자 참여자라면 isParticipate,isOwned를 리턴함 - 한번은 초대 되어야함 `() {
         val userId = TestDataFactory.createUserId()
         val friendId = TestDataFactory.createFriendId()
         val targetScheduleType = ScheduleType.of(2021, 1)
@@ -177,7 +178,7 @@ class ScheduleServiceTest {
     }
 
     @Test
-    fun `스케줄 가져오기 - 나 자신은 제외되고 소유자 참여자 모두 아니라면 isOwned False를 리턴함 - 한번은 초대 되어야함`() {
+    fun `스케줄 목록 가져오기 - 나 자신은 제외되고 소유자 참여자 모두 아니라면 isOwned False를 리턴함 - 한번은 초대 되어야함`() {
         val userId = TestDataFactory.createUserId()
         val friendId = TestDataFactory.createFriendId()
         val targetScheduleType = ScheduleType.of(2021, 1)
@@ -398,5 +399,74 @@ class ScheduleServiceTest {
         }
 
         assert(result.errorCode == ErrorCode.SCHEDULE_NOT_PARTICIPANT)
+    }
+
+    @Test
+    fun `스케줄 취소 성공`() {
+        val userId = TestDataFactory.createUserId()
+        val scheduleId = TestDataFactory.createScheduleId()
+        val userParticipant = TestDataFactory.createScheduleParticipant(
+            userId = userId,
+            scheduleId = scheduleId,
+            status = ScheduleParticipantStatus.ACTIVE,
+            role = ScheduleParticipantRole.OWNER,
+        )
+        every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns userParticipant
+        every { scheduleParticipantRepository.removeParticipant(scheduleId, userId) } just Runs
+        every { scheduleLogRepository.appendLog(scheduleId, userId, any()) } just Runs
+
+        assertDoesNotThrow {
+            scheduleService.cancel(userId, scheduleId)
+        }
+    }
+
+    @Test
+    fun `스케줄 취소 실패 - 참여한 이력이 없음`() {
+        val userId = TestDataFactory.createUserId()
+        val scheduleId = TestDataFactory.createScheduleId()
+        every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns null
+
+        val result = assertThrows<NotFoundException> {
+            scheduleService.cancel(userId, scheduleId)
+        }
+
+        assert(result.errorCode == ErrorCode.SCHEDULE_NOT_PARTICIPANT)
+    }
+
+    @Test
+    fun `스케줄 가져오기 성공`() {
+        val userId = TestDataFactory.createUserId()
+        val scheduleId = TestDataFactory.createScheduleId()
+        val scheduleInfo = TestDataFactory.createScheduleInfo(scheduleId, ScheduleStatus.ACTIVE)
+        val participants = listOf(
+            TestDataFactory.createScheduleParticipant(
+                userId = userId,
+                scheduleId = scheduleId,
+                status = ScheduleParticipantStatus.ACTIVE,
+                role = ScheduleParticipantRole.OWNER,
+            ),
+        )
+
+        every { scheduleRepository.read(scheduleId, ScheduleStatus.ACTIVE) } returns scheduleInfo
+        every { scheduleParticipantRepository.readParticipants(scheduleId) } returns participants
+
+        val result = scheduleService.fetch(userId, scheduleId)
+
+        assert(result.info.scheduleId == scheduleId)
+        assert(result.participants.isEmpty())
+    }
+
+    @Test
+    fun `스케줄 가져오기 실패 - 존재 하지 않음`() {
+        val userId = TestDataFactory.createUserId()
+        val scheduleId = TestDataFactory.createScheduleId()
+
+        every { scheduleRepository.read(scheduleId, ScheduleStatus.ACTIVE) } returns null
+
+        val result = assertThrows<NotFoundException> {
+            scheduleService.fetch(userId, scheduleId)
+        }
+
+        assert(result.errorCode == ErrorCode.SCHEDULE_NOT_FOUND)
     }
 }
