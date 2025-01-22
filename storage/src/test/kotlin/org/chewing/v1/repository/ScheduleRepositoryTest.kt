@@ -2,6 +2,7 @@ package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.schedule.ScheduleJpaRepository
+import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleType
 import org.chewing.v1.model.user.UserId
@@ -104,5 +105,23 @@ class ScheduleRepositoryTest : JpaContextTest() {
         assert(schedules.isEmpty())
     }
 
+    @Test
+    fun `스케줄 단일 조회 성공`() {
+        val content = ScheduleProvider.buildContent()
+        val time = ScheduleProvider.buildTime()
+        val schedule = jpaDataGenerator.scheduleEntityData(content, time)
+        val result = scheduleRepositoryImpl.read(schedule.scheduleId, ScheduleStatus.ACTIVE)
+        assert(result != null)
+        assert(result!!.scheduleId == schedule.scheduleId)
+    }
+
+    @Test
+    fun `스케줄 단일 조회 실패 - 삭제된 스케줄`() {
+        val invalidScheduleId = generateScheduleId()
+        val result = scheduleRepositoryImpl.read(invalidScheduleId, ScheduleStatus.ACTIVE)
+        assert(result == null)
+    }
+
     fun generateUserId(): UserId = UserId.of(UUID.randomUUID().toString())
+    fun generateScheduleId() = ScheduleId.of(UUID.randomUUID().toString())
 }

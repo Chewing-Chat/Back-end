@@ -1,6 +1,10 @@
 package org.chewing.v1.service.feed
 
-import org.chewing.v1.implementation.feed.feed.*
+import org.chewing.v1.implementation.feed.FeedAppender
+import org.chewing.v1.implementation.feed.FeedEnricher
+import org.chewing.v1.implementation.feed.FeedReader
+import org.chewing.v1.implementation.feed.FeedRemover
+import org.chewing.v1.implementation.feed.FeedValidator
 import org.chewing.v1.implementation.media.FileHandler
 import org.chewing.v1.model.feed.*
 import org.chewing.v1.model.media.FileCategory

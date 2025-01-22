@@ -24,7 +24,7 @@ internal class ScheduleLogRepositoryImpl(
     }
 
     override fun readLogs(userId: UserId): List<ScheduleLog> {
-        val entities = scheduleLogJpaRepository.findAllByIdUserId(userId.id)
+        val entities = scheduleLogJpaRepository.findAllByUserId(userId.id)
         return entities.map { it.toLog() }
     }
 }

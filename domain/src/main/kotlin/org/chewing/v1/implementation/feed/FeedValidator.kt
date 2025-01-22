@@ -1,4 +1,4 @@
-package org.chewing.v1.implementation.feed.feed
+package org.chewing.v1.implementation.feed
 
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode

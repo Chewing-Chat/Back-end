@@ -24,9 +24,11 @@ import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
+import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
 import org.chewing.v1.model.schedule.ScheduleId
+import org.chewing.v1.model.schedule.ScheduleLog
 import org.chewing.v1.model.schedule.ScheduleParticipant
 import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
@@ -54,6 +56,7 @@ object TestDataFactory {
     fun createFriendId(): UserId = UserId.of("testFriendId")
     fun createSecondFriendId(): UserId = UserId.of("testSecondFriendId")
     fun createScheduleId(): ScheduleId = ScheduleId.of("testScheduleId")
+    fun createScheduleLog(): ScheduleLog = ScheduleLog.of(createScheduleId(), createUserId(), ScheduleAction.CREATED, LocalDateTime.now())
     fun createProfileMedia(): Media = Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG)
 
     fun createMedia(category: FileCategory, index: Int, mediaType: MediaType): Media =

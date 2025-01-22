@@ -8,7 +8,11 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
-import org.chewing.v1.implementation.feed.feed.*
+import org.chewing.v1.implementation.feed.FeedAppender
+import org.chewing.v1.implementation.feed.FeedEnricher
+import org.chewing.v1.implementation.feed.FeedReader
+import org.chewing.v1.implementation.feed.FeedRemover
+import org.chewing.v1.implementation.feed.FeedValidator
 import org.chewing.v1.implementation.media.FileHandler
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.repository.feed.FeedDetailRepository

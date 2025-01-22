@@ -1,17 +1,17 @@
 package org.chewing.v1.jpaentity.schedule
 
-import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
+import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.chewing.v1.jpaentity.common.BaseEntity
-import org.chewing.v1.jpaentity.user.ScheduleParticipantId
 import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleLog
 import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
+import java.util.UUID
 
 @Entity
 @DynamicInsert
@@ -19,8 +19,10 @@ import org.hibernate.annotations.DynamicInsert
     name = "schedule_log",
 )
 internal class ScheduleLogJpaEntity(
-    @EmbeddedId
-    private val id: ScheduleParticipantId,
+    @Id
+    private val scheduleLogId: String = UUID.randomUUID().toString(),
+    private val scheduleId: String,
+    private val userId: String,
     @Enumerated(EnumType.STRING)
     private val action: ScheduleAction,
 ) : BaseEntity() {
@@ -30,14 +32,15 @@ internal class ScheduleLogJpaEntity(
             scheduleId: ScheduleId,
             action: ScheduleAction,
         ): ScheduleLogJpaEntity = ScheduleLogJpaEntity(
-            id = ScheduleParticipantId.of(userId, scheduleId),
+            scheduleId = scheduleId.id,
+            userId = userId.id,
             action = action,
         )
     }
 
     fun toLog(): ScheduleLog = ScheduleLog.of(
-        ScheduleId.of(id.scheduleId),
-        UserId.of(id.userId),
+        ScheduleId.of(scheduleId),
+        UserId.of(userId),
         action,
         createdAt,
     )

@@ -4,6 +4,7 @@ import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.user.ScheduleParticipantId
 import org.chewing.v1.jparepository.schedule.ScheduleParticipantJpaRepository
 import org.chewing.v1.model.schedule.ScheduleId
+import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.schedule.ScheduleParticipantRepositoryImpl
@@ -168,7 +169,7 @@ class ScheduleParticipantRepository : JpaContextTest() {
     }
 
     @Test
-    fun `참여자 삭제에 성공`() {
+    fun `참여자 모두 삭제에 성공`() {
         val userId = generateUserId()
         val scheduleId = generateScheduleId()
         jpaDataGenerator.scheduleParticipantEntityData(
@@ -260,7 +261,64 @@ class ScheduleParticipantRepository : JpaContextTest() {
         assert(result2.get().toParticipant().status == ScheduleParticipantStatus.DELETED)
     }
 
-    fun generateScheduleId(): ScheduleId {
+    @Test
+    fun `작성자 추가에 성공`() {
+        val userId = generateUserId()
+        val scheduleId = generateScheduleId()
+        scheduleParticipantRepositoryImpl.appendOwner(scheduleId, userId)
+        val result = scheduleParticipantJpaRepository.findById(
+            ScheduleParticipantId.of(
+                scheduleId = scheduleId,
+                userId = userId,
+            ),
+        )
+        assert(result.isPresent)
+        assert(result.get().toParticipant().role == ScheduleParticipantRole.OWNER)
+    }
+
+    @Test
+    fun `참여자 삭제에 성공`() {
+        val userId = generateUserId()
+        val scheduleId = generateScheduleId()
+        jpaDataGenerator.scheduleParticipantEntityData(
+            scheduleId = scheduleId,
+            userId = userId,
+            status = ScheduleParticipantStatus.ACTIVE,
+        )
+
+        scheduleParticipantRepositoryImpl.removeParticipant(scheduleId, userId)
+        val result = scheduleParticipantJpaRepository.findById(
+            ScheduleParticipantId.of(
+                scheduleId = scheduleId,
+                userId = userId,
+            ),
+        )
+        assert(result.isPresent)
+        assert(result.get().toParticipant().status == ScheduleParticipantStatus.DELETED)
+    }
+
+    @Test
+    fun `참여자 상태 변경에 성공`() {
+        val userId = generateUserId()
+        val scheduleId = generateScheduleId()
+        jpaDataGenerator.scheduleParticipantEntityData(
+            scheduleId = scheduleId,
+            userId = userId,
+            status = ScheduleParticipantStatus.DELETED,
+        )
+
+        scheduleParticipantRepositoryImpl.updateParticipants(scheduleId, listOf(userId), ScheduleParticipantStatus.ACTIVE)
+        val result = scheduleParticipantJpaRepository.findById(
+            ScheduleParticipantId.of(
+                scheduleId = scheduleId,
+                userId = userId,
+            ),
+        )
+        assert(result.isPresent)
+        assert(result.get().toParticipant().status == ScheduleParticipantStatus.ACTIVE)
+    }
+
+    private fun generateScheduleId(): ScheduleId {
         return ScheduleId.of(UUID.randomUUID().toString())
     }
 

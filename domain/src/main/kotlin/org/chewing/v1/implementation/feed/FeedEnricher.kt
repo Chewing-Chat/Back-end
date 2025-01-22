@@ -1,4 +1,4 @@
-package org.chewing.v1.implementation.feed.feed
+package org.chewing.v1.implementation.feed
 
 import org.chewing.v1.model.feed.Feed
 import org.chewing.v1.model.feed.FeedDetail
@@ -17,7 +17,7 @@ class FeedEnricher {
         val feedDetailMap = feedDetails.groupBy { it.feedId }
         return visibleFeeds.map { feedInfo ->
             val details = feedDetailMap[feedInfo.feedId] ?: emptyList()
-            Feed.of(
+            Feed.Companion.of(
                 feedInfo,
                 details,
             )

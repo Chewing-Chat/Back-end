@@ -98,7 +98,7 @@ internal class ScheduleParticipantRepositoryImpl(
     override fun removeParticipant(scheduleId: ScheduleId, userId: UserId) {
         val scheduleParticipantId = ScheduleParticipantId(userId.id, scheduleId.id)
         val entity = scheduleParticipantJpaRepository.findById(scheduleParticipantId).orElse(null)
-        entity?.updateStatus(ScheduleParticipantStatus.DELETED)
+        entity!!.updateStatus(ScheduleParticipantStatus.DELETED)
     }
 
     @Transactional

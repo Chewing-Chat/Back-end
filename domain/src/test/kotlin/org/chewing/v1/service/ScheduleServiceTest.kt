@@ -434,7 +434,7 @@ class ScheduleServiceTest {
     }
 
     @Test
-    fun `스케줄 가져오기 성공`() {
+    fun `스케줄 가져오기 성공 - 본인 소유이자 참여자임`() {
         val userId = TestDataFactory.createUserId()
         val scheduleId = TestDataFactory.createScheduleId()
         val scheduleInfo = TestDataFactory.createScheduleInfo(scheduleId, ScheduleStatus.ACTIVE)
@@ -453,6 +453,33 @@ class ScheduleServiceTest {
         val result = scheduleService.fetch(userId, scheduleId)
 
         assert(result.info.scheduleId == scheduleId)
+        assert(result.isOwned)
+        assert(result.isParticipant)
+        assert(result.participants.isEmpty())
+    }
+
+    @Test
+    fun `스케줄 가져오기 성공 - 본인 소유가 아니고 참여자가 아님`() {
+        val userId = TestDataFactory.createUserId()
+        val scheduleId = TestDataFactory.createScheduleId()
+        val scheduleInfo = TestDataFactory.createScheduleInfo(scheduleId, ScheduleStatus.ACTIVE)
+        val participants = listOf(
+            TestDataFactory.createScheduleParticipant(
+                userId = userId,
+                scheduleId = scheduleId,
+                status = ScheduleParticipantStatus.DELETED,
+                role = ScheduleParticipantRole.PARTICIPANT,
+            ),
+        )
+
+        every { scheduleRepository.read(scheduleId, ScheduleStatus.ACTIVE) } returns scheduleInfo
+        every { scheduleParticipantRepository.readParticipants(scheduleId) } returns participants
+
+        val result = scheduleService.fetch(userId, scheduleId)
+
+        assert(result.info.scheduleId == scheduleId)
+        assert(!result.isOwned)
+        assert(!result.isParticipant)
         assert(result.participants.isEmpty())
     }
 
@@ -468,5 +495,17 @@ class ScheduleServiceTest {
         }
 
         assert(result.errorCode == ErrorCode.SCHEDULE_NOT_FOUND)
+    }
+
+    @Test
+    fun `일정 로그 목록 가져오기`() {
+        val userId = TestDataFactory.createUserId()
+        val scheduleLog = TestDataFactory.createScheduleLog()
+
+        every { scheduleLogRepository.readLogs(userId) } returns listOf(scheduleLog)
+
+        val result = scheduleService.fetchLogs(userId)
+
+        assert(result.size == 1)
     }
 }

@@ -13,6 +13,7 @@ import org.chewing.v1.jpaentity.feed.FeedVisibilityEntity
 import org.chewing.v1.jpaentity.feed.FeedVisibilityId
 import org.chewing.v1.jpaentity.friend.FriendShipJpaEntity
 import org.chewing.v1.jpaentity.schedule.ScheduleJpaEntity
+import org.chewing.v1.jpaentity.schedule.ScheduleLogJpaEntity
 import org.chewing.v1.jpaentity.schedule.ScheduleParticipantJpaEntity
 import org.chewing.v1.jpaentity.user.*
 import org.chewing.v1.jpaentity.user.PushNotificationJpaEntity
@@ -32,6 +33,7 @@ import org.chewing.v1.jparepository.friend.FriendShipJpaRepository
 import org.chewing.v1.jparepository.user.*
 import org.chewing.v1.jparepository.user.PushNotificationJpaRepository
 import org.chewing.v1.jparepository.schedule.ScheduleJpaRepository
+import org.chewing.v1.jparepository.schedule.ScheduleLogJpaRepository
 import org.chewing.v1.jparepository.schedule.ScheduleParticipantJpaRepository
 import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.announcement.Announcement
@@ -44,9 +46,11 @@ import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
+import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
 import org.chewing.v1.model.schedule.ScheduleId
+import org.chewing.v1.model.schedule.ScheduleLog
 import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
@@ -110,6 +114,15 @@ class JpaDataGenerator {
 
     @Autowired
     private lateinit var scheduleParticipantJpaRepository: ScheduleParticipantJpaRepository
+
+    @Autowired
+    private lateinit var scheduleLogJpaRepository: ScheduleLogJpaRepository
+
+    fun scheduleLogEntityData(scheduleId: ScheduleId, userId: UserId, action: ScheduleAction): ScheduleLog {
+        val entity = ScheduleLogJpaEntity.generate(userId, scheduleId, action)
+        scheduleLogJpaRepository.save(entity)
+        return entity.toLog()
+    }
 
     fun userEntityData(credential: PhoneNumber, userName: String, access: AccessStatus): User {
         val user = UserJpaEntity.generate(credential, userName, access)
