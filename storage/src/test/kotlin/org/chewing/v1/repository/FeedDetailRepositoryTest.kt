@@ -2,6 +2,7 @@ package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.feed.FeedDetailJpaRepository
+import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.repository.jpa.feed.FeedDetailRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.chewing.v1.repository.support.MediaProvider
@@ -24,7 +25,7 @@ class FeedDetailRepositoryTest : JpaContextTest() {
         val feedId = generateFeedId()
         val medias = MediaProvider.buildFeedContents()
         feedDetailRepositoryImpl.append(medias, feedId)
-        val result = feedDetailJpaRepository.findAllByFeedIdOrderByFeedIndex(feedId)
+        val result = feedDetailJpaRepository.findAllByFeedIdOrderByFeedIndex(feedId.id)
         assert(result.isNotEmpty())
         assert(result.size == medias.size)
     }
@@ -64,10 +65,13 @@ class FeedDetailRepositoryTest : JpaContextTest() {
         val result = feedDetailRepositoryImpl.removes(feedIds)
         assert(result.isNotEmpty())
         assert(result.size == feedDetails.size)
-        val result2 = feedDetailJpaRepository.findAllByFeedIdIn(feedIds)
+        val result2 = feedDetailJpaRepository.findAllByFeedIdIn(feedIds.map { it.id })
         assert(result2.isEmpty())
     }
 
-    private fun generateFeedId() = UUID.randomUUID().toString()
+    fun generateFeedId(): FeedId {
+        return FeedId.of(UUID.randomUUID().toString())
+    }
+
     private fun generateFeedIdList() = listOf(generateFeedId(), generateFeedId())
 }

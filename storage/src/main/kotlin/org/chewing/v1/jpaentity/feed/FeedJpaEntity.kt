@@ -2,7 +2,9 @@ package org.chewing.v1.jpaentity.feed
 
 import jakarta.persistence.*
 import org.chewing.v1.jpaentity.common.BaseEntity
+import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
+import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
 import java.util.*
 
@@ -21,25 +23,25 @@ internal class FeedJpaEntity(
     companion object {
         fun generate(
             content: String,
-            userId: String,
+            userId: UserId,
         ): FeedJpaEntity {
             return FeedJpaEntity(
                 feedContent = content,
-                userId = userId,
+                userId = userId.id,
             )
         }
     }
 
-    fun toFeedId(): String {
-        return feedId
+    fun toFeedId(): FeedId {
+        return FeedId.of(feedId)
     }
     fun toFeedInfo(): FeedInfo {
         return FeedInfo
             .of(
-                feedId = feedId,
+                feedId = FeedId.of(feedId),
                 content = feedContent,
                 uploadAt = createdAt,
-                userId = userId,
+                userId = UserId.of(userId),
             )
     }
 }

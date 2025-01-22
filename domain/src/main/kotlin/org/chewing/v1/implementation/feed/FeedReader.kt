@@ -1,0 +1,31 @@
+package org.chewing.v1.implementation.feed
+
+import org.chewing.v1.error.ErrorCode
+import org.chewing.v1.error.NotFoundException
+import org.chewing.v1.model.feed.FeedDetail
+import org.chewing.v1.model.feed.FeedId
+import org.chewing.v1.model.feed.FeedInfo
+import org.chewing.v1.model.user.UserId
+import org.chewing.v1.repository.feed.FeedDetailRepository
+import org.chewing.v1.repository.feed.FeedRepository
+import org.chewing.v1.repository.feed.FeedVisibilityRepository
+import org.springframework.stereotype.Component
+
+@Component
+class FeedReader(
+    private val feedRepository: FeedRepository,
+    private val feedDetailRepository: FeedDetailRepository,
+    private val feedVisibilityRepository: FeedVisibilityRepository,
+) {
+    fun readInfo(feedId: FeedId): FeedInfo =
+        feedRepository.read(feedId) ?: throw NotFoundException(ErrorCode.FEED_NOT_FOUND)
+
+    fun readsInfo(userId: UserId): List<FeedInfo> = feedRepository.reads(userId)
+
+    fun readVisibleFeedIds(userId: UserId, feedIds: List<FeedId>): List<FeedId> =
+        feedVisibilityRepository.readVisibleFeedIds(userId, feedIds)
+
+    fun readDetails(feedId: FeedId): List<FeedDetail> = feedDetailRepository.read(feedId)
+
+    fun readsThumbnail(feedIds: List<FeedId>): List<FeedDetail> = feedDetailRepository.readsFirstIndex(feedIds)
+}

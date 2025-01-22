@@ -22,11 +22,11 @@ class ChatFacadeTest {
     @Test
     fun `파일 전송 채팅 처리`() {
         val messageId = "messageId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
 
         val chatMessage = TestDataFactory.createFileMessage(messageId, chatRoomId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(userId, chatRoomId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.uploadFiles(any(), any(), any()) } returns chatMessage
@@ -43,11 +43,11 @@ class ChatFacadeTest {
     @Test
     fun `읽음 처리`() {
         val messageId = "messageId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
 
         val chatMessage = TestDataFactory.createReadMessage(messageId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(userId, chatRoomId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.readMessage(any(), any()) } returns chatMessage
@@ -64,11 +64,11 @@ class ChatFacadeTest {
     @Test
     fun `삭제 처리`() {
         val messageId = "messageId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
 
         val chatMessage = TestDataFactory.createDeleteMessage(messageId, chatRoomId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(userId, chatRoomId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.deleteMessage(any(), any(), any()) } returns chatMessage
@@ -85,12 +85,12 @@ class ChatFacadeTest {
     @Test
     fun `답장 처리`() {
         val messageId = "messageId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
         val parentMessageId = "parentMessageId"
 
         val chatMessage = TestDataFactory.createReplyMessage(messageId, parentMessageId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(userId, chatRoomId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.replyMessage(any(), any(), any(), any()) } returns chatMessage
@@ -107,11 +107,11 @@ class ChatFacadeTest {
     @Test
     fun `폭탄 처리`() {
         val messageId = "messageId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
 
         val chatMessage = TestDataFactory.createBombMessage(messageId, chatRoomId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(userId, chatRoomId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.bombingMessage(any(), any(), any(), any()) } returns chatMessage
@@ -128,11 +128,11 @@ class ChatFacadeTest {
     @Test
     fun `일반 채팅 처리`() {
         val messageId = "messageId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"
 
         val chatMessage = TestDataFactory.createNormalMessage(messageId, chatRoomId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(userId, chatRoomId, 1, false)
+        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
         val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
 
         every { chatLogService.chatNormalMessage(any(), any(), any()) } returns chatMessage

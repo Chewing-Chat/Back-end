@@ -5,13 +5,14 @@ import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserId
 
 object UserProvider {
     fun buildUserName(): String {
         return "testName"
     }
 
-    fun buildNormal(userId: String): User {
+    fun buildNormal(userId: UserId): User {
         return User.of(
             userId,
             "testName",

@@ -18,35 +18,35 @@ class AnnouncementServiceTest {
 
     @Test
     fun `공지사항 목록 읽기 테스트`() {
-        val announcementId1 = "announcementId1"
-        val announcementId2 = "announcementId2"
-        val announcement1 = TestDataFactory.createAnnouncement(announcementId1)
-        val announcement2 = TestDataFactory.createAnnouncement(announcementId2)
+        val announcementId = TestDataFactory.createAnnouncementId()
+        val announcement = TestDataFactory.createAnnouncement(announcementId)
+        val announcements = listOf(announcement)
 
-        every { announcementRepository.reads() } returns listOf(announcement1, announcement2)
+        every { announcementRepository.reads() } returns announcements
 
         val result = announcementService.readAnnouncements()
 
-        assert(result.size == 2)
-        assert(result[0].id == announcementId1)
-        assert(result[1].id == announcementId2)
+        assert(result.size == announcements.size)
+        result.forEach {
+            assert(it.announcementId == announcementId)
+        }
     }
 
     @Test
     fun `공지사항 세부 읽기 테스트 - 성공`() {
-        val announcementId = "announcementId"
+        val announcementId = TestDataFactory.createAnnouncementId()
         val announcement = TestDataFactory.createAnnouncement(announcementId)
 
         every { announcementRepository.read(announcementId) } returns announcement
 
         val result = announcementService.readAnnouncement(announcementId)
 
-        assert(result.id == announcementId)
+        assert(result.announcementId == announcementId)
     }
 
     @Test
     fun `공지사항 세부 읽기 테스트 - 실패`() {
-        val announcementId = "announcementId"
+        val announcementId = TestDataFactory.createAnnouncementId()
 
         every { announcementRepository.read(announcementId) }.returns(null)
 

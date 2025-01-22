@@ -4,6 +4,7 @@ import org.chewing.v1.dto.request.user.UserRequest
 import org.chewing.v1.dto.response.user.AccountResponse
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.media.FileCategory
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.SuccessOnlyResponse
 import org.chewing.v1.service.user.UserService
 import org.chewing.v1.util.helper.FileHelper
@@ -22,7 +23,7 @@ class UserController(
     fun getProfile(
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<AccountResponse> {
-        val user = userService.getUser(userId)
+        val user = userService.getUser(UserId.of(userId))
         return ResponseHelper.success(AccountResponse.of(user))
     }
 
@@ -36,7 +37,7 @@ class UserController(
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         val convertedFile = FileHelper.convertMultipartFileToFileData(file)
-        userService.updateFile(convertedFile, userId, FileCategory.PROFILE)
+        userService.updateFile(convertedFile, UserId.of(userId), FileCategory.PROFILE)
         return ResponseHelper.successOnly()
     }
 
@@ -44,7 +45,7 @@ class UserController(
     fun deleteUser(
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
-        accountFacade.deleteAccount(userId)
+        accountFacade.deleteAccount(UserId.of(userId))
         return ResponseHelper.successOnly()
     }
 
@@ -53,7 +54,7 @@ class UserController(
         @RequestAttribute("userId") userId: String,
         @RequestBody statusMessage: UserRequest.UpdateStatusMessage,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
-        userService.updateStatusMessage(userId, statusMessage.toStatusMessage())
+        userService.updateStatusMessage(UserId.of(userId), statusMessage.toStatusMessage())
         return ResponseHelper.successOnly()
     }
 }

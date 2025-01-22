@@ -2,6 +2,7 @@ package org.chewing.v1.util.listener
 
 import mu.KotlinLogging
 import org.chewing.v1.implementation.session.SessionProvider
+import org.chewing.v1.model.user.UserId
 import org.springframework.context.event.EventListener
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.stereotype.Component
@@ -20,7 +21,7 @@ class WebSocketEventListener(
         val sessionId = accessor.sessionId ?: return
         val userId = accessor.user?.name ?: return
 
-        sessionProvider.connect(userId, sessionId)
+        sessionProvider.connect(UserId.of(userId), sessionId)
         logger.info("세션 연결됨: userId=$userId, sessionId=$sessionId")
     }
 
@@ -30,7 +31,7 @@ class WebSocketEventListener(
         val sessionId = accessor.sessionId ?: return
         val userId = accessor.user?.name ?: return
 
-        sessionProvider.unConnect(userId, sessionId)
+        sessionProvider.unConnect(UserId.of(userId), sessionId)
         logger.info("세션 해제됨: userId=$userId, sessionId=$sessionId")
     }
 }

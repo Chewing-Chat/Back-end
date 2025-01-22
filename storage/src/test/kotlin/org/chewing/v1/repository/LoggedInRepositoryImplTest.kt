@@ -2,6 +2,7 @@ package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.auth.LoggedInJpaRepository
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.auth.LoggedInRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.chewing.v1.repository.support.RefreshTokenProvider
@@ -69,5 +70,5 @@ class LoggedInRepositoryImplTest : JpaContextTest() {
         assert(result!!.token == refreshToken.token)
     }
 
-    private fun generateUserId() = UUID.randomUUID().toString()
+    private fun generateUserId() = UserId.of(UUID.randomUUID().toString())
 }

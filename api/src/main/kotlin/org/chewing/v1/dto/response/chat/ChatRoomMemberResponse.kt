@@ -11,7 +11,7 @@ data class ChatRoomMemberResponse(
         // ChatFriend를 ChatFriendResponse로 변환하는 함수
         fun from(chatRoomMember: ChatRoomMember): ChatRoomMemberResponse {
             return ChatRoomMemberResponse(
-                memberId = chatRoomMember.memberId,
+                memberId = chatRoomMember.memberId.id,
                 readSeqNumber = chatRoomMember.readSeqNumber,
                 owned = chatRoomMember.isOwned,
             )

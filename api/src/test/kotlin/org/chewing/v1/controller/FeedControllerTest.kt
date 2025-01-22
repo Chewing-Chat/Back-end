@@ -12,6 +12,8 @@ import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory.createFeed
 import org.chewing.v1.controller.feed.FeedController
 import org.chewing.v1.dto.request.feed.FeedRequest
+import org.chewing.v1.model.feed.FeedId
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.feed.FeedService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.hamcrest.CoreMatchers.equalTo
@@ -52,19 +54,17 @@ class FeedControllerTest : RestDocsTest() {
     fun getOwnedFeedThumbnails() {
         val userId = "testUserId"
         val feeds = listOf(createFeed())
-        every { feedService.getFeeds(userId, userId) } returns feeds
+        every { feedService.getFeeds(UserId.of(userId), UserId.of(userId)) } returns feeds
 
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .attribute("userId", userId)
-            .header("Authorization", "Bearer accessToken")
+            .setupAuthenticatedJsonRequest()
             .get("/api/feed/owned/list")
             .then()
             .statusCode(HttpStatus.OK.value())
             .body("status", equalTo(200))
             .apply {
                 feeds.forEachIndexed { index, feed ->
-                    body("data.feeds[$index].feedId", equalTo(feed.feed.feedId))
+                    body("data.feeds[$index].feedId", equalTo(feed.feed.feedId.id))
                     body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
                     body("data.feeds[$index].type", equalTo(feed.feedDetails[0].media.type.value().lowercase()))
                 }
@@ -91,19 +91,17 @@ class FeedControllerTest : RestDocsTest() {
         val userId = "testUserId"
         val friendId = "testFriendId"
         val feeds = listOf(createFeed())
-        every { feedService.getFeeds(userId, friendId) } returns feeds
+        every { feedService.getFeeds(UserId.of(userId), UserId.of(friendId)) } returns feeds
 
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .attribute("userId", userId)
-            .header("Authorization", "Bearer accessToken")
+            .setupAuthenticatedJsonRequest()
             .get("/api/feed/friend/{friendId}/list", friendId)
             .then()
             .statusCode(HttpStatus.OK.value())
             .body("status", equalTo(200))
             .apply {
                 feeds.forEachIndexed { index, feed ->
-                    body("data.feeds[$index].feedId", equalTo(feed.feed.feedId))
+                    body("data.feeds[$index].feedId", equalTo(feed.feed.feedId.id))
                     body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
                     body("data.feeds[$index].type", equalTo(feed.feedDetails[0].media.type.value().lowercase()))
                 }
@@ -134,18 +132,16 @@ class FeedControllerTest : RestDocsTest() {
         val userId = "testUserId"
         val feed = createFeed()
         val uploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
-        every { feedService.getFeed(testFeedId, userId) } returns feed
+        every { feedService.getFeed(any(), UserId.of(userId)) } returns feed
 
         given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .attribute("userId", userId)
-            .header("Authorization", "Bearer accessToken")
+            .setupAuthenticatedJsonRequest()
             .get("/api/feed/{feedId}/detail", testFeedId)
             .then()
             .statusCode(HttpStatus.OK.value())
             .body("status", equalTo(200))
             .apply {
-                body("data.feedId", equalTo(feed.feed.feedId))
+                body("data.feedId", equalTo(feed.feed.feedId.id))
                 body("data.content", equalTo(feed.feed.content))
                 body("data.uploadTime", equalTo(uploadTime))
                 feed.feedDetails.forEachIndexed { index, feedDetail ->
@@ -179,7 +175,6 @@ class FeedControllerTest : RestDocsTest() {
     @Test
     @DisplayName("피드 삭제")
     fun deleteFeeds() {
-        val userId = "testUserId"
         val requestBody = listOf(
             FeedRequest.Delete(
                 feedId = "testFeedId",
@@ -188,17 +183,14 @@ class FeedControllerTest : RestDocsTest() {
                 feedId = "testFeedId2",
             ),
         )
-        every { feedService.removes(userId, requestBody.map { it.toFeedId() }) } just Runs
+        every { feedService.removes(any(), requestBody.map { it.toFeedId() }) } just Runs
 
-        val result = given()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .attribute("userId", userId)
-            .header("Authorization", "Bearer accessToken")
+        given()
+            .setupAuthenticatedJsonRequest()
             .body(requestBody)
             .delete("/api/feed")
             .then()
-            .statusCode(HttpStatus.OK.value())
-            .body("status", equalTo(200))
+            .assertCommonSuccessResponse()
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -211,7 +203,6 @@ class FeedControllerTest : RestDocsTest() {
                     responseSuccessFields(),
                 ),
             )
-        performCommonSuccessResponse(result)
     }
 
     @Test
@@ -230,15 +221,13 @@ class FeedControllerTest : RestDocsTest() {
             "Test content".toByteArray(),
         )
 
-        val feedId = "testFeedId"
-        val testFriendIds = listOf<String>("testFriendId")
+        val feedId = FeedId.of("testFeedId1")
+        val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
         every { feedService.make(any(), any(), any(), any(), any()) } returns feedId
 
         given()
-            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-            .attribute("userId", "testUserId")
-            .header("Authorization", "Bearer accessToken")
+            .setupAuthenticatedMultipartRequest()
             .queryParam("content", "testContent")
             .queryParam("friendIds", *testFriendIds.toTypedArray())
             .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
@@ -247,7 +236,7 @@ class FeedControllerTest : RestDocsTest() {
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .body("status", equalTo(201))
-            .body("data.feedId", equalTo(feedId))
+            .body("data.feedId", equalTo(feedId.id))
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -255,11 +244,12 @@ class FeedControllerTest : RestDocsTest() {
                     responsePreprocessor(),
                     requestAccessTokenFields(),
                     requestParts(
-                        partWithName("files").description("피드에 추가할 이미지 파일 (image/jpeg)").description("피드에 추가할 이미지 파일 (image/jpeg) - 형식은 0.jpg, 1.jpg, ..."),
+                        partWithName("files").description("피드에 추가할 이미지 파일 (image/jpeg)")
+                            .description("피드에 추가할 이미지 파일 (image/jpeg) - 형식은 0.jpg, 1.jpg, ..."),
                     ),
                     queryParameters(
                         parameterWithName("content").description("피드 내용"),
-                        parameterWithName("friendIds").description("피드를 공유할 친구 ID 목록"),
+                        parameterWithName("friendIds").description("피드를 공유할 친구 ID 목록(POST /api/feed?content=testContent&friendIds=testFriendId&friendIds=testFriendId2) 형식"),
                     ),
                     responseFields(
                         fieldWithPath("status").description("상태 코드"),

@@ -1,6 +1,7 @@
 package org.chewing.v1.implementation.search
 
 import org.chewing.v1.model.friend.UserSearch
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.UserSearchRepository
 import org.springframework.stereotype.Component
 
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component
 class SearchReader(
     private val userSearchRepository: UserSearchRepository,
 ) {
-    fun readHistory(userId: String): List<UserSearch> {
+    fun readHistory(userId: UserId): List<UserSearch> {
         return userSearchRepository.readSearchHistory(userId)
     }
 }

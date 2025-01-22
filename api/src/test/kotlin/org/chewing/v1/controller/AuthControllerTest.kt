@@ -13,7 +13,7 @@ import org.chewing.v1.RestDocsUtils.responseErrorFields
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory.createJwtToken
-import org.chewing.v1.TestDataFactory.createUser
+import org.chewing.v1.TestDataFactory.createUserId
 import org.chewing.v1.controller.auth.AuthController
 import org.chewing.v1.dto.request.auth.LoginRequest
 import org.chewing.v1.dto.request.auth.SignUpRequest
@@ -27,6 +27,7 @@ import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.auth.CredentialTarget
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.chewing.v1.util.security.JwtTokenUtil
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -40,9 +41,6 @@ import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 
 @ActiveProfiles("test")
 class AuthControllerTest : RestDocsTest() {
@@ -50,13 +48,15 @@ class AuthControllerTest : RestDocsTest() {
     private lateinit var authService: AuthService
     private lateinit var accountFacade: AccountFacade
     private lateinit var exceptionHandler: GlobalExceptionHandler
+    private lateinit var jwtTokenUtil: JwtTokenUtil
 
     @BeforeEach
     fun setUp() {
         authService = mockk()
         accountFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
-        authController = AuthController(authService, accountFacade)
+        jwtTokenUtil = mockk()
+        authController = AuthController(authService, accountFacade, jwtTokenUtil)
         mockMvc = mockController(authController, exceptionHandler)
     }
 
@@ -70,26 +70,24 @@ class AuthControllerTest : RestDocsTest() {
 
         every { accountFacade.registerCredential(any(), CredentialTarget.SIGN_UP) } just Runs
 
-        val result =
-            given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .post("/api/auth/create/send")
-                .then()
-                .statusCode(200)
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        requestFields(
-                            fieldWithPath("countryCode").description("국가 코드)"),
-                            fieldWithPath("phoneNumber").description("휴대폰 번호"),
-                        ),
-                        responseSuccessFields(),
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody)
+            .post("/api/auth/create/send")
+            .then()
+            .assertCommonSuccessResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestFields(
+                        fieldWithPath("countryCode").description("국가 코드)"),
+                        fieldWithPath("phoneNumber").description("휴대폰 번호"),
                     ),
-                )
-        performCommonSuccessResponse(result)
+                    responseSuccessFields(),
+                ),
+            )
         verify { accountFacade.registerCredential(any(), CredentialTarget.SIGN_UP) }
     }
 
@@ -108,27 +106,24 @@ class AuthControllerTest : RestDocsTest() {
             )
         } throws ConflictException(ErrorCode.USER_ALREADY_CREATED)
 
-        val result =
-            given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .post("/api/auth/create/send")
-                .then()
-                .statusCode(409)
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        responseErrorFields(
-                            HttpStatus.CONFLICT,
-                            ErrorCode.USER_ALREADY_CREATED,
-                            "계정이 이미 생성되었음으로 로그인으로 유도 해야함",
-                        ),
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody)
+            .post("/api/auth/create/send")
+            .then()
+            .assertErrorResponse(HttpStatus.CONFLICT, ErrorCode.USER_ALREADY_CREATED)
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.USER_ALREADY_CREATED,
+                        "계정이 이미 생성되었음으로 로그인으로 유도 해야함",
                     ),
-                )
-
-        performErrorResponse(result, HttpStatus.CONFLICT, ErrorCode.USER_ALREADY_CREATED)
+                ),
+            )
     }
 
     @Test
@@ -141,26 +136,24 @@ class AuthControllerTest : RestDocsTest() {
 
         every { accountFacade.registerCredential(any(), CredentialTarget.RESET) } just Runs
 
-        val result =
-            given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .post("/api/auth/reset/send")
-                .then()
-                .statusCode(200)
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        requestFields(
-                            fieldWithPath("countryCode").description("국가 코드"),
-                            fieldWithPath("phoneNumber").description("휴대폰 번호"),
-                        ),
-                        responseSuccessFields(),
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody)
+            .post("/api/auth/reset/send")
+            .then()
+            .assertCommonSuccessResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestFields(
+                        fieldWithPath("countryCode").description("국가 코드"),
+                        fieldWithPath("phoneNumber").description("휴대폰 번호"),
                     ),
-                )
-        performCommonSuccessResponse(result)
+                    responseSuccessFields(),
+                ),
+            )
         verify { accountFacade.registerCredential(any(), CredentialTarget.RESET) }
     }
 
@@ -179,27 +172,24 @@ class AuthControllerTest : RestDocsTest() {
             )
         } throws ConflictException(ErrorCode.USER_NOT_CREATED)
 
-        val result =
-            given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .post("/api/auth/reset/send")
-                .then()
-                .statusCode(409)
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        responseErrorFields(
-                            HttpStatus.CONFLICT,
-                            ErrorCode.USER_NOT_CREATED,
-                            "비밀번호 초기화를 하려고 했으나 계정이 생성되지 않았음으로 가입을 유도 해야함",
-                        ),
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody)
+            .post("/api/auth/reset/send")
+            .then()
+            .assertErrorResponse(HttpStatus.CONFLICT, ErrorCode.USER_NOT_CREATED)
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.USER_NOT_CREATED,
+                        "비밀번호 초기화를 하려고 했으나 계정이 생성되지 않았음으로 가입을 유도 해야함",
                     ),
-                )
-
-        performErrorResponse(result, HttpStatus.CONFLICT, ErrorCode.USER_NOT_CREATED)
+                ),
+            )
 
         verify { accountFacade.registerCredential(any(), CredentialTarget.RESET) }
     }
@@ -208,6 +198,7 @@ class AuthControllerTest : RestDocsTest() {
     @DisplayName("휴대폰 인증번호 확인")
     fun signUp() {
         val jwtToken = createJwtToken()
+        val userId = createUserId()
 
         val requestBody = SignUpRequest.Phone(
             phoneNumber = "01012345678",
@@ -219,7 +210,9 @@ class AuthControllerTest : RestDocsTest() {
             userName = "testName",
         )
 
-        every { accountFacade.createUser(any(), any(), any(), any(), any()) } returns jwtToken
+        every { accountFacade.createUser(any(), any(), any(), any(), any()) } returns userId
+        every { jwtTokenUtil.createJwtToken(userId) } returns jwtToken
+        every { authService.createLoginInfo(userId, jwtToken.refreshToken) } just Runs
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -278,26 +271,24 @@ class AuthControllerTest : RestDocsTest() {
             )
         } throws AuthorizationException(ErrorCode.WRONG_VERIFICATION_CODE)
 
-        val result =
-            given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .post("/api/auth/create/verify")
-                .then()
-                .statusCode(401)
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        responseErrorFields(
-                            HttpStatus.UNAUTHORIZED,
-                            ErrorCode.WRONG_VERIFICATION_CODE,
-                            "휴대폰 인증번호가 잘못되었음 - 재인증 요청으로 유도해야함",
-                        ),
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody)
+            .post("/api/auth/create/verify")
+            .then()
+            .assertErrorResponse(HttpStatus.UNAUTHORIZED, ErrorCode.WRONG_VERIFICATION_CODE)
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.UNAUTHORIZED,
+                        ErrorCode.WRONG_VERIFICATION_CODE,
+                        "휴대폰 인증번호가 잘못되었음 - 재인증 요청으로 유도해야함",
                     ),
-                )
-        performErrorResponse(result, HttpStatus.UNAUTHORIZED, ErrorCode.WRONG_VERIFICATION_CODE)
+                ),
+            )
 
         verify { accountFacade.createUser(any(), any(), any(), any(), any()) }
     }
@@ -325,26 +316,24 @@ class AuthControllerTest : RestDocsTest() {
             )
         } throws AuthorizationException(ErrorCode.EXPIRED_VERIFICATION_CODE)
 
-        val result =
-            given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .post("/api/auth/create/verify")
-                .then()
-                .statusCode(401)
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        responseErrorFields(
-                            HttpStatus.UNAUTHORIZED,
-                            ErrorCode.EXPIRED_VERIFICATION_CODE,
-                            "휴대폰 인증번호가 만료됨 - 재인증 요청으로 유도해야함",
-                        ),
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody)
+            .post("/api/auth/create/verify")
+            .then()
+            .assertErrorResponse(HttpStatus.UNAUTHORIZED, ErrorCode.EXPIRED_VERIFICATION_CODE)
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.UNAUTHORIZED,
+                        ErrorCode.EXPIRED_VERIFICATION_CODE,
+                        "휴대폰 인증번호가 만료됨 - 재인증 요청으로 유도해야함",
                     ),
-                )
-        performErrorResponse(result, HttpStatus.UNAUTHORIZED, ErrorCode.EXPIRED_VERIFICATION_CODE)
+                ),
+            )
 
         verify { accountFacade.createUser(any(), any(), any(), any(), any()) }
     }
@@ -372,27 +361,24 @@ class AuthControllerTest : RestDocsTest() {
             )
         } throws ConflictException(ErrorCode.USER_ALREADY_CREATED)
 
-        val result =
-            given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .post("/api/auth/create/verify")
-                .then()
-                .statusCode(409)
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        responseErrorFields(
-                            HttpStatus.CONFLICT,
-                            ErrorCode.USER_ALREADY_CREATED,
-                            "계정이 이미 생성되었으므로 로그인으로 유도 해야함. 다만, 전화번호 인증 요청시 이미 검증이 되었는데 발생한 잘못된 접근 임.",
-                        ),
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody)
+            .post("/api/auth/create/verify")
+            .then()
+            .assertErrorResponse(HttpStatus.CONFLICT, ErrorCode.USER_ALREADY_CREATED)
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.USER_ALREADY_CREATED,
+                        "계정이 이미 생성되었으므로 로그인으로 유도 해야함. 다만, 전화번호 인증 요청시 이미 검증이 되었는데 발생한 잘못된 접근 임.",
                     ),
-                )
-
-        performErrorResponse(result, HttpStatus.CONFLICT, ErrorCode.USER_ALREADY_CREATED)
+                ),
+            )
 
         verify { accountFacade.createUser(any(), any(), any(), any(), any()) }
     }
@@ -401,6 +387,7 @@ class AuthControllerTest : RestDocsTest() {
     @DisplayName("비밀번호 초기화를 위한 휴대폰 인증번호 확인")
     fun resetCredential() {
         val jwtToken = createJwtToken()
+        val userId = createUserId()
 
         val requestBody = VerifyOnlyRequest(
             phoneNumber = "01012345678",
@@ -408,7 +395,9 @@ class AuthControllerTest : RestDocsTest() {
             verificationCode = "123",
         )
 
-        every { accountFacade.resetCredential(any(), any()) } returns jwtToken
+        every { accountFacade.resetCredential(any(), any()) } returns userId
+        every { jwtTokenUtil.createJwtToken(userId) } returns jwtToken
+        every { authService.createLoginInfo(userId, jwtToken.refreshToken) } just Runs
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -456,12 +445,12 @@ class AuthControllerTest : RestDocsTest() {
             )
         } throws AuthorizationException(ErrorCode.WRONG_VERIFICATION_CODE)
 
-        val result = given()
+        given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(requestBody)
             .post("/api/auth/reset/verify")
             .then()
-            .statusCode(401)
+            .assertErrorResponse(HttpStatus.UNAUTHORIZED, ErrorCode.WRONG_VERIFICATION_CODE)
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -474,7 +463,6 @@ class AuthControllerTest : RestDocsTest() {
                     ),
                 ),
             )
-        performErrorResponse(result, HttpStatus.UNAUTHORIZED, ErrorCode.WRONG_VERIFICATION_CODE)
     }
 
     @Test
@@ -488,26 +476,24 @@ class AuthControllerTest : RestDocsTest() {
 
         every { accountFacade.resetCredential(any(), any()) } throws NotFoundException(ErrorCode.USER_NOT_FOUND)
 
-        val result =
-            given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .post("/api/auth/reset/verify")
-                .then()
-                .statusCode(404)
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        responseErrorFields(
-                            HttpStatus.NOT_FOUND,
-                            ErrorCode.USER_NOT_FOUND,
-                            "계정이 존재하지 않음으로 회원가입을 유도해야함 - 비밀번호 초기화시 휴대폰 인증 할때 이미 존재 유무를 검증하는데 이때 오류 발생시 잘못된 접근",
-                        ),
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody)
+            .post("/api/auth/reset/verify")
+            .then()
+            .assertErrorResponse(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_FOUND)
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.NOT_FOUND,
+                        ErrorCode.USER_NOT_FOUND,
+                        "계정이 존재하지 않음으로 회원가입을 유도해야함 - 비밀번호 초기화시 휴대폰 인증 할때 이미 존재 유무를 검증하는데 이때 오류 발생시 잘못된 접근",
                     ),
-                )
-        performErrorResponse(result, HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_FOUND)
+                ),
+            )
 
         verify { accountFacade.resetCredential(any(), any()) }
     }
@@ -528,26 +514,24 @@ class AuthControllerTest : RestDocsTest() {
             )
         } throws AuthorizationException(ErrorCode.EXPIRED_VERIFICATION_CODE)
 
-        val result =
-            given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .post("/api/auth/reset/verify")
-                .then()
-                .statusCode(401)
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        responseErrorFields(
-                            HttpStatus.UNAUTHORIZED,
-                            ErrorCode.EXPIRED_VERIFICATION_CODE,
-                            "휴대폰 인증번호가 만료됨 - 재인증 요청으로 유도해야함",
-                        ),
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody)
+            .post("/api/auth/reset/verify")
+            .then()
+            .assertErrorResponse(HttpStatus.UNAUTHORIZED, ErrorCode.EXPIRED_VERIFICATION_CODE)
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.UNAUTHORIZED,
+                        ErrorCode.EXPIRED_VERIFICATION_CODE,
+                        "휴대폰 인증번호가 만료됨 - 재인증 요청으로 유도해야함",
                     ),
-                )
-        performErrorResponse(result, HttpStatus.UNAUTHORIZED, ErrorCode.EXPIRED_VERIFICATION_CODE)
+                ),
+            )
     }
 
     @Test
@@ -559,27 +543,26 @@ class AuthControllerTest : RestDocsTest() {
         )
 
         every { accountFacade.changePassword(any(), any()) } just Runs
-        val result =
-            given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .header("Authorization", "Bearer access-token")
-                .attribute("userId", userId)
-                .post("/api/auth/change/password")
-                .then()
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        requestAccessTokenFields(),
-                        requestFields(
-                            fieldWithPath("password").description("변경할 비밀번호"),
-                        ),
-                        responseSuccessFields(),
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody)
+            .header("Authorization", "Bearer access-token")
+            .attribute("userId", userId)
+            .post("/api/auth/change/password")
+            .then()
+            .assertCommonSuccessResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestAccessTokenFields(),
+                    requestFields(
+                        fieldWithPath("password").description("변경할 비밀번호"),
                     ),
-                )
-        performCommonSuccessResponse(result)
+                    responseSuccessFields(),
+                ),
+            )
         verify { accountFacade.changePassword(any(), any()) }
     }
 
@@ -592,28 +575,27 @@ class AuthControllerTest : RestDocsTest() {
         )
 
         every { accountFacade.changePassword(any(), any()) } just Runs
-        val result =
-            given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .header("Authorization", "Bearer access-token")
-                .attribute("userId", userId)
-                .post("/api/auth/create/password")
-                .then()
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        requestAccessTokenFields(),
-                        requestFields(
-                            fieldWithPath("password").description("생성할 비밀번호"),
-                        ),
-                        responseSuccessFields(),
-                    ),
-                )
 
-        performCommonSuccessCreateResponse(result)
+        given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(requestBody)
+            .header("Authorization", "Bearer access-token")
+            .attribute("userId", userId)
+            .post("/api/auth/create/password")
+            .then()
+            .assertCommonSuccessCreateResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestAccessTokenFields(),
+                    requestFields(
+                        fieldWithPath("password").description("생성할 비밀번호"),
+                    ),
+                    responseSuccessFields(),
+                ),
+            )
         verify { accountFacade.changePassword(any(), any()) }
     }
 
@@ -621,6 +603,7 @@ class AuthControllerTest : RestDocsTest() {
     @DisplayName("로그인")
     fun login() {
         val jwtToken = createJwtToken()
+        val userId = createUserId()
 
         val requestBody = LoginRequest(
             password = "testPassword",
@@ -631,7 +614,9 @@ class AuthControllerTest : RestDocsTest() {
             appToken = "testToken",
         )
 
-        every { accountFacade.login(any(), any(), any(), any()) } returns jwtToken
+        every { accountFacade.login(any(), any(), any(), any()) } returns userId
+        every { jwtTokenUtil.createJwtToken(userId) } returns jwtToken
+        every { authService.createLoginInfo(userId, jwtToken.refreshToken) } just Runs
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -687,12 +672,12 @@ class AuthControllerTest : RestDocsTest() {
             )
         } throws AuthorizationException(ErrorCode.WRONG_PASSWORD)
 
-        val result = given()
+        given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(requestBody)
             .post("/api/auth/login")
             .then()
-            .statusCode(401)
+            .assertErrorResponse(HttpStatus.UNAUTHORIZED, ErrorCode.WRONG_PASSWORD)
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -705,9 +690,6 @@ class AuthControllerTest : RestDocsTest() {
                     ),
                 ),
             )
-
-        performErrorResponse(result, HttpStatus.UNAUTHORIZED, ErrorCode.WRONG_PASSWORD)
-
         verify { accountFacade.login(any(), any(), any(), any()) }
     }
 
@@ -725,12 +707,12 @@ class AuthControllerTest : RestDocsTest() {
 
         every { accountFacade.login(any(), any(), any(), any()) } throws NotFoundException(ErrorCode.USER_NOT_FOUND)
 
-        val result = given()
+        given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(requestBody)
             .post("/api/auth/login")
             .then()
-            .statusCode(404)
+            .assertErrorResponse(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_FOUND)
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -743,9 +725,6 @@ class AuthControllerTest : RestDocsTest() {
                     ),
                 ),
             )
-
-        performErrorResponse(result, HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_FOUND)
-
         verify { accountFacade.login(any(), any(), any(), any()) }
     }
 
@@ -753,11 +732,13 @@ class AuthControllerTest : RestDocsTest() {
     @DisplayName("로그아웃")
     fun logout() {
         every { authService.logout(any()) } just Runs
+        every { jwtTokenUtil.validateRefreshToken(any()) } just Runs
 
-        val result = given()
+        given()
             .header("Authorization", "Bearer refreshToken")
             .delete("/api/auth/logout")
             .then()
+            .assertCommonSuccessResponse()
             .statusCode(200)
             .apply(
                 document(
@@ -768,14 +749,15 @@ class AuthControllerTest : RestDocsTest() {
                     responseSuccessFields(),
                 ),
             )
-        performCommonSuccessResponse(result)
     }
 
     @Test
     @DisplayName("토큰 갱신")
     fun refreshAccessToken() {
         val jwtToken = createJwtToken()
-        every { authService.refreshJwtToken(any()) } returns jwtToken
+        val userId = createUserId()
+        every { jwtTokenUtil.refresh(any()) } returns Pair(jwtToken, userId)
+        every { authService.updateLoginInfo(any(), jwtToken.refreshToken, userId) } just Runs
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)

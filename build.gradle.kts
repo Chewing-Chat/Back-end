@@ -46,22 +46,13 @@ subprojects {
         toolVersion = "0.8.12"
     }
 
-    repositories {
-        mavenCentral()
-    }
-
     dependencies {
         implementation("org.jetbrains.kotlin:kotlin-reflect")
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
         implementation("io.github.microutils:kotlin-logging:3.0.5")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
         implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-        annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
         kapt("org.springframework.boot:spring-boot-configuration-processor")
-
-        // 추가
-        implementation("io.jsonwebtoken:jjwt-jackson:${property("jjwtVersion")}")
-        implementation("io.jsonwebtoken:jjwt-impl:${property("jjwtVersion")}") // for Jackson JSON Processor
         //
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testImplementation("com.ninja-squad:springmockk:${property("springMockkVersion")}")
@@ -100,12 +91,17 @@ subprojects {
 
     kotlin {
         compilerOptions {
-            freeCompilerArgs.addAll("-Xjsr305=strict")
+            freeCompilerArgs.addAll(
+                "-Xjsr305=strict",
+                "-progressive",
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xjvm-default=all",
+                "-Xinline-classes",
+            )
             jvmTarget.set(JvmTarget.valueOf("JVM_${project.property("javaVersion")}"))
         }
     }
 }
-
 tasks {
 
     test {
@@ -124,8 +120,8 @@ tasks {
                         exclude(
                             "**/ChewingApplicationKt.class",
                             "**/ChewingApplicationKt\$*.class",
-                            "**/dtp/**",
                             "**/model/**",
+                            "**/dto/**",
                         )
                     }
                 },

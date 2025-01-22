@@ -34,8 +34,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `접근 가능한 친구 조회`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val sort = FriendSortCriteria.NAME
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
 
@@ -49,8 +49,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `유저의 접근 가능한 친구 관계 정보를 친구 아이디를 통해 조회한다`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val friendIds = listOf(friendId)
         val friendShips = listOf(TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS))
 
@@ -65,9 +65,9 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 추가 실패 - 자기 자신을 추가 할 수 없음`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val userName = TestDataFactory.createUserName()
-        val friendId = "userId"
+        val friendId = TestDataFactory.createUserId()
         val friendName = TestDataFactory.createUserName()
 
         val exception = assertThrows<ConflictException> {
@@ -79,9 +79,9 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 추가 실패 - 내가 차단한 친구이다`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val userName = TestDataFactory.createUserName()
-        val friendId = "friendId"
+        val friendId = TestDataFactory.createFriendId()
         val friendName = TestDataFactory.createUserName()
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.BLOCK)
 
@@ -96,9 +96,9 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 추가 실패 - 내가 차단당한 친구이다`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val userName = TestDataFactory.createUserName()
-        val friendId = "friendId"
+        val friendId = TestDataFactory.createFriendId()
         val friendName = TestDataFactory.createUserName()
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.BLOCKED)
 
@@ -113,9 +113,9 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 추가 실패 - 이미 친구관계를 맺었다`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val userName = TestDataFactory.createUserName()
-        val friendId = "friendId"
+        val friendId = TestDataFactory.createFriendId()
         val friendName = TestDataFactory.createUserName()
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
 
@@ -130,9 +130,9 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 추가 성공`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val userName = TestDataFactory.createUserName()
-        val friendId = "friendId"
+        val friendId = TestDataFactory.createFriendId()
         val friendName = TestDataFactory.createUserName()
 
         every { friendShipRepository.read(userId, friendId) } returns null
@@ -146,8 +146,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 삭제 성공`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
 
         every { friendShipRepository.remove(userId, friendId) } returns userId
         every { friendShipRepository.remove(friendId, userId) } returns friendId
@@ -159,8 +159,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 삭제 실패 - 친구 관계가 존재하지 않음`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
 
         every { friendShipRepository.read(userId, friendId) } returns friendShip
@@ -175,8 +175,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 삭제 실패 - 친구 입장에서 관계가 존재하지 않음`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
 
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
 
@@ -193,8 +193,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 차단 성공`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
 
         every { friendShipRepository.block(userId, friendId) } returns userId
         every { friendShipRepository.blocked(friendId, userId) } returns friendId
@@ -206,8 +206,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 차단 실패 - 친구 관계가 존재하지 않음`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
 
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
 
@@ -223,8 +223,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 차단 실패 - 친구 입장에서 관계가 존재하지 않음`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
 
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
 
@@ -241,8 +241,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 즐겨 찾기 설정 성공`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val favorite = true
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
 
@@ -256,8 +256,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 즐겨 찾기 설정 실패 - 친구를 차단함`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val favorite = true
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.BLOCK)
 
@@ -273,8 +273,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 즐겨 찾기 설정 실패 - 친구가 차단함`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val favorite = true
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.BLOCKED)
 
@@ -290,8 +290,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 즐겨 찾기 설정 실패 - 친구 관계가 존재하지 않음`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val favorite = true
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
 
@@ -307,8 +307,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 이름 수정 성공`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val friendName = TestDataFactory.createUserName()
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
 
@@ -322,8 +322,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 이름 수정 실패 - 친구를 차단함`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val friendName = TestDataFactory.createUserName()
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.BLOCK)
 
@@ -339,8 +339,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 이름 수정 실패 - 친구가 차단함`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val friendName = TestDataFactory.createUserName()
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.BLOCKED)
 
@@ -356,8 +356,8 @@ class FriendShipServiceTest {
 
     @Test
     fun `친구 이름 수정 실패 - 친구 관계가 존재하지 않음`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val friendName = TestDataFactory.createUserName()
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
 

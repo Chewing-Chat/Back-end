@@ -6,14 +6,12 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.chewing.v1.error.AuthorizationException
 import org.chewing.v1.error.ErrorCode
-import org.chewing.v1.implementation.auth.JwtTokenProvider
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import java.util.*
 
 @Component
 class JwtAuthenticationFilter(
-    private val jwtTokenProvider: JwtTokenProvider,
+    private val jwtTokenUtil: JwtTokenUtil,
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -30,8 +28,8 @@ class JwtAuthenticationFilter(
         // 여기부터 수정
         try {
             val token = resolveToken(request)
-            jwtTokenProvider.validateToken(token) // 토큰 유효성 검사 및 예외 처리
-            val userId = jwtTokenProvider.getUserIdFromToken(token)
+            jwtTokenUtil.validateToken(token) // 토큰 유효성 검사 및 예외 처리
+            val userId = jwtTokenUtil.getUserIdFromToken(token)
             request.setAttribute("userId", userId)
         } catch (e: AuthorizationException) {
             request.setAttribute("Exception", e)
@@ -50,7 +48,7 @@ class JwtAuthenticationFilter(
     private fun resolveToken(request: HttpServletRequest): String {
         val bearerToken = request.getHeader("Authorization")
         return if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            jwtTokenProvider.cleanedToken(bearerToken)
+            jwtTokenUtil.cleanedToken(bearerToken)
         } else {
             throw AuthorizationException(ErrorCode.INVALID_TOKEN)
         }

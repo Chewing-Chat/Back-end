@@ -1,6 +1,7 @@
 package org.chewing.v1.implementation.media
 
 import org.chewing.v1.model.media.*
+import org.chewing.v1.model.user.UserId
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
@@ -11,7 +12,7 @@ class FileGenerator(
 ) {
     fun generateMedias(
         files: List<FileData>,
-        userId: String,
+        userId: UserId,
         category: FileCategory,
     ): List<Pair<FileData, Media>> = files.map { file ->
         Pair(file, Media.upload(baseUrl, bucketName, category, userId, file.name, file.contentType))
@@ -19,7 +20,7 @@ class FileGenerator(
 
     fun generateMedia(
         file: FileData,
-        userId: String,
+        userId: UserId,
         category: FileCategory,
     ): Media = Media.upload(baseUrl, bucketName, category, userId, file.name, file.contentType)
 }

@@ -9,8 +9,16 @@ object ScheduleProvider {
         return ScheduleContent.of("title", "content", "location")
     }
 
+    fun buildNewContent(): ScheduleContent {
+        return ScheduleContent.of("new title", "new content", "new location")
+    }
+
     fun buildTime(): ScheduleTime {
         return ScheduleTime.of(LocalDateTime.now(), true)
+    }
+
+    fun buildNewTime(): ScheduleTime {
+        return ScheduleTime.of(LocalDateTime.now().plusDays(1), true)
     }
 
     fun build1000YearTime(): ScheduleTime {

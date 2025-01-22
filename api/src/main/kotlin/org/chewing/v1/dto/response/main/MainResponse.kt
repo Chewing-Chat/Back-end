@@ -21,7 +21,7 @@ data class MainResponse(
         companion object {
             fun of(friend: Friend): FriendMainResponse {
                 return FriendMainResponse(
-                    friendId = friend.user.userId,
+                    friendId = friend.user.userId.id,
                     name = friend.name,
                     imageUrl = friend.user.image.url,
                     imageType = friend.user.image.type.value().lowercase(),

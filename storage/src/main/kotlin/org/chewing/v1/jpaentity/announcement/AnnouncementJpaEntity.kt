@@ -5,6 +5,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.chewing.v1.jpaentity.common.BaseEntity
 import org.chewing.v1.model.announcement.Announcement
+import org.chewing.v1.model.announcement.AnnouncementId
 import org.hibernate.annotations.DynamicInsert
 import java.util.UUID
 
@@ -31,7 +32,7 @@ internal class AnnouncementJpaEntity(
 
     fun toAnnouncement(): Announcement {
         return Announcement.of(
-            announcementId,
+            AnnouncementId.of(announcementId),
             topic,
             createdAt,
             content,

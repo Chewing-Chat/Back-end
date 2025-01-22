@@ -1,0 +1,180 @@
+[[Schedule-API]]
+= Schedule API
+
+== 1. 일정 목록 가져오기 01/19 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/get-schedules/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/get-schedules/request-headers.adoc[]
+
+=== 요청 쿼리 파라미터(Request Query Parameters)
+include::{snippets}/schedule-controller-test/get-schedules/query-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/schedule-controller-test/get-schedules/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/schedule-controller-test/get-schedules/response-fields.adoc[]
+
+== 2. 일정 생성 01/19 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/create-schedule/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/create-schedule/request-headers.adoc[]
+
+=== 요청 필드 설명(Request Fields)
+include::{snippets}/schedule-controller-test/create-schedule/request-fields.adoc[]
+
+=== 응답(Response)
+include::{snippets}/schedule-controller-test/create-schedule/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/schedule-controller-test/create-schedule/response-fields.adoc[]
+
+== 3. 일정 수정 01/19 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/update-schedule/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/update-schedule/request-headers.adoc[]
+
+=== 요청 필드 설명(Request Fields)
+include::{snippets}/schedule-controller-test/update-schedule/request-fields.adoc[]
+
+=== 응답(Response)
+include::{snippets}/schedule-controller-test/update-schedule/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/schedule-controller-test/update-schedule/response-fields.adoc[]
+
+== 3-1. 일정 수정 실패 (스케줄 참여 이력이 없음) 01/21 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/update-schedule-not-participate/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/update-schedule-not-participate/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/schedule-controller-test/update-schedule-not-participate/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/schedule-controller-test/update-schedule-not-participate/response-fields.adoc[]
+
+
+== 4. 일정 삭제 01/19 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/delete-schedule/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/delete-schedule/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/schedule-controller-test/delete-schedule/http-response.adoc[]
+
+== 응답 필드 설명(Response Fields)
+include::{snippets}/schedule-controller-test/delete-schedule/response-fields.adoc[]
+
+== 4.1 일정 삭제 실패 (스케줄 참여 이력이 없음) 01/21 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/delete-schedule-schedule-not-participant/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/delete-schedule-schedule-not-participant/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/schedule-controller-test/delete-schedule-schedule-not-participant/http-response.adoc[]
+
+== 4.2 일정 삭제 실패 (스케줄 작성자가 아님) 01/21 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/delete-schedule-schedule-is-not-owner/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/delete-schedule-schedule-is-not-owner/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/schedule-controller-test/delete-schedule-schedule-is-not-owner/http-response.adoc[]
+
+== 응답 필드 설명(Response Fields)
+include::{snippets}/schedule-controller-test/delete-schedule-schedule-is-not-owner/response-fields.adoc[]
+
+== 5. 일정 취소 01/21 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/cancel-schedule/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/cancel-schedule/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/schedule-controller-test/cancel-schedule/http-response.adoc[]
+
+== 응답 필드 설명(Response Fields)
+include::{snippets}/schedule-controller-test/cancel-schedule/response-fields.adoc[]
+
+== 5.1 일정 취소 실패 (스케줄 참여 이력이 없음) 01/21 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/cancel-schedule-not-participate/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/cancel-schedule-not-participate/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/schedule-controller-test/cancel-schedule-not-participate/http-response.adoc[]
+
+== 응답 필드 설명(Response Fields)
+include::{snippets}/schedule-controller-test/cancel-schedule-not-participate/response-fields.adoc[]
+
+== 6. 일정 로그 가져오기 01/21 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/get-schedule-logs/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/get-schedule-logs/request-headers.adoc[]
+
+== 응답(Response)
+include::{snippets}/schedule-controller-test/get-schedule-logs/http-response.adoc[]
+
+== 응답 필드 설명(Response Fields)
+include::{snippets}/schedule-controller-test/get-schedule-logs/response-fields.adoc[]
+
+== 7. 일정 가져오기 01/21 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/get-schedule/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/get-schedule/request-headers.adoc[]
+
+=== 경로 파라미터(Path Parameters)
+include::{snippets}/schedule-controller-test/get-schedule/path-parameters.adoc[]
+
+== 응답(Response)
+include::{snippets}/schedule-controller-test/get-schedule/http-response.adoc[]
+
+== 응답 필드 설명(Response Fields)
+include::{snippets}/schedule-controller-test/get-schedule/response-fields.adoc[]
+
+== 7-1. 일정 가져오기 실패 (일정이 존재하지 않음) 01/21 수정
+
+=== 요청(Request)
+include::{snippets}/schedule-controller-test/get-schedule-not-found/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/schedule-controller-test/get-schedule-not-found/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/schedule-controller-test/get-schedule-not-found/http-response.adoc[]
+
+== 응답 필드 설명(Response Fields)
+include::{snippets}/schedule-controller-test/get-schedule-not-found/response-fields.adoc[]

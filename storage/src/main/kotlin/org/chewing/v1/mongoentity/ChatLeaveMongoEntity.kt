@@ -5,6 +5,7 @@ import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.message.ChatLeaveMessage
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.user.UserId
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
 
@@ -33,7 +34,7 @@ internal class ChatLeaveMongoEntity(
             return ChatLeaveMongoEntity(
                 messageId = chatLeaveMessage.messageId,
                 chatRoomId = chatLeaveMessage.chatRoomId,
-                senderId = chatLeaveMessage.senderId,
+                senderId = chatLeaveMessage.senderId.id,
                 seqNumber = chatLeaveMessage.number.sequenceNumber,
                 page = chatLeaveMessage.number.page,
                 sendTime = chatLeaveMessage.timestamp,
@@ -45,7 +46,7 @@ internal class ChatLeaveMongoEntity(
         return ChatLeaveLog.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
-            senderId = senderId,
+            senderId = UserId.of(senderId),
             timestamp = sendTime,
             number = ChatNumber.of(chatRoomId, seqNumber, page),
             type = type,

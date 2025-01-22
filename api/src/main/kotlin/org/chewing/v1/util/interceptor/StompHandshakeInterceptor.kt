@@ -1,7 +1,7 @@
 package org.chewing.v1.util.interceptor
 
 import mu.KotlinLogging
-import org.chewing.v1.implementation.auth.JwtTokenProvider
+import org.chewing.v1.util.security.JwtTokenUtil
 import org.springframework.http.HttpStatus
 import org.springframework.http.server.ServerHttpRequest
 import org.springframework.http.server.ServerHttpResponse
@@ -14,7 +14,7 @@ import java.security.Principal
 
 @Component
 class StompHandshakeInterceptor(
-    private val jwtTokenProvider: JwtTokenProvider,
+    private val jwtTokenUtil: JwtTokenUtil,
 ) : HandshakeInterceptor {
     private val logger = KotlinLogging.logger { }
     override fun beforeHandshake(
@@ -28,7 +28,7 @@ class StompHandshakeInterceptor(
         val token = servletRequest.getHeader("Authorization")?.substringAfter("Bearer ")
         if (token != null) {
             return try {
-                val userId = jwtTokenProvider.getUserIdFromToken(token)
+                val userId = jwtTokenUtil.getUserIdFromToken(token).id
                 // 사용자 정보를 attributes에 추가할 수 있습니다.
                 attributes["user"] = Principal { userId }
                 true

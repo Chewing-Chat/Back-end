@@ -3,6 +3,7 @@ package org.chewing.v1.jpaentity.friend
 import jakarta.persistence.*
 import org.chewing.v1.jpaentity.common.BaseEntity
 import org.chewing.v1.model.friend.UserSearch
+import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
 import java.util.UUID
 
@@ -23,10 +24,10 @@ internal class UserSearchJpaEntity(
     }
 
     companion object {
-        fun fromFriendSearch(userId: String, keyword: String): UserSearchJpaEntity {
+        fun fromFriendSearch(userId: UserId, keyword: String): UserSearchJpaEntity {
             return UserSearchJpaEntity(
                 searchText = keyword,
-                userId = userId,
+                userId = userId.id,
             )
         }
     }

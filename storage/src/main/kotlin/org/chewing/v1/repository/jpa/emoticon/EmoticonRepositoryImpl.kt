@@ -12,7 +12,9 @@ internal class EmoticonRepositoryImpl(
     private val emoticonJpaRepository: EmoticonJpaRepository,
     private val emoticonPackJpaRepository: EmoticonPackJpaRepository,
 ) : EmoticonRepository {
-    override fun readEmoticonPacks(emoticonPackIds: List<String>): List<EmoticonPackInfo> = emoticonPackJpaRepository.findAllById(emoticonPackIds).map { it.toEmoticonPack() }
+    override fun readEmoticonPacks(emoticonPackIds: List<String>): List<EmoticonPackInfo> =
+        emoticonPackJpaRepository.findAllById(emoticonPackIds).map { it.toEmoticonPack() }
 
-    override fun readEmoticons(emoticonPackIds: List<String>): List<EmoticonInfo> = emoticonJpaRepository.findAllByEmoticonPackIdIn(emoticonPackIds).map { it.toEmoticon() }
+    override fun readEmoticons(emoticonPackIds: List<String>): List<EmoticonInfo> =
+        emoticonJpaRepository.findAllByEmoticonPackIdIn(emoticonPackIds).map { it.toEmoticon() }
 }

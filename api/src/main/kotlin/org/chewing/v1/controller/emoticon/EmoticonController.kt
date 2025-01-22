@@ -1,6 +1,7 @@
 package org.chewing.v1.controller.emoticon
 
 import org.chewing.v1.dto.response.emoticon.EmoticonPacksResponse
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.emoticon.EmoticonService
 import org.chewing.v1.util.helper.ResponseHelper
 import org.chewing.v1.util.aliases.SuccessResponseEntity
@@ -18,7 +19,7 @@ class EmoticonController(
     fun getEmoticonPacks(
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<EmoticonPacksResponse> {
-        val emoticonPacks = emoticonService.fetchUserEmoticonPacks(userId)
+        val emoticonPacks = emoticonService.fetchUserEmoticonPacks(UserId.of(userId))
         return ResponseHelper.success(EmoticonPacksResponse.of(emoticonPacks))
     }
 }

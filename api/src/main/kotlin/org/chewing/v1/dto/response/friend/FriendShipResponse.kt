@@ -10,7 +10,7 @@ data class FriendShipResponse(
     companion object {
         fun of(friendShip: FriendShip): FriendShipResponse {
             return FriendShipResponse(
-                friendId = friendShip.friendId,
+                friendId = friendShip.friendId.id,
                 name = friendShip.friendName,
                 favorite = friendShip.isFavorite,
             )

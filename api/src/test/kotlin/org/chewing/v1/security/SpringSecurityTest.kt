@@ -1,7 +1,7 @@
 package org.chewing.v1.security
 
 import org.chewing.v1.config.IntegrationTest
-import org.chewing.v1.implementation.auth.JwtTokenProvider
+import org.chewing.v1.util.security.JwtTokenUtil
 import org.chewing.v1.util.security.JwtAuthenticationEntryPoint
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +19,7 @@ class SpringSecurityTest : IntegrationTest() {
     private lateinit var mockMvc: MockMvc
 
     @Autowired
-    private lateinit var jwtTokenProvider: JwtTokenProvider
+    private lateinit var jwtTokenUtil: JwtTokenUtil
 
     @Autowired
     private lateinit var jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint

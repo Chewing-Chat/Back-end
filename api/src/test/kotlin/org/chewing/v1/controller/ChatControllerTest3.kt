@@ -1,7 +1,7 @@
 package org.chewing.v1.controller
 
 import org.chewing.v1.config.IntegrationTest
-import org.chewing.v1.implementation.auth.JwtTokenProvider
+import org.chewing.v1.util.security.JwtTokenUtil
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 class ChatControllerTest3 : IntegrationTest() {
 
     @Autowired
-    private lateinit var jwtTokenProvider: JwtTokenProvider
+    private lateinit var jwtTokenUtil: JwtTokenUtil
 
     @LocalServerPort
     private var port: Int = 0

@@ -5,6 +5,7 @@ import org.chewing.v1.implementation.notification.NotificationSender
 import org.chewing.v1.implementation.session.SessionProvider
 import org.chewing.v1.implementation.user.user.UserReader
 import org.chewing.v1.model.chat.message.ChatMessage
+import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,7 +15,7 @@ class NotificationService(
     private val notificationSender: NotificationSender,
     private val sessionProvider: SessionProvider,
 ) {
-    fun handleCommentNotification(userId: String, feedId: String, comment: String) {
+    fun handleCommentNotification(userId: UserId, feedId: String, comment: String) {
         val user = userReader.read(userId)
         val pushTokens = userReader.readsPushToken(userId)
         val commentNotificationList =
@@ -27,7 +28,7 @@ class NotificationService(
         notificationSender.sendChatNotification(chatMessage, chatMessage.senderId)
     }
 
-    fun handleMessagesNotification(chatMessage: ChatMessage, targetUserIds: List<String>, userId: String) {
+    fun handleMessagesNotification(chatMessage: ChatMessage, targetUserIds: List<UserId>, userId: UserId) {
         val user = userReader.read(userId)
         targetUserIds.forEach { memberId ->
             // 온라인 상태 확인

@@ -1,5 +1,6 @@
 package org.chewing.v1.model.media
 
+import org.chewing.v1.model.user.UserId
 import java.util.*
 
 class Media private constructor(
@@ -14,13 +15,13 @@ class Media private constructor(
             baseUrl: String,
             buckName: String,
             category: FileCategory,
-            userId: String,
+            userId: UserId,
             fileName: String,
             type: MediaType,
         ): Media {
             val randomId = UUID.randomUUID().toString()
             val basePath = "$baseUrl/$buckName"
-            val filePath = "${category.name}/$userId/$randomId/$fileName"
+            val filePath = "${category.name}/${userId.id}/$randomId/$fileName"
             return Media(category, "$basePath/$filePath", type, fileName.split(".")[0].toInt(), filePath)
         }
 

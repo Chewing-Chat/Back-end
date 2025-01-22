@@ -1,6 +1,7 @@
 package org.chewing.v1.dto.request.friend
 
 import org.chewing.v1.model.auth.PhoneNumber
+import org.chewing.v1.model.user.UserId
 
 class FriendRequest {
 
@@ -9,7 +10,7 @@ class FriendRequest {
         val name: String,
     ) {
         fun toFriendName(): String = name
-        fun toFriendId(): String = friendId
+        fun toFriendId(): UserId = UserId.of(friendId)
     }
 
     data class UpdateFavorite(

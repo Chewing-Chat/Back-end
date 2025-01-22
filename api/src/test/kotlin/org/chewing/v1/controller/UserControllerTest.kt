@@ -64,13 +64,12 @@ class UserControllerTest : RestDocsTest() {
 
         every { userService.updateFile(any(), any(), any()) } just Runs
 
-        val result = given()
-            .header("Authorization", "Bearer accessToken")
-            .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+        given()
+            .setupAuthenticatedMultipartRequest()
             .multiPart("file", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
-            .attribute("userId", "testUserId")
             .post("/api/user/image")
             .then()
+            .assertCommonSuccessResponse()
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -86,7 +85,6 @@ class UserControllerTest : RestDocsTest() {
                     responseSuccessFields(),
                 ),
             )
-        performCommonSuccessResponse(result)
         verify { userService.updateFile(any(), any(), any()) }
     }
 
@@ -95,23 +93,20 @@ class UserControllerTest : RestDocsTest() {
     fun deleteUser() {
         every { accountFacade.deleteAccount(any()) } just Runs
 
-        val result =
-            given()
-                .header("Authorization", "Bearer accessToken")
-                .attribute("userId", "testUserId")
-                .delete("/api/user")
-                .then()
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        requestAccessTokenFields(),
-                        responseSuccessFields(),
-                    ),
-                )
-        performCommonSuccessResponse(result)
-
+        given()
+            .setupAuthenticatedJsonRequest()
+            .delete("/api/user")
+            .then()
+            .assertCommonSuccessResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestAccessTokenFields(),
+                    responseSuccessFields(),
+                ),
+            )
         verify { accountFacade.deleteAccount(any()) }
     }
 
@@ -121,29 +116,24 @@ class UserControllerTest : RestDocsTest() {
         val requestBody = UserRequest.UpdateStatusMessage("testStatusMessage")
         every { userService.updateStatusMessage(any(), any()) } just Runs
 
-        val result =
-            given()
-                .header("Authorization", "Bearer accessToken")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(requestBody)
-                .attribute("userId", "testUserId")
-                .put("/api/user/status/message")
-                .then()
-                .apply(
-                    document(
-                        "{class-name}/{method-name}",
-                        requestPreprocessor(),
-                        responsePreprocessor(),
-                        requestFields(
-                            fieldWithPath("statusMessage").description("상태 메시지"),
-                        ),
-                        requestAccessTokenFields(),
-                        responseSuccessFields(),
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/user/status/message")
+            .then()
+            .assertCommonSuccessResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestFields(
+                        fieldWithPath("statusMessage").description("상태 메시지"),
                     ),
-                )
-
-        performCommonSuccessResponse(result)
-
+                    requestAccessTokenFields(),
+                    responseSuccessFields(),
+                ),
+            )
         verify { userService.updateStatusMessage(any(), any()) }
     }
 
@@ -154,8 +144,7 @@ class UserControllerTest : RestDocsTest() {
         every { userService.getUser(any()) } returns user
 
         given()
-            .header("Authorization", "Bearer accessToken")
-            .attribute("userId", "testUserId")
+            .setupAuthenticatedJsonRequest()
             .get("/api/user/profile")
             .then()
             .statusCode(200)

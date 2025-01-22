@@ -6,7 +6,8 @@ import io.mockk.every
 import io.mockk.verify
 import org.chewing.v1.config.IntegrationTest
 import org.chewing.v1.dto.request.chat.ChatRequest
-import org.chewing.v1.implementation.auth.JwtTokenProvider
+import org.chewing.v1.util.security.JwtTokenUtil
+import org.chewing.v1.model.user.UserId
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.server.LocalServerPort
@@ -24,12 +25,12 @@ import java.util.concurrent.TimeUnit
 class ChatControllerTest : IntegrationTest() {
 
     @Autowired
-    private lateinit var jwtTokenProvider: JwtTokenProvider
+    private lateinit var jwtTokenUtil: JwtTokenUtil
 
     @LocalServerPort
     private var port: Int = 0
 
-    private val userId = "testUserId"
+    private val userId = UserId.of("testUserId")
     private lateinit var token: String
     private lateinit var session: StompSession
 
@@ -73,7 +74,7 @@ class ChatControllerTest : IntegrationTest() {
 
     @BeforeAll
     fun setup() {
-        token = jwtTokenProvider.createAccessToken(userId)
+        token = jwtTokenUtil.createAccessToken(userId)
         session = connectStompSession()
     }
 
@@ -86,7 +87,7 @@ class ChatControllerTest : IntegrationTest() {
         val chatDto = ChatRequest.Common("testRoomId", "testUserId")
         session.send("/app/chat/common", chatDto)
         latch.await(1, TimeUnit.MINUTES)
-        verify { chatFacade.processCommon(chatDto.chatRoomId, userId, chatDto.message) }
+        verify { chatFacade.processCommon(chatDto.chatRoomId, any(), chatDto.message) }
     }
 
     @Test

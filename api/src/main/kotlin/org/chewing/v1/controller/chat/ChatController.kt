@@ -2,6 +2,7 @@ package org.chewing.v1.controller.chat
 
 import org.chewing.v1.dto.request.chat.ChatRequest
 import org.chewing.v1.facade.ChatFacade
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.SuccessCreateResponse
 import org.chewing.v1.util.helper.FileHelper
 import org.chewing.v1.util.helper.ResponseHelper
@@ -22,7 +23,7 @@ class ChatController(
         principal: Principal,
     ) {
         val userId = principal.name
-        chatFacade.processRead(message.chatRoomId, userId)
+        chatFacade.processRead(message.chatRoomId, UserId.of(userId))
     }
 
     @MessageMapping("/chat/delete")
@@ -31,7 +32,7 @@ class ChatController(
         principal: Principal,
     ) {
         val userId = principal.name
-        chatFacade.processDelete(message.chatRoomId, userId, message.messageId)
+        chatFacade.processDelete(message.chatRoomId, UserId.of(userId), message.messageId)
     }
 
     @MessageMapping("/chat/reply")
@@ -40,7 +41,7 @@ class ChatController(
         principal: Principal,
     ) {
         val userId = principal.name
-        chatFacade.processReply(message.chatRoomId, userId, message.parentMessageId, message.message)
+        chatFacade.processReply(message.chatRoomId, UserId.of(userId), message.parentMessageId, message.message)
     }
 
     @MessageMapping("/chat/bomb")
@@ -49,7 +50,7 @@ class ChatController(
         principal: Principal,
     ) {
         val userId = principal.name
-        chatFacade.processBombing(message.chatRoomId, userId, message.message, message.toExpireAt())
+        chatFacade.processBombing(message.chatRoomId, UserId.of(userId), message.message, message.toExpireAt())
     }
 
     @MessageMapping("/chat/common")
@@ -58,7 +59,7 @@ class ChatController(
         principal: Principal,
     ) {
         val userId = principal.name
-        chatFacade.processCommon(message.chatRoomId, userId, message.message)
+        chatFacade.processCommon(message.chatRoomId, UserId.of(userId), message.message)
     }
 
     @PostMapping("/api/chat/file/upload")
@@ -68,7 +69,7 @@ class ChatController(
         @RequestParam("chatRoomId") chatRoomId: String,
     ): SuccessResponseEntity<SuccessCreateResponse> {
         val convertFiles = FileHelper.convertMultipartFileToFileDataList(files)
-        chatFacade.processFiles(convertFiles, userId, chatRoomId)
+        chatFacade.processFiles(convertFiles, UserId.of(userId), chatRoomId)
         // 생성 완료 응답 201 반환
         return ResponseHelper.successCreateOnly()
     }

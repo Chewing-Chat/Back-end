@@ -6,7 +6,7 @@ import io.mockk.every
 import io.mockk.just
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.config.IntegrationTest
-import org.chewing.v1.implementation.auth.JwtTokenProvider
+import org.chewing.v1.util.security.JwtTokenUtil
 import org.chewing.v1.util.security.JwtAuthenticationEntryPoint
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -27,7 +27,7 @@ class SpringSecurityTest2 : IntegrationTest() {
     private lateinit var objectMapper: ObjectMapper
 
     @Autowired
-    private lateinit var jwtTokenProvider: JwtTokenProvider
+    private lateinit var jwtTokenUtil: JwtTokenUtil
 
     @Autowired
     private lateinit var jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
@@ -50,7 +50,7 @@ class SpringSecurityTest2 : IntegrationTest() {
     @Test
     @DisplayName("휴대폰 인증번호 확인- 인증 없이 통과해야함")
     fun verifyPhone() {
-        val jwtToken = TestDataFactory.createJwtToken()
+        val userId = TestDataFactory.createUserId()
 
         val requestBody = mapOf(
             "countryCode" to "82",
@@ -61,7 +61,8 @@ class SpringSecurityTest2 : IntegrationTest() {
             "provider" to "IOS",
             "userName" to "testUserName",
         )
-        every { accountFacade.createUser(any(), any(), any(), any(), any()) } returns jwtToken
+        every { accountFacade.createUser(any(), any(), any(), any(), any()) } returns userId
+        every { authService.createLoginInfo(any(), any()) } just Runs
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/api/auth/create/verify")
@@ -75,23 +76,26 @@ class SpringSecurityTest2 : IntegrationTest() {
     @Test
     @DisplayName("로그아웃 - 인증 없이 통과해야함")
     fun logout() {
+        val userId = TestDataFactory.createUserId()
+        val jwtToken = jwtTokenUtil.createRefreshToken(userId)
         every { authService.logout(any()) } just Runs
         mockMvc.perform(
             MockMvcRequestBuilders.delete("/api/auth/logout")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer token"),
+                .header("Authorization", "Bearer ${jwtToken.token}"),
         ).andExpect(status().isOk)
     }
 
     @Test
     @DisplayName("토큰 갱신 - 인증 없이 통과해야함")
     fun refreshAccessToken() {
-        val jwtToken = TestDataFactory.createJwtToken()
-        every { authService.refreshJwtToken(any()) } returns jwtToken
+        val userId = TestDataFactory.createUserId()
+        val jwtToken = jwtTokenUtil.createRefreshToken(userId)
+        every { authService.updateLoginInfo(any(), any(), any()) } just Runs
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/auth/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer token"),
+                .header("Authorization", "Bearer ${jwtToken.token}"),
         )
             .andExpect(status().isOk)
     }

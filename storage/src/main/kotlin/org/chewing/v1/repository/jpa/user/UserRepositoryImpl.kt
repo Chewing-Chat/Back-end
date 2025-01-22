@@ -7,6 +7,7 @@ import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.UserRepository
 import org.springframework.stereotype.Repository
 
@@ -14,13 +15,13 @@ import org.springframework.stereotype.Repository
 internal class UserRepositoryImpl(
     private val userJpaRepository: UserJpaRepository,
 ) : UserRepository {
-    override fun read(userId: String): User? {
-        val userEntity = userJpaRepository.findById(userId)
+    override fun read(userId: UserId): User? {
+        val userEntity = userJpaRepository.findById(userId.id)
         return userEntity.map { it.toUser() }.orElse(null)
     }
 
-    override fun reads(userIds: List<String>): List<User> {
-        val userEntities = userJpaRepository.findAllById(userIds.map { it })
+    override fun reads(userIds: List<UserId>): List<User> {
+        val userEntities = userJpaRepository.findAllById(userIds.map { it.id })
         return userEntities.map { it.toUser() }
     }
 
@@ -31,14 +32,14 @@ internal class UserRepositoryImpl(
         }
     }
 
-    override fun remove(userId: String): User? = userJpaRepository.findById(userId)
+    override fun remove(userId: UserId): User? = userJpaRepository.findById(userId.id)
         .map { entity ->
             entity.updateAccessStatus(AccessStatus.DELETE)
             userJpaRepository.save(entity)
             entity.toUser()
         }.orElse(null)
 
-    override fun updateMedia(userId: String, media: Media): Media? = userJpaRepository.findById(userId).map { user ->
+    override fun updateMedia(userId: UserId, media: Media): Media? = userJpaRepository.findById(userId.id).map { user ->
         // 수정 전 기존 미디어 정보를 반환
         val previousMedia = user.toUser().image
 
@@ -52,10 +53,10 @@ internal class UserRepositoryImpl(
         previousMedia
     }.orElse(null)
 
-    override fun updatePassword(userId: String, password: String): String? = userJpaRepository.findById(userId).map {
+    override fun updatePassword(userId: UserId, password: String): UserId? = userJpaRepository.findById(userId.id).map {
         it.updatePassword(password)
         userJpaRepository.save(it)
-        userId
+        it.toUserId()
     }.orElse(null)
 
     override fun readByCredential(credential: Credential, accessStatus: AccessStatus): User? = when (credential) {
@@ -68,11 +69,11 @@ internal class UserRepositoryImpl(
         }.orElse(null)
     }
 
-    override fun updateStatusMessage(userId: String, statusMessage: String): String? {
-        return userJpaRepository.findById(userId).map {
+    override fun updateStatusMessage(userId: UserId, statusMessage: String): UserId? {
+        return userJpaRepository.findById(userId.id).map {
             it.updateStatusMessage(statusMessage)
             userJpaRepository.save(it)
-            userId
+            it.toUserId()
         }.orElse(null)
     }
 }

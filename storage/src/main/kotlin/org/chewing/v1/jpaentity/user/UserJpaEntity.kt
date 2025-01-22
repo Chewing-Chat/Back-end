@@ -8,6 +8,7 @@ import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
 import java.util.*
 
@@ -63,7 +64,7 @@ internal class UserJpaEntity(
 
     fun toUser(): User {
         return User.of(
-            this.userId,
+            UserId.of(this.userId),
             this.name,
             this.birth,
             Media.of(FileCategory.PROFILE, this.pictureUrl, 0, this.pictureType),
@@ -95,5 +96,8 @@ internal class UserJpaEntity(
 
     fun updateAccessStatus(accessStatus: AccessStatus) {
         this.type = accessStatus
+    }
+    fun toUserId(): UserId {
+        return UserId.of(this.userId)
     }
 }

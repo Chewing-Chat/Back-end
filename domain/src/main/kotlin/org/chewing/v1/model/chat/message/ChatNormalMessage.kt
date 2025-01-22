@@ -1,12 +1,13 @@
 package org.chewing.v1.model.chat.message
 
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
 class ChatNormalMessage private constructor(
     val messageId: String,
     override val chatRoomId: String,
-    override val senderId: String,
+    override val senderId: UserId,
     override val timestamp: LocalDateTime,
     override val number: ChatNumber,
     val text: String,
@@ -17,7 +18,7 @@ class ChatNormalMessage private constructor(
         fun of(
             messageId: String,
             chatRoomId: String,
-            senderId: String,
+            senderId: UserId,
             text: String,
             number: ChatNumber,
             timestamp: LocalDateTime,

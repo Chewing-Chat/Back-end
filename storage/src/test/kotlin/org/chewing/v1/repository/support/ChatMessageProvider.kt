@@ -4,13 +4,14 @@ import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
 object ChatMessageProvider {
     fun buildNormalMessage(messageId: String, chatRoomId: String): ChatNormalMessage = ChatNormalMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         text = "text",
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
@@ -19,7 +20,7 @@ object ChatMessageProvider {
     fun buildNormalMessageForSearch(messageId: String, chatRoomId: String, text: String): ChatNormalMessage = ChatNormalMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         text = text,
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
@@ -28,7 +29,7 @@ object ChatMessageProvider {
     fun buildLeaveMessage(messageId: String, chatRoomId: String): ChatLeaveMessage = ChatLeaveMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
@@ -36,16 +37,16 @@ object ChatMessageProvider {
     fun buildInviteMessage(messageId: String, chatRoomId: String): ChatInviteMessage = ChatInviteMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         number = ChatNumber.of(chatRoomId, 1, 1),
-        targetUserIds = listOf("target"),
+        targetUserIds = listOf(UserId.of("target")),
         timestamp = LocalDateTime.now(),
     )
 
     fun buildFileMessage(messageId: String, chatRoomId: String): ChatFileMessage = ChatFileMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
         medias = listOf(MediaProvider.buildChatContent()),
@@ -54,7 +55,7 @@ object ChatMessageProvider {
     fun buildReplyMessage(messageId: String, chatRoomId: String, normalLog: ChatNormalLog): ChatReplyMessage = ChatReplyMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         text = "text",
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
@@ -69,7 +70,7 @@ object ChatMessageProvider {
     fun buildNormalLog(messageId: String, chatRoomId: String): ChatNormalLog = ChatNormalLog.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         text = "text",
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
@@ -79,7 +80,7 @@ object ChatMessageProvider {
     fun buildBombMessage(messageId: String, chatRoomId: String): ChatBombMessage = ChatBombMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         text = "text",
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
@@ -88,14 +89,14 @@ object ChatMessageProvider {
 
     fun buildReadMessage(chatRoomId: String): ChatReadMessage = ChatReadMessage.of(
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
 
     fun buildDeleteMessage(chatRoomId: String): ChatDeleteMessage = ChatDeleteMessage.of(
         chatRoomId = chatRoomId,
-        senderId = "sender",
+        senderId = UserId.of("sender"),
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
         targetMessageId = "target",

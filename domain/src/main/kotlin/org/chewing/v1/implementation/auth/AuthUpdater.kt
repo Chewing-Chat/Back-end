@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 class AuthUpdater(
     private val loggedInRepository: LoggedInRepository,
 ) {
-    fun updateRefreshToken(refreshToken: RefreshToken, preRefreshToken: RefreshToken) {
+    fun updateLoginInfo(refreshToken: RefreshToken, preRefreshToken: RefreshToken) {
         loggedInRepository.update(refreshToken, preRefreshToken)
     }
 }

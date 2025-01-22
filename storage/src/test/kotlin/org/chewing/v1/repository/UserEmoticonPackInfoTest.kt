@@ -2,6 +2,7 @@ package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.user.UserEmoticonJpaRepository
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.user.UserEmoticonRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.junit.jupiter.api.Test
@@ -30,6 +31,6 @@ class UserEmoticonPackInfoTest : JpaContextTest() {
         assert(result[0].emoticonPackId == userEmoticon.emoticonPackId)
     }
 
-    private fun generateUserId(): String = UUID.randomUUID().toString()
+    fun generateUserId(): UserId = UserId.of(UUID.randomUUID().toString())
     private fun generatePackId(): String = UUID.randomUUID().toString()
 }

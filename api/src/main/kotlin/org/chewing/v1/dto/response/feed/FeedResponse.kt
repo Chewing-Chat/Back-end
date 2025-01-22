@@ -15,7 +15,7 @@ data class FeedResponse(
         ): FeedResponse {
             val formattedUploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
             return FeedResponse(
-                feedId = feed.feed.feedId,
+                feedId = feed.feed.feedId.id,
                 uploadTime = formattedUploadTime,
                 content = feed.feed.content,
                 details = feed.feedDetails.map { FeedDetailResponse.of(it) },

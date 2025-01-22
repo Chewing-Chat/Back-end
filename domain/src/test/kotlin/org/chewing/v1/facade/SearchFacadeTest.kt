@@ -34,8 +34,8 @@ class SearchFacadeTest {
 
     @Test
     fun `검색 결과를 가져와야 함 - 실패 키워드에 맞는 친구 이름이 없음 - 채팅방도 존재 하지 않음`() {
-        val userId = "userId"
-        val friendId = "friendId"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
 
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
         val keyword = "keyword"
@@ -52,8 +52,8 @@ class SearchFacadeTest {
 
     @Test
     fun `검색 결과를 가져와야 함 - 성공 키워드에 맞는 이름이 있음 - 채팅방은 존재 하지 않음`() {
-        val userId = "userId10"
-        val friendId = "friendId10"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
 
         val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
         val keyword = friendShip.friendName
@@ -74,8 +74,8 @@ class SearchFacadeTest {
 
     @Test
     fun `검색 결과를 가져와야 함 - 성공 키워드에 맞는 이름이 있음 - 채팅방은 존재 함`() {
-        val userId = "userId20"
-        val friendId = "friendId20"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val chatRoomId = "chatRoomId20"
         val messageId = "messageId20"
         val time = LocalDateTime.now()
@@ -115,8 +115,8 @@ class SearchFacadeTest {
 
     @Test
     fun `검색 결과를 가져와야 함 - 성공 키워드에 맞는 이름이 있음 - 채팅방은 존재 함 - 즐겨 찾기 기준으로 정렬`() {
-        val userId = "userId20"
-        val friendId = "friendId20"
+        val userId = TestDataFactory.createUserId()
+        val friendId = TestDataFactory.createFriendId()
         val chatRoomId = "chatRoomId20"
         val messageId = "messageId20"
         val time = LocalDateTime.now()

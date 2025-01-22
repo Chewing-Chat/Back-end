@@ -3,6 +3,7 @@ package org.chewing.v1.implementation.user.user
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.model.media.Media
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.UserRepository
 import org.springframework.stereotype.Component
 
@@ -17,13 +18,13 @@ class UserUpdater(
     /**
      * 주어진 사용자 정보를 업데이트합니다.
      */
-    fun updateFileUrl(userId: String, media: Media): Media = userRepository.updateMedia(userId, media) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
+    fun updateFileUrl(userId: UserId, media: Media): Media = userRepository.updateMedia(userId, media) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
 
-    fun updatePassword(userId: String, password: String) {
+    fun updatePassword(userId: UserId, password: String) {
         userRepository.updatePassword(userId, password) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 
-    fun updateStatusMessage(userId: String, statusMessage: String) {
+    fun updateStatusMessage(userId: UserId, statusMessage: String) {
         userRepository.updateStatusMessage(userId, statusMessage) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 }

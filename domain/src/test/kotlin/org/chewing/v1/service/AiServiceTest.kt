@@ -36,8 +36,8 @@ class AiServiceTest {
     @Test
     fun `AI 최근 요약 정보 생성 테스트`() {
         val friendName = TestDataFactory.createUserName()
-        val feedId = "feedId"
-        val userId = "userId"
+        val feedId = TestDataFactory.createFeedId()
+        val userId = TestDataFactory.createUserId()
         val feeds = listOf(TestDataFactory.createFeed(feedId, userId))
         val promptsSlot = slot<List<Prompt>>()
 
@@ -94,8 +94,8 @@ class AiServiceTest {
     @Test
     fun `AI 최근 요약 정보 생성 테스트 - 실패`() {
         val friendName = TestDataFactory.createUserName()
-        val feedId = "feedId"
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
+        val feedId = TestDataFactory.createFeedId()
         val feeds = listOf(TestDataFactory.createFeed(feedId, userId))
 
         coEvery { externalAiClient.prompt(any()) } returns null

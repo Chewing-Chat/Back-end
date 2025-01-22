@@ -2,6 +2,7 @@ package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.feed.FeedRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.junit.jupiter.api.Test
@@ -23,7 +24,7 @@ internal class FeedRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val content = "content"
         val result = feedRepositoryImpl.append(userId, content)
-        assert(result.isNotEmpty())
+        assert(result.id.isNotEmpty())
     }
 
     @Test
@@ -50,7 +51,7 @@ internal class FeedRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val feedInfoList = jpaDataGenerator.feedEntityDataList(userId)
         feedRepositoryImpl.removes(feedInfoList.map { it.feedId })
-        val result = feedJpaRepository.findAllById(feedInfoList.map { it.feedId })
+        val result = feedJpaRepository.findAllById(feedInfoList.map { it.feedId.id })
         assert(result.isEmpty())
     }
 
@@ -59,7 +60,7 @@ internal class FeedRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val feedInfoList = jpaDataGenerator.feedEntityDataList(userId)
         feedRepositoryImpl.removesOwned(userId)
-        val result = feedJpaRepository.findAllById(feedInfoList.map { it.feedId })
+        val result = feedJpaRepository.findAllById(feedInfoList.map { it.feedId.id })
         assert(result.isEmpty())
     }
 
@@ -79,5 +80,5 @@ internal class FeedRepositoryTest : JpaContextTest() {
         assert(!result)
     }
 
-    private fun generateUserId() = UUID.randomUUID().toString()
+    private fun generateUserId() = UserId.of(UUID.randomUUID().toString())
 }

@@ -5,6 +5,7 @@ import org.chewing.v1.external.ExternalAuthClient
 import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.token.RefreshToken
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.auth.LoggedInRepository
 import org.springframework.stereotype.Component
 
@@ -18,5 +19,5 @@ class AuthReader(
             ?: throw AuthorizationException(ErrorCode.EXPIRED_VERIFICATION_CODE)
     }
 
-    fun readRefreshToken(refreshToken: String, userId: String): RefreshToken = loggedInRepository.read(refreshToken, userId) ?: throw AuthorizationException(ErrorCode.INVALID_TOKEN)
+    fun readLoginInfo(refreshToken: String, userId: UserId): RefreshToken = loggedInRepository.read(refreshToken, userId) ?: throw AuthorizationException(ErrorCode.INVALID_TOKEN)
 }

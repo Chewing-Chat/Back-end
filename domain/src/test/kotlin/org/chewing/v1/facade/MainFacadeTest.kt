@@ -19,9 +19,9 @@ class MainFacadeTest {
     @Test
     fun `메인 페이지 조회`() {
         // given
-        val userId = "123"
-        val friendId1 = "456"
-        val friendId2 = "789"
+        val userId = TestDataFactory.createUserId()
+        val friendId1 = TestDataFactory.createFriendId()
+        val friendId2 = TestDataFactory.createSecondFriendId()
         val user = TestDataFactory.createAccessUser(userId)
         val friendShips = listOf(
             TestDataFactory.createFriendShip(friendId1, AccessStatus.ACCESS),

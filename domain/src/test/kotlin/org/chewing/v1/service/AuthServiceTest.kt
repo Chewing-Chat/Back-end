@@ -27,11 +27,6 @@ class AuthServiceTest {
     private val authAppender: AuthAppender = AuthAppender(loggedInRepository, externalAuthClient)
     private val authValidator: AuthValidator = AuthValidator()
     private val authUpdater: AuthUpdater = AuthUpdater(loggedInRepository)
-    private val jwtTokenProvider: JwtTokenProvider = JwtTokenProvider(
-        "mysecretkey12345asdfvasdfvhjaaaaaaaaaaaaaaaaaaaaaaaaaslfdjasdlkr231243123412",
-        1000L * 60 * 60 * 24 * 7,
-        1000L * 60 * 60 * 24 * 30,
-    )
     private val authRemover: AuthRemover = AuthRemover(loggedInRepository)
     private val authSender: AuthSender = AuthSender(externalAuthClient)
 
@@ -42,7 +37,6 @@ class AuthServiceTest {
         authValidator,
         authUpdater,
         authGenerator,
-        jwtTokenProvider,
         authRemover,
     )
 
@@ -104,20 +98,20 @@ class AuthServiceTest {
 
     @Test
     fun `로그인 정보 생성`() {
-        val userId = "1234"
+        val userId = TestDataFactory.createUserId()
         val user = TestDataFactory.createAccessUser(userId)
+        val refreshToken = TestDataFactory.createRefreshToken()
 
         every { loggedInRepository.append(any(), any()) } just Runs
 
         assertDoesNotThrow {
-            authService.createToken(user)
+            authService.createLoginInfo(user.userId, refreshToken)
         }
     }
 
     @Test
     fun `로그 아웃시 토큰이 삭제 되어야함 - 성공`() {
-        val userId = "1234"
-        val refreshToken = jwtTokenProvider.createRefreshToken(userId)
+        val refreshToken = TestDataFactory.createRefreshToken()
 
         every { loggedInRepository.remove(any()) } just Runs
 
@@ -128,26 +122,28 @@ class AuthServiceTest {
 
     @Test
     fun `jwt 토큰 refresh에 성공해야 한다`() {
-        val userId = "1234"
-        val refreshToken = jwtTokenProvider.createRefreshToken(userId)
+        val userId = TestDataFactory.createUserId()
+        val refreshToken = TestDataFactory.createRefreshToken()
+        val oldRefreshToken = TestDataFactory.createOldRefreshToken()
 
-        every { loggedInRepository.read(refreshToken.token, userId) } returns refreshToken
+        every { loggedInRepository.read(oldRefreshToken.token, userId) } returns refreshToken
         every { loggedInRepository.update(any(), any()) } just Runs
 
         assertDoesNotThrow {
-            authService.refreshJwtToken(refreshToken.token)
+            authService.updateLoginInfo(oldRefreshToken.token, refreshToken, userId)
         }
     }
 
     @Test
     fun `저장된 jwt 토큰이 없어서 에러가 발생해야 함`() {
-        val userId = "1234"
-        val refreshToken = jwtTokenProvider.createRefreshToken("1234")
+        val userId = TestDataFactory.createUserId()
+        val refreshToken = TestDataFactory.createRefreshToken()
+        val oldRefreshToken = TestDataFactory.createOldRefreshToken()
 
-        every { loggedInRepository.read(refreshToken.token, userId) } returns null
+        every { loggedInRepository.read(oldRefreshToken.token, userId) } returns null
 
         val exception = assertThrows<AuthorizationException> {
-            authService.refreshJwtToken(refreshToken.token)
+            authService.updateLoginInfo(oldRefreshToken.token, refreshToken, userId)
         }
 
         assert(exception.errorCode == ErrorCode.INVALID_TOKEN)
@@ -163,8 +159,9 @@ class AuthServiceTest {
     @Test
     fun `비밀번호 검증 - 성공`() {
         val password = "1234"
+        val userId = TestDataFactory.createUserId()
         val encryptPassword = authGenerator.hashPassword(password)
-        val user = TestDataFactory.createEncryptedUser("userId", encryptPassword)
+        val user = TestDataFactory.createEncryptedUser(userId, encryptPassword)
         assertDoesNotThrow {
             authService.validatePassword(user, password)
         }
@@ -174,8 +171,9 @@ class AuthServiceTest {
     fun `비밀번호 검증 - 실패`() {
         val password = "1234"
         val wrongPassword = "5678"
+        val userId = TestDataFactory.createUserId()
         val encryptPassword = authGenerator.hashPassword(password)
-        val user = TestDataFactory.createEncryptedUser("userId", encryptPassword)
+        val user = TestDataFactory.createEncryptedUser(userId, encryptPassword)
 
         val exception = assertThrows<AuthorizationException> {
             authService.validatePassword(user, wrongPassword)

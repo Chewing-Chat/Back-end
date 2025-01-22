@@ -38,7 +38,7 @@ class UserServiceTest {
 
     @Test
     fun `유저 계정 정보를 가져와야함`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.read(userId) } returns user
@@ -51,7 +51,7 @@ class UserServiceTest {
 
     @Test
     fun `유저 계정 정보가 없어야함`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
 
         every { userRepository.read(userId) } returns null
 
@@ -64,7 +64,7 @@ class UserServiceTest {
 
     @Test
     fun `유저의 정보를 가져오는 활성화된 유저임`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.read(userId) } returns user
@@ -76,7 +76,7 @@ class UserServiceTest {
 
     @Test
     fun `유저의 정보를 가져오는 활성화된 유저가 아님`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val user = TestDataFactory.createNotAccessUser()
 
         every { userRepository.read(userId) } returns user
@@ -90,7 +90,7 @@ class UserServiceTest {
 
     @Test
     fun `유저의 파일을 카테고리에 따라 없데이트 해야함`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val fileData = TestDataFactory.createFileData()
         val media = TestDataFactory.createProfileMedia()
 
@@ -105,7 +105,7 @@ class UserServiceTest {
 
     @Test
     fun `유저의 파일을 카테고리에 따라 업데이트 할때 유저가 존재하지 않음`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val fileData = TestDataFactory.createFileData()
         val media = TestDataFactory.createProfileMedia()
 
@@ -121,7 +121,7 @@ class UserServiceTest {
 
     @Test
     fun `유저를 삭제함`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.remove(userId) } returns user
@@ -134,7 +134,7 @@ class UserServiceTest {
 
     @Test
     fun `유저를 삭제할때 유저가 없음`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         every { userRepository.remove(userId) } returns null
 
         val result = assertThrows<NotFoundException> {
@@ -146,7 +146,7 @@ class UserServiceTest {
 
     @Test
     fun `유저 아이디들로 해당 유저가 포합된 유저들을 가져온다`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
 
         val users = listOf(TestDataFactory.createAccessUser(userId))
 
@@ -161,7 +161,7 @@ class UserServiceTest {
 
     @Test
     fun `유저의 비밀번호를 업데이트 한다 - 성공`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val password = "password"
 
         every { userRepository.updatePassword(userId, password) } returns userId
@@ -173,7 +173,7 @@ class UserServiceTest {
 
     @Test
     fun `유저의 비밀번호를 업데이트 한다 - 실패(유저가 존재하지 않음)`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val password = "password"
 
         every { userRepository.updatePassword(userId, password) } returns null
@@ -187,7 +187,7 @@ class UserServiceTest {
 
     @Test
     fun `유저 생성 성공한다 - 유저가 존재하지 않음`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val credential = TestDataFactory.createPhoneNumber()
         val appToken = "appToken"
         val device = TestDataFactory.createDevice()
@@ -206,7 +206,7 @@ class UserServiceTest {
 
     @Test
     fun `유저 생성 실패한다 - 유저가 이미 존재함`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val credential = TestDataFactory.createPhoneNumber()
         val appToken = "appToken"
         val device = TestDataFactory.createDevice()
@@ -227,7 +227,7 @@ class UserServiceTest {
 
     @Test
     fun `유저 상태 메시지를 업데이트 한다`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val statusMessage = "statusMessage"
 
         every { userRepository.updateStatusMessage(userId, statusMessage) } returns userId
@@ -239,7 +239,7 @@ class UserServiceTest {
 
     @Test
     fun `유저 상태 메시지를 업데이트 한다 - 실패(유저가 존재하지 않음)`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val statusMessage = "statusMessage"
 
         every { userRepository.updateStatusMessage(userId, statusMessage) } returns null
@@ -253,7 +253,8 @@ class UserServiceTest {
 
     @Test
     fun `유저의 디바이스 정보를 업데이트 한다`() {
-        val user = TestDataFactory.createAccessUser("userId")
+        val userId = TestDataFactory.createUserId()
+        val user = TestDataFactory.createAccessUser(userId)
         val device = TestDataFactory.createDevice()
         val appToken = "appToken"
 
@@ -278,7 +279,8 @@ class UserServiceTest {
     @Test
     fun `유저의 접근 가능 여부를 확인한다 - 회원가입 불가능(이미 가입됨)`() {
         val credential = TestDataFactory.createPhoneNumber()
-        val user = TestDataFactory.createAccessUser("userId")
+        val userId = TestDataFactory.createUserId()
+        val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns user
 
@@ -292,7 +294,8 @@ class UserServiceTest {
     @Test
     fun `유저의 접근 가능 여부를 확인한다 - 비밀번호 재설정 가능(유저가 존재하는 경우)`() {
         val credential = TestDataFactory.createPhoneNumber()
-        val user = TestDataFactory.createAccessUser("userId")
+        val userId = TestDataFactory.createUserId()
+        val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns user
 
@@ -318,7 +321,8 @@ class UserServiceTest {
     fun `유저의 인증 정보를 가져온다 - 성공`() {
         val credential = TestDataFactory.createPhoneNumber()
         val accessStatus = AccessStatus.ACCESS
-        val user = TestDataFactory.createAccessUser("userId")
+        val userId = TestDataFactory.createUserId()
+        val user = TestDataFactory.createAccessUser(userId)
 
         every { userRepository.readByCredential(credential, accessStatus) } returns user
 

@@ -3,6 +3,7 @@ package org.chewing.v1.jpaentity.chat
 import jakarta.persistence.*
 import org.chewing.v1.model.chat.member.ChatRoomMemberInfo
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.user.UserId
 
 @Entity
 @Table(
@@ -25,13 +26,13 @@ internal class PersonalChatRoomMemberJpaEntity(
 ) {
     companion object {
         fun generate(
-            userId: String,
-            friendId: String,
+            userId: UserId,
+            friendId: UserId,
             chatRoomId: String,
             number: ChatNumber,
         ): PersonalChatRoomMemberJpaEntity = PersonalChatRoomMemberJpaEntity(
-            id = ChatRoomMemberId(chatRoomId, userId),
-            friendId = friendId,
+            id = ChatRoomMemberId.of(chatRoomId, userId),
+            friendId = friendId.id,
             favorite = false,
             startSeqNumber = number.sequenceNumber,
             readSeqNumber = number.sequenceNumber,
@@ -40,7 +41,7 @@ internal class PersonalChatRoomMemberJpaEntity(
 
     // ChatFriendEntity -> ChatFriend 변환 메서드
     fun toRoomOwned(): ChatRoomMemberInfo = ChatRoomMemberInfo.of(
-        memberId = this.id.userId,
+        memberId = UserId.of(this.id.userId),
         chatRoomId = this.id.chatRoomId,
         readSeqNumber = this.readSeqNumber,
         favorite = this.favorite,
@@ -48,7 +49,7 @@ internal class PersonalChatRoomMemberJpaEntity(
     )
 
     fun toRoomFriend(): ChatRoomMemberInfo = ChatRoomMemberInfo.of(
-        memberId = this.friendId,
+        memberId = UserId.of(this.friendId),
         chatRoomId = this.id.chatRoomId,
         readSeqNumber = this.readSeqNumber,
         favorite = this.favorite,

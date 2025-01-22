@@ -21,28 +21,27 @@ class AccountFacadeTest {
 
     @Test
     fun `유저 생성`() {
-        val userId = "123"
+        val userId = TestDataFactory.createUserId()
         val user = TestDataFactory.createAccessUser(userId)
         val phoneNumber = TestDataFactory.createPhoneNumber()
         val device = TestDataFactory.createDevice()
-        val jwtToken = TestDataFactory.createJwtToken()
 
         every { authService.verify(any(), any()) } just Runs
         every { userService.createUser(any(), any(), any(), any()) } returns user
-        every { authService.createToken(user) } returns jwtToken
 
         val result = assertDoesNotThrow {
             accountFacade.createUser(phoneNumber, "123", "testAppToken", device, "testUserName")
         }
-        assert(result == jwtToken)
+
+        assert(result == userId)
     }
 
     @Test
     fun `계정 삭제`() {
-        val userId = "123"
+        val userId = TestDataFactory.createUserId()
 
         every { userService.deleteUser(any()) } just Runs
-        every { scheduleService.deleteUsers(any()) } just Runs
+        every { scheduleService.deleteAllParticipant(any()) } just Runs
 
         accountFacade.deleteAccount(userId)
 

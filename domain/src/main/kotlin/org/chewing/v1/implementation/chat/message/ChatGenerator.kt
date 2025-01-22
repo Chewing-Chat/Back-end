@@ -10,6 +10,7 @@ import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.message.MessageType
 import org.chewing.v1.model.chat.room.ChatNumber
 import org.chewing.v1.model.media.Media
+import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.util.UUID
@@ -18,7 +19,7 @@ import java.util.UUID
 class ChatGenerator {
     fun generateReadMessage(
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         number: ChatNumber,
     ): ChatReadMessage {
         return ChatReadMessage.of(
@@ -31,7 +32,7 @@ class ChatGenerator {
 
     fun generateDeleteMessage(
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         number: ChatNumber,
         messageId: String,
     ): ChatDeleteMessage {
@@ -46,7 +47,7 @@ class ChatGenerator {
 
     fun generateNormalMessage(
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         number: ChatNumber,
         text: String,
     ): ChatNormalMessage {
@@ -62,9 +63,9 @@ class ChatGenerator {
 
     fun generateInviteMessage(
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         number: ChatNumber,
-        targetUserIds: List<String>,
+        targetUserIds: List<UserId>,
     ): ChatInviteMessage {
         return ChatInviteMessage.of(
             generateKey(chatRoomId),
@@ -78,7 +79,7 @@ class ChatGenerator {
 
     fun generateLeaveMessage(
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         number: ChatNumber,
     ): ChatLeaveMessage {
         return ChatLeaveMessage.of(
@@ -92,7 +93,7 @@ class ChatGenerator {
 
     fun generateFileMessage(
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         number: ChatNumber,
         medias: List<Media>,
     ): ChatFileMessage {
@@ -108,7 +109,7 @@ class ChatGenerator {
 
     fun generateReplyMessage(
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         number: ChatNumber,
         text: String,
         parentLog: ChatLog,
@@ -138,7 +139,7 @@ class ChatGenerator {
 
     fun generateBombMessage(
         chatRoomId: String,
-        userId: String,
+        userId: UserId,
         number: ChatNumber,
         text: String,
         expiredAt: LocalDateTime,

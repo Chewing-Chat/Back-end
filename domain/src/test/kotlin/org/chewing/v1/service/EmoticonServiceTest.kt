@@ -23,7 +23,7 @@ class EmoticonServiceTest {
 
     @Test
     fun `유저가 가진 이모티콘 팩 리스트 가져오기`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val emoticonId = "emoticonId"
         val emoticonId2 = "emoticonId2"
         val emoticonId3 = "emoticonId3"
@@ -32,11 +32,15 @@ class EmoticonServiceTest {
         val emoticonInfo2 = TestDataFactory.createEmoticonInfo(emoticonId2, emoticonPackId)
         val emoticonInfo3 = TestDataFactory.createEmoticonInfo(emoticonId3, emoticonPackId)
         val emoticonPackInfo = TestDataFactory.createEmoticonPackInfo(emoticonPackId)
-        val userEmoticonInfo = TestDataFactory.createUserEmoticonPackInfo(userId, emoticonPackId)
+        val userEmoticonInfo = TestDataFactory.createUserEmoticonPackInfo(emoticonPackId, userId)
 
         every { userEmoticonRepository.readUserEmoticons(userId) } returns listOf(userEmoticonInfo)
         every { emoticonRepository.readEmoticonPacks(listOf(emoticonPackId)) } returns listOf(emoticonPackInfo)
-        every { emoticonRepository.readEmoticons(listOf(emoticonPackId)) } returns listOf(emoticonInfo, emoticonInfo2, emoticonInfo3)
+        every { emoticonRepository.readEmoticons(listOf(emoticonPackId)) } returns listOf(
+            emoticonInfo,
+            emoticonInfo2,
+            emoticonInfo3,
+        )
 
         val emoticonPacks = emoticonService.fetchUserEmoticonPacks(userId)
 
@@ -55,7 +59,7 @@ class EmoticonServiceTest {
 
     @Test
     fun `유저가 가진 이모티콘 팩 리스트 가져오기 - 이모티콘이 없다면 빈 리시트 반환`() {
-        val userId = "userId"
+        val userId = TestDataFactory.createUserId()
         val emoticonId = "emoticonId"
         val emoticonId2 = "emoticonId2"
         val emoticonId3 = "emoticonId3"
@@ -65,11 +69,15 @@ class EmoticonServiceTest {
         val emoticonInfo2 = TestDataFactory.createEmoticonInfo(emoticonId2, wrongEmoticonPackId)
         val emoticonInfo3 = TestDataFactory.createEmoticonInfo(emoticonId3, wrongEmoticonPackId)
         val emoticonPackInfo = TestDataFactory.createEmoticonPackInfo(emoticonPackId)
-        val userEmoticonInfo = TestDataFactory.createUserEmoticonPackInfo(userId, emoticonPackId)
+        val userEmoticonInfo = TestDataFactory.createUserEmoticonPackInfo(emoticonPackId, userId)
 
         every { userEmoticonRepository.readUserEmoticons(userId) } returns listOf(userEmoticonInfo)
         every { emoticonRepository.readEmoticonPacks(listOf(emoticonPackId)) } returns listOf(emoticonPackInfo)
-        every { emoticonRepository.readEmoticons(listOf(emoticonPackId)) } returns listOf(emoticonInfo, emoticonInfo2, emoticonInfo3)
+        every { emoticonRepository.readEmoticons(listOf(emoticonPackId)) } returns listOf(
+            emoticonInfo,
+            emoticonInfo2,
+            emoticonInfo3,
+        )
 
         val emoticonPacks = emoticonService.fetchUserEmoticonPacks(userId)
 

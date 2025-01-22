@@ -1,10 +1,15 @@
 package org.chewing.v1.service.user
 
-import org.chewing.v1.implementation.user.schedule.ScheduleAppender
-import org.chewing.v1.implementation.user.schedule.ScheduleGenerator
-import org.chewing.v1.implementation.user.schedule.ScheduleReader
-import org.chewing.v1.implementation.user.schedule.ScheduleRemover
+import org.chewing.v1.implementation.schedule.ScheduleAppender
+import org.chewing.v1.implementation.schedule.ScheduleEnricher
+import org.chewing.v1.implementation.schedule.ScheduleFilter
+import org.chewing.v1.implementation.schedule.ScheduleGenerator
+import org.chewing.v1.implementation.schedule.ScheduleReader
+import org.chewing.v1.implementation.schedule.ScheduleRemover
+import org.chewing.v1.implementation.schedule.ScheduleUpdater
+import org.chewing.v1.implementation.schedule.ScheduleValidator
 import org.chewing.v1.model.schedule.*
+import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,24 +18,81 @@ class ScheduleService(
     private val scheduleRemover: ScheduleRemover,
     private val scheduleReader: ScheduleReader,
     private val scheduleGenerator: ScheduleGenerator,
+    private val scheduleEnricher: ScheduleEnricher,
+    private val scheduleValidator: ScheduleValidator,
+    private val scheduleUpdater: ScheduleUpdater,
+    private val scheduleFilter: ScheduleFilter,
 ) {
-    fun create(userId: String, scheduleTime: ScheduleTime, scheduleContent: ScheduleContent, friendIds: List<String>): String {
-        return scheduleAppender.append(scheduleTime, scheduleContent, userId)
+    fun create(
+        userId: UserId,
+        scheduleTime: ScheduleTime,
+        scheduleContent: ScheduleContent,
+        friendIds: List<UserId>,
+    ): ScheduleId {
+        val scheduleId = scheduleAppender.appendInfo(scheduleTime, scheduleContent)
+        scheduleAppender.appendOwner(scheduleId, userId)
+        scheduleAppender.appendParticipants(scheduleId, friendIds)
+        scheduleAppender.appendLog(scheduleId, userId, ScheduleAction.CREATED)
+        return scheduleId
     }
 
-    fun delete(scheduleId: String) {
-        scheduleRemover.remove(scheduleId)
+    fun delete(userId: UserId, scheduleId: ScheduleId) {
+        scheduleValidator.isOwner(userId, scheduleId)
+        scheduleRemover.removeInfo(scheduleId)
+        scheduleRemover.removeAllParticipants(scheduleId)
+        scheduleAppender.appendLog(scheduleId, userId, ScheduleAction.DELETED)
     }
 
-    fun deleteUsers(userId: String) {
-        scheduleRemover.removeUsers(userId)
+    fun cancel(userId: UserId, scheduleId: ScheduleId) {
+        scheduleValidator.isParticipate(userId, scheduleId)
+        scheduleRemover.removeParticipant(scheduleId, userId)
+        scheduleAppender.appendLog(scheduleId, userId, ScheduleAction.CANCELED)
     }
 
-    fun fetches(userId: String, type: ScheduleType): List<Schedule> =
-        scheduleReader.reads(userId, type)
+    fun deleteAllParticipant(userId: UserId) {
+        val scheduleIds = scheduleRemover.removeAllParticipated(userId)
+        scheduleIds.forEach { scheduleAppender.appendLog(it, userId, ScheduleAction.CANCELED) }
+    }
 
-    fun createAiSchedule(userId: String, scheduleStringInfo: String): String {
+    fun fetches(userId: UserId, type: ScheduleType): List<Schedule> {
+        val scheduleIds = scheduleReader.readParticipantScheduleIds(userId, ScheduleParticipantStatus.ACTIVE)
+        val scheduleInfos = scheduleReader.readInfos(scheduleIds, type, ScheduleStatus.ACTIVE)
+        val participants =
+            scheduleReader.readsParticipants(scheduleInfos.map { it.scheduleId }, ScheduleParticipantStatus.ACTIVE)
+        return scheduleEnricher.enriches(userId, scheduleInfos, participants)
+    }
+
+    fun fetch(userId: UserId, scheduleId: ScheduleId): Schedule {
+        val scheduleInfo = scheduleReader.readInfo(scheduleId, ScheduleStatus.ACTIVE)
+        val participants = scheduleReader.readParticipants(scheduleId)
+        return scheduleEnricher.enrich(userId, scheduleInfo, participants)
+    }
+
+    fun update(
+        userId: UserId,
+        scheduleId: ScheduleId,
+        scheduleTime: ScheduleTime,
+        scheduleContent: ScheduleContent,
+        friendIds: List<UserId>,
+        participated: Boolean,
+    ) {
+        scheduleValidator.isParticipate(userId, scheduleId)
+        scheduleUpdater.updateInfo(scheduleId, scheduleTime, scheduleContent)
+        val existingParticipants = scheduleReader.readParticipants(scheduleId)
+        val targetParticipant = scheduleEnricher.enrichParticipant(userId, friendIds, participated)
+        val (appendTargetIds, updateTargetIds, removeTargetIds) = scheduleFilter.filterUpdateTarget(existingParticipants, targetParticipant)
+        scheduleAppender.appendParticipants(scheduleId, appendTargetIds)
+        scheduleUpdater.updateParticipants(scheduleId, updateTargetIds, ScheduleParticipantStatus.ACTIVE)
+        scheduleRemover.removeParticipants(scheduleId, removeTargetIds)
+        scheduleAppender.appendLog(scheduleId, userId, ScheduleAction.UPDATED)
+    }
+
+    fun fetchLogs(userId: UserId): List<ScheduleLog> {
+        return scheduleReader.readLogs(userId)
+    }
+
+    fun createAiSchedule(userId: UserId, scheduleStringInfo: String): ScheduleId {
         val (scheduleContent, scheduleTime) = scheduleGenerator.generateScheduleFromString(scheduleStringInfo)
-        return scheduleAppender.append(scheduleTime, scheduleContent, userId)
+        return scheduleAppender.appendInfo(scheduleTime, scheduleContent)
     }
 }
