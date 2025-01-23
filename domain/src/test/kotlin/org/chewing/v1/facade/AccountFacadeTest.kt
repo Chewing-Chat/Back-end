@@ -6,6 +6,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.chewing.v1.TestDataFactory
+import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.service.user.ScheduleService
 import org.chewing.v1.service.user.UserService
@@ -22,15 +23,15 @@ class AccountFacadeTest {
     @Test
     fun `유저 생성`() {
         val userId = TestDataFactory.createUserId()
-        val user = TestDataFactory.createAccessUser(userId)
-        val phoneNumber = TestDataFactory.createPhoneNumber()
+        val userInfo = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
         val device = TestDataFactory.createDevice()
+        val localPhoneNumber = TestDataFactory.createLocalPhoneNumber()
 
         every { authService.verify(any(), any()) } just Runs
-        every { userService.createUser(any(), any(), any(), any()) } returns user
+        every { userService.createUser(any(), any(), any(), any()) } returns userInfo
 
         val result = assertDoesNotThrow {
-            accountFacade.createUser(phoneNumber, "123", "testAppToken", device, "testUserName")
+            accountFacade.createUser(localPhoneNumber, "123", "testAppToken", device, "testUserName")
         }
 
         assert(result == userId)

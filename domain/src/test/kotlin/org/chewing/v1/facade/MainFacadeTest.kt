@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.implementation.main.MainAggregator
+import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.friend.FriendSortCriteria
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.service.friend.FriendShipService
@@ -22,33 +23,27 @@ class MainFacadeTest {
         val userId = TestDataFactory.createUserId()
         val friendId1 = TestDataFactory.createFriendId()
         val friendId2 = TestDataFactory.createSecondFriendId()
-        val user = TestDataFactory.createAccessUser(userId)
+        val user = TestDataFactory.createUser(userId, AccessStatus.ACCESS)
         val friendShips = listOf(
-            TestDataFactory.createFriendShip(friendId1, AccessStatus.ACCESS),
-            TestDataFactory.createFriendShip(friendId2, AccessStatus.ACCESS),
+            TestDataFactory.createFriendShip(userId, friendId1, FriendShipStatus.FRIEND),
+            TestDataFactory.createFriendShip(userId, friendId2, FriendShipStatus.FRIEND),
         )
 
         val friendIds = friendShips.map { it.friendId }
-        val users = listOf(
-            TestDataFactory.createAccessUser(friendId2),
-            TestDataFactory.createAccessUser(friendId1),
+        val friendInfos = listOf(
+            TestDataFactory.createUser(friendId2, AccessStatus.ACCESS),
+            TestDataFactory.createUser(friendId1, AccessStatus.ACCESS),
         )
 
-        every { userService.getAccessUser(userId) } returns user
-        every { friendShipService.getAccessFriendShips(userId, FriendSortCriteria.NAME) } returns friendShips
-        every { userService.getUsers(friendIds) } returns users
+        every { userService.getUser(userId, AccessStatus.ACCESS) } returns user
+        every { friendShipService.getFriendShips(userId, FriendSortCriteria.NAME) } returns friendShips
+        every { userService.getUsers(friendIds) } returns friendInfos
 
         val result = mainFacade.getMainPage(userId, FriendSortCriteria.NAME)
 
         assert(result.first == user)
         assert(result.second.size == 2)
-        assert(result.second[0].isFavorite == friendShips[0].isFavorite)
-        assert(result.second[1].isFavorite == friendShips[1].isFavorite)
-        assert(result.second[0].name == friendShips[0].friendName)
-        assert(result.second[1].name == friendShips[1].friendName)
-        assert(result.second[0].type == friendShips[1].type)
-        assert(result.second[1].type == friendShips[0].type)
-        assert(result.second[0].user == users[1])
-        assert(result.second[1].user == users[0])
+        assert(result.second[0].user == friendInfos[1])
+        assert(result.second[1].user == friendInfos[0])
     }
 }

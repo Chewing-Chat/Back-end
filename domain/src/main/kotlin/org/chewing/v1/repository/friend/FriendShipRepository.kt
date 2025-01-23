@@ -1,17 +1,16 @@
 package org.chewing.v1.repository.friend
 
 import org.chewing.v1.model.friend.FriendShip
+import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.friend.FriendSortCriteria
-import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Repository
 
 @Repository
 interface FriendShipRepository {
 
-    fun readsAccess(userId: UserId, accessStatus: AccessStatus, sort: FriendSortCriteria): List<FriendShip>
-    fun reads(friendIds: List<UserId>, userId: UserId, accessStatus: AccessStatus): List<FriendShip>
-    fun append(userId: UserId, targetUserId: UserId, targetUserName: String)
+    fun readsSorted(userId: UserId, sort: FriendSortCriteria): List<FriendShip>
+    fun appendIfNotExist(userId: UserId, targetUserId: UserId, targetUserName: String, status: FriendShipStatus): FriendShip
 
     fun remove(userId: UserId, friendId: UserId): UserId?
     fun block(userId: UserId, friendId: UserId): UserId?

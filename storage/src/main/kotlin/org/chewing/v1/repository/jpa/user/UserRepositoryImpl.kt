@@ -2,11 +2,11 @@ package org.chewing.v1.repository.jpa.user
 
 import org.chewing.v1.jpaentity.user.UserJpaEntity
 import org.chewing.v1.jparepository.user.UserJpaRepository
-import org.chewing.v1.model.auth.Credential
-import org.chewing.v1.model.auth.PhoneNumber
+import org.chewing.v1.model.contact.Contact
+import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.user.AccessStatus
-import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.UserRepository
 import org.springframework.stereotype.Repository
@@ -15,24 +15,24 @@ import org.springframework.stereotype.Repository
 internal class UserRepositoryImpl(
     private val userJpaRepository: UserJpaRepository,
 ) : UserRepository {
-    override fun read(userId: UserId): User? {
-        val userEntity = userJpaRepository.findById(userId.id)
+    override fun read(userId: UserId, status: AccessStatus): UserInfo? {
+        val userEntity = userJpaRepository.findByUserIdAndStatus(userId.id, status)
         return userEntity.map { it.toUser() }.orElse(null)
     }
 
-    override fun reads(userIds: List<UserId>): List<User> {
+    override fun reads(userIds: List<UserId>): List<UserInfo> {
         val userEntities = userJpaRepository.findAllById(userIds.map { it.id })
         return userEntities.map { it.toUser() }
     }
 
-    override fun append(credential: Credential, userName: String): User = when (credential) {
+    override fun append(contact: Contact, userName: String): UserInfo = when (contact) {
         is PhoneNumber -> {
-            val userEntity = UserJpaEntity.generate(credential, userName, AccessStatus.NEED_CREATE_PASSWORD)
+            val userEntity = UserJpaEntity.generate(contact, userName, AccessStatus.NEED_CREATE_PASSWORD)
             userJpaRepository.save(userEntity).toUser()
         }
     }
 
-    override fun remove(userId: UserId): User? = userJpaRepository.findById(userId.id)
+    override fun remove(userId: UserId): UserInfo? = userJpaRepository.findById(userId.id)
         .map { entity ->
             entity.updateAccessStatus(AccessStatus.DELETE)
             userJpaRepository.save(entity)
@@ -59,14 +59,19 @@ internal class UserRepositoryImpl(
         it.toUserId()
     }.orElse(null)
 
-    override fun readByCredential(credential: Credential, accessStatus: AccessStatus): User? = when (credential) {
-        is PhoneNumber -> userJpaRepository.findUserJpaEntityByCountryCodeAndPhoneNumberAndType(
-            credential.countryCode,
-            credential.number,
+    override fun readByContact(contact: Contact, accessStatus: AccessStatus): UserInfo? = when (contact) {
+        is PhoneNumber -> userJpaRepository.findUserJpaEntityByPhoneNumberAndStatus(
+            contact.e164PhoneNumber,
             accessStatus,
         ).map {
             it.toUser()
         }.orElse(null)
+    }
+
+    override fun readsByContacts(contacts: List<Contact>, accessStatus: AccessStatus): List<UserInfo> {
+        val phoneNumbers = contacts.mapNotNull { it as? PhoneNumber }.map { it.e164PhoneNumber }
+        val userEntities = userJpaRepository.findUserJpaEntitiesByPhoneNumberInAndStatus(phoneNumbers, accessStatus)
+        return userEntities.map { it.toUser() }
     }
 
     override fun updateStatusMessage(userId: UserId, statusMessage: String): UserId? {

@@ -1,8 +1,8 @@
 package org.chewing.v1.implementation.user.user
 
-import org.chewing.v1.model.auth.Credential
+import org.chewing.v1.model.contact.Contact
 import org.chewing.v1.model.auth.PushToken
-import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.repository.user.PushNotificationRepository
 import org.chewing.v1.repository.user.UserRepository
 import org.springframework.stereotype.Component
@@ -13,11 +13,11 @@ class UserAppender(
     private val pushNotificationRepository: PushNotificationRepository,
 ) {
 
-    fun appendUserPushToken(user: User, appToken: String, device: PushToken.Device) {
-        pushNotificationRepository.append(device, appToken, user)
+    fun appendUserPushToken(userInfo: UserInfo, appToken: String, device: PushToken.Device) {
+        pushNotificationRepository.append(device, appToken, userInfo)
     }
 
-    fun append(credential: Credential, userName: String): User {
-        return userRepository.append(credential, userName)
+    fun append(contact: Contact, userName: String): UserInfo {
+        return userRepository.append(contact, userName)
     }
 }

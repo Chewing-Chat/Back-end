@@ -1,8 +1,8 @@
 package org.chewing.v1.implementation.auth
 
 import org.chewing.v1.external.ExternalAuthClient
-import org.chewing.v1.model.auth.Credential
-import org.chewing.v1.model.auth.PhoneNumber
+import org.chewing.v1.model.contact.Contact
+import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.auth.LoggedInRepository
@@ -17,10 +17,10 @@ class AuthAppender(
         loggedInRepository.append(newRefreshToken, userId)
     }
 
-    fun appendVerification(credential: Credential, verificationCode: String) {
-        when (credential) {
+    fun appendVerification(contact: Contact, verificationCode: String) {
+        when (contact) {
             is PhoneNumber -> {
-                externalAuthClient.cacheVerificationCode(credential, verificationCode)
+                externalAuthClient.cacheVerificationCode(contact, verificationCode)
             }
         }
     }

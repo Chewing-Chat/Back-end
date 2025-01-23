@@ -1,6 +1,6 @@
 package org.chewing.v1.dto.response.user
 
-import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserInfo
 
 data class UserResponse(
     val statusMessage: String,
@@ -10,13 +10,13 @@ data class UserResponse(
 ) {
     companion object {
         fun of(
-            user: User,
+            userInfo: UserInfo,
         ): UserResponse {
             return UserResponse(
-                statusMessage = user.statusMessage,
-                imageUrl = user.image.url,
-                imageType = user.image.type.value().lowercase(),
-                name = user.name,
+                statusMessage = userInfo.statusMessage,
+                imageUrl = userInfo.image.url,
+                imageType = userInfo.image.type.value().lowercase(),
+                name = userInfo.name,
             )
         }
     }

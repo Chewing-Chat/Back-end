@@ -4,6 +4,7 @@ import org.chewing.v1.dto.request.user.UserRequest
 import org.chewing.v1.dto.response.user.AccountResponse
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.media.FileCategory
+import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.SuccessOnlyResponse
 import org.chewing.v1.service.user.UserService
@@ -23,7 +24,7 @@ class UserController(
     fun getProfile(
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<AccountResponse> {
-        val user = userService.getUser(UserId.of(userId))
+        val user = userService.getUser(UserId.of(userId), AccessStatus.ACCESS)
         return ResponseHelper.success(AccountResponse.of(user))
     }
 

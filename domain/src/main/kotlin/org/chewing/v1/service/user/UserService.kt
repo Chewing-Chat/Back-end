@@ -1,10 +1,11 @@
 package org.chewing.v1.service.user
 
+import org.chewing.v1.implementation.contact.ContactFormatter
 import org.chewing.v1.implementation.media.FileHandler
 import org.chewing.v1.implementation.user.user.*
-import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.CredentialTarget
 import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.contact.LocalPhoneNumber
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.user.*
@@ -18,39 +19,63 @@ class UserService(
     private val userValidator: UserValidator,
     private val userRemover: UserRemover,
     private val userAppender: UserAppender,
+    private val contactFormatter: ContactFormatter,
 ) {
 
     fun getUsers(userIds: List<UserId>): List<User> {
-        return userReader.reads(userIds)
+        val userInfos = userReader.reads(userIds)
+        return userInfos.map {
+            val phoneNumber = contactFormatter.extractCountryCodeAndLocalNumber(it.phoneNumber)
+            User.of(it, phoneNumber)
+        }
     }
 
-    fun getUser(userId: UserId): User {
-        return userReader.read(userId)
+    fun getUser(userId: UserId, status: AccessStatus): User {
+        val userInfo = userReader.read(userId, status)
+        val localPhoneNumber = contactFormatter.extractCountryCodeAndLocalNumber(userInfo.phoneNumber)
+        return User.of(userInfo, localPhoneNumber)
     }
 
-    fun getUserByCredential(credential: Credential, accessStatus: AccessStatus): User {
-        return userReader.readByCredential(credential, accessStatus)
+    fun getUserByContact(
+        localPhoneNumber: LocalPhoneNumber,
+        accessStatus: AccessStatus,
+    ): User {
+        val phoneNumber = contactFormatter.formatContact(localPhoneNumber)
+        val userInfo = userReader.readByContact(phoneNumber, accessStatus)
+        return User.of(userInfo, localPhoneNumber)
+    }
+
+    fun getUsersByContacts(
+        localPhoneNumbers: List<LocalPhoneNumber>,
+        accessStatus: AccessStatus,
+    ): List<User> {
+        val phoneNumbers = localPhoneNumbers.map { contactFormatter.formatContact(it) }
+        val userInfos = userReader.readsByContacts(phoneNumbers, accessStatus)
+        return userInfos.mapIndexed { index, userInfo ->
+            User.of(userInfo, localPhoneNumbers[index])
+        }
     }
 
     fun createUser(
-        credential: Credential,
+        localPhoneNumber: LocalPhoneNumber,
         appToken: String,
         device: PushToken.Device,
         userName: String,
-    ): User {
-        userValidator.isNotAlreadyCreated(credential)
-        val user = userAppender.append(credential, userName)
+    ): UserInfo {
+        val phoneNumber = contactFormatter.formatContact(localPhoneNumber)
+        userValidator.isNotAlreadyCreated(phoneNumber)
+        val user = userAppender.append(phoneNumber, userName)
         userRemover.removePushToken(device)
         userAppender.appendUserPushToken(user, appToken, device)
         return user
     }
 
     fun createDeviceInfo(
-        user: User,
+        userInfo: UserInfo,
         device: PushToken.Device,
         appToken: String,
     ) {
-        userAppender.appendUserPushToken(user, appToken, device)
+        userAppender.appendUserPushToken(userInfo, appToken, device)
     }
 
     fun updatePassword(userId: UserId, password: String) {
@@ -67,17 +92,15 @@ class UserService(
         userUpdater.updateStatusMessage(userId, statusMessage)
     }
 
-    fun checkAvailability(credential: Credential, type: CredentialTarget) {
+    fun checkAvailability(
+        localPhoneNumber: LocalPhoneNumber,
+        type: CredentialTarget,
+    ) {
+        val phoneNumber = contactFormatter.formatContact(localPhoneNumber)
         when (type) {
-            CredentialTarget.SIGN_UP -> userValidator.isNotAlreadyCreated(credential)
-            CredentialTarget.RESET -> userValidator.isAlreadyCreated(credential)
+            CredentialTarget.SIGN_UP -> userValidator.isNotAlreadyCreated(phoneNumber)
+            CredentialTarget.RESET -> userValidator.isAlreadyCreated(phoneNumber)
         }
-    }
-
-    fun getAccessUser(userId: UserId): User {
-        val user = userReader.read(userId)
-        userValidator.isAccess(user)
-        return user
     }
 
     fun deleteUser(userId: UserId) {

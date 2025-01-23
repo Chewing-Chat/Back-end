@@ -37,7 +37,7 @@ import org.chewing.v1.jparepository.schedule.ScheduleLogJpaRepository
 import org.chewing.v1.jparepository.schedule.ScheduleParticipantJpaRepository
 import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.announcement.Announcement
-import org.chewing.v1.model.auth.PhoneNumber
+import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.chat.room.ChatNumber
 import org.chewing.v1.model.chat.room.ChatRoomInfo
@@ -46,6 +46,7 @@ import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
+import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
@@ -57,7 +58,7 @@ import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.schedule.ScheduleTime
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.AccessStatus
-import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserEmoticonPackInfo
 import org.chewing.v1.model.user.UserId
 import org.springframework.beans.factory.annotation.Autowired
@@ -124,7 +125,7 @@ class JpaDataGenerator {
         return entity.toLog()
     }
 
-    fun userEntityData(credential: PhoneNumber, userName: String, access: AccessStatus): User {
+    fun userEntityData(credential: PhoneNumber, userName: String, access: AccessStatus): UserInfo {
         val user = UserJpaEntity.generate(credential, userName, access)
         userJpaRepository.save(user)
         return user.toUser()
@@ -211,15 +212,9 @@ class JpaDataGenerator {
         return feedEntities.map { it.toFeedDetail() }
     }
 
-    fun friendShipEntityData(userId: UserId, friendId: UserId, access: AccessStatus) {
+    fun friendShipEntityData(userId: UserId, friendId: UserId, status: FriendShipStatus) {
         val friendName = UserProvider.buildFriendName()
-        val entity = FriendShipJpaEntity.generate(userId, friendId, friendName)
-        when (access) {
-            AccessStatus.DELETE -> entity.updateDelete()
-            AccessStatus.BLOCK -> entity.updateBlock()
-            AccessStatus.BLOCKED -> entity.updateBlocked()
-            else -> {}
-        }
+        val entity = FriendShipJpaEntity.generate(userId, friendId, friendName, status)
         friendShipJpaRepository.save(entity)
     }
 

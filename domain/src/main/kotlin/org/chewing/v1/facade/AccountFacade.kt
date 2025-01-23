@@ -1,9 +1,8 @@
 package org.chewing.v1.facade
 
-import org.chewing.v1.model.auth.Credential
 import org.chewing.v1.model.auth.CredentialTarget
-import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.contact.LocalPhoneNumber
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.auth.AuthService
@@ -18,29 +17,32 @@ class AccountFacade(
     private val scheduleService: ScheduleService,
 ) {
     fun createUser(
-        credential: Credential,
+        localPhoneNumber: LocalPhoneNumber,
         verificationCode: String,
         appToken: String,
         device: PushToken.Device,
         userName: String,
     ): UserId {
-        authService.verify(credential, verificationCode)
-        val user = userService.createUser(credential, appToken, device, userName)
+        authService.verify(localPhoneNumber, verificationCode)
+        val user = userService.createUser(localPhoneNumber, appToken, device, userName)
         return user.userId
     }
 
-    fun registerCredential(phoneNumber: PhoneNumber, type: CredentialTarget) {
-        userService.checkAvailability(phoneNumber, type)
-        authService.createCredential(phoneNumber)
+    fun registerCredential(
+        localPhoneNumber: LocalPhoneNumber,
+        type: CredentialTarget,
+    ) {
+        userService.checkAvailability(localPhoneNumber, type)
+        authService.createCredential(localPhoneNumber)
     }
 
     fun resetCredential(
-        phoneNumber: PhoneNumber,
+        localPhoneNumber: LocalPhoneNumber,
         verificationCode: String,
     ): UserId {
-        authService.verify(phoneNumber, verificationCode)
-        val user = userService.getUserByCredential(phoneNumber, AccessStatus.ACCESS)
-        return user.userId
+        authService.verify(localPhoneNumber, verificationCode)
+        val user = userService.getUserByContact(localPhoneNumber, AccessStatus.ACCESS)
+        return user.info.userId
     }
 
     fun changePassword(
@@ -57,14 +59,14 @@ class AccountFacade(
     }
 
     fun login(
-        phoneNumber: PhoneNumber,
+        localPhoneNumber: LocalPhoneNumber,
         password: String,
         device: PushToken.Device,
         appToken: String,
     ): UserId {
-        val user = userService.getUserByCredential(phoneNumber, AccessStatus.ACCESS)
-        authService.validatePassword(user, password)
-        userService.createDeviceInfo(user, device, appToken)
-        return user.userId
+        val user = userService.getUserByContact(localPhoneNumber, AccessStatus.ACCESS)
+        authService.validatePassword(user.info, password)
+        userService.createDeviceInfo(user.info, device, appToken)
+        return user.info.userId
     }
 }

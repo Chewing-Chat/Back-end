@@ -11,6 +11,8 @@ import org.chewing.v1.model.chat.room.ChatNumber
 import org.chewing.v1.model.chat.room.ChatRoomInfo
 import org.chewing.v1.model.chat.room.ChatSequenceNumber
 import org.chewing.v1.model.chat.room.Room
+import org.chewing.v1.model.contact.LocalPhoneNumber
+import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.Feed
@@ -19,6 +21,7 @@ import org.chewing.v1.model.feed.FeedDetailId
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
 import org.chewing.v1.model.friend.FriendShip
+import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.friend.UserSearch
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
@@ -42,7 +45,7 @@ import java.time.LocalDateTime
 
 object TestDataFactory {
 
-    fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "1234567890")
+    fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("testPhoneNumber")
 
     fun createUserName(): String = "testUserName"
     fun createUserId(): UserId = UserId.of("testUserId")
@@ -56,7 +59,9 @@ object TestDataFactory {
     fun createFriendId(): UserId = UserId.of("testFriendId")
     fun createSecondFriendId(): UserId = UserId.of("testSecondFriendId")
     fun createScheduleId(): ScheduleId = ScheduleId.of("testScheduleId")
-    fun createScheduleLog(): ScheduleLog = ScheduleLog.of(createScheduleId(), createUserId(), ScheduleAction.CREATED, LocalDateTime.now())
+    fun createScheduleLog(): ScheduleLog =
+        ScheduleLog.of(createScheduleId(), createUserId(), ScheduleAction.CREATED, LocalDateTime.now())
+
     fun createProfileMedia(): Media = Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG)
 
     fun createMedia(category: FileCategory, index: Int, mediaType: MediaType): Media =
@@ -78,46 +83,47 @@ object TestDataFactory {
 
     fun createRefreshToken(): RefreshToken = RefreshToken.of("refreshToken", LocalDateTime.now())
     fun createOldRefreshToken(): RefreshToken = RefreshToken.of("oldRefreshToken", LocalDateTime.now().minusDays(1))
-    fun createAccessUser(userId: UserId): User = User.of(
+
+    fun createUserInfo(userId: UserId, accessStatus: AccessStatus): UserInfo {
+        return UserInfo.of(
+            userId,
+            "testUserName",
+            "20000101",
+            Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
+            accessStatus,
+            PhoneNumber.of("+821012345678"),
+            "testPassword",
+            "testStatusMessage",
+        )
+    }
+
+    fun createLocalPhoneNumber(): LocalPhoneNumber = LocalPhoneNumber.of("01012345678", "82")
+
+    fun createUser(userId: UserId, accessStatus: AccessStatus): User {
+        return User.of(
+            createUserInfo(userId, accessStatus),
+            createLocalPhoneNumber(),
+        )
+    }
+
+    fun createEncryptedUser(userId: UserId, password: String): UserInfo = UserInfo.of(
         userId,
         "testName",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.ACCESS,
-        PhoneNumber.of("82", "1234567890"),
-        "password",
-        "test",
-    )
-
-    fun createNotAccessUser(userId: UserId): User = User.of(
-        userId,
-        "testName",
-        "2000-00-00",
-        Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
-        AccessStatus.NEED_CREATE_PASSWORD,
-        PhoneNumber.of("82", "1234567890"),
-        "password",
-        "testStatusMessage",
-    )
-
-    fun createEncryptedUser(userId: UserId, password: String): User = User.of(
-        userId,
-        "testName",
-        "2000-00-00",
-        Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
-        AccessStatus.ACCESS,
-        PhoneNumber.of("82", "1234567890"),
+        PhoneNumber.of("testPhoneNumber"),
         password,
         "testStatusMessage",
     )
 
-    fun createNotAccessUser(): User = User.of(
+    fun createNotAccessUser(): UserInfo = UserInfo.of(
         UserId.of("testUserId"),
         "testName",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.NOT_ACCESS,
-        PhoneNumber.of("82", "1234567890"),
+        PhoneNumber.of("testPhoneNumber"),
         "password",
         "testStatusMessage",
     )
@@ -144,8 +150,8 @@ object TestDataFactory {
         role: ScheduleParticipantRole,
     ): ScheduleParticipant = ScheduleParticipant.of(userId, scheduleId, status, role)
 
-    fun createFriendShip(friendId: UserId, accessStatus: AccessStatus): FriendShip =
-        FriendShip.of(friendId, createUserName(), true, accessStatus)
+    fun createFriendShip(userId: UserId, friendId: UserId, status: FriendShipStatus): FriendShip =
+        FriendShip.of(userId, friendId, createUserName(), true, status)
 
     fun createFeedInfo(feedId: FeedId, userId: UserId): FeedInfo =
         FeedInfo.of(feedId, "topic", LocalDateTime.now(), userId)

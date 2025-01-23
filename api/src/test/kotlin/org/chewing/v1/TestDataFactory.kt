@@ -3,10 +3,11 @@ package org.chewing.v1
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.announcement.AnnouncementId
 import org.chewing.v1.model.auth.JwtToken
-import org.chewing.v1.model.auth.PhoneNumber
+import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.chat.log.*
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.contact.LocalPhoneNumber
 import org.chewing.v1.model.feed.Feed
 import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedDetailId
@@ -27,6 +28,7 @@ import org.chewing.v1.model.schedule.ScheduleStatus
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
@@ -73,16 +75,23 @@ object TestDataFactory {
         return UserId.of("testUserId")
     }
 
-    fun createUser(accessStatus: AccessStatus): User {
-        return User.of(
+    fun createUserInfo(accessStatus: AccessStatus): UserInfo {
+        return UserInfo.of(
             UserId.of("testUserId"),
             "testUserName",
             "20000101",
             Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
             accessStatus,
-            PhoneNumber.of("82", "01000000000"),
+            PhoneNumber.of("testPhoneNumber"),
             "testPassword",
             "testStatusMessage",
+        )
+    }
+
+    fun createUser(accessStatus: AccessStatus): User {
+        return User.of(
+            createUserInfo(accessStatus),
+            LocalPhoneNumber.of("82", "01012345678"),
         )
     }
 

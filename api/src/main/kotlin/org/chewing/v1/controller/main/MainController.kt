@@ -20,6 +20,6 @@ class MainController(
     ): SuccessResponseEntity<MainResponse> {
         val (user, friends) = mainFacade.getMainPage(UserId.of(userId), sort)
         // 성공 응답 200 반환
-        return ResponseHelper.success(MainResponse.ofList(user, friends))
+        return ResponseHelper.success(MainResponse.ofList(user.info, friends))
     }
 }

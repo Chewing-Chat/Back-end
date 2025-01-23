@@ -1,35 +1,28 @@
 package org.chewing.v1.facade
 
-import io.mockk.Runs
-import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import org.chewing.v1.TestDataFactory
-import org.chewing.v1.model.user.AccessStatus
-import org.chewing.v1.service.auth.AuthService
+import org.chewing.v1.implementation.friend.friend.FriendAggregator
 import org.chewing.v1.service.friend.FriendShipService
 import org.chewing.v1.service.user.UserService
-import org.junit.jupiter.api.Test
 
 class FriendFacadeTest {
     private val friendShipService: FriendShipService = mockk()
     private val userService: UserService = mockk()
-    private val authService: AuthService = mockk()
+    private val friendAggregator: FriendAggregator = mockk()
 
-    private val friendFacade = FriendFacade(friendShipService, userService)
+    private val friendFacade = FriendFacade(friendShipService, userService, friendAggregator)
 
-    @Test
-    fun `친구 추가`() {
-        // given
-        val userId = TestDataFactory.createUserId()
-        val friendName = "friendName"
-        val friendId = TestDataFactory.createFriendId()
-        val targetCredential = TestDataFactory.createPhoneNumber()
-        val targetUser = TestDataFactory.createAccessUser(friendId)
-        val user = TestDataFactory.createAccessUser(userId)
-
-        every { userService.getUserByCredential(targetCredential, AccessStatus.ACCESS) } returns targetUser
-        every { userService.getUser(userId) } returns user
-        every { friendShipService.createFriendShip(userId, user.name, friendId, friendName) } just Runs
-    }
+//    @Test
+//    fun `친구 추가`() {
+//        // given
+//        val userId = TestDataFactory.createUserId()
+//        val friendId = TestDataFactory.createFriendId()
+//        val targetUser = TestDataFactory.createUser(friendId, AccessStatus.ACCESS)
+//        val user = TestDataFactory.createUser(userId, AccessStatus.ACCESS)
+//        val localPhoneNumber = TestDataFactory.createLocalPhoneNumber()
+//
+//        every { userService.getUserByContact(localPhoneNumber, AccessStatus.ACCESS) } returns targetUser
+//        every { userService.getUser(userId, AccessStatus.ACCESS) } returns user
+//        every { friendShipService.createFriendShips(any(), any(), any()) } just Runs
+//    }
 }

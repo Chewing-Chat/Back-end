@@ -1,7 +1,7 @@
 package org.chewing.v1.dto.request.auth
 
-import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.contact.LocalPhoneNumber
 
 class SignUpRequest {
 
@@ -25,8 +25,8 @@ class SignUpRequest {
         fun toVerificationCode(): String {
             return verificationCode
         }
-        fun toPhoneNumber(): PhoneNumber {
-            return PhoneNumber.of(countryCode, phoneNumber)
+        fun toLocalPhoneNumber(): LocalPhoneNumber {
+            return LocalPhoneNumber.of(phoneNumber, countryCode)
         }
 
         fun toUserName(): String {

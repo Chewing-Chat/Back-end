@@ -28,13 +28,13 @@ class AuthController(
 
     @PostMapping("/create/send")
     fun sendCreatePhoneVerification(@RequestBody request: VerificationRequest.Phone): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
-        accountFacade.registerCredential(request.toPhoneNumber(), CredentialTarget.SIGN_UP)
+        accountFacade.registerCredential(request.toLocalPhoneNumber(), CredentialTarget.SIGN_UP)
         return ResponseHelper.successOnly()
     }
 
     @PostMapping("/reset/send")
     fun sendResetPhoneVerification(@RequestBody request: VerificationRequest.Phone): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
-        accountFacade.registerCredential(request.toPhoneNumber(), CredentialTarget.RESET)
+        accountFacade.registerCredential(request.toLocalPhoneNumber(), CredentialTarget.RESET)
         return ResponseHelper.successOnly()
     }
 
@@ -43,7 +43,7 @@ class AuthController(
         @RequestBody request: SignUpRequest.Phone,
     ): SuccessResponseEntity<TokenResponse> {
         val userId = accountFacade.createUser(
-            request.toPhoneNumber(),
+            request.toLocalPhoneNumber(),
             request.toVerificationCode(),
             request.toAppToken(),
             request.toDevice(),
@@ -59,7 +59,7 @@ class AuthController(
         @RequestBody request: VerifyOnlyRequest,
     ): SuccessResponseEntity<TokenResponse> {
         val userId = accountFacade.resetCredential(
-            request.toPhoneNumber(),
+            request.toLocalPhoneNumber(),
             request.toVerificationCode(),
         )
         val jwtToken = jwtTokenUtil.createJwtToken(userId)
@@ -96,7 +96,7 @@ class AuthController(
         @RequestBody request: LoginRequest,
     ): SuccessResponseEntity<TokenResponse> {
         val userId =
-            accountFacade.login(request.toPhoneNumber(), request.toPassword(), request.toDevice(), request.toAppToken())
+            accountFacade.login(request.toLocalPhoneNumber(), request.toPassword(), request.toDevice(), request.toAppToken())
         val jwtToken = jwtTokenUtil.createJwtToken(userId)
         authService.createLoginInfo(userId, jwtToken.refreshToken)
         return ResponseHelper.success(TokenResponse.of(jwtToken))

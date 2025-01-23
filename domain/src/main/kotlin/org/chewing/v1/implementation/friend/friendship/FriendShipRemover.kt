@@ -12,13 +12,12 @@ class FriendShipRemover(
     private val friendShipRepository: FriendShipRepository,
 ) {
     @Transactional
-    fun removeFriendShip(userId: UserId, friendId: UserId) {
+    fun remove(userId: UserId, friendId: UserId) {
         friendShipRepository.remove(userId, friendId) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
-        friendShipRepository.remove(friendId, userId) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
     }
 
     @Transactional
-    fun blockFriend(userId: UserId, friendId: UserId) {
+    fun block(userId: UserId, friendId: UserId) {
         friendShipRepository.block(userId, friendId) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
         friendShipRepository.blocked(friendId, userId) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
     }

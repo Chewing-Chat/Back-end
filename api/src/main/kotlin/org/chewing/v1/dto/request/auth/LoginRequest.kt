@@ -1,7 +1,7 @@
 package org.chewing.v1.dto.request.auth
 
-import org.chewing.v1.model.auth.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.contact.LocalPhoneNumber
 
 data class LoginRequest(
     val phoneNumber: String,
@@ -11,7 +11,10 @@ data class LoginRequest(
     val provider: String,
     val appToken: String,
 ) {
-    fun toPhoneNumber(): PhoneNumber = PhoneNumber.of(countryCode, phoneNumber)
+    fun toLocalPhoneNumber(): LocalPhoneNumber {
+        return LocalPhoneNumber.of(phoneNumber, countryCode)
+    }
+
     fun toPassword(): String = password
     fun toDevice(): PushToken.Device {
         return PushToken.Device.of(deviceId, PushToken.Provider.valueOf(provider.uppercase()))

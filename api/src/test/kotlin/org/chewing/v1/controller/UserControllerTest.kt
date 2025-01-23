@@ -141,7 +141,7 @@ class UserControllerTest : RestDocsTest() {
     @DisplayName("프로필 조회")
     fun getProfile() {
         val user = TestDataFactory.createUser(AccessStatus.ACCESS)
-        every { userService.getUser(any()) } returns user
+        every { userService.getUser(any(), AccessStatus.ACCESS) } returns user
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -149,10 +149,10 @@ class UserControllerTest : RestDocsTest() {
             .then()
             .statusCode(200)
             .body("status", equalTo(200))
-            .body("data.name", equalTo(user.name))
-            .body("data.phoneNumber", equalTo(user.phoneNumber.number))
-            .body("data.countryCode", equalTo(user.phoneNumber.countryCode))
-            .body("data.birth", equalTo(user.birth))
+            .body("data.name", equalTo(user.info.name))
+            .body("data.phoneNumber", equalTo(user.localPhoneNumber.number))
+            .body("data.countryCode", equalTo(user.localPhoneNumber.countryCode))
+            .body("data.birth", equalTo(user.info.birth))
             .apply(
                 document(
                     "{class-name}/{method-name}",

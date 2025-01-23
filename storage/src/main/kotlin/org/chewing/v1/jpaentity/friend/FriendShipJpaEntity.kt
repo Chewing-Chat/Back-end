@@ -3,7 +3,7 @@ package org.chewing.v1.jpaentity.friend
 import jakarta.persistence.*
 import org.chewing.v1.jpaentity.common.BaseEntity
 import org.chewing.v1.model.friend.FriendShip
-import org.chewing.v1.model.user.AccessStatus
+import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
 
@@ -16,15 +16,15 @@ internal class FriendShipJpaEntity(
     private var favorite: Boolean,
     private var name: String,
     @Enumerated(EnumType.STRING)
-    private var type: AccessStatus,
+    private var status: FriendShipStatus,
 ) : BaseEntity() {
     companion object {
-        fun generate(userId: UserId, targetUserId: UserId, name: String): FriendShipJpaEntity {
+        fun generate(userId: UserId, targetUserId: UserId, name: String, status: FriendShipStatus): FriendShipJpaEntity {
             return FriendShipJpaEntity(
                 id = FriendShipId(userId.id, targetUserId.id),
                 favorite = false,
                 name = name,
-                type = AccessStatus.ACCESS,
+                status = status,
             )
         }
     }
@@ -39,25 +39,22 @@ internal class FriendShipJpaEntity(
 
     fun toFriendShip(): FriendShip {
         return FriendShip.of(
+            userId = UserId.of(id.userId),
             friendId = UserId.of(id.friendId),
             friendName = name,
             isFavorite = favorite,
-            type = type,
+            status = status,
         )
     }
 
     fun updateBlock() {
-        this.type = AccessStatus.BLOCK
+        this.status = FriendShipStatus.BLOCK
     }
 
     fun updateBlocked() {
-        this.type = AccessStatus.BLOCKED
+        this.status = FriendShipStatus.BLOCKED
     }
     fun updateDelete() {
-        this.type = AccessStatus.DELETE
-    }
-
-    fun getId(): FriendShipId {
-        return id
+        this.status = FriendShipStatus.DELETE
     }
 }
