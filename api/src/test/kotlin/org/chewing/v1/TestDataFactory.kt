@@ -13,6 +13,8 @@ import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedDetailId
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
+import org.chewing.v1.model.friend.Friend
+import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
@@ -75,9 +77,9 @@ object TestDataFactory {
         return UserId.of("testUserId")
     }
 
-    fun createUserInfo(accessStatus: AccessStatus): UserInfo {
+    fun createUserInfo(userId: String, accessStatus: AccessStatus): UserInfo {
         return UserInfo.of(
-            UserId.of("testUserId"),
+            UserId.of(userId),
             "testUserName",
             "20000101",
             Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
@@ -88,10 +90,19 @@ object TestDataFactory {
         )
     }
 
-    fun createUser(accessStatus: AccessStatus): User {
+    fun createUser(userId: String, accessStatus: AccessStatus): User {
         return User.of(
-            createUserInfo(accessStatus),
+            createUserInfo(userId, accessStatus),
             LocalPhoneNumber.of("82", "01012345678"),
+        )
+    }
+
+    fun createFriend(userId: String): Friend {
+        return Friend.of(
+            createUser(userId, AccessStatus.ACCESS),
+            true,
+            createFriendName(),
+            FriendShipStatus.FRIEND,
         )
     }
 

@@ -18,7 +18,7 @@ class FriendController(
 ) {
     // 오류 관련 GlobalExceptionHandler 참조 404, 401, 409번만 사용
 
-    @PostMapping("")
+    @PostMapping("/list")
     fun createFriends(
         @RequestAttribute("userId") userId: String,
         @RequestBody request: List<FriendRequest.Create>,

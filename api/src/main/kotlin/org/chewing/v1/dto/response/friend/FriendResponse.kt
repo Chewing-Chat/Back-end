@@ -5,8 +5,10 @@ import org.chewing.v1.model.friend.Friend
 data class FriendResponse(
     val friendId: String,
     val name: String,
-    val imageUrl: String,
-    val imageType: String,
+    val profileImageUrl: String,
+    val profileImageType: String,
+    val phoneNumber: String,
+    val countryCode: String,
     val statusMessage: String,
     val favorite: Boolean,
     val status: String,
@@ -18,11 +20,13 @@ data class FriendResponse(
             return FriendResponse(
                 friendId = friend.user.info.userId.id,
                 name = friend.name,
-                imageUrl = friend.user.info.image.url,
-                imageType = friend.user.info.image.type.name.lowercase(),
+                profileImageUrl = friend.user.info.image.url,
+                profileImageType = friend.user.info.image.type.value(),
                 statusMessage = friend.user.info.statusMessage,
                 favorite = friend.isFavorite,
                 status = friend.status.name.lowercase(),
+                phoneNumber = friend.user.localPhoneNumber.number,
+                countryCode = friend.user.localPhoneNumber.countryCode,
             )
         }
     }

@@ -140,7 +140,7 @@ class UserControllerTest : RestDocsTest() {
     @Test
     @DisplayName("프로필 조회")
     fun getProfile() {
-        val user = TestDataFactory.createUser(AccessStatus.ACCESS)
+        val user = TestDataFactory.createUser("userId", AccessStatus.ACCESS)
         every { userService.getUser(any(), AccessStatus.ACCESS) } returns user
 
         given()
