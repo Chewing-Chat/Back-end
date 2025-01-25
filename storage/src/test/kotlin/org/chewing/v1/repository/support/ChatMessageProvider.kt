@@ -77,16 +77,6 @@ object ChatMessageProvider {
         type = ChatLogType.NORMAL,
     )
 
-    fun buildBombMessage(messageId: String, chatRoomId: String): ChatBombMessage = ChatBombMessage.of(
-        messageId = messageId,
-        chatRoomId = chatRoomId,
-        senderId = UserId.of("sender"),
-        text = "text",
-        number = ChatNumber.of(chatRoomId, 1, 1),
-        timestamp = LocalDateTime.now(),
-        expiredAt = LocalDateTime.now().plusDays(1),
-    )
-
     fun buildReadMessage(chatRoomId: String): ChatReadMessage = ChatReadMessage.of(
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),

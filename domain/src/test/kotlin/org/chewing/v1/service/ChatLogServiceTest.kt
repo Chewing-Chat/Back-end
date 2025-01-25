@@ -263,29 +263,6 @@ class ChatLogServiceTest {
     }
 
     @Test
-    fun `폭탄 메시지 생성 및 저장`() {
-        val chatRoomId = "chatRoomId"
-        val userId = TestDataFactory.createUserId()
-        val text = "text"
-        val expiredAt = LocalDateTime.now()
-        val seqNumber = TestDataFactory.createChatSequenceNumber(chatRoomId)
-
-        every { chatSequenceRepository.updateSequenceIncrement(chatRoomId) } returns seqNumber
-        every { chatLogRepository.appendChatLog(any()) } just Runs
-
-        val result = chatLogService.bombingMessage(chatRoomId, userId, text, expiredAt)
-
-        assert(result.chatRoomId == chatRoomId)
-        assert(result.senderId == userId)
-        assert(result.text == text)
-        assert(result.type == MessageType.BOMB)
-        assert(result.number.chatRoomId == chatRoomId)
-        assert(result.number.sequenceNumber == seqNumber.sequenceNumber)
-        assert(result.number.page == seqNumber.sequenceNumber / ChatFinder.PAGE_SIZE)
-        assert(result.expiredAt == expiredAt)
-    }
-
-    @Test
     fun `최신 채팅 로그 가져오기`() {
         val chatRoomIds = listOf("chatRoomId")
         val userId = TestDataFactory.createUserId()

@@ -137,24 +137,6 @@ class ChatGenerator {
         )
     }
 
-    fun generateBombMessage(
-        chatRoomId: String,
-        userId: UserId,
-        number: ChatNumber,
-        text: String,
-        expiredAt: LocalDateTime,
-    ): ChatBombMessage {
-        return ChatBombMessage.of(
-            generateKey(chatRoomId),
-            chatRoomId = chatRoomId,
-            senderId = userId,
-            timestamp = LocalDateTime.now(),
-            number = number,
-            text = text,
-            expiredAt = expiredAt,
-        )
-    }
-
     private fun generateKey(chatRoomId: String): String {
         return chatRoomId + UUID.randomUUID().toString().substring(0, 8)
     }

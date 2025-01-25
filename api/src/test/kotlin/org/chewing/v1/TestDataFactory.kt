@@ -189,18 +189,6 @@ object TestDataFactory {
         )
     }
 
-    fun createBombMessage(messageId: String, chatRoomId: String): ChatBombMessage {
-        return ChatBombMessage.of(
-            messageId = messageId,
-            chatRoomId = chatRoomId,
-            senderId = UserId.of("senderId"),
-            text = "text",
-            number = ChatNumber.of(chatRoomId, 1, 1),
-            timestamp = LocalDateTime.now(),
-            expiredAt = LocalDateTime.now().plusMinutes(1),
-        )
-    }
-
     fun createInviteMessage(messageId: String, chatRoomId: String): ChatInviteMessage {
         return ChatInviteMessage.of(
             messageId = messageId,

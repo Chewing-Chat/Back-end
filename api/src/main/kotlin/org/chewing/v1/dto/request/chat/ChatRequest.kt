@@ -20,14 +20,5 @@ class ChatRequest {
         val chatRoomId: String,
         val messageId: String,
     )
-    data class Bomb(
-        val chatRoomId: String,
-        val message: String,
-        val expiredAt: String,
-    ) {
-        fun toExpireAt(): LocalDateTime {
-            val formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss")
-            return LocalDateTime.parse(expiredAt, formatter)
-        }
-    }
+
 }

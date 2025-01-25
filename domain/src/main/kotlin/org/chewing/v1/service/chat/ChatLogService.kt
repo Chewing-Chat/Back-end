@@ -80,13 +80,6 @@ class ChatLogService(
         return chatMessage
     }
 
-    fun bombingMessage(chatRoomId: String, userId: UserId, text: String, expiredAt: LocalDateTime): ChatBombMessage {
-        val number = chatFinder.findNextNumber(chatRoomId)
-        val chatMessage = chatGenerator.generateBombMessage(chatRoomId, userId, number, text, expiredAt)
-        chatAppender.appendChatLog(chatMessage)
-        return chatMessage
-    }
-
     fun getLatestChat(chatRoomIds: List<String>): List<ChatLog> {
         val chatNumbers = chatFinder.findCurrentNumbers(chatRoomIds)
         return chatReader.readLatestMessages(chatNumbers)

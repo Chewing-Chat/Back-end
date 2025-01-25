@@ -137,30 +137,6 @@ class ChatLogRepositoryTest : MongoContextTest() {
     }
 
     @Test
-    fun `폭탄 채팅 읽기 - 존재함`() {
-        val messageId = generateMessageId()
-        val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildBombMessage(messageId, chatRoomId)
-        mongoDataGenerator.chatLogEntityData(chatMessage)
-        val chatLog = chatLogRepositoryImpl.readChatMessage(messageId) as ChatBombLog
-        assert(chatLog.messageId == messageId)
-        assert(chatLog.chatRoomId == chatRoomId)
-        assert(chatLog.senderId == chatMessage.senderId)
-        assert(chatLog.text == chatMessage.text)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
-        assert(chatLog.number.page == chatMessage.number.page)
-        assert(
-            chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
-                .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
-        )
-        assert(chatLog.type == ChatLogType.BOMB)
-        assert(
-            chatLog.expiredAt.truncatedTo(ChronoUnit.MILLIS)
-                .equals(chatMessage.expiredAt.truncatedTo(ChronoUnit.MILLIS)),
-        )
-    }
-
-    @Test
     fun `채팅로그 리스트 읽기`() {
         val chatRoomId = generateChatRoomId()
         val chatNormalMessage = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId)
@@ -172,21 +148,18 @@ class ChatLogRepositoryTest : MongoContextTest() {
             chatRoomId,
             ChatMessageProvider.buildNormalLog(generateMessageId(), chatRoomId),
         )
-        val chatBombeMessage = ChatMessageProvider.buildBombMessage(generateMessageId(), chatRoomId)
         mongoDataGenerator.chatLogEntityData(chatNormalMessage)
         mongoDataGenerator.chatLogEntityData(chatLeaveMessage)
         mongoDataGenerator.chatLogEntityData(chatInviteMessage)
         mongoDataGenerator.chatLogEntityData(chatFileMessage)
         mongoDataGenerator.chatLogEntityData(chatReplyMessage)
-        mongoDataGenerator.chatLogEntityData(chatBombeMessage)
         val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 1)
-        assert(chatLogs.size == 6)
+        assert(chatLogs.size == 5)
         assert(chatLogs[0] is ChatNormalLog)
         assert(chatLogs[1] is ChatLeaveLog)
         assert(chatLogs[2] is ChatInviteLog)
         assert(chatLogs[3] is ChatFileLog)
         assert(chatLogs[4] is ChatReplyLog)
-        assert(chatLogs[5] is ChatBombLog)
     }
 
     @Test

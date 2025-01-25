@@ -129,7 +129,6 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
         val deleteMessage = TestDataFactory.createDeleteMessage(testMessageId4, testChatRoomId4)
         val readMessage = TestDataFactory.createReadMessage(testChatRoomId7)
         val replyMessage = TestDataFactory.createReplyMessage(testMessageId5, testChatRoomId5)
-        val bombMessage = TestDataFactory.createBombMessage(testMessageId6, testChatRoomId6)
         val leaveMessage = TestDataFactory.createLeaveMessage(testMessageId8, testChatRoomId8)
 
         sleep(100)
@@ -140,12 +139,11 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
         externalChatNotificationClient.sendMessage(deleteMessage, userId)
         externalChatNotificationClient.sendMessage(readMessage, userId)
         externalChatNotificationClient.sendMessage(replyMessage, userId)
-        externalChatNotificationClient.sendMessage(bombMessage, userId)
         externalChatNotificationClient.sendMessage(leaveMessage, userId)
 
         latch.await(10, TimeUnit.SECONDS)
 
-        assertThat(chatMessages.size).isEqualTo(8)
+        assertThat(chatMessages.size).isEqualTo(7)
 
         chatMessages.forEach { dto ->
             when (dto) {

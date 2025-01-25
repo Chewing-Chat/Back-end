@@ -233,22 +233,6 @@ object TestDataFactory {
         ChatLogType.LEAVE,
     )
 
-    fun createChatBombLog(
-        messageId: String,
-        chatRoomId: String,
-        userId: UserId,
-        chatRoomNumber: ChatNumber,
-    ): ChatBombLog = ChatBombLog.of(
-        messageId,
-        chatRoomId,
-        userId,
-        "text",
-        chatRoomNumber,
-        LocalDateTime.now(),
-        LocalDateTime.now().plusMinutes(1),
-        ChatLogType.BOMB,
-    )
-
     fun createChatFileLog(
         messageId: String,
         chatRoomId: String,
@@ -306,16 +290,6 @@ object TestDataFactory {
         text = "text",
         number = ChatNumber.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
-    )
-
-    fun createBombMessage(messageId: String, chatRoomId: String): ChatBombMessage = ChatBombMessage.of(
-        messageId = messageId,
-        chatRoomId = chatRoomId,
-        senderId = UserId.of("sender"),
-        text = "text",
-        number = ChatNumber.of(chatRoomId, 1, 1),
-        timestamp = LocalDateTime.now(),
-        expiredAt = LocalDateTime.now().plusMinutes(1),
     )
 
     fun createInviteMessage(messageId: String, chatRoomId: String): ChatInviteMessage = ChatInviteMessage.of(
@@ -396,7 +370,7 @@ object TestDataFactory {
 
     fun createChatRoomMember(
         userId: UserId,
-    ): ChatRoomMember = ChatRoomMember.of(userId, 0, false)
+    ): ChatRoomMember = ChatRoomMember.of(userId, 0)
 
     fun createRoom(
         chatRoomId: String,

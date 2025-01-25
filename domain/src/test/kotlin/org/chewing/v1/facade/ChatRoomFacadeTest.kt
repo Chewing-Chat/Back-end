@@ -133,29 +133,6 @@ class ChatRoomFacadeTest {
     }
 
     @Test
-    fun `채팅방 목록을 가져와야 함 - 폭탄 메시지`() {
-        val userId = TestDataFactory.createUserId()
-        val chatRoomId = "chatRoomId"
-        val messageId = "messageId"
-        val friendId = TestDataFactory.createFriendId()
-        val sort = ChatRoomSortCriteria.DATE
-
-        // chatRoomId2 가 더 최근에 대화가 있음
-        val chatRoomInfo = TestDataFactory.createRoom(chatRoomId, userId, friendId, false)
-        val chatNumber = TestDataFactory.createChatNumber(chatRoomId)
-        val latestChatLog = TestDataFactory.createChatBombLog(messageId, chatRoomId, userId, chatNumber)
-
-        every { roomService.getChatRooms(userId) } returns listOf(chatRoomInfo)
-        every { chatLogService.getLatestChat(listOf(chatRoomId)) } returns listOf(latestChatLog)
-
-        val result = chatRoomFacade.getChatRooms(userId, sort)
-
-        assert(result.size == 1)
-        assert(result[0].chatRoomId == chatRoomId)
-        assert(result[0].latestMessage == latestChatLog.text)
-    }
-
-    @Test
     fun `채팅방 목록을 가져와야 함 - 답글 메시지`() {
         val userId = TestDataFactory.createUserId()
         val chatRoomId = "chatRoomId"

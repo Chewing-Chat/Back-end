@@ -171,18 +171,6 @@ sealed class ChatMessageDto {
                     text = chatMessage.text,
                 )
 
-                is ChatBombMessage -> Bomb(
-                    messageId = chatMessage.messageId,
-                    type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
-                    senderId = chatMessage.senderId.id,
-                    timestamp = formattedTime,
-                    seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
-                    expiredAt = chatMessage.expiredAt.format(dateTimeFormatter),
-                    text = chatMessage.text,
-                )
-
                 is ChatReadMessage -> Read(
                     type = chatMessage.type.toString().lowercase(),
                     chatRoomId = chatMessage.chatRoomId,

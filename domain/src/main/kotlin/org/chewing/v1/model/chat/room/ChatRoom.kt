@@ -11,6 +11,7 @@ data class ChatRoom(
     val groupChatRoom: Boolean,
     val latestMessage: String,
     val latestMessageTime: LocalDateTime,
+    val latestMessageType: ChatLogType,
     val totalUnReadMessage: Int,
     val latestSeqNumber: Int,
     val latestPage: Int,
@@ -33,6 +34,7 @@ data class ChatRoom(
                         totalUnReadMessage = totalUnReadMessage,
                         latestSeqNumber = chatLog.number.sequenceNumber,
                         latestPage = chatLog.number.page,
+                        latestMessageType = chatLog.type,
                         chatRoomMemberInfos = room.chatRoomMemberInfos,
                     )
                 }
@@ -47,6 +49,7 @@ data class ChatRoom(
                         totalUnReadMessage = totalUnReadMessage,
                         latestSeqNumber = chatLog.number.sequenceNumber,
                         latestPage = chatLog.number.page,
+                        latestMessageType = chatLog.type,
                         chatRoomMemberInfos = room.chatRoomMemberInfos,
                     )
                 }
@@ -61,6 +64,7 @@ data class ChatRoom(
                         totalUnReadMessage = totalUnReadMessage,
                         latestSeqNumber = chatLog.number.sequenceNumber,
                         latestPage = chatLog.number.page,
+                        latestMessageType = chatLog.type,
                         chatRoomMemberInfos = room.chatRoomMemberInfos,
                     )
                 }
@@ -75,6 +79,7 @@ data class ChatRoom(
                         totalUnReadMessage = totalUnReadMessage,
                         latestSeqNumber = chatLog.number.sequenceNumber,
                         latestPage = chatLog.number.page,
+                        latestMessageType = chatLog.type,
                         chatRoomMemberInfos = room.chatRoomMemberInfos,
                     )
                 }
@@ -89,20 +94,7 @@ data class ChatRoom(
                         totalUnReadMessage = totalUnReadMessage,
                         latestSeqNumber = chatLog.number.sequenceNumber,
                         latestPage = chatLog.number.page,
-                        chatRoomMemberInfos = room.chatRoomMemberInfos,
-                    )
-                }
-
-                is ChatBombLog -> {
-                    return ChatRoom(
-                        chatRoomId = room.chatRoomId,
-                        favorite = room.favorite,
-                        groupChatRoom = room.groupChatRoom,
-                        latestMessage = chatLog.text,
-                        latestMessageTime = chatLog.timestamp,
-                        totalUnReadMessage = totalUnReadMessage,
-                        latestSeqNumber = chatLog.number.sequenceNumber,
-                        latestPage = chatLog.number.page,
+                        latestMessageType = chatLog.type,
                         chatRoomMemberInfos = room.chatRoomMemberInfos,
                     )
                 }

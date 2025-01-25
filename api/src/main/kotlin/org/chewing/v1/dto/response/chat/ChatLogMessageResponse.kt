@@ -139,20 +139,6 @@ sealed class ChatLogMessageResponse {
                     page = chatLog.number.page,
                     text = chatLog.text,
                 )
-
-                is ChatBombLog ->
-
-                    Bomb(
-                        messageId = chatLog.messageId,
-                        type = chatLog.type.name.lowercase(),
-                        chatRoomId = chatLog.chatRoomId,
-                        senderId = chatLog.senderId.id,
-                        timestamp = formattedTime,
-                        seqNumber = chatLog.number.sequenceNumber,
-                        page = chatLog.number.page,
-                        expiredAt = chatLog.expiredAt.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss")),
-                        text = chatLog.text,
-                    )
             }
         }
     }

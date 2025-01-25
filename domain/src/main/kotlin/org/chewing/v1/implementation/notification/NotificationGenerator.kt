@@ -39,9 +39,6 @@ class NotificationGenerator {
             is ChatNormalMessage -> {
                 Triple(NotificationType.CHAT_NORMAL, message.chatRoomId, message.text)
             }
-            is ChatBombMessage -> {
-                Triple(NotificationType.CHAT_BOMB, message.chatRoomId, message.text)
-            }
             is ChatInviteMessage -> {
                 Triple(NotificationType.CHAT_INVITE, message.chatRoomId, null)
             }

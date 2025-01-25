@@ -55,6 +55,7 @@ enum class ErrorCode(
 
     CHATROOM_NOT_FOUND("CHATROOM_1", "채팅방을 찾을 수 없음."),
     CHATROOM_CREATE_FAILED("CHATROOM_2", "채팅방 생성을 실패하였습니다."),
+    CHATROOM_NOT_SELF("CHATROOM_5", "자신과 채팅 할 수 없습니다."),
     CHATROOM_IS_NOT_GROUP("CHATROOM_3", "그룹 채팅방이 아닙니다."),
     CHATROOM_FAVORITE_FAILED("CHATROOM_4", "채팅방 즐겨찾기 설정을 실패하였습니다."),
     CHATLOG_NOT_FOUND("CHATLOG_1", "채팅 로그를 찾을 수 없음."),

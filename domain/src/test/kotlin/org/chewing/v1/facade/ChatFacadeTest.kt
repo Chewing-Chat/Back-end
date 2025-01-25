@@ -105,27 +105,6 @@ class ChatFacadeTest {
     }
 
     @Test
-    fun `폭탄 처리`() {
-        val messageId = "messageId"
-        val userId = TestDataFactory.createUserId()
-        val chatRoomId = "chatRoomId"
-
-        val chatMessage = TestDataFactory.createBombMessage(messageId, chatRoomId)
-        val chatRoomMemberInfo = TestDataFactory.createChatRoomMemberInfo(chatRoomId, userId, 1, false)
-        val chatRoomInfo = TestDataFactory.createChatRoomInfo(chatRoomId)
-
-        every { chatLogService.bombingMessage(any(), any(), any(), any()) } returns chatMessage
-        every { roomService.activateChatRoom(any(), any(), any()) } returns chatRoomInfo
-        every { roomService.getChatRoomFriends(any(), any(), any()) } returns listOf(chatRoomMemberInfo)
-        every { notificationService.handleOwnedMessageNotification(any()) } just Runs
-        every { notificationService.handleMessagesNotification(any(), any(), any()) } just Runs
-
-        chatFacade.processBombing(chatRoomId, userId, "text", LocalDateTime.now())
-
-        verify { notificationService.handleMessagesNotification(chatMessage, listOf(chatRoomMemberInfo.memberId), userId) }
-    }
-
-    @Test
     fun `일반 채팅 처리`() {
         val messageId = "messageId"
         val userId = TestDataFactory.createUserId()

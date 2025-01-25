@@ -39,33 +39,6 @@ class ExternalChatNotificationClientTest {
     }
 
     @Test
-    fun `채팅 메시지 전송 - BombMessage`() {
-        val messageSlot = slot<ChatMessageDto.Bomb>()
-        val userId = TestDataFactory.createUserId()
-        val message = TestDataFactory.createBombMessage(
-            messageId = "messageId",
-            chatRoomId = "chatRoomId",
-        )
-        val formattedTime = message.timestamp.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
-        val formattedExpiredTime = message.expiredAt.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
-
-        justRun { messagingTemplate.convertAndSendToUser(userId.id, "/queue/chat", capture(messageSlot)) }
-
-        externalChatNotificationClientImpl.sendMessage(message, userId)
-
-        assert(messageSlot.isCaptured)
-        assert(messageSlot.captured.messageId == message.messageId)
-        assert(messageSlot.captured.chatRoomId == message.chatRoomId)
-        assert(messageSlot.captured.text == message.text)
-        assert(messageSlot.captured.senderId == message.senderId.id)
-        assert(messageSlot.captured.page == message.number.page)
-        assert(messageSlot.captured.seqNumber == message.number.sequenceNumber)
-        assert(messageSlot.captured.timestamp == formattedTime)
-        assert(messageSlot.captured.type == message.type.name.lowercase())
-        assert(messageSlot.captured.expiredAt == formattedExpiredTime)
-    }
-
-    @Test
     fun `채팅 메시지 전송 - ReplyMessage`() {
         val messageSlot = slot<ChatMessageDto.Reply>()
         val userId = TestDataFactory.createUserId()

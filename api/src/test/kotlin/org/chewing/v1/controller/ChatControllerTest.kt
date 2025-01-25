@@ -132,18 +132,4 @@ class ChatControllerTest : IntegrationTest() {
         latch.await(1, TimeUnit.MINUTES)
         verify { chatFacade.processReply(chatReplyDto.chatRoomId, userId, chatReplyDto.parentMessageId, chatReplyDto.message) }
     }
-
-    @Test
-    fun `폭탄 메시지 전송`() {
-        val latch = CountDownLatch(1)
-        every { chatFacade.processBombing(any(), any(), any(), any()) } answers {
-            latch.countDown()
-        }
-
-        val chatBombMessage = ChatRequest.Bomb("testRoomId", "testMessage", "2024:10:22 13:45:30")
-        session.send("/app/chat/bomb", chatBombMessage)
-
-        latch.await(1, TimeUnit.MINUTES)
-        verify { chatFacade.processBombing(chatBombMessage.chatRoomId, userId, chatBombMessage.message, chatBombMessage.toExpireAt()) }
-    }
 }

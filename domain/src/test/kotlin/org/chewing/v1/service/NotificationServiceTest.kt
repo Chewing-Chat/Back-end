@@ -180,30 +180,6 @@ class NotificationServiceTest {
     }
 
     @Test
-    fun `채팅 메시지 푸시 알림 전송 - 폭탄 메시지`() {
-        val userId = TestDataFactory.createUserId()
-        val friendId = TestDataFactory.createFriendId()
-        val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
-        val pushTokenId = "pushToken"
-        val pushToken = TestDataFactory.createPushToken(pushTokenId)
-        val chatMessage = TestDataFactory.createBombMessage("messageId", "chatRoomId")
-        val notificationSlot = slot<Notification>()
-
-        every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
-        every { pushNotificationRepository.reads(friendId) } returns listOf(pushToken)
-        every { externalSessionClient.isOnline(friendId) } returns false
-        coEvery { externalPushNotificationClient.sendFcmNotification(capture(notificationSlot)) } just Runs
-        // when
-        notificationService.handleMessagesNotification(chatMessage, listOf(friendId), userId)
-        // then
-        val notification = notificationSlot.captured
-        assertEquals(userId, notification.userInfo.userId)
-        assertEquals(pushToken, notification.pushToken)
-        assertEquals(chatMessage.text, notification.content)
-        assertEquals(chatMessage.chatRoomId, notification.targetId)
-    }
-
-    @Test
     fun `채팅 메시지 푸시 알림 전송되지 않음 - 읽음 메시지`() {
         val userId = TestDataFactory.createUserId()
         val friendId = TestDataFactory.createFriendId()

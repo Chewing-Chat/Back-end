@@ -44,15 +44,6 @@ class ChatController(
         chatFacade.processReply(message.chatRoomId, UserId.of(userId), message.parentMessageId, message.message)
     }
 
-    @MessageMapping("/chat/bomb")
-    fun bombMessage(
-        message: ChatRequest.Bomb,
-        principal: Principal,
-    ) {
-        val userId = principal.name
-        chatFacade.processBombing(message.chatRoomId, UserId.of(userId), message.message, message.toExpireAt())
-    }
-
     @MessageMapping("/chat/common")
     fun chatMessage(
         message: ChatRequest.Common,

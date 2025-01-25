@@ -51,15 +51,6 @@ class ChatFacade(
         }
     }
 
-    fun processBombing(chatRoomId: String, userId: UserId, text: String, expiredAt: LocalDateTime) {
-        val chatMessage = chatLogService.bombingMessage(chatRoomId, userId, text, expiredAt)
-        notificationService.handleOwnedMessageNotification(chatMessage)
-        val chatRoomInfo = roomService.activateChatRoom(chatRoomId, userId, chatMessage.number)
-        roomService.getChatRoomFriends(chatRoomId, userId, chatRoomInfo).map { it.memberId }.let {
-            notificationService.handleMessagesNotification(chatMessage, it, userId)
-        }
-    }
-
     fun processCommon(chatRoomId: String, userId: UserId, text: String) {
         val chatMessage = chatLogService.chatNormalMessage(chatRoomId, userId, text)
         notificationService.handleOwnedMessageNotification(chatMessage)
