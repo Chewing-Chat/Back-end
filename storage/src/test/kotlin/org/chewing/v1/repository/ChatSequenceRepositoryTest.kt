@@ -1,7 +1,7 @@
 package org.chewing.v1.repository
 
 import org.chewing.v1.config.MongoContextTest
-import org.chewing.v1.repository.mongo.chat.ChatSequenceRepositoryImpl
+import org.chewing.v1.repository.mongo.chat.room.ChatSequenceRepositoryImpl
 import org.chewing.v1.repository.support.MongoDataGenerator
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

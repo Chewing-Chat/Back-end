@@ -7,7 +7,7 @@ import org.chewing.v1.model.chat.log.*
 import org.chewing.v1.model.chat.member.ChatRoomMember
 import org.chewing.v1.model.chat.member.ChatRoomMemberInfo
 import org.chewing.v1.model.chat.message.*
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.chat.room.ChatRoomInfo
 import org.chewing.v1.model.chat.room.ChatSequenceNumber
 import org.chewing.v1.model.chat.room.Room
@@ -172,7 +172,7 @@ object TestDataFactory {
         messageId: String,
         chatRoomId: String,
         userId: UserId,
-        chatRoomNumber: ChatNumber,
+        chatRoomNumber: ChatLogSequence,
         time: LocalDateTime,
     ): ChatNormalLog = ChatNormalLog.of(
         messageId,
@@ -188,7 +188,7 @@ object TestDataFactory {
         messageId: String,
         chatRoomId: String,
         userId: UserId,
-        chatRoomNumber: ChatNumber,
+        chatRoomNumber: ChatLogSequence,
     ): ChatInviteLog = ChatInviteLog.of(
         messageId,
         chatRoomId,
@@ -203,7 +203,7 @@ object TestDataFactory {
         messageId: String,
         chatRoomId: String,
         userId: UserId,
-        chatRoomNumber: ChatNumber,
+        chatRoomNumber: ChatLogSequence,
     ): ChatReplyLog = ChatReplyLog.of(
         messageId,
         chatRoomId,
@@ -223,7 +223,7 @@ object TestDataFactory {
         messageId: String,
         chatRoomId: String,
         userId: UserId,
-        chatRoomNumber: ChatNumber,
+        chatRoomNumber: ChatLogSequence,
     ): ChatLeaveLog = ChatLeaveLog.of(
         messageId,
         chatRoomId,
@@ -237,7 +237,7 @@ object TestDataFactory {
         messageId: String,
         chatRoomId: String,
         userId: UserId,
-        chatRoomNumber: ChatNumber,
+        chatRoomNumber: ChatLogSequence,
     ): ChatFileLog = ChatFileLog.of(
         messageId,
         chatRoomId,
@@ -252,9 +252,9 @@ object TestDataFactory {
 
     fun createChatSequenceNumber(chatRoomId: String): ChatSequenceNumber = ChatSequenceNumber.of(1, chatRoomId)
 
-    fun createChatNumber(chatRoomId: String): ChatNumber = ChatNumber.of(chatRoomId, 0, 0)
+    fun createChatNumber(chatRoomId: String): ChatLogSequence = ChatLogSequence.of(chatRoomId, 0, 0)
 
-    fun create100SeqChatNumber(chatRoomId: String): ChatNumber = ChatNumber.of(chatRoomId, 100, 2)
+    fun create100SeqChatNumber(chatRoomId: String): ChatLogSequence = ChatLogSequence.of(chatRoomId, 100, 2)
 
     fun createChatRoomInfo(chatRoomId: String): ChatRoomInfo = ChatRoomInfo.of(chatRoomId, false)
 
@@ -288,7 +288,7 @@ object TestDataFactory {
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
         text = "text",
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
 
@@ -296,7 +296,7 @@ object TestDataFactory {
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
         targetUserIds = listOf(UserId.of("targetUserId")),
     )
@@ -305,7 +305,7 @@ object TestDataFactory {
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
         medias = listOf(Media.of(FileCategory.CHAT, "www.example.com", 0, MediaType.IMAGE_PNG)),
     )
@@ -314,14 +314,14 @@ object TestDataFactory {
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
 
     fun createReadMessage(chatRoomId: String): ChatReadMessage = ChatReadMessage.of(
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
 
@@ -329,7 +329,7 @@ object TestDataFactory {
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
         parentMessageId = "parentMessageId",
         parentMessageText = "parentMessageText",
@@ -344,7 +344,7 @@ object TestDataFactory {
         targetMessageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
 

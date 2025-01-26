@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
-data class ChatSequenceMongoEntity(
+data class ChatRoomSequenceMongoEntity(
     @Id
     val chatRoomId: String,
     var seqNumber: Int,

@@ -85,8 +85,15 @@ class ChatLogService(
         return chatReader.readLatestMessages(chatNumbers)
     }
 
-    fun getChatLog(chatRoomId: String, page: Int): List<ChatLog> {
-        return chatReader.readChatLog(chatRoomId, page)
+    fun getChatLog(chatRoomId: String, page: Int, userStartSequence: Int): List<ChatLog> {
+        val chatLogs =  chatReader.readChatLog(chatRoomId, page)
+        return chatLogs.filter { it.number.sequenceNumber > userStartSequence }
+    }
+
+    fun getLatestChatLog(chatRoomId: String, userStartSequence: Int): List<ChatLog> {
+        val chatNumber = chatFinder.findCurrentNumber(chatRoomId)
+        val chatLogs =  chatReader.readChatLog(chatRoomId, chatNumber.page)
+        return chatLogs.filter { it.number.sequenceNumber > userStartSequence }
     }
     fun getChatKeyWordLog(chatRoomId: String, resultKeyword: String): List<ChatLog> {
         return chatReader.readChatKeyWordLog(chatRoomId, resultKeyword)

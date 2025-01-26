@@ -1,6 +1,6 @@
 package org.chewing.v1.model.chat.log
 
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
@@ -10,7 +10,7 @@ class ChatFileLog private constructor(
     override val chatRoomId: String,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    override val number: ChatNumber,
+    override val number: ChatLogSequence,
     override val type: ChatLogType,
     val medias: List<Media>,
 ) : ChatLog() {
@@ -21,7 +21,7 @@ class ChatFileLog private constructor(
             senderId: UserId,
             medias: List<Media>,
             timestamp: LocalDateTime,
-            number: ChatNumber,
+            number: ChatLogSequence,
             type: ChatLogType,
         ): ChatFileLog {
             return ChatFileLog(

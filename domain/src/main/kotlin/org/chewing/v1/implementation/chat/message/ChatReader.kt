@@ -3,7 +3,7 @@ package org.chewing.v1.implementation.chat.message
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.model.chat.log.ChatLog
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.repository.chat.ChatLogRepository
 import org.springframework.stereotype.Component
 
@@ -22,7 +22,7 @@ class ChatReader(
         return chatLogRepository.readChatMessage(messageId) ?: throw NotFoundException(ErrorCode.CHATLOG_NOT_FOUND)
     }
 
-    fun readLatestMessages(numbers: List<ChatNumber>): List<ChatLog> {
+    fun readLatestMessages(numbers: List<ChatLogSequence>): List<ChatLog> {
         return chatLogRepository.readLatestMessages(numbers)
     }
 }

@@ -1,17 +1,18 @@
 package org.chewing.v1.model.chat.room
 
-class ChatNumber private constructor(
+
+class DirectChatLogSequence private constructor(
     val sequenceNumber: Int,
-    val chatRoomId: String,
+    val chatRoomId: ChatRoomId,
     val page: Int,
 ) {
     companion object {
         fun of(
-            chatRoomId: String,
+            chatRoomId: ChatRoomId,
             sequenceNumber: Int,
             page: Int,
-        ): ChatNumber {
-            return ChatNumber(
+        ): DirectChatLogSequence {
+            return DirectChatLogSequence(
                 sequenceNumber = sequenceNumber,
                 chatRoomId = chatRoomId,
                 page = page,

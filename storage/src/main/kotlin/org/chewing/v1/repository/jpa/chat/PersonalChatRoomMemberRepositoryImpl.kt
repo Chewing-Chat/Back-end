@@ -4,7 +4,7 @@ import org.chewing.v1.jpaentity.chat.ChatRoomMemberId
 import org.chewing.v1.jpaentity.chat.PersonalChatRoomMemberJpaEntity
 import org.chewing.v1.jparepository.chat.PersonalChatRoomMemberJpaRepository
 import org.chewing.v1.model.chat.member.ChatRoomMemberInfo
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.chat.PersonalChatRoomMemberRepository
 import org.springframework.stereotype.Repository
@@ -26,7 +26,7 @@ internal class PersonalChatRoomMemberRepositoryImpl(
             listOf(it.toRoomOwned(), it.toRoomFriend())
         }
 
-    override fun appendIfNotExist(chatRoomId: String, userId: UserId, friendId: UserId, number: ChatNumber) {
+    override fun appendIfNotExist(chatRoomId: String, userId: UserId, friendId: UserId, number: ChatLogSequence) {
         personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId)).orElseGet {
             val entity = PersonalChatRoomMemberJpaEntity.generate(
                 userId,
@@ -38,7 +38,7 @@ internal class PersonalChatRoomMemberRepositoryImpl(
         }
     }
 
-    override fun updateRead(userId: UserId, number: ChatNumber) {
+    override fun updateRead(userId: UserId, number: ChatLogSequence) {
         personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(number.chatRoomId, userId)).ifPresent {
             it.updateRead(number)
             personalChatRoomMemberJpaRepository.save(it)

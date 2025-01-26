@@ -2,7 +2,7 @@ package org.chewing.v1.repository.support
 
 import org.chewing.v1.model.chat.message.ChatMessage
 import org.chewing.v1.mongoentity.ChatMessageMongoEntity
-import org.chewing.v1.mongoentity.ChatSequenceMongoEntity
+import org.chewing.v1.mongoentity.ChatRoomSequenceMongoEntity
 import org.chewing.v1.mongorepository.ChatLogMongoRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -30,6 +30,6 @@ class MongoDataGenerator {
     fun insertSeqNumber(roomId: String, seqNumber: Long) {
         val query = Query(Criteria.where("chatRoomId").`is`(roomId))
         val update = Update().set("seqNumber", seqNumber)
-        mongoTemplate.upsert(query, update, ChatSequenceMongoEntity::class.java)
+        mongoTemplate.upsert(query, update, ChatRoomSequenceMongoEntity::class.java)
     }
 }

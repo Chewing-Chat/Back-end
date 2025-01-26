@@ -5,7 +5,7 @@ import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.chat.log.*
 import org.chewing.v1.mongorepository.ChatLogMongoRepository
-import org.chewing.v1.repository.mongo.chat.ChatLogRepositoryImpl
+import org.chewing.v1.repository.mongo.chat.log.ChatLogRepositoryImpl
 import org.chewing.v1.repository.support.ChatMessageProvider
 import org.chewing.v1.repository.support.MongoDataGenerator
 import org.junit.jupiter.api.Test

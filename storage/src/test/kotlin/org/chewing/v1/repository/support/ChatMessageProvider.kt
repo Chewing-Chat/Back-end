@@ -3,7 +3,7 @@ package org.chewing.v1.repository.support
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.message.*
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
@@ -13,7 +13,7 @@ object ChatMessageProvider {
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
         text = "text",
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
 
@@ -22,7 +22,7 @@ object ChatMessageProvider {
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
         text = text,
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
 
@@ -30,7 +30,7 @@ object ChatMessageProvider {
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
 
@@ -38,7 +38,7 @@ object ChatMessageProvider {
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         targetUserIds = listOf(UserId.of("target")),
         timestamp = LocalDateTime.now(),
     )
@@ -47,7 +47,7 @@ object ChatMessageProvider {
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
         medias = listOf(MediaProvider.buildChatContent()),
     )
@@ -57,7 +57,7 @@ object ChatMessageProvider {
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
         text = "text",
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
         parentMessageId = normalLog.messageId,
         parentMessagePage = normalLog.number.page,
@@ -72,7 +72,7 @@ object ChatMessageProvider {
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
         text = "text",
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
         type = ChatLogType.NORMAL,
     )
@@ -80,14 +80,14 @@ object ChatMessageProvider {
     fun buildReadMessage(chatRoomId: String): ChatReadMessage = ChatReadMessage.of(
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
     )
 
     fun buildDeleteMessage(chatRoomId: String): ChatDeleteMessage = ChatDeleteMessage.of(
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatNumber.of(chatRoomId, 1, 1),
+        number = ChatLogSequence.of(chatRoomId, 1, 1),
         timestamp = LocalDateTime.now(),
         targetMessageId = "target",
     )

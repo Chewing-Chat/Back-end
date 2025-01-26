@@ -3,7 +3,7 @@ package org.chewing.v1.repository
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.chat.ChatRoomMemberId
 import org.chewing.v1.jparepository.chat.PersonalChatRoomMemberJpaRepository
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.chat.PersonalChatRoomMemberRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
@@ -26,7 +26,7 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         val chatRoomId = generateChatRoomId()
         val userId = generateUserId()
         val friendId = generateUserId()
-        val number = ChatNumber.of(chatRoomId, 1, 1)
+        val number = ChatLogSequence.of(chatRoomId, 1, 1)
         jpaDataGenerator.personalChatRoomMemberEntityData(userId, friendId, chatRoomId, number)
         val chatRoomMemberInfo = chatRoomMemberRepositoryImpl.readFriend(chatRoomId, userId)
         assert(chatRoomMemberInfo != null)
@@ -42,7 +42,7 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         val chatRoomId = generateChatRoomId()
         val userId = generateUserId()
         val friendId = generateUserId()
-        val number = ChatNumber.of(chatRoomId, 1, 1)
+        val number = ChatLogSequence.of(chatRoomId, 1, 1)
 
         // friendId2가 userId2의 채팅방에 속해있지 않은 상태
         chatRoomMemberRepositoryImpl.appendIfNotExist(chatRoomId, userId, friendId, number)
@@ -61,8 +61,8 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         val chatRoomId = generateChatRoomId()
         val userId = generateUserId()
         val friendId = generateUserId()
-        val number = ChatNumber.of(chatRoomId, 1, 1)
-        val newNumber = ChatNumber.of(chatRoomId, 2, 2)
+        val number = ChatLogSequence.of(chatRoomId, 1, 1)
+        val newNumber = ChatLogSequence.of(chatRoomId, 2, 2)
 
         // friendId3이 userId3의 채팅방에 속해있는 상태
         jpaDataGenerator.personalChatRoomMemberEntityData(friendId, userId, chatRoomId, number)
@@ -83,7 +83,7 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         val chatRoomId = generateChatRoomId()
         val userId = generateUserId()
         val friendId = generateUserId()
-        val number = ChatNumber.of(chatRoomId, 1, 1)
+        val number = ChatLogSequence.of(chatRoomId, 1, 1)
         jpaDataGenerator.personalChatRoomMemberEntityData(userId, friendId, chatRoomId, number)
         chatRoomMemberRepositoryImpl.removes(listOf(chatRoomId), userId)
         val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, friendId))
@@ -95,7 +95,7 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         val chatRoomId = generateChatRoomId()
         val userId = generateUserId()
         val friendId = generateUserId()
-        val number = ChatNumber.of(chatRoomId, 1, 1)
+        val number = ChatLogSequence.of(chatRoomId, 1, 1)
         jpaDataGenerator.personalChatRoomMemberEntityData(friendId, userId, chatRoomId, number)
         jpaDataGenerator.personalChatRoomMemberEntityData(userId, friendId, chatRoomId, number)
         val chatRoomMemberInfo = chatRoomMemberRepositoryImpl.reads(userId)
@@ -107,7 +107,7 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         val chatRoomId = generateChatRoomId()
         val userId = generateUserId()
         val friendId = generateUserId()
-        val number = ChatNumber.of(chatRoomId, 1, 1)
+        val number = ChatLogSequence.of(chatRoomId, 1, 1)
         jpaDataGenerator.personalChatRoomMemberEntityData(userId, friendId, chatRoomId, number)
         chatRoomMemberRepositoryImpl.updateFavorite(chatRoomId, userId, true)
         val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId))
@@ -120,13 +120,13 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         val chatRoomId = generateChatRoomId()
         val userId = generateUserId()
         val friendId = generateUserId()
-        val preChatNumber = ChatNumber.of(chatRoomId, 1, 0)
-        val chatNumber = ChatNumber.of(chatRoomId, 50, 1)
-        jpaDataGenerator.personalChatRoomMemberEntityData(userId, friendId, chatRoomId, preChatNumber)
-        chatRoomMemberRepositoryImpl.updateRead(userId, chatNumber)
+        val preChatLogSequence = ChatLogSequence.of(chatRoomId, 1, 0)
+        val chatLogSequence = ChatLogSequence.of(chatRoomId, 50, 1)
+        jpaDataGenerator.personalChatRoomMemberEntityData(userId, friendId, chatRoomId, preChatLogSequence)
+        chatRoomMemberRepositoryImpl.updateRead(userId, chatLogSequence)
         val result = personalChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(chatRoomId, userId))
         assert(result.isPresent)
-        assert(result.get().toRoomOwned().readSeqNumber == chatNumber.sequenceNumber)
+        assert(result.get().toRoomOwned().readSeqNumber == chatLogSequence.sequenceNumber)
     }
 
     @Test
@@ -134,7 +134,7 @@ internal class PersonalChatRoomMemberRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val friendId = generateUserId()
         val chatRoomId = generateChatRoomId()
-        val number = ChatNumber.of(chatRoomId, 1, 1)
+        val number = ChatLogSequence.of(chatRoomId, 1, 1)
         jpaDataGenerator.personalChatRoomMemberEntityData(userId, friendId, chatRoomId, number)
         val result = chatRoomMemberRepositoryImpl.readIdIfExist(userId, friendId)
         assert(result == chatRoomId)

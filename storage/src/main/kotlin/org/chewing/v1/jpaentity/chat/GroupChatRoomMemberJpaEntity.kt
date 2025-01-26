@@ -2,7 +2,7 @@ package org.chewing.v1.jpaentity.chat
 
 import jakarta.persistence.*
 import org.chewing.v1.model.chat.member.ChatRoomMemberInfo
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.user.UserId
 
 @Entity
@@ -24,7 +24,7 @@ internal data class GroupChatRoomMemberJpaEntity(
     private var startSeqNumber: Int,
 ) {
     companion object {
-        fun generate(userId: UserId, chatRoomId: String, number: ChatNumber): GroupChatRoomMemberJpaEntity = GroupChatRoomMemberJpaEntity(
+        fun generate(userId: UserId, chatRoomId: String, number: ChatLogSequence): GroupChatRoomMemberJpaEntity = GroupChatRoomMemberJpaEntity(
             id = ChatRoomMemberId.of(chatRoomId, userId),
             favorite = false,
             readSeqNumber = number.sequenceNumber,
@@ -44,7 +44,7 @@ internal data class GroupChatRoomMemberJpaEntity(
         this.favorite = favorite
     }
 
-    fun updateRead(number: ChatNumber) {
+    fun updateRead(number: ChatLogSequence) {
         this.readSeqNumber = number.sequenceNumber
     }
 

@@ -4,7 +4,7 @@ import org.chewing.v1.jpaentity.chat.ChatRoomMemberId
 import org.chewing.v1.jpaentity.chat.GroupChatRoomMemberJpaEntity
 import org.chewing.v1.jparepository.chat.GroupChatRoomMemberJpaRepository
 import org.chewing.v1.model.chat.member.ChatRoomMemberInfo
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.chat.GroupChatRoomMemberRepository
 import org.springframework.stereotype.Repository
@@ -44,20 +44,20 @@ internal class GroupChatRoomMemberRepositoryImpl(
         groupChatRoomMemberJpaRepository.deleteAllById(chatRoomMemberIds)
     }
 
-    override fun appends(chatRoomId: String, userIds: List<UserId>, number: ChatNumber) {
+    override fun appends(chatRoomId: String, userIds: List<UserId>, number: ChatLogSequence) {
         userIds.map { GroupChatRoomMemberJpaEntity.generate(it, chatRoomId, number) }.let {
             groupChatRoomMemberJpaRepository.saveAll(it)
         }
     }
 
-    override fun updateRead(userId: UserId, number: ChatNumber) {
+    override fun updateRead(userId: UserId, number: ChatLogSequence) {
         groupChatRoomMemberJpaRepository.findById(ChatRoomMemberId.of(number.chatRoomId, userId)).ifPresent {
             it.updateRead(number)
             groupChatRoomMemberJpaRepository.save(it)
         }
     }
 
-    override fun append(chatRoomId: String, userId: UserId, number: ChatNumber) {
+    override fun append(chatRoomId: String, userId: UserId, number: ChatLogSequence) {
         groupChatRoomMemberJpaRepository.save(GroupChatRoomMemberJpaEntity.generate(userId, chatRoomId, number))
     }
 }

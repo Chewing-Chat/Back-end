@@ -1,7 +1,7 @@
 package org.chewing.v1.model.chat.message
 
 import org.chewing.v1.model.chat.log.ChatLogType
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
@@ -10,7 +10,7 @@ class ChatReplyMessage private constructor(
     override val chatRoomId: String,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    override val number: ChatNumber,
+    override val number: ChatLogSequence,
     override val type: MessageType,
     val text: String,
     val parentMessageId: String,
@@ -28,7 +28,7 @@ class ChatReplyMessage private constructor(
             parentMessagePage: Int,
             parentSeqNumber: Int,
             timestamp: LocalDateTime,
-            number: ChatNumber,
+            number: ChatLogSequence,
             text: String,
             parentMessageText: String,
             type: MessageType,

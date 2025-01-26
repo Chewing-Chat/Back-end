@@ -1,11 +1,11 @@
-package org.chewing.v1.repository.mongo.chat
+package org.chewing.v1.repository.mongo.chat.log
 
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.chat.log.ChatLog
-import org.chewing.v1.model.chat.message.*
-import org.chewing.v1.model.chat.room.ChatNumber
-import org.chewing.v1.mongoentity.*
+import org.chewing.v1.model.chat.message.ChatMessage
+import org.chewing.v1.model.chat.room.ChatLogSequence
+import org.chewing.v1.mongoentity.ChatMessageMongoEntity
 import org.chewing.v1.mongorepository.ChatLogMongoRepository
 import org.chewing.v1.repository.chat.ChatLogRepository
 import org.springframework.stereotype.Repository
@@ -25,7 +25,7 @@ internal class ChatLogRepositoryImpl(
     override fun readChatMessage(messageId: String): ChatLog? =
         chatLogMongoRepository.findById(messageId).map { it.toChatLog() }.orElse(null)
 
-    override fun readLatestMessages(numbers: List<ChatNumber>): List<ChatLog> {
+    override fun readLatestMessages(numbers: List<ChatLogSequence>): List<ChatLog> {
         // MongoDB에서 chatRoomId와 seqNumber로 메시지 조회
         val conditions = numbers.map { mapOf("chatRoomId" to it.chatRoomId, "seqNumber" to it.sequenceNumber) }
         val messageEntities = chatLogMongoRepository.findByRoomIdAndSeqNumbers(conditions)
@@ -45,7 +45,7 @@ internal class ChatLogRepositoryImpl(
 
     override fun appendChatLog(chatMessage: ChatMessage) {
         chatLogMongoRepository.save(
-            ChatMessageMongoEntity.fromChatMessage(chatMessage) ?: throw ConflictException(
+            ChatMessageMongoEntity.Companion.fromChatMessage(chatMessage) ?: throw ConflictException(
                 ErrorCode.INVALID_TYPE,
             ),
         )

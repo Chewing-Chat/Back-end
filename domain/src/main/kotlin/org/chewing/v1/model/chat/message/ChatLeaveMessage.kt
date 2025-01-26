@@ -1,6 +1,6 @@
 package org.chewing.v1.model.chat.message
 
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
@@ -10,7 +10,7 @@ class ChatLeaveMessage private constructor(
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
     override val type: MessageType = MessageType.LEAVE,
-    override val number: ChatNumber,
+    override val number: ChatLogSequence,
 ) : ChatMessage() {
 
     companion object {
@@ -19,7 +19,7 @@ class ChatLeaveMessage private constructor(
             chatRoomId: String,
             senderId: UserId,
             timestamp: LocalDateTime,
-            number: ChatNumber,
+            number: ChatLogSequence,
         ): ChatLeaveMessage {
             return ChatLeaveMessage(
                 messageId = messageId,

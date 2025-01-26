@@ -3,7 +3,7 @@ package org.chewing.v1.service.chat
 import org.chewing.v1.implementation.chat.room.*
 import org.chewing.v1.implementation.chat.sequence.ChatFinder
 import org.chewing.v1.model.chat.member.ChatRoomMemberInfo
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.chat.room.ChatRoomInfo
 import org.chewing.v1.model.chat.room.Room
 import org.chewing.v1.model.user.UserId
@@ -49,8 +49,8 @@ class RoomService(
             return chatRoomId
         } else {
             val newRoomId = chatRoomAppender.append(false)
-            val newChatNumber = ChatNumber.of(newRoomId, 0, 0)
-            chatRoomAppender.appendIfNotExistPersonalMember(newRoomId, userId, friendId, newChatNumber)
+            val newChatLogSequence = ChatLogSequence.of(newRoomId, 0, 0)
+            chatRoomAppender.appendIfNotExistPersonalMember(newRoomId, userId, friendId, newChatLogSequence)
             return newRoomId
         }
     }
@@ -72,7 +72,7 @@ class RoomService(
         }
     }
 
-    fun activateChatRoom(chatRoomId: String, userId: UserId, number: ChatNumber): ChatRoomInfo {
+    fun activateChatRoom(chatRoomId: String, userId: UserId, number: ChatLogSequence): ChatRoomInfo {
         val chatRoom = chatRoomReader.readChatRoom(chatRoomId)
         if (!chatRoom.isGroup) {
             val friendMember = chatRoomReader.readPersonalFriend(chatRoomId, userId)
@@ -92,7 +92,7 @@ class RoomService(
         chatRoomHandler.lockFavoriteChatRoom(chatRoomInfo.chatRoomId, userId, favorite, chatRoomInfo.isGroup)
     }
 
-    fun updateReadChatRoom(chatRoomId: String, userId: UserId, number: ChatNumber) {
+    fun updateReadChatRoom(chatRoomId: String, userId: UserId, number: ChatLogSequence) {
         val chatRoomInfo = chatRoomReader.readChatRoom(chatRoomId)
         chatRoomHandler.lockReadChatRoom(userId, number, chatRoomInfo.isGroup)
     }

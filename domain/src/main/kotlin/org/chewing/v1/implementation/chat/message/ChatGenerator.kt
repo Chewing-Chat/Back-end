@@ -8,7 +8,7 @@ import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.log.ChatReplyLog
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.message.MessageType
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Component
@@ -20,7 +20,7 @@ class ChatGenerator {
     fun generateReadMessage(
         chatRoomId: String,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatLogSequence,
     ): ChatReadMessage {
         return ChatReadMessage.of(
             chatRoomId = chatRoomId,
@@ -33,7 +33,7 @@ class ChatGenerator {
     fun generateDeleteMessage(
         chatRoomId: String,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatLogSequence,
         messageId: String,
     ): ChatDeleteMessage {
         return ChatDeleteMessage.of(
@@ -48,7 +48,7 @@ class ChatGenerator {
     fun generateNormalMessage(
         chatRoomId: String,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatLogSequence,
         text: String,
     ): ChatNormalMessage {
         return ChatNormalMessage.of(
@@ -64,7 +64,7 @@ class ChatGenerator {
     fun generateInviteMessage(
         chatRoomId: String,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatLogSequence,
         targetUserIds: List<UserId>,
     ): ChatInviteMessage {
         return ChatInviteMessage.of(
@@ -80,7 +80,7 @@ class ChatGenerator {
     fun generateLeaveMessage(
         chatRoomId: String,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatLogSequence,
     ): ChatLeaveMessage {
         return ChatLeaveMessage.of(
             generateKey(chatRoomId),
@@ -94,7 +94,7 @@ class ChatGenerator {
     fun generateFileMessage(
         chatRoomId: String,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatLogSequence,
         medias: List<Media>,
     ): ChatFileMessage {
         return ChatFileMessage.of(
@@ -110,7 +110,7 @@ class ChatGenerator {
     fun generateReplyMessage(
         chatRoomId: String,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatLogSequence,
         text: String,
         parentLog: ChatLog,
     ): ChatReplyMessage {

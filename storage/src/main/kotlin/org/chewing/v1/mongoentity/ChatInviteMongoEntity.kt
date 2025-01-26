@@ -4,7 +4,7 @@ import org.chewing.v1.model.chat.log.ChatInviteLog
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.message.ChatInviteMessage
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.user.UserId
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
@@ -49,7 +49,7 @@ internal class ChatInviteMongoEntity(
             chatRoomId = chatRoomId,
             senderId = UserId.of(senderId),
             timestamp = sendTime,
-            number = ChatNumber.of(chatRoomId, seqNumber, page),
+            number = ChatLogSequence.of(chatRoomId, seqNumber, page),
             targetUserIds = targetUserIds,
             type = type,
         )

@@ -39,7 +39,7 @@ import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.chat.room.ChatRoomInfo
 import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
@@ -250,11 +250,11 @@ class JpaDataGenerator {
         return chatRoom.toChatRoomInfo()
     }
 
-    fun groupChatRoomMemberEntityData(chatRoomId: String, userId: UserId, number: ChatNumber) {
+    fun groupChatRoomMemberEntityData(chatRoomId: String, userId: UserId, number: ChatLogSequence) {
         groupChatRoomMemberJpaRepository.save(GroupChatRoomMemberJpaEntity.generate(userId, chatRoomId, number))
     }
 
-    fun groupChatRoomMemberEntityDataList(chatRoomId: String, userIds: List<UserId>, number: ChatNumber) {
+    fun groupChatRoomMemberEntityDataList(chatRoomId: String, userIds: List<UserId>, number: ChatLogSequence) {
         groupChatRoomMemberJpaRepository.saveAll(
             userIds.map {
                 GroupChatRoomMemberJpaEntity.generate(
@@ -266,7 +266,7 @@ class JpaDataGenerator {
         )
     }
 
-    fun personalChatRoomMemberEntityData(userId: UserId, friendId: UserId, chatRoomId: String, number: ChatNumber) {
+    fun personalChatRoomMemberEntityData(userId: UserId, friendId: UserId, chatRoomId: String, number: ChatLogSequence) {
         personalChatRoomMemberJpaRepository.save(
             PersonalChatRoomMemberJpaEntity.generate(
                 userId,

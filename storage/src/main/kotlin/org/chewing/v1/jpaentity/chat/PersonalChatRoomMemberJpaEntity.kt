@@ -2,7 +2,7 @@ package org.chewing.v1.jpaentity.chat
 
 import jakarta.persistence.*
 import org.chewing.v1.model.chat.member.ChatRoomMemberInfo
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.user.UserId
 
 @Entity
@@ -29,7 +29,7 @@ internal class PersonalChatRoomMemberJpaEntity(
             userId: UserId,
             friendId: UserId,
             chatRoomId: String,
-            number: ChatNumber,
+            number: ChatLogSequence,
         ): PersonalChatRoomMemberJpaEntity = PersonalChatRoomMemberJpaEntity(
             id = ChatRoomMemberId.of(chatRoomId, userId),
             friendId = friendId.id,
@@ -59,7 +59,7 @@ internal class PersonalChatRoomMemberJpaEntity(
     fun updateFavorite(favorite: Boolean) {
         this.favorite = favorite
     }
-    fun updateRead(number: ChatNumber) {
+    fun updateRead(number: ChatLogSequence) {
         this.readSeqNumber = number.sequenceNumber
     }
 

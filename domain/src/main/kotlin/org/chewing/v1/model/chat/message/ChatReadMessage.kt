@@ -1,6 +1,6 @@
 package org.chewing.v1.model.chat.message
 
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
@@ -9,14 +9,14 @@ class ChatReadMessage private constructor(
     override val type: MessageType = MessageType.READ,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    override val number: ChatNumber,
+    override val number: ChatLogSequence,
 ) : ChatMessage() {
     companion object {
         fun of(
             chatRoomId: String,
             senderId: UserId,
             timestamp: LocalDateTime,
-            number: ChatNumber,
+            number: ChatLogSequence,
         ): ChatReadMessage {
             return ChatReadMessage(
                 chatRoomId = chatRoomId,

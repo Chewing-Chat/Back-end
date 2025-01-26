@@ -1,6 +1,6 @@
 package org.chewing.v1.implementation.chat.room
 
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatLogSequence
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.chat.GroupChatRoomMemberRepository
 import org.chewing.v1.repository.chat.PersonalChatRoomMemberRepository
@@ -21,7 +21,7 @@ class ChatRoomUpdater(
         }
     }
 
-    fun updateRead(userId: UserId, number: ChatNumber, isGroup: Boolean) {
+    fun updateRead(userId: UserId, number: ChatLogSequence, isGroup: Boolean) {
         isGroup.let {
             if (it) {
                 groupChatRoomMemberRepository.updateRead(userId, number)
