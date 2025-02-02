@@ -1,5 +1,7 @@
 package org.chewing.v1.mongoentity
 
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.DirectChatLogSequence
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.mapping.Document
@@ -12,4 +14,12 @@ data class ChatRoomMemberSequenceMongoEntity(
     val memberId: String,
     var readSeqNumber: Int,
     var startReadSeqNumber: Int
-)
+){
+    fun toChatRoomMemberSequence(): DirectChatLogSequence {
+        return DirectChatLogSequence.of(
+            chatRoomId = ChatRoomId.of(chatRoomId),
+            sequenceNumber = readSeqNumber,
+            page = 0
+        )
+    }
+}
