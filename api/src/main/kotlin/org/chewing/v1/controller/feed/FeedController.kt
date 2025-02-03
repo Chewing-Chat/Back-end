@@ -13,6 +13,7 @@ import org.chewing.v1.service.feed.FeedService
 import org.chewing.v1.util.helper.FileHelper
 import org.chewing.v1.util.helper.ResponseHelper
 import org.chewing.v1.util.aliases.SuccessResponseEntity
+import org.chewing.v1.util.security.CurrentUser
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -25,48 +26,48 @@ class FeedController(
 
     @GetMapping("/{feedId}/detail")
     fun getFeed(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @PathVariable("feedId") feedId: String,
     ): SuccessResponseEntity<FeedResponse> {
-        val feed = feedService.getFeed(FeedId.of(feedId), UserId.of(userId))
+        val feed = feedService.getFeed(FeedId.of(feedId), userId)
         return ResponseHelper.success(FeedResponse.of(feed))
     }
 
     @GetMapping("/owned/list")
     fun getOwnedFeedThumbnails(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
     ): SuccessResponseEntity<ThumbnailFeedsResponse> {
-        val feeds = feedService.getFeeds(UserId.of(userId), UserId.of(userId))
+        val feeds = feedService.getFeeds(userId, userId)
         return ResponseHelper.success(ThumbnailFeedsResponse.of(feeds))
     }
 
     @GetMapping("/friend/{friendId}/list")
     fun getFriendFeedThumbnails(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @PathVariable("friendId") friendId: String,
     ): SuccessResponseEntity<ThumbnailFeedsResponse> {
-        val feeds = feedAccessFacade.getFriendFeeds(UserId.of(userId), UserId.of(friendId))
+        val feeds = feedAccessFacade.getFriendFeeds(userId, UserId.of(friendId))
         return ResponseHelper.success(ThumbnailFeedsResponse.of(feeds))
     }
 
     @DeleteMapping("")
     fun deleteFeeds(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: List<FeedRequest.Delete>,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
-        feedService.removes(UserId.of(userId), request.map { it.toFeedId() })
+        feedService.removes(userId, request.map { it.toFeedId() })
         return ResponseHelper.successOnly()
     }
 
     @PostMapping("")
     fun createFeed(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestPart("files") files: List<MultipartFile>,
         @RequestParam("content") content: String,
         @RequestParam("friendIds") friendIds: List<String>,
     ): SuccessResponseEntity<FeedIdResponse> {
         val convertFiles = FileHelper.convertMultipartFileToFileDataList(files)
-        val feedId = feedService.make(UserId.of(userId), friendIds.map { UserId.of(it) }, convertFiles, content, FileCategory.FEED)
+        val feedId = feedService.make(userId, friendIds.map { UserId.of(it) }, convertFiles, content, FileCategory.FEED)
         return ResponseHelper.successCreate(FeedIdResponse.of(feedId))
     }
 }

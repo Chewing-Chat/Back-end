@@ -15,9 +15,11 @@ import org.chewing.v1.controller.user.UserController
 import org.chewing.v1.dto.request.user.UserRequest
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.user.AccessStatus
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.user.UserService
 import org.chewing.v1.util.converter.StringToFileCategoryConverter
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.chewing.v1.util.security.UserArgumentResolver
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -32,6 +34,8 @@ import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.request.RequestDocumentation.partWithName
 import org.springframework.restdocs.request.RequestDocumentation.requestParts
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
@@ -49,7 +53,11 @@ class UserControllerTest : RestDocsTest() {
             userController,
             GlobalExceptionHandler(),
             StringToFileCategoryConverter(),
+            UserArgumentResolver(),
         )
+        val userId = UserId.of("testUserId")
+        val authentication = UsernamePasswordAuthenticationToken(userId, null)
+        SecurityContextHolder.getContext().authentication = authentication
     }
 
     @Test

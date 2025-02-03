@@ -25,9 +25,11 @@ import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.auth.CredentialTarget
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.chewing.v1.util.security.JwtTokenUtil
+import org.chewing.v1.util.security.UserArgumentResolver
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -40,6 +42,8 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
@@ -49,6 +53,7 @@ class AuthControllerTest : RestDocsTest() {
     private lateinit var accountFacade: AccountFacade
     private lateinit var exceptionHandler: GlobalExceptionHandler
     private lateinit var jwtTokenUtil: JwtTokenUtil
+    private lateinit var userArgumentResolver: UserArgumentResolver
 
     @BeforeEach
     fun setUp() {
@@ -56,8 +61,12 @@ class AuthControllerTest : RestDocsTest() {
         accountFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
         jwtTokenUtil = mockk()
+        userArgumentResolver = UserArgumentResolver()
         authController = AuthController(authService, accountFacade, jwtTokenUtil)
-        mockMvc = mockController(authController, exceptionHandler)
+        mockMvc = mockController(authController, exceptionHandler, userArgumentResolver)
+        val userId = UserId.of("testUserId")
+        val authentication = UsernamePasswordAuthenticationToken(userId, null)
+        SecurityContextHolder.getContext().authentication = authentication
     }
 
     @Test

@@ -13,6 +13,7 @@ enum class ErrorCode(
     EXPIRED_VERIFICATION_CODE("AUTH_2", "인증 번호가 만료되었습니다."),
     TOKEN_EXPIRED("AUTH_3", "토큰이 만료되었습니다."),
     INVALID_TOKEN("AUTH_4", "토큰을 확인해주세요"),
+    NOT_AUTHORIZED("AUTH_5", "인증되지 않았습니다."),
     PHONE_NUMBER_IS_USED("AUTH_5", "해당 전화번호로 이미 다른 사람이 사용중입니다."),
     EMAIL_ADDRESS_IS_USED("AUTH_6", "해당 이메일로 이미 다른 사람이 사용중입니다."),
     EMAIL_NOT_FOUND("AUTH_7", "해당 이메일을 찾을 수 없습니다."),

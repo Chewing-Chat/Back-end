@@ -19,8 +19,10 @@ import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.user.ScheduleService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.chewing.v1.util.security.UserArgumentResolver
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -32,6 +34,8 @@ import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
 import org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import org.springframework.restdocs.request.RequestDocumentation.queryParameters
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import java.time.format.DateTimeFormatter
 
@@ -40,12 +44,17 @@ class ScheduleControllerTest : RestDocsTest() {
 
     private lateinit var scheduleService: ScheduleService
     private lateinit var scheduleController: ScheduleController
+    private lateinit var userArgumentResolver: UserArgumentResolver
 
     @BeforeEach
     fun setUp() {
         scheduleService = mockk()
+        userArgumentResolver = UserArgumentResolver()
         scheduleController = ScheduleController(scheduleService)
-        mockMvc = mockController(scheduleController, GlobalExceptionHandler())
+        mockMvc = mockController(scheduleController, GlobalExceptionHandler(), userArgumentResolver)
+        val userId = UserId.of("testUserId")
+        val authentication = UsernamePasswordAuthenticationToken(userId, null)
+        SecurityContextHolder.getContext().authentication = authentication
     }
 
     @Test

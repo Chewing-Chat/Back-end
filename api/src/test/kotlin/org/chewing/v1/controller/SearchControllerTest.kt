@@ -4,9 +4,13 @@ import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.controller.search.SearchController
 import org.chewing.v1.facade.SearchFacade
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.search.SearchService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.chewing.v1.util.security.UserArgumentResolver
 import org.junit.jupiter.api.BeforeEach
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
@@ -15,13 +19,18 @@ class SearchControllerTest : RestDocsTest() {
     private lateinit var searchFacade: SearchFacade
     private lateinit var searchService: SearchService
     private lateinit var searchController: SearchController
+    private lateinit var userArgumentResolver: UserArgumentResolver
 
     @BeforeEach
     fun setUp() {
         searchFacade = mockk()
         searchService = mockk()
+        userArgumentResolver = UserArgumentResolver()
         searchController = SearchController(searchFacade, searchService)
-        mockMvc = mockController(searchController, GlobalExceptionHandler())
+        mockMvc = mockController(searchController, GlobalExceptionHandler(), userArgumentResolver)
+        val userId = UserId.of("testUserId")
+        val authentication = UsernamePasswordAuthenticationToken(userId, null)
+        SecurityContextHolder.getContext().authentication = authentication
     }
 
 //    @Test
