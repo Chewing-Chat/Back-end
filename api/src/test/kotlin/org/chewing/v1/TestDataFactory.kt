@@ -6,7 +6,8 @@ import org.chewing.v1.model.auth.JwtToken
 import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.chat.log.*
 import org.chewing.v1.model.chat.message.*
-import org.chewing.v1.model.chat.room.ChatLogSequence
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatSequence
 import org.chewing.v1.model.contact.LocalPhoneNumber
 import org.chewing.v1.model.feed.Feed
 import org.chewing.v1.model.feed.FeedDetail
@@ -178,68 +179,67 @@ object TestDataFactory {
         return Announcement.of(AnnouncementId.of("announcementId"), "title", LocalDateTime.now(), "content")
     }
 
-    fun createNormalMessage(messageId: String, chatRoomId: String): ChatNormalMessage {
+    fun createNormalMessage(messageId: String, chatRoomId: ChatRoomId): ChatNormalMessage {
         return ChatNormalMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
             senderId = UserId.of("senderId"),
             text = "text",
-            number = ChatLogSequence.of(chatRoomId, 1, 1),
+            number = ChatSequence.of(chatRoomId, 1),
             timestamp = LocalDateTime.now(),
         )
     }
 
-    fun createInviteMessage(messageId: String, chatRoomId: String): ChatInviteMessage {
+    fun createInviteMessage(messageId: String, chatRoomId: ChatRoomId): ChatInviteMessage {
         return ChatInviteMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
             senderId = UserId.of("senderId"),
-            number = ChatLogSequence.of(chatRoomId, 1, 1),
+            number = ChatSequence.of(chatRoomId, 1),
             timestamp = LocalDateTime.now(),
             targetUserIds = listOf(UserId.of("targetUserId")),
         )
     }
 
-    fun createFileMessage(messageId: String, chatRoomId: String): ChatFileMessage {
+    fun createFileMessage(messageId: String, chatRoomId: ChatRoomId): ChatFileMessage {
         return ChatFileMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
             senderId = UserId.of("senderId"),
-            number = ChatLogSequence.of(chatRoomId, 1, 1),
+            number = ChatSequence.of(chatRoomId, 1),
             timestamp = LocalDateTime.now(),
             medias = listOf(Media.of(FileCategory.CHAT, "www.example.com", 0, MediaType.IMAGE_PNG)),
         )
     }
 
-    fun createLeaveMessage(messageId: String, chatRoomId: String): ChatLeaveMessage {
+    fun createLeaveMessage(messageId: String, chatRoomId: ChatRoomId): ChatLeaveMessage {
         return ChatLeaveMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
             senderId = UserId.of("senderId"),
-            number = ChatLogSequence.of(chatRoomId, 1, 1),
+            number = ChatSequence.of(chatRoomId, 1),
             timestamp = LocalDateTime.now(),
         )
     }
 
-    fun createReadMessage(chatRoomId: String): ChatReadMessage {
+    fun createReadMessage(chatRoomId: ChatRoomId): ChatReadMessage {
         return ChatReadMessage.of(
             chatRoomId = chatRoomId,
             senderId = UserId.of("senderId"),
-            number = ChatLogSequence.of(chatRoomId, 1, 1),
+            number = ChatSequence.of(chatRoomId, 1),
             timestamp = LocalDateTime.now(),
         )
     }
 
-    fun createReplyMessage(messageId: String, chatRoomId: String): ChatReplyMessage {
+    fun createReplyMessage(messageId: String, chatRoomId: ChatRoomId): ChatReplyMessage {
         return ChatReplyMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,
             senderId = UserId.of("senderId"),
-            number = ChatLogSequence.of(chatRoomId, 1, 1),
+            number = ChatSequence.of(chatRoomId, 1),
             timestamp = LocalDateTime.now(),
             parentMessageId = "parentMessageId",
             parentMessageText = "parentMessageText",
-            parentMessagePage = 1,
             parentMessageType = ChatLogType.REPLY,
             parentSeqNumber = 1,
             type = MessageType.REPLY,
@@ -247,12 +247,12 @@ object TestDataFactory {
         )
     }
 
-    fun createDeleteMessage(messageId: String, chatRoomId: String): ChatDeleteMessage {
+    fun createDeleteMessage(messageId: String, chatRoomId: ChatRoomId): ChatDeleteMessage {
         return ChatDeleteMessage.of(
             targetMessageId = messageId,
             chatRoomId = chatRoomId,
             senderId = UserId.of("senderId"),
-            number = ChatLogSequence.of(chatRoomId, 1, 1),
+            number = ChatSequence.of(chatRoomId, 1),
             timestamp = LocalDateTime.now(),
         )
     }

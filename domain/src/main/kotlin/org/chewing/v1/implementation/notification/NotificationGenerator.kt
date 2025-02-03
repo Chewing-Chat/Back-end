@@ -58,7 +58,7 @@ class NotificationGenerator {
             sourceUserInfo = sourceUserInfo,
             pushTokens = pushTokens,
             type = type,
-            targetId = targetId,
+            targetId = targetId.id,
             content = content,
         )
     }

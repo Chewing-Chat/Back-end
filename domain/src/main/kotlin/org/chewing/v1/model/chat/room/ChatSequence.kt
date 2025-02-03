@@ -1,7 +1,6 @@
 package org.chewing.v1.model.chat.room
 
-
-class DirectChatSequence private constructor(
+class ChatSequence private constructor(
     val sequenceNumber: Int,
     val chatRoomId: ChatRoomId,
 ) {
@@ -9,8 +8,8 @@ class DirectChatSequence private constructor(
         fun of(
             chatRoomId: ChatRoomId,
             sequenceNumber: Int,
-        ): DirectChatSequence {
-            return DirectChatSequence(
+        ): ChatSequence {
+            return ChatSequence(
                 sequenceNumber = sequenceNumber,
                 chatRoomId = chatRoomId,
             )

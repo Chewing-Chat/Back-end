@@ -27,12 +27,10 @@ sealed class ChatMessageDto {
         val chatRoomId: String,
         val senderId: String,
         val parentMessageId: String,
-        val parentMessagePage: Int,
         val parentSeqNumber: Int,
         val parentMessageText: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
         val text: String,
     ) : ChatMessageDto()
 
@@ -43,7 +41,6 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
     ) : ChatMessageDto()
 
     data class Leave(
@@ -53,7 +50,6 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
     ) : ChatMessageDto()
 
     data class Invite(
@@ -63,7 +59,6 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
     ) : ChatMessageDto()
 
     data class File(
@@ -73,7 +68,6 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
         val files: List<MediaDto>,
     ) : ChatMessageDto()
 
@@ -84,7 +78,6 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
         val text: String,
     ) : ChatMessageDto()
 
@@ -95,7 +88,6 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
         val expiredAt: String,
         val text: String,
     ) : ChatMessageDto()
@@ -106,7 +98,6 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
     ) : ChatMessageDto()
 
     companion object {
@@ -117,77 +108,69 @@ sealed class ChatMessageDto {
                 is ChatReplyMessage -> Reply(
                     messageId = chatMessage.messageId,
                     type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     parentMessageId = chatMessage.parentMessageId,
-                    parentMessagePage = chatMessage.parentMessagePage,
                     parentSeqNumber = chatMessage.parentSeqNumber,
                     parentMessageText = chatMessage.parentMessageText,
                     timestamp = chatMessage.timestamp.format(dateTimeFormatter),
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
                     text = chatMessage.text,
                 )
 
                 is ChatLeaveMessage -> Leave(
                     messageId = chatMessage.messageId,
                     type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
                 )
 
                 is ChatInviteMessage -> Invite(
                     messageId = chatMessage.messageId,
                     type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
                 )
 
                 is ChatFileMessage -> File(
                     messageId = chatMessage.messageId,
                     type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
                     files = chatMessage.medias.map { MediaDto.from(it) },
                 )
 
                 is ChatNormalMessage -> Normal(
                     messageId = chatMessage.messageId,
                     type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
                     text = chatMessage.text,
                 )
 
                 is ChatReadMessage -> Read(
                     type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
                 )
 
                 is ChatDeleteMessage -> Delete(
                     targetMessageId = chatMessage.targetMessageId,
                     type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
                 )
             }
         }

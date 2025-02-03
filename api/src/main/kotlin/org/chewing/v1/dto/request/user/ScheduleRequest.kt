@@ -9,13 +9,13 @@ import java.time.format.DateTimeFormatter
 
 class ScheduleRequest {
     data class Delete(
-        val scheduleId: String
+        val scheduleId: String,
     ) {
         fun toScheduleId(): String = scheduleId
     }
 
     data class Cancel(
-        val scheduleId: String
+        val scheduleId: String,
     ) {
         fun toScheduleId(): String = scheduleId
     }

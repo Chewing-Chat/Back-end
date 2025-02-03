@@ -4,7 +4,8 @@ import org.chewing.v1.model.chat.log.ChatInviteLog
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.message.ChatInviteMessage
-import org.chewing.v1.model.chat.room.ChatLogSequence
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatSequence
 import org.chewing.v1.model.user.UserId
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
@@ -15,16 +16,14 @@ internal class ChatInviteMongoEntity(
     chatRoomId: String,
     senderId: String,
     seqNumber: Int,
-    page: Int,
     sendTime: LocalDateTime,
     val targetUserIds: List<String>,
 ) : ChatMessageMongoEntity(
     messageId = messageId,
     chatRoomId = chatRoomId,
-    senderId = senderId,
     type = ChatLogType.INVITE,
+    senderId = senderId,
     seqNumber = seqNumber,
-    page = page,
     sendTime = sendTime,
 ) {
     companion object {
@@ -33,10 +32,9 @@ internal class ChatInviteMongoEntity(
         ): ChatInviteMongoEntity {
             return ChatInviteMongoEntity(
                 messageId = chatInviteMessage.messageId,
-                chatRoomId = chatInviteMessage.chatRoomId,
+                chatRoomId = chatInviteMessage.chatRoomId.id,
                 senderId = chatInviteMessage.senderId.id,
                 seqNumber = chatInviteMessage.number.sequenceNumber,
-                page = chatInviteMessage.number.page,
                 sendTime = chatInviteMessage.timestamp,
                 targetUserIds = chatInviteMessage.targetUserIds.map { it.id },
             )
@@ -46,10 +44,10 @@ internal class ChatInviteMongoEntity(
     override fun toChatLog(): ChatLog {
         return ChatInviteLog.of(
             messageId = messageId,
-            chatRoomId = chatRoomId,
+            chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
             timestamp = sendTime,
-            number = ChatLogSequence.of(chatRoomId, seqNumber, page),
+            number = ChatSequence.of(ChatRoomId.of(chatRoomId), seqNumber),
             targetUserIds = targetUserIds,
             type = type,
         )

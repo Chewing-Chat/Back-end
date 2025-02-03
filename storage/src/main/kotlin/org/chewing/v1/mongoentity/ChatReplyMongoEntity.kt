@@ -4,7 +4,8 @@ import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.log.ChatReplyLog
 import org.chewing.v1.model.chat.message.ChatReplyMessage
-import org.chewing.v1.model.chat.room.ChatLogSequence
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatSequence
 import org.chewing.v1.model.user.UserId
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
@@ -15,22 +16,19 @@ internal class ChatReplyMongoEntity(
     chatRoomId: String,
     senderId: String,
     seqNumber: Int,
-    page: Int,
     sendTime: LocalDateTime,
     private val message: String,
     private val parentMessageId: String,
-    private val parentMessagePage: Int,
     private val parentSeqNumber: Int,
     private val parentMessageText: String,
     private val parentMessageType: ChatLogType,
 ) : ChatMessageMongoEntity(
     messageId = messageId,
     chatRoomId = chatRoomId,
+    type = ChatLogType.REPLY,
     senderId = senderId,
     seqNumber = seqNumber,
-    page = page,
     sendTime = sendTime,
-    type = ChatLogType.REPLY,
 ) {
     companion object {
         fun from(
@@ -38,14 +36,12 @@ internal class ChatReplyMongoEntity(
         ): ChatReplyMongoEntity {
             return ChatReplyMongoEntity(
                 messageId = chatReplyMessage.messageId,
-                chatRoomId = chatReplyMessage.chatRoomId,
+                chatRoomId = chatReplyMessage.chatRoomId.id,
                 senderId = chatReplyMessage.senderId.id,
                 seqNumber = chatReplyMessage.number.sequenceNumber,
-                page = chatReplyMessage.number.page,
                 sendTime = chatReplyMessage.timestamp,
                 message = chatReplyMessage.text,
                 parentMessageId = chatReplyMessage.parentMessageId,
-                parentMessagePage = chatReplyMessage.parentMessagePage,
                 parentSeqNumber = chatReplyMessage.parentSeqNumber,
                 parentMessageText = chatReplyMessage.parentMessageText,
                 parentMessageType = chatReplyMessage.parentMessageType,
@@ -56,16 +52,15 @@ internal class ChatReplyMongoEntity(
     override fun toChatLog(): ChatLog {
         return ChatReplyLog.of(
             messageId = messageId,
-            chatRoomId = chatRoomId,
+            chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
             parentMessageId = parentMessageId,
-            parentMessagePage = parentMessagePage,
             parentSeqNumber = parentSeqNumber,
             parentMessageText = parentMessageText,
             text = message,
             timestamp = sendTime,
             type = type,
-            number = ChatLogSequence.of(chatRoomId, seqNumber, page),
+            number = ChatSequence.of(ChatRoomId.of(chatRoomId), seqNumber),
             parentMessageType = parentMessageType,
         )
     }

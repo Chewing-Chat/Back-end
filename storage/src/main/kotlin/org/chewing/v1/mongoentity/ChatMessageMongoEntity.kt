@@ -31,7 +31,6 @@ internal sealed class ChatMessageMongoEntity(
     protected var type: ChatLogType,
     protected val senderId: String,
     protected val seqNumber: Int,
-    protected val page: Int,
     protected val sendTime: LocalDateTime,
 ) {
 

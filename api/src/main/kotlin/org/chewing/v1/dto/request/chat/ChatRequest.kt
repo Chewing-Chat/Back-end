@@ -1,8 +1,5 @@
 package org.chewing.v1.dto.request.chat
 
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
 class ChatRequest {
     data class Reply(
         val chatRoomId: String,
@@ -20,5 +17,4 @@ class ChatRequest {
         val chatRoomId: String,
         val messageId: String,
     )
-
 }

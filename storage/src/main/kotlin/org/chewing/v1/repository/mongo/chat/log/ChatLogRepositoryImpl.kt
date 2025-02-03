@@ -1,11 +1,8 @@
 package org.chewing.v1.repository.mongo.chat.log
 
-import org.chewing.v1.error.ConflictException
-import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.message.ChatMessage
-import org.chewing.v1.model.chat.room.ChatLogSequence
-import org.chewing.v1.mongoentity.ChatMessageMongoEntity
+import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.mongorepository.ChatLogMongoRepository
 import org.chewing.v1.repository.chat.ChatLogRepository
 import org.springframework.stereotype.Repository
@@ -14,40 +11,33 @@ import org.springframework.stereotype.Repository
 internal class ChatLogRepositoryImpl(
     private val chatLogMongoRepository: ChatLogMongoRepository,
 ) : ChatLogRepository {
-
-    // 채팅방의 특정 페이지의 메시지를 조회
-    override fun readChatMessages(chatRoomId: String, page: Int): List<ChatLog> {
-        // MongoDB에서 chatRoomId와 page로 메시지 조회하고 seqNumber 기준으로 정렬
-        val messageEntities = chatLogMongoRepository.findByRoomIdAndPageSortedBySeqNumber(chatRoomId, page)
-        return messageEntities.map { it.toChatLog() }
-    }
-
-    override fun readChatMessage(messageId: String): ChatLog? =
-        chatLogMongoRepository.findById(messageId).map { it.toChatLog() }.orElse(null)
-
-    override fun readLatestMessages(numbers: List<ChatLogSequence>): List<ChatLog> {
-        // MongoDB에서 chatRoomId와 seqNumber로 메시지 조회
-        val conditions = numbers.map { mapOf("chatRoomId" to it.chatRoomId, "seqNumber" to it.sequenceNumber) }
-        val messageEntities = chatLogMongoRepository.findByRoomIdAndSeqNumbers(conditions)
-        return messageEntities.map { it.toChatLog() }
-    }
-
-    override fun readChatKeyWordMessages(chatRoomId: String, keyword: String): List<ChatLog> {
-        val keywords = keyword.split(",").map { it.trim() }
-        val regexPattern = keywords.joinToString("|") { it }
-        return chatLogMongoRepository.searchByKeywordsRegex(regexPattern, chatRoomId).map { it.toChatLog() }
+    override fun readChatMessages(
+        chatRoomId: ChatRoomId,
+        sequence: Int,
+    ): List<ChatLog> {
+        TODO("Not yet implemented")
     }
 
     override fun removeLog(messageId: String) {
-        // 메시지 ID로 MongoDB에서 메시지 조회
-        chatLogMongoRepository.updateMessageTypeToDelete(messageId)
+        TODO("Not yet implemented")
     }
 
     override fun appendChatLog(chatMessage: ChatMessage) {
-        chatLogMongoRepository.save(
-            ChatMessageMongoEntity.Companion.fromChatMessage(chatMessage) ?: throw ConflictException(
-                ErrorCode.INVALID_TYPE,
-            ),
-        )
+        TODO("Not yet implemented")
+    }
+
+    override fun readChatMessage(messageId: String): ChatLog? {
+        TODO("Not yet implemented")
+    }
+
+    override fun readLatestMessages(chatRoomIds: List<ChatRoomId>): List<ChatLog> {
+        TODO("Not yet implemented")
+    }
+
+    override fun readChatKeyWordMessages(
+        chatRoomId: ChatRoomId,
+        keyword: String,
+    ): List<ChatLog> {
+        TODO("Not yet implemented")
     }
 }

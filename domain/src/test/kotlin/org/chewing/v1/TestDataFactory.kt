@@ -5,12 +5,9 @@ import org.chewing.v1.model.announcement.AnnouncementId
 import org.chewing.v1.model.auth.*
 import org.chewing.v1.model.chat.log.*
 import org.chewing.v1.model.chat.member.ChatRoomMember
-import org.chewing.v1.model.chat.member.ChatRoomMemberInfo
 import org.chewing.v1.model.chat.message.*
-import org.chewing.v1.model.chat.room.ChatLogSequence
-import org.chewing.v1.model.chat.room.ChatRoomInfo
-import org.chewing.v1.model.chat.room.ChatSequenceNumber
-import org.chewing.v1.model.chat.room.Room
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatSequence
 import org.chewing.v1.model.contact.LocalPhoneNumber
 import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.emoticon.EmoticonInfo
@@ -49,6 +46,7 @@ object TestDataFactory {
 
     fun createUserName(): String = "testUserName"
     fun createUserId(): UserId = UserId.of("testUserId")
+    fun createChatRoomId() = ChatRoomId.of("testChatRoomId")
     fun createFeedId(): FeedId = FeedId.of("testFeedId")
     fun createSecondFeedId(): FeedId = FeedId.of("testSecondFeedId")
     fun createFeedDetailId(): FeedDetailId = FeedDetailId.of("testFeedDetailId")
@@ -170,9 +168,9 @@ object TestDataFactory {
 
     fun createChatNormalLog(
         messageId: String,
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        chatRoomNumber: ChatLogSequence,
+        chatRoomNumber: ChatSequence,
         time: LocalDateTime,
     ): ChatNormalLog = ChatNormalLog.of(
         messageId,
@@ -186,9 +184,9 @@ object TestDataFactory {
 
     fun createChatInviteLog(
         messageId: String,
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        chatRoomNumber: ChatLogSequence,
+        chatRoomNumber: ChatSequence,
     ): ChatInviteLog = ChatInviteLog.of(
         messageId,
         chatRoomId,
@@ -201,15 +199,14 @@ object TestDataFactory {
 
     fun createChatReplyLog(
         messageId: String,
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        chatRoomNumber: ChatLogSequence,
+        chatRoomNumber: ChatSequence,
     ): ChatReplyLog = ChatReplyLog.of(
         messageId,
         chatRoomId,
         userId,
         "parentMessageId",
-        0,
         0,
         LocalDateTime.now(),
         chatRoomNumber,
@@ -221,9 +218,9 @@ object TestDataFactory {
 
     fun createChatLeaveLog(
         messageId: String,
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        chatRoomNumber: ChatLogSequence,
+        chatRoomNumber: ChatSequence,
     ): ChatLeaveLog = ChatLeaveLog.of(
         messageId,
         chatRoomId,
@@ -235,9 +232,9 @@ object TestDataFactory {
 
     fun createChatFileLog(
         messageId: String,
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        chatRoomNumber: ChatLogSequence,
+        chatRoomNumber: ChatSequence,
     ): ChatFileLog = ChatFileLog.of(
         messageId,
         chatRoomId,
@@ -250,101 +247,87 @@ object TestDataFactory {
         ChatLogType.FILE,
     )
 
-    fun createChatSequenceNumber(chatRoomId: String): ChatSequenceNumber = ChatSequenceNumber.of(1, chatRoomId)
+    fun createChatSequenceNumber(chatRoomId: ChatRoomId): ChatSequence = ChatSequence.of(chatRoomId, 1)
 
-    fun createChatNumber(chatRoomId: String): ChatLogSequence = ChatLogSequence.of(chatRoomId, 0, 0)
-
-    fun create100SeqChatNumber(chatRoomId: String): ChatLogSequence = ChatLogSequence.of(chatRoomId, 100, 2)
-
-    fun createChatRoomInfo(chatRoomId: String): ChatRoomInfo = ChatRoomInfo.of(chatRoomId, false)
-
-    fun createGroupChatRoomInfo(chatRoomId: String): ChatRoomInfo = ChatRoomInfo.of(chatRoomId, true)
-
-    fun createChatRoomMemberInfo(
-        chatRoomId: String,
-        userId: UserId,
-        readNumber: Int,
-        favorite: Boolean,
-    ): ChatRoomMemberInfo = ChatRoomMemberInfo.of(userId, chatRoomId, readNumber, readNumber, favorite)
+    fun createChatNumber(chatRoomId: ChatRoomId): ChatSequence = ChatSequence.of(chatRoomId, 0)
 
     fun createPushToken(pushTokenId: String): PushToken =
         PushToken.of(pushTokenId, "testToken", PushToken.Provider.ANDROID, "deviceId")
 
     fun createChatNormalMessage(
         messageId: String,
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
     ): ChatNormalMessage = ChatNormalMessage.of(
         messageId,
         chatRoomId,
         userId,
         "text",
-        createChatNumber(chatRoomId),
+        ChatSequence.of(chatRoomId, 1),
         LocalDateTime.now(),
     )
 
-    fun createNormalMessage(messageId: String, chatRoomId: String): ChatNormalMessage = ChatNormalMessage.of(
+    fun createNormalMessage(messageId: String, chatRoomId: ChatRoomId): ChatNormalMessage = ChatNormalMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
         text = "text",
-        number = ChatLogSequence.of(chatRoomId, 1, 1),
+        number = ChatSequence.of(chatRoomId, 1),
         timestamp = LocalDateTime.now(),
     )
 
-    fun createInviteMessage(messageId: String, chatRoomId: String): ChatInviteMessage = ChatInviteMessage.of(
+    fun createInviteMessage(messageId: String, chatRoomId: ChatRoomId): ChatInviteMessage = ChatInviteMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatLogSequence.of(chatRoomId, 1, 1),
+        number = ChatSequence.of(chatRoomId, 1),
         timestamp = LocalDateTime.now(),
         targetUserIds = listOf(UserId.of("targetUserId")),
     )
 
-    fun createFileMessage(messageId: String, chatRoomId: String): ChatFileMessage = ChatFileMessage.of(
+    fun createFileMessage(messageId: String, chatRoomId: ChatRoomId): ChatFileMessage = ChatFileMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatLogSequence.of(chatRoomId, 1, 1),
+        number = ChatSequence.of(chatRoomId, 1),
         timestamp = LocalDateTime.now(),
         medias = listOf(Media.of(FileCategory.CHAT, "www.example.com", 0, MediaType.IMAGE_PNG)),
     )
 
-    fun createLeaveMessage(messageId: String, chatRoomId: String): ChatLeaveMessage = ChatLeaveMessage.of(
+    fun createLeaveMessage(messageId: String, chatRoomId: ChatRoomId): ChatLeaveMessage = ChatLeaveMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatLogSequence.of(chatRoomId, 1, 1),
+        number = ChatSequence.of(chatRoomId, 1),
         timestamp = LocalDateTime.now(),
     )
 
-    fun createReadMessage(chatRoomId: String): ChatReadMessage = ChatReadMessage.of(
+    fun createReadMessage(chatRoomId: ChatRoomId): ChatReadMessage = ChatReadMessage.of(
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatLogSequence.of(chatRoomId, 1, 1),
+        number = ChatSequence.of(chatRoomId, 1),
         timestamp = LocalDateTime.now(),
     )
 
-    fun createReplyMessage(messageId: String, chatRoomId: String): ChatReplyMessage = ChatReplyMessage.of(
+    fun createReplyMessage(messageId: String, chatRoomId: ChatRoomId): ChatReplyMessage = ChatReplyMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatLogSequence.of(chatRoomId, 1, 1),
+        number = ChatSequence.of(chatRoomId, 1),
         timestamp = LocalDateTime.now(),
         parentMessageId = "parentMessageId",
         parentMessageText = "parentMessageText",
-        parentMessagePage = 1,
         parentMessageType = ChatLogType.REPLY,
         parentSeqNumber = 1,
         type = MessageType.REPLY,
         text = "text",
     )
 
-    fun createDeleteMessage(messageId: String, chatRoomId: String): ChatDeleteMessage = ChatDeleteMessage.of(
+    fun createDeleteMessage(messageId: String, chatRoomId: ChatRoomId): ChatDeleteMessage = ChatDeleteMessage.of(
         targetMessageId = messageId,
         chatRoomId = chatRoomId,
         senderId = UserId.of("sender"),
-        number = ChatLogSequence.of(chatRoomId, 1, 1),
+        number = ChatSequence.of(chatRoomId, 1),
         timestamp = LocalDateTime.now(),
     )
 
@@ -371,18 +354,4 @@ object TestDataFactory {
     fun createChatRoomMember(
         userId: UserId,
     ): ChatRoomMember = ChatRoomMember.of(userId, 0)
-
-    fun createRoom(
-        chatRoomId: String,
-        userId: UserId,
-        friendId: UserId,
-        favorite: Boolean,
-    ): Room = Room.of(
-        chatRoomInfo = createChatRoomInfo(chatRoomId),
-        userChatRoom = createChatRoomMemberInfo(chatRoomId, userId, 0, favorite),
-        chatRoomMembers = listOf(
-            createChatRoomMember(userId),
-            createChatRoomMember(friendId),
-        ),
-    )
 }

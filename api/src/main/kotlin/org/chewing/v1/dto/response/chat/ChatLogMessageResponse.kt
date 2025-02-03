@@ -11,13 +11,11 @@ sealed class ChatLogMessageResponse {
         val chatRoomId: String,
         val senderId: String,
         val parentMessageId: String,
-        val parentMessagePage: Int,
         val parentSeqNumber: Int,
         val parentMessageText: String,
         val parentMessageType: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
         val text: String,
     ) : ChatLogMessageResponse()
 
@@ -28,7 +26,6 @@ sealed class ChatLogMessageResponse {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
     ) : ChatLogMessageResponse()
 
     data class Invite(
@@ -38,7 +35,6 @@ sealed class ChatLogMessageResponse {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
         val targetUserIds: List<String>,
     ) : ChatLogMessageResponse()
 
@@ -49,7 +45,6 @@ sealed class ChatLogMessageResponse {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
         val files: List<MediaResponse>,
     ) : ChatLogMessageResponse()
 
@@ -60,19 +55,6 @@ sealed class ChatLogMessageResponse {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
-        val text: String,
-    ) : ChatLogMessageResponse()
-
-    data class Bomb(
-        val messageId: String,
-        val type: String,
-        val chatRoomId: String,
-        val senderId: String,
-        val timestamp: String,
-        val seqNumber: Int,
-        val page: Int,
-        val expiredAt: String,
         val text: String,
     ) : ChatLogMessageResponse()
 
@@ -84,59 +66,53 @@ sealed class ChatLogMessageResponse {
                 is ChatReplyLog -> Reply(
                     messageId = chatLog.messageId,
                     type = chatLog.type.name.lowercase(),
-                    chatRoomId = chatLog.chatRoomId,
+                    chatRoomId = chatLog.chatRoomId.id,
                     senderId = chatLog.senderId.id,
                     parentMessageId = chatLog.parentMessageId,
-                    parentMessagePage = chatLog.parentMessagePage,
                     parentSeqNumber = chatLog.parentSeqNumber,
                     parentMessageText = chatLog.parentMessageText,
                     parentMessageType = chatLog.parentMessageType.toString().lowercase(),
                     timestamp = formattedTime,
                     seqNumber = chatLog.number.sequenceNumber,
-                    page = chatLog.number.page,
                     text = chatLog.text,
                 )
 
                 is ChatLeaveLog -> Leave(
                     messageId = chatLog.messageId,
                     type = chatLog.type.name.lowercase(),
-                    chatRoomId = chatLog.chatRoomId,
+                    chatRoomId = chatLog.chatRoomId.id,
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatLog.number.sequenceNumber,
-                    page = chatLog.number.page,
                 )
 
                 is ChatInviteLog -> Invite(
                     messageId = chatLog.messageId,
                     type = chatLog.type.name.lowercase(),
-                    chatRoomId = chatLog.chatRoomId,
+                    chatRoomId = chatLog.chatRoomId.id,
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatLog.number.sequenceNumber,
-                    page = chatLog.number.page,
                     targetUserIds = chatLog.targetUserIds,
                 )
 
                 is ChatFileLog -> File(
                     messageId = chatLog.messageId,
                     type = chatLog.type.name.lowercase(),
-                    chatRoomId = chatLog.chatRoomId,
+                    chatRoomId = chatLog.chatRoomId.id,
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatLog.number.sequenceNumber,
-                    page = chatLog.number.page,
                     files = chatLog.medias.map { MediaResponse.from(it) },
                 )
 
                 is ChatNormalLog -> Normal(
                     messageId = chatLog.messageId,
                     type = chatLog.type.name.lowercase(),
-                    chatRoomId = chatLog.chatRoomId,
+                    chatRoomId = chatLog.chatRoomId.id,
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatLog.number.sequenceNumber,
-                    page = chatLog.number.page,
                     text = chatLog.text,
                 )
             }
