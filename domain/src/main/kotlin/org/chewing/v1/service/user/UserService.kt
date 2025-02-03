@@ -78,6 +78,10 @@ class UserService(
         userAppender.appendUserPushToken(userInfo, appToken, device)
     }
 
+    fun createPassword(userId: UserId, password: String) {
+        userAppender.appendPassword(userId, password)
+    }
+
     fun updatePassword(userId: UserId, password: String) {
         userUpdater.updatePassword(userId, password)
     }

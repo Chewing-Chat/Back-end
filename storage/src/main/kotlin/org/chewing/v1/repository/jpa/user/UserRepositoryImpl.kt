@@ -81,4 +81,12 @@ internal class UserRepositoryImpl(
             it.toUserId()
         }.orElse(null)
     }
+
+    override fun appendPassword(userId: UserId, password: String) {
+        userJpaRepository.findById(userId.id).map {
+            it.updateAccessStatus(AccessStatus.ACCESS)
+            it.updatePassword(password)
+            userJpaRepository.save(it)
+        }
+    }
 }

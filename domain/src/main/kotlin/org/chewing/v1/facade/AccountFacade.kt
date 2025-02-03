@@ -53,6 +53,14 @@ class AccountFacade(
         userService.updatePassword(userId, password)
     }
 
+    fun createPassword(
+        userId: UserId,
+        password: String,
+    ) {
+        val password = authService.encryptPassword(password)
+        userService.createPassword(userId, password)
+    }
+
     fun deleteAccount(userId: UserId) {
         userService.deleteUser(userId)
         scheduleService.deleteAllParticipant(userId)

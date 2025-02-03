@@ -574,7 +574,7 @@ class AuthControllerTest : RestDocsTest() {
             password = "testPassword",
         )
 
-        every { accountFacade.changePassword(any(), any()) } just Runs
+        every { accountFacade.createPassword(any(), any()) } just Runs
 
         given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -596,7 +596,7 @@ class AuthControllerTest : RestDocsTest() {
                     responseSuccessFields(),
                 ),
             )
-        verify { accountFacade.changePassword(any(), any()) }
+        verify { accountFacade.createPassword(any(), any()) }
     }
 
     @Test

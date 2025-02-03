@@ -84,7 +84,7 @@ class AuthController(
         @RequestBody request: SignUpRequest.Password,
         @RequestAttribute("userId") userId: String,
     ): SuccessResponseEntity<SuccessCreateResponse> {
-        accountFacade.changePassword(
+        accountFacade.createPassword(
             UserId.of(userId),
             request.password,
         )
