@@ -2,7 +2,7 @@ package org.chewing.v1.dto.response.main
 
 import org.chewing.v1.dto.response.user.UserResponse
 import org.chewing.v1.model.friend.Friend
-import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserInfo
 
 data class MainResponse(
     val friends: List<FriendMainResponse>,
@@ -21,23 +21,23 @@ data class MainResponse(
         companion object {
             fun of(friend: Friend): FriendMainResponse {
                 return FriendMainResponse(
-                    friendId = friend.user.userId.id,
+                    friendId = friend.user.info.userId.id,
                     name = friend.name,
-                    imageUrl = friend.user.image.url,
-                    imageType = friend.user.image.type.value().lowercase(),
-                    statusMessage = friend.user.statusMessage,
+                    imageUrl = friend.user.info.image.url,
+                    imageType = friend.user.info.image.type.value().lowercase(),
+                    statusMessage = friend.user.info.statusMessage,
                     favorite = friend.isFavorite,
-                    access = friend.user.status.name.lowercase(),
+                    access = friend.user.info.status.name.lowercase(),
                 )
             }
         }
     }
 
     companion object {
-        fun ofList(user: User, friends: List<Friend>): MainResponse {
+        fun ofList(userInfo: UserInfo, friends: List<Friend>): MainResponse {
             return MainResponse(
                 friends = friends.map { FriendMainResponse.of(it) },
-                user = UserResponse.of(user),
+                user = UserResponse.of(userInfo),
                 totalFriends = friends.size,
             )
         }

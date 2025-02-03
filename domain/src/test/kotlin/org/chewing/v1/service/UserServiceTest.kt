@@ -8,6 +8,7 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
+import org.chewing.v1.implementation.contact.ContactFormatter
 import org.chewing.v1.implementation.media.FileHandler
 import org.chewing.v1.implementation.user.user.*
 import org.chewing.v1.model.auth.CredentialTarget
@@ -32,31 +33,32 @@ class UserServiceTest {
     private val userAppender =
         UserAppender(userRepository, pushNotificationRepository)
     private val userValidator = UserValidator(userRepository)
+    private val contactFormatter = ContactFormatter()
 
     private val userService =
-        UserService(userReader, fileHandler, userUpdater, userValidator, userRemover, userAppender)
+        UserService(userReader, fileHandler, userUpdater, userValidator, userRemover, userAppender, contactFormatter)
 
     @Test
     fun `유저 계정 정보를 가져와야함`() {
         val userId = TestDataFactory.createUserId()
-        val user = TestDataFactory.createAccessUser(userId)
+        val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
 
-        every { userRepository.read(userId) } returns user
+        every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         val result = assertDoesNotThrow {
-            userService.getUser(userId)
+            userService.getUser(userId, AccessStatus.ACCESS)
         }
 
-        assert(result == user)
+        assert(result.info == user)
     }
 
     @Test
     fun `유저 계정 정보가 없어야함`() {
         val userId = TestDataFactory.createUserId()
 
-        every { userRepository.read(userId) } returns null
+        every { userRepository.read(userId, AccessStatus.ACCESS) } returns null
 
         val result = assertThrows<NotFoundException> {
-            userService.getUser(userId)
+            userService.getUser(userId, AccessStatus.ACCESS)
         }
 
         assert(result.errorCode == ErrorCode.USER_NOT_FOUND)
@@ -65,27 +67,26 @@ class UserServiceTest {
     @Test
     fun `유저의 정보를 가져오는 활성화된 유저임`() {
         val userId = TestDataFactory.createUserId()
-        val user = TestDataFactory.createAccessUser(userId)
+        val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
 
-        every { userRepository.read(userId) } returns user
+        every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
 
         assertDoesNotThrow {
-            userService.getAccessUser(userId)
+            userService.getUser(userId, AccessStatus.ACCESS)
         }
     }
 
     @Test
     fun `유저의 정보를 가져오는 활성화된 유저가 아님`() {
         val userId = TestDataFactory.createUserId()
-        val user = TestDataFactory.createNotAccessUser()
 
-        every { userRepository.read(userId) } returns user
+        every { userRepository.read(userId, AccessStatus.ACCESS) } returns null
 
-        val result = assertThrows<ConflictException> {
-            userService.getAccessUser(userId)
+        val result = assertThrows<NotFoundException> {
+            userService.getUser(userId, AccessStatus.ACCESS)
         }
 
-        assert(result.errorCode == ErrorCode.USER_NOT_ACCESS)
+        assert(result.errorCode == ErrorCode.USER_NOT_FOUND)
     }
 
     @Test
@@ -122,7 +123,7 @@ class UserServiceTest {
     @Test
     fun `유저를 삭제함`() {
         val userId = TestDataFactory.createUserId()
-        val user = TestDataFactory.createAccessUser(userId)
+        val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
 
         every { userRepository.remove(userId) } returns user
         every { fileHandler.handleOldFile(any()) } just Runs
@@ -148,7 +149,7 @@ class UserServiceTest {
     fun `유저 아이디들로 해당 유저가 포합된 유저들을 가져온다`() {
         val userId = TestDataFactory.createUserId()
 
-        val users = listOf(TestDataFactory.createAccessUser(userId))
+        val users = listOf(TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS))
 
         every { userRepository.reads(listOf(userId)) } returns users
 
@@ -156,7 +157,9 @@ class UserServiceTest {
             userService.getUsers(listOf(userId))
         }
 
-        assert(result == users)
+        users.forEachIndexed { index, userInfo ->
+            assert(result[index].info == userInfo)
+        }
     }
 
     @Test
@@ -188,38 +191,40 @@ class UserServiceTest {
     @Test
     fun `유저 생성 성공한다 - 유저가 존재하지 않음`() {
         val userId = TestDataFactory.createUserId()
-        val credential = TestDataFactory.createPhoneNumber()
+        val localPhoneNumber = TestDataFactory.createLocalPhoneNumber()
+
         val appToken = "appToken"
         val device = TestDataFactory.createDevice()
         val userName = "userName"
-        val user = TestDataFactory.createNotAccessUser(userId)
+        val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
 
-        every { userRepository.append(credential, userName) } returns user
-        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns null
+        every { userRepository.append(any(), userName) } returns user
+        every { userRepository.readByContact(any(), AccessStatus.ACCESS) } returns null
         every { pushNotificationRepository.append(device, appToken, user) } just Runs
         every { pushNotificationRepository.remove(device) } just Runs
 
         assertDoesNotThrow {
-            userService.createUser(credential, appToken, device, userName)
+            userService.createUser(localPhoneNumber, appToken, device, userName)
         }
     }
 
     @Test
     fun `유저 생성 실패한다 - 유저가 이미 존재함`() {
         val userId = TestDataFactory.createUserId()
-        val credential = TestDataFactory.createPhoneNumber()
         val appToken = "appToken"
+        val localPhoneNumber = TestDataFactory.createLocalPhoneNumber()
+
         val device = TestDataFactory.createDevice()
         val userName = "userName"
-        val user = TestDataFactory.createAccessUser(userId)
+        val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
 
-        every { userRepository.append(credential, userName) } returns user
-        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns user
+        every { userRepository.append(any(), userName) } returns user
+        every { userRepository.readByContact(any(), AccessStatus.ACCESS) } returns user
         every { pushNotificationRepository.append(device, appToken, user) } just Runs
         every { pushNotificationRepository.remove(device) } just Runs
 
         val result = assertThrows<ConflictException> {
-            userService.createUser(credential, appToken, device, userName)
+            userService.createUser(localPhoneNumber, appToken, device, userName)
         }
 
         assert(result.errorCode == ErrorCode.USER_ALREADY_CREATED)
@@ -254,7 +259,7 @@ class UserServiceTest {
     @Test
     fun `유저의 디바이스 정보를 업데이트 한다`() {
         val userId = TestDataFactory.createUserId()
-        val user = TestDataFactory.createAccessUser(userId)
+        val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
         val device = TestDataFactory.createDevice()
         val appToken = "appToken"
 
@@ -267,25 +272,25 @@ class UserServiceTest {
 
     @Test
     fun `유저의 접근 가능 여부를 확인한다 - 회원가입 가능(유저가 없는 경우)`() {
-        val credential = TestDataFactory.createPhoneNumber()
+        val localPhoneNumber = TestDataFactory.createLocalPhoneNumber()
 
-        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns null
+        every { userRepository.readByContact(any(), AccessStatus.ACCESS) } returns null
 
         assertDoesNotThrow {
-            userService.checkAvailability(credential, CredentialTarget.SIGN_UP)
+            userService.checkAvailability(localPhoneNumber, CredentialTarget.SIGN_UP)
         }
     }
 
     @Test
     fun `유저의 접근 가능 여부를 확인한다 - 회원가입 불가능(이미 가입됨)`() {
-        val credential = TestDataFactory.createPhoneNumber()
         val userId = TestDataFactory.createUserId()
-        val user = TestDataFactory.createAccessUser(userId)
+        val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
+        val localPhoneNumber = TestDataFactory.createLocalPhoneNumber()
 
-        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns user
+        every { userRepository.readByContact(any(), AccessStatus.ACCESS) } returns user
 
         val result = assertThrows<ConflictException> {
-            userService.checkAvailability(credential, CredentialTarget.SIGN_UP)
+            userService.checkAvailability(localPhoneNumber, CredentialTarget.SIGN_UP)
         }
 
         assert(result.errorCode == ErrorCode.USER_ALREADY_CREATED)
@@ -293,25 +298,24 @@ class UserServiceTest {
 
     @Test
     fun `유저의 접근 가능 여부를 확인한다 - 비밀번호 재설정 가능(유저가 존재하는 경우)`() {
-        val credential = TestDataFactory.createPhoneNumber()
         val userId = TestDataFactory.createUserId()
-        val user = TestDataFactory.createAccessUser(userId)
+        val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
+        val localPhoneNumber = TestDataFactory.createLocalPhoneNumber()
 
-        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns user
+        every { userRepository.readByContact(any(), AccessStatus.ACCESS) } returns user
 
         assertDoesNotThrow {
-            userService.checkAvailability(credential, CredentialTarget.RESET)
+            userService.checkAvailability(localPhoneNumber, CredentialTarget.RESET)
         }
     }
 
     @Test
     fun `유저의 접근 가능 여부를 확인한다 - 비밀번호 재설정 불가능(유저가 없는 경우)`() {
-        val credential = TestDataFactory.createPhoneNumber()
-
-        every { userRepository.readByCredential(credential, AccessStatus.ACCESS) } returns null
+        val localPhoneNumber = TestDataFactory.createLocalPhoneNumber()
+        every { userRepository.readByContact(any(), AccessStatus.ACCESS) } returns null
 
         val result = assertThrows<ConflictException> {
-            userService.checkAvailability(credential, CredentialTarget.RESET)
+            userService.checkAvailability(localPhoneNumber, CredentialTarget.RESET)
         }
 
         assert(result.errorCode == ErrorCode.USER_NOT_CREATED)
@@ -319,29 +323,30 @@ class UserServiceTest {
 
     @Test
     fun `유저의 인증 정보를 가져온다 - 성공`() {
-        val credential = TestDataFactory.createPhoneNumber()
+        val localPhoneNumber = TestDataFactory.createLocalPhoneNumber()
+
         val accessStatus = AccessStatus.ACCESS
         val userId = TestDataFactory.createUserId()
-        val user = TestDataFactory.createAccessUser(userId)
+        val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
 
-        every { userRepository.readByCredential(credential, accessStatus) } returns user
+        every { userRepository.readByContact(any(), accessStatus) } returns user
 
         val result = assertDoesNotThrow {
-            userService.getUserByCredential(credential, accessStatus)
+            userService.getUserByContact(localPhoneNumber, accessStatus)
         }
 
-        assert(result == user)
+        assert(result.info == user)
     }
 
     @Test
     fun `유저의 인증 정보를 가져온다 - 실패(유저가 존재하지 않음)`() {
-        val credential = TestDataFactory.createPhoneNumber()
         val accessStatus = AccessStatus.ACCESS
+        val localPhoneNumber = TestDataFactory.createLocalPhoneNumber()
 
-        every { userRepository.readByCredential(credential, accessStatus) } returns null
+        every { userRepository.readByContact(any(), accessStatus) } returns null
 
         val result = assertThrows<NotFoundException> {
-            userService.getUserByCredential(credential, accessStatus)
+            userService.getUserByContact(localPhoneNumber, accessStatus)
         }
 
         assert(result.errorCode == ErrorCode.USER_NOT_FOUND)

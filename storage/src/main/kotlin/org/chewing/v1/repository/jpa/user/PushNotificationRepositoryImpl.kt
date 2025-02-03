@@ -3,7 +3,7 @@ package org.chewing.v1.repository.jpa.user
 import org.chewing.v1.jpaentity.user.PushNotificationJpaEntity
 import org.chewing.v1.jparepository.user.PushNotificationJpaRepository
 import org.chewing.v1.model.auth.PushToken
-import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.PushNotificationRepository
 import org.springframework.stereotype.Repository
@@ -18,8 +18,8 @@ internal class PushNotificationRepositoryImpl(
         pushNotificationJpaRepository.deleteByDeviceIdAndProvider(device.deviceId, device.provider)
     }
 
-    override fun append(device: PushToken.Device, appToken: String, user: User) {
-        pushNotificationJpaRepository.save(PushNotificationJpaEntity.generate(appToken, device, user))
+    override fun append(device: PushToken.Device, appToken: String, userInfo: UserInfo) {
+        pushNotificationJpaRepository.save(PushNotificationJpaEntity.generate(appToken, device, userInfo))
     }
     override fun reads(userId: UserId): List<PushToken> {
         val pushNotifications = pushNotificationJpaRepository.findAllByUserId(userId.id)

@@ -12,6 +12,7 @@ import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory.createFeed
 import org.chewing.v1.controller.feed.FeedController
 import org.chewing.v1.dto.request.feed.FeedRequest
+import org.chewing.v1.facade.FeedAccessFacade
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.feed.FeedService
@@ -38,14 +39,16 @@ import java.time.format.DateTimeFormatter
 @ActiveProfiles("test")
 class FeedControllerTest : RestDocsTest() {
     private lateinit var feedService: FeedService
+    private lateinit var feedAccessFacade: FeedAccessFacade
     private lateinit var feedController: FeedController
     private lateinit var exceptionHandler: GlobalExceptionHandler
 
     @BeforeEach
     fun setUp() {
         feedService = mockk()
+        feedAccessFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
-        feedController = FeedController(feedService)
+        feedController = FeedController(feedService, feedAccessFacade)
         mockMvc = mockController(feedController, exceptionHandler)
     }
 
@@ -91,7 +94,8 @@ class FeedControllerTest : RestDocsTest() {
         val userId = "testUserId"
         val friendId = "testFriendId"
         val feeds = listOf(createFeed())
-        every { feedService.getFeeds(UserId.of(userId), UserId.of(friendId)) } returns feeds
+
+        every { feedAccessFacade.getFriendFeeds(UserId.of(userId), UserId.of(friendId)) } returns feeds
 
         given()
             .setupAuthenticatedJsonRequest()

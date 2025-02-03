@@ -3,8 +3,8 @@ package org.chewing.v1.repository
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.friend.FriendShipId
 import org.chewing.v1.jparepository.friend.FriendShipJpaRepository
+import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.friend.FriendSortCriteria
-import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.friend.FriendShipRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
@@ -31,7 +31,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         val friendName = UserProvider.buildFriendName()
 
         // when
-        friendShipRepositoryImpl.append(userId, friendId, friendName)
+        friendShipRepositoryImpl.appendIfNotExist(userId, friendId, friendName, FriendShipStatus.FRIEND)
 
         // then
         val friendShipTarget = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId)).get().toFriendShip()
@@ -45,23 +45,23 @@ class FriendShipRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val friendId = generateUserId()
 
-        jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
+        jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
         friendShipRepositoryImpl.remove(userId, friendId)
 
         val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
-        assert(entity.get().toFriendShip().type == AccessStatus.DELETE)
+        assert(entity.get().toFriendShip().status == FriendShipStatus.DELETE)
     }
 
     @Test
     fun `친구 관계를 차단한다`() {
         val userId = generateUserId()
         val friendId = generateUserId()
-        jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
+        jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
         friendShipRepositoryImpl.block(userId, friendId)
 
         val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
 
-        assert(entity.get().toFriendShip().type == AccessStatus.BLOCK)
+        assert(entity.get().toFriendShip().status == FriendShipStatus.BLOCK)
     }
 
     @Test
@@ -69,12 +69,12 @@ class FriendShipRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val friendId = generateUserId()
 
-        jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
+        jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
         friendShipRepositoryImpl.blocked(userId, friendId)
 
         val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
 
-        assert(entity.get().toFriendShip().type == AccessStatus.BLOCKED)
+        assert(entity.get().toFriendShip().status == FriendShipStatus.BLOCKED)
     }
 
     @Test
@@ -82,7 +82,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val friendId = generateUserId()
 
-        jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
+        jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
         val friendShip = friendShipRepositoryImpl.read(userId, friendId)
 
         assert(friendShip != null)
@@ -94,7 +94,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val friendId = generateUserId()
 
-        jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
+        jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
         friendShipRepositoryImpl.updateFavorite(userId, friendId, true)
 
         val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
@@ -108,7 +108,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         val friendId = generateUserId()
         val newName = UserProvider.buildNewUserName()
 
-        jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
+        jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
         friendShipRepositoryImpl.updateName(userId, friendId, newName)
 
         val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
@@ -117,33 +117,18 @@ class FriendShipRepositoryTest : JpaContextTest() {
     }
 
     @Test
-    fun `친구 관계를 접근 상태에 따라 조회한다`() {
+    fun `친구 관계 목록을 조회한다`() {
         val userId = generateUserId()
         val friendId = generateUserId()
         val friendId2 = generateUserId()
 
-        jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
-        jpaDataGenerator.friendShipEntityData(userId, friendId2, AccessStatus.BLOCK)
+        jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
+        jpaDataGenerator.friendShipEntityData(userId, friendId2, FriendShipStatus.BLOCK)
 
-        val friendShips = friendShipRepositoryImpl.readsAccess(userId, AccessStatus.ACCESS, FriendSortCriteria.NAME)
-
-        assert(friendShips.isNotEmpty())
-        assert(friendShips.size == 1)
-    }
-
-    @Test
-    fun `친구 관계를 접근 상태에 따라 여러개 조회한다`() {
-        val userId = generateUserId()
-        val friendId = generateUserId()
-        val friendId2 = generateUserId()
-
-        jpaDataGenerator.friendShipEntityData(userId, friendId, AccessStatus.ACCESS)
-        jpaDataGenerator.friendShipEntityData(userId, friendId2, AccessStatus.BLOCKED)
-
-        val friendShips = friendShipRepositoryImpl.reads(listOf(friendId, friendId2), userId, AccessStatus.ACCESS)
+        val friendShips = friendShipRepositoryImpl.readsSorted(userId, FriendSortCriteria.NAME)
 
         assert(friendShips.isNotEmpty())
-        assert(friendShips.size == 1)
+        assert(friendShips.size == 2)
     }
 
     private fun generateUserId() = UserId.of(UUID.randomUUID().toString())

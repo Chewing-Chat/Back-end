@@ -1,12 +1,15 @@
 package org.chewing.v1.dto.request.auth
 
-import org.chewing.v1.model.auth.PhoneNumber
+import org.chewing.v1.model.contact.LocalPhoneNumber
 
 data class VerifyOnlyRequest(
     val phoneNumber: String,
     val countryCode: String,
     val verificationCode: String,
 ) {
-    fun toPhoneNumber(): PhoneNumber = PhoneNumber.of(countryCode, phoneNumber)
+    fun toLocalPhoneNumber(): LocalPhoneNumber {
+        return LocalPhoneNumber.of(phoneNumber, countryCode)
+    }
+
     fun toVerificationCode(): String = verificationCode
 }

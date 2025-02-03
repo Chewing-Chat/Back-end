@@ -1,6 +1,7 @@
 package org.chewing.v1.dto.request.friend
 
-import org.chewing.v1.model.auth.PhoneNumber
+import org.chewing.v1.model.contact.LocalPhoneNumber
+import org.chewing.v1.model.friend.FriendShipProfile
 import org.chewing.v1.model.user.UserId
 
 class FriendRequest {
@@ -26,12 +27,19 @@ class FriendRequest {
         val friendId: String,
     )
 
-    data class AddWithPhone(
+    data class Create(
         val countryCode: String,
         val phoneNumber: String,
         val name: String,
     ) {
-        fun toUserName(): String = name
-        fun toPhoneNumber(): PhoneNumber = PhoneNumber.of(countryCode, phoneNumber)
+        fun toFriendShipProfile(): FriendShipProfile {
+            return FriendShipProfile.of(
+                localPhoneNumber = LocalPhoneNumber.of(
+                    number = phoneNumber,
+                    countryCode = countryCode,
+                ),
+                friendName = name,
+            )
+        }
     }
 }

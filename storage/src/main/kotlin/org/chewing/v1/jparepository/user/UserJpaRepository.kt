@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
 internal interface UserJpaRepository : JpaRepository<UserJpaEntity, String> {
-    fun findUserJpaEntityByCountryCodeAndPhoneNumberAndType(
-        countryCode: String,
+    fun findUserJpaEntityByPhoneNumberAndStatus(
         phoneNumber: String,
-        type: AccessStatus,
+        status: AccessStatus,
     ): Optional<UserJpaEntity>
+    fun findByUserIdAndStatus(userId: String, status: AccessStatus): Optional<UserJpaEntity>
+    fun findUserJpaEntitiesByPhoneNumberInAndStatus(
+        phoneNumbers: List<String>,
+        status: AccessStatus,
+    ): List<UserJpaEntity>
 }

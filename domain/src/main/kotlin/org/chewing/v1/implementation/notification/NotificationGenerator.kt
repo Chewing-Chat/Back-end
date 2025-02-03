@@ -4,7 +4,7 @@ import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.notification.Notification
 import org.chewing.v1.model.notification.NotificationType
-import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserInfo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -14,12 +14,12 @@ class NotificationGenerator {
     private val logger = LoggerFactory.getLogger(NotificationGenerator::class.java)
 
     fun generateCommentNotification(
-        sourceUser: User,
+        sourceUserInfo: UserInfo,
         pushTokens: List<PushToken>,
         feedId: String,
         comment: String,
     ): List<Notification> = createNotifications(
-        sourceUser = sourceUser,
+        sourceUserInfo = sourceUserInfo,
         pushTokens = pushTokens,
         type = NotificationType.COMMENT,
         targetId = feedId,
@@ -27,7 +27,7 @@ class NotificationGenerator {
     )
 
     fun generateMessageNotification(
-        sourceUser: User,
+        sourceUserInfo: UserInfo,
         pushTokens: List<PushToken>,
         message: ChatMessage,
     ): List<Notification> {
@@ -58,7 +58,7 @@ class NotificationGenerator {
         }
 
         return createNotifications(
-            sourceUser = sourceUser,
+            sourceUserInfo = sourceUserInfo,
             pushTokens = pushTokens,
             type = type,
             targetId = targetId,
@@ -67,14 +67,14 @@ class NotificationGenerator {
     }
 
     private fun createNotifications(
-        sourceUser: User,
+        sourceUserInfo: UserInfo,
         pushTokens: List<PushToken>,
         type: NotificationType,
         targetId: String,
         content: String?,
     ): List<Notification> = pushTokens.map { pushToken ->
         Notification.of(
-            user = sourceUser,
+            userInfo = sourceUserInfo,
             pushToken = pushToken,
             type = type,
             targetId = targetId,

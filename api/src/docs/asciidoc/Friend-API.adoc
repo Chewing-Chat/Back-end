@@ -1,0 +1,75 @@
+[[Friend-API]]
+= Friend API
+
+== 1. 친구들 추가하기 01/24 수정
+
+=== 요청(Request)
+include::{snippets}/friend-controller-test/create-friends/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/friend-controller-test/create-friends/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/create-friends/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/create-friends/response-fields.adoc[]
+
+== 2. 친구 삭제하기 01/24 수정
+
+=== 요청(Request)
+include::{snippets}/friend-controller-test/delete-friend/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/friend-controller-test/delete-friend/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/delete-friend/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/delete-friend/response-fields.adoc[]
+
+== 3. 친구 차단하기 01/24 수정
+
+=== 요청(Request)
+include::{snippets}/friend-controller-test/block-friend/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/friend-controller-test/block-friend/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/block-friend/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/block-friend/response-fields.adoc[]
+
+== 4. 친구 이름 변경하기 01/24 수정
+
+=== 요청(Request)
+include::{snippets}/friend-controller-test/update-friend-name/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/friend-controller-test/update-friend-name/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/update-friend-name/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/update-friend-name/response-fields.adoc[]
+
+== 5. 친구 즐겨찾기 변경하기 01/24 수정
+
+=== 요청(Request)
+include::{snippets}/friend-controller-test/change-favorite/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/friend-controller-test/change-favorite/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/change-favorite/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/change-favorite/response-fields.adoc[]
+
+
+

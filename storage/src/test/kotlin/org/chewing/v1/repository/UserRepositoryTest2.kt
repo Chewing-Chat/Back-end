@@ -3,6 +3,7 @@ package org.chewing.v1.repository
 import io.mockk.every
 import io.mockk.mockk
 import org.chewing.v1.jparepository.user.UserJpaRepository
+import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.user.UserRepositoryImpl
 import org.chewing.v1.repository.support.MediaProvider
@@ -18,9 +19,10 @@ class UserRepositoryTest2 {
     @Test
     fun `유저 아이디로 읽기 - 실패(유저를 찾을 수 없음)`() {
         val userId = generateUserId()
-        every { userJpaRepository.findById(userId.id) } returns Optional.empty()
 
-        val result = userRepositoryImpl.read(userId)
+        every { userJpaRepository.findByUserIdAndStatus(userId.id, AccessStatus.ACCESS) } returns Optional.empty()
+
+        val result = userRepositoryImpl.read(userId, AccessStatus.ACCESS)
 
         assert(result == null)
     }

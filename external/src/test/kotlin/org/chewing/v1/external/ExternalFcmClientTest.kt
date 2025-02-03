@@ -92,8 +92,8 @@ class ExternalFcmClientTest {
         val fcmMessageDto = objectMapper.readValue(requestBody, FcmMessageDto::class.java)
 
         assert(fcmMessageDto.message.token == notification.pushToken.fcmToken)
-        assert(fcmMessageDto.message.data["senderId"] == notification.user.userId.id)
-        assert(fcmMessageDto.message.data["senderName"] == notification.user.name)
+        assert(fcmMessageDto.message.data["senderId"] == notification.userInfo.userId.id)
+        assert(fcmMessageDto.message.data["senderName"] == notification.userInfo.name)
         assert(fcmMessageDto.message.data["type"] == notification.type.toLowerCase())
         assert(fcmMessageDto.message.data["targetId"] == notification.targetId)
         assert(fcmMessageDto.message.data["content"] == notification.content)

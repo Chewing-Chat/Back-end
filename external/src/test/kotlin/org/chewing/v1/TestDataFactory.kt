@@ -4,6 +4,8 @@ import org.chewing.v1.model.auth.*
 import org.chewing.v1.model.chat.log.*
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.contact.LocalPhoneNumber
+import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
@@ -20,20 +22,43 @@ object TestDataFactory {
 
     fun createJwtToken(): JwtToken = JwtToken.of("accessToken", RefreshToken.of("refreshToken", LocalDateTime.now()))
 
-    fun createUser(userId: UserId): User = User.of(
+    fun createUser(userId: UserId): UserInfo = UserInfo.of(
         userId,
         "name",
         "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.ACCESS,
-        PhoneNumber.of("82", "010-0000-0000"),
+        PhoneNumber.of("testPhoneNumber"),
         "password",
         "testStatusMessage",
     )
 
+    fun createUserInfo(accessStatus: AccessStatus): UserInfo {
+        return UserInfo.of(
+            UserId.of("testUserId"),
+            "testUserName",
+            "20000101",
+            Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
+            accessStatus,
+            PhoneNumber.of("testPhoneNumber"),
+            "testPassword",
+            "testStatusMessage",
+        )
+    }
+
+    fun createUser(accessStatus: AccessStatus): User {
+        return User.of(
+            createUserInfo(accessStatus),
+            LocalPhoneNumber.of(
+                "82",
+                "01012345678",
+            ),
+        )
+    }
+
     fun createUserId(): UserId = UserId.of("userId")
-    fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "010-0000-0000")
-    fun createWrongPhoneNumber(): PhoneNumber = PhoneNumber.of("82", "010-0000-0001")
+    fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("testPhoneNumber")
+    fun createWrongPhoneNumber(): PhoneNumber = PhoneNumber.of("testWrongPhoneNumber")
     fun createNormalMessage(messageId: String, chatRoomId: String): ChatNormalMessage = ChatNormalMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
@@ -111,9 +136,7 @@ object TestDataFactory {
 
     fun createNotification(): Notification {
         return Notification.of(
-            createUser(
-                UserId.of("userId"),
-            ),
+            createUserInfo(AccessStatus.ACCESS),
             PushToken.of(
                 "pushToken",
                 "platform",

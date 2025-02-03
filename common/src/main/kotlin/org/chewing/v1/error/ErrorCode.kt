@@ -18,6 +18,7 @@ enum class ErrorCode(
     EMAIL_NOT_FOUND("AUTH_7", "해당 이메일을 찾을 수 없습니다."),
     PHONE_NUMBER_NOT_FOUND("AUTH_8", "해당 전화번호를 찾을 수 없습니다."),
     WRONG_PASSWORD("AUTH_9", "비밀번호가 틀렸습니다."),
+    INVALID_PHONE_NUMBER("AUTH_10", "잘못된 전화번호입니다."),
 
     // Common
     PATH_WRONG("COMMON_1", "잘못된 메세드입니다."),
@@ -42,6 +43,8 @@ enum class ErrorCode(
     FRIEND_MYSELF("FRIEND_3", "자기 자신을 친구로 추가할 수 없습니다."),
     FRIEND_BLOCK("FRIEND_4", "차단한 친구입니다."),
     FRIEND_BLOCKED("FRIEND_5", "차단당한 친구입니다."),
+    FRIEND_DELETED("FRIEND_6", "삭제된 친구입니다."),
+    FRIEND_NORMAL("FRIEND_7", "일반 사용자입니다."),
 
     FEED_NOT_FOUND("FEED_1", "피드를 찾을 수 없음."),
     FEED_IS_NOT_OWNED("FEED_4", "피드 작성자가 아닙니다."),

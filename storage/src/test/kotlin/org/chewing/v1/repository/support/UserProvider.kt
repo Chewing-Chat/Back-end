@@ -4,7 +4,7 @@ import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.user.AccessStatus
-import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
 
 object UserProvider {
@@ -12,8 +12,8 @@ object UserProvider {
         return "testName"
     }
 
-    fun buildNormal(userId: UserId): User {
-        return User.of(
+    fun buildNormal(userId: UserId): UserInfo {
+        return UserInfo.of(
             userId,
             "testName",
             "2000-00-00",

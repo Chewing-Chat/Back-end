@@ -29,7 +29,7 @@ class UserRepositoryTest : JpaContextTest() {
         val userName = UserProvider.buildUserName()
         val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
-        val result = userRepositoryImpl.read(user.userId)
+        val result = userRepositoryImpl.read(user.userId, AccessStatus.ACCESS)
 
         assert(result!!.userId == user.userId)
     }
@@ -40,7 +40,7 @@ class UserRepositoryTest : JpaContextTest() {
         val userName = UserProvider.buildUserName()
         jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
-        val result = userRepositoryImpl.read(generateUserId())
+        val result = userRepositoryImpl.read(generateUserId(), AccessStatus.ACCESS)
 
         assert(result == null)
     }
@@ -51,7 +51,7 @@ class UserRepositoryTest : JpaContextTest() {
         val userName = UserProvider.buildUserName()
         val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
-        val result = userRepositoryImpl.readByCredential(phoneNumber, AccessStatus.ACCESS)
+        val result = userRepositoryImpl.readByContact(phoneNumber, AccessStatus.ACCESS)
 
         assert(result!!.userId == user.userId)
     }
@@ -62,7 +62,7 @@ class UserRepositoryTest : JpaContextTest() {
         val userName = UserProvider.buildUserName()
         jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.DELETE)
 
-        val result = userRepositoryImpl.readByCredential(phoneNumber, AccessStatus.ACCESS)
+        val result = userRepositoryImpl.readByContact(phoneNumber, AccessStatus.ACCESS)
 
         assert(result == null)
     }
@@ -74,9 +74,9 @@ class UserRepositoryTest : JpaContextTest() {
 
         val user = userRepositoryImpl.append(phoneNumber, userName)
 
-        val result = userRepositoryImpl.read(user.userId)
+        val result = userJpaRepository.findById(user.userId.id)
 
-        assert(result!!.status == AccessStatus.NEED_CREATE_PASSWORD)
+        assert(result.get().toUser().status == AccessStatus.NEED_CREATE_PASSWORD)
     }
 
     @Test
@@ -139,7 +139,7 @@ class UserRepositoryTest : JpaContextTest() {
 
         val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
-        val result = userRepositoryImpl.read(user.userId)
+        val result = userRepositoryImpl.read(user.userId, AccessStatus.ACCESS)
 
         assert(result != null)
         assert(result!!.userId == user.userId)

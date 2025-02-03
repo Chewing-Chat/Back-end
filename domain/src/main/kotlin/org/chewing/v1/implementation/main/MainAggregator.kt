@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component
 @Component
 class MainAggregator {
 
-    fun aggregates(friendShips: List<FriendShip>, users: List<User>): List<Friend> {
-        val userMap = users.associateBy { it.userId }
+    fun aggregates(friendShips: List<FriendShip>, userInfos: List<User>): List<Friend> {
+        val userMap = userInfos.associateBy { it.info.userId }
         return friendShips.map { friendInfo ->
             val user = userMap[friendInfo.friendId]
-            Friend.of(user!!, friendInfo.isFavorite, friendInfo.friendName, friendInfo.type)
+            Friend.of(user!!, friendInfo.isFavorite, friendInfo.friendName, friendInfo.status)
         }
     }
 }

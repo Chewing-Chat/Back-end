@@ -16,8 +16,8 @@ data class FcmMessageDto(
             message = Message(
                 token = notification.pushToken.fcmToken,
                 data = mapOf(
-                    "senderId" to notification.user.userId.id,
-                    "senderName" to notification.user.name,
+                    "senderId" to notification.userInfo.userId.id,
+                    "senderName" to notification.userInfo.name,
                     "type" to notification.type.toLowerCase(),
                     "targetId" to notification.targetId,
                     "content" to notification.content,

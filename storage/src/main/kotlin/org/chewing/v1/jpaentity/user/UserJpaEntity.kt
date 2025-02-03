@@ -2,12 +2,12 @@ package org.chewing.v1.jpaentity.user
 
 import jakarta.persistence.*
 import org.chewing.v1.jpaentity.common.BaseEntity
-import org.chewing.v1.model.auth.PhoneNumber
+import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.user.AccessStatus
-import org.chewing.v1.model.user.User
+import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
 import java.util.*
@@ -31,14 +31,12 @@ internal class UserJpaEntity(
 
     private var birth: String,
 
-    private var countryCode: String,
-
     private var phoneNumber: String,
 
     private var password: String,
 
     @Enumerated(EnumType.STRING)
-    private var type: AccessStatus,
+    private var status: AccessStatus,
 
     private var name: String,
 
@@ -52,9 +50,8 @@ internal class UserJpaEntity(
                 backgroundPictureUrl = "",
                 backgroundPictureType = MediaType.IMAGE_BASIC,
                 birth = "",
-                countryCode = phoneNumber.countryCode,
-                phoneNumber = phoneNumber.number,
-                type = access,
+                phoneNumber = phoneNumber.e164PhoneNumber,
+                status = access,
                 name = userName,
                 password = "",
                 statusMessage = "",
@@ -62,14 +59,14 @@ internal class UserJpaEntity(
         }
     }
 
-    fun toUser(): User {
-        return User.of(
+    fun toUser(): UserInfo {
+        return UserInfo.of(
             UserId.of(this.userId),
             this.name,
             this.birth,
             Media.of(FileCategory.PROFILE, this.pictureUrl, 0, this.pictureType),
-            this.type,
-            PhoneNumber.of(this.countryCode, this.phoneNumber),
+            this.status,
+            PhoneNumber.of(this.phoneNumber),
             this.password,
             this.statusMessage,
         )
@@ -91,11 +88,11 @@ internal class UserJpaEntity(
 
     fun updatePassword(password: String) {
         this.password = password
-        this.type = AccessStatus.ACCESS
+        this.status = AccessStatus.ACCESS
     }
 
     fun updateAccessStatus(accessStatus: AccessStatus) {
-        this.type = accessStatus
+        this.status = accessStatus
     }
     fun toUserId(): UserId {
         return UserId.of(this.userId)

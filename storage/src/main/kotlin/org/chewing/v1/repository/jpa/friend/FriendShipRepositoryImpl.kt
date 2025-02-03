@@ -4,8 +4,8 @@ import org.chewing.v1.jpaentity.friend.FriendShipId
 import org.chewing.v1.jpaentity.friend.FriendShipJpaEntity
 import org.chewing.v1.jparepository.friend.FriendShipJpaRepository
 import org.chewing.v1.model.friend.FriendShip
+import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.friend.FriendSortCriteria
-import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.friend.FriendShipRepository
 import org.springframework.stereotype.Repository
@@ -14,29 +14,28 @@ import org.springframework.stereotype.Repository
 internal class FriendShipRepositoryImpl(
     private val friendShipJpaRepository: FriendShipJpaRepository,
 ) : FriendShipRepository {
-    override fun readsAccess(userId: UserId, accessStatus: AccessStatus, sort: FriendSortCriteria): List<FriendShip> =
+    override fun readsSorted(userId: UserId, sort: FriendSortCriteria): List<FriendShip> =
         when (sort) {
             FriendSortCriteria.NAME ->
                 friendShipJpaRepository
-                    .findAllByIdUserIdAndTypeOrderByName(userId.id, accessStatus)
+                    .findAllByIdUserIdOrderByName(userId.id)
                     .map { it.toFriendShip() }
 
             FriendSortCriteria.FAVORITE ->
                 friendShipJpaRepository
-                    .findAllByIdUserIdAndTypeOrderByFavoriteAscName(userId.id, accessStatus)
+                    .findAllByIdUserIdOrderByFavoriteAscName(userId.id)
                     .map { it.toFriendShip() }
         }
 
-    override fun reads(
-        friendIds: List<UserId>,
-        userId: UserId,
-        accessStatus: AccessStatus,
-    ): List<FriendShip> =
-        friendShipJpaRepository.findAllByIdInAndType(friendIds.map { FriendShipId.of(userId, it) }, accessStatus)
-            .map { it.toFriendShip() }
+    override fun appendIfNotExist(userId: UserId, targetUserId: UserId, targetUserName: String, status: FriendShipStatus): FriendShip {
+        val friendShipId = FriendShipId.of(userId, targetUserId)
 
-    override fun append(userId: UserId, targetUserId: UserId, targetUserName: String) {
-        friendShipJpaRepository.save(FriendShipJpaEntity.generate(userId, targetUserId, targetUserName))
+        return friendShipJpaRepository.findById(friendShipId)
+            .map { it.toFriendShip() }
+            .orElseGet {
+                val newFriendShip = FriendShipJpaEntity.generate(userId, targetUserId, targetUserName, status)
+                friendShipJpaRepository.save(newFriendShip).toFriendShip()
+            }
     }
 
     override fun remove(userId: UserId, friendId: UserId): UserId? =

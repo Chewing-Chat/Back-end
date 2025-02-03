@@ -6,8 +6,8 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.implementation.chat.room.ChatRoomAggregator
 import org.chewing.v1.implementation.search.ChatRoomSearchEngine
 import org.chewing.v1.implementation.search.FriendSearchEngine
+import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.friend.FriendSortCriteria
-import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.service.chat.ChatLogService
 import org.chewing.v1.service.chat.RoomService
 import org.chewing.v1.service.friend.FriendShipService
@@ -37,10 +37,10 @@ class SearchFacadeTest {
         val userId = TestDataFactory.createUserId()
         val friendId = TestDataFactory.createFriendId()
 
-        val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
+        val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
         val keyword = "keyword"
 
-        every { friendShipService.getAccessFriendShips(userId, FriendSortCriteria.NAME) } returns listOf(friendShip)
+        every { friendShipService.getFriendShips(userId, FriendSortCriteria.NAME) } returns listOf(friendShip)
         every { roomService.getChatRooms(userId) } returns listOf()
         every { chatLogService.getLatestChat(listOf()) } returns listOf()
 
@@ -55,10 +55,10 @@ class SearchFacadeTest {
         val userId = TestDataFactory.createUserId()
         val friendId = TestDataFactory.createFriendId()
 
-        val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
+        val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
         val keyword = friendShip.friendName
 
-        every { friendShipService.getAccessFriendShips(userId, FriendSortCriteria.NAME) } returns listOf(friendShip)
+        every { friendShipService.getFriendShips(userId, FriendSortCriteria.NAME) } returns listOf(friendShip)
         every { roomService.getChatRooms(userId) } returns listOf()
         every { chatLogService.getLatestChat(listOf()) } returns listOf()
 
@@ -69,7 +69,7 @@ class SearchFacadeTest {
         assert(search.friends[0].friendId == friendId)
         assert(search.friends[0].friendName == friendShip.friendName)
         assert(search.friends[0].isFavorite == friendShip.isFavorite)
-        assert(search.friends[0].type == friendShip.type)
+        assert(search.friends[0].status == friendShip.status)
     }
 
     @Test
@@ -80,7 +80,7 @@ class SearchFacadeTest {
         val messageId = "messageId20"
         val time = LocalDateTime.now()
 
-        val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
+        val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
         val keyword = friendShip.friendName
         val roomInfo = TestDataFactory.createRoom(chatRoomId, userId, friendId, false)
         val chatLog = TestDataFactory.createChatNormalLog(
@@ -91,7 +91,7 @@ class SearchFacadeTest {
             time,
         )
 
-        every { friendShipService.getAccessFriendShips(userId, FriendSortCriteria.NAME) } returns listOf(friendShip)
+        every { friendShipService.getFriendShips(userId, FriendSortCriteria.NAME) } returns listOf(friendShip)
         every { roomService.getChatRooms(userId) } returns listOf(roomInfo)
         every { chatLogService.getLatestChat(listOf(chatRoomId)) } returns listOf(chatLog)
 
@@ -110,7 +110,7 @@ class SearchFacadeTest {
         assert(search.friends[0].friendId == friendId)
         assert(search.friends[0].friendName == friendShip.friendName)
         assert(search.friends[0].isFavorite == friendShip.isFavorite)
-        assert(search.friends[0].type == friendShip.type)
+        assert(search.friends[0].status == friendShip.status)
     }
 
     @Test
@@ -121,7 +121,7 @@ class SearchFacadeTest {
         val messageId = "messageId20"
         val time = LocalDateTime.now()
 
-        val friendShip = TestDataFactory.createFriendShip(friendId, AccessStatus.ACCESS)
+        val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
         val keyword = friendShip.friendName
         val roomInfo = TestDataFactory.createRoom(chatRoomId, userId, friendId, false)
         val chatLog = TestDataFactory.createChatNormalLog(
@@ -132,7 +132,7 @@ class SearchFacadeTest {
             time,
         )
 
-        every { friendShipService.getAccessFriendShips(userId, FriendSortCriteria.NAME) } returns listOf(friendShip)
+        every { friendShipService.getFriendShips(userId, FriendSortCriteria.NAME) } returns listOf(friendShip)
         every { roomService.getChatRooms(userId) } returns listOf(roomInfo)
         every { chatLogService.getLatestChat(listOf(chatRoomId)) } returns listOf(chatLog)
 
@@ -151,6 +151,6 @@ class SearchFacadeTest {
         assert(search.friends[0].friendId == friendId)
         assert(search.friends[0].friendName == friendShip.friendName)
         assert(search.friends[0].isFavorite == friendShip.isFavorite)
-        assert(search.friends[0].type == friendShip.type)
+        assert(search.friends[0].status == friendShip.status)
     }
 }

@@ -13,10 +13,10 @@ data class AccountResponse(
             user: User,
         ): AccountResponse {
             return AccountResponse(
-                name = user.name,
-                birth = user.birth,
-                phoneNumber = user.phoneNumber.number,
-                countryCode = user.phoneNumber.countryCode,
+                name = user.info.name,
+                birth = user.info.birth,
+                phoneNumber = user.localPhoneNumber.number,
+                countryCode = user.localPhoneNumber.countryCode,
             )
         }
     }

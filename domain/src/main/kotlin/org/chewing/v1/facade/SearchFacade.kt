@@ -23,7 +23,7 @@ class SearchFacade(
     private val chatRoomSearchEngine: ChatRoomSearchEngine,
 ) {
     fun search(userId: UserId, keyword: String): Search {
-        val friendShips = friendShipService.getAccessFriendShips(userId, FriendSortCriteria.NAME)
+        val friendShips = friendShipService.getFriendShips(userId, FriendSortCriteria.NAME)
         val searchedFriendShips = friendSearchEngine.search(friendShips, keyword)
         val roomInfos = roomService.getChatRooms(userId)
         val searchedRooms = chatRoomSearchEngine.search(searchedFriendShips.map { it.friendId }, roomInfos)
