@@ -18,4 +18,5 @@ interface UserRepository {
     fun updateStatusMessage(userId: UserId, statusMessage: String): UserId?
     fun readByContact(contact: Contact, accessStatus: AccessStatus): UserInfo?
     fun readsByContacts(contacts: List<Contact>, accessStatus: AccessStatus): List<UserInfo>
+    fun appendPassword(userId: UserId, password: String)
 }

@@ -8,6 +8,7 @@ import org.chewing.v1.response.SuccessOnlyResponse
 import org.chewing.v1.service.friend.FriendShipService
 import org.chewing.v1.util.helper.ResponseHelper
 import org.chewing.v1.util.aliases.SuccessResponseEntity
+import org.chewing.v1.util.security.CurrentUser
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -20,49 +21,49 @@ class FriendController(
 
     @PostMapping("/list")
     fun createFriends(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: List<FriendRequest.Create>,
     ): SuccessResponseEntity<FriendListResponse> {
-        val friends = friendFacade.createFriends(UserId.of(userId), request.map { it.toFriendShipProfile() })
+        val friends = friendFacade.createFriends(userId, request.map { it.toFriendShipProfile() })
         return ResponseHelper.successCreate(FriendListResponse.of(friends))
     }
 
     @PutMapping("/favorite")
     fun changeFavorite(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: FriendRequest.UpdateFavorite,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         val (friendId, favorite) = request
-        friendShipService.changeFriendFavorite(UserId.of(userId), UserId.of(friendId), favorite)
+        friendShipService.changeFriendFavorite(userId, UserId.of(friendId), favorite)
         return ResponseHelper.successOnly()
     }
 
     @DeleteMapping("")
     fun deleteFriend(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: FriendRequest.Delete,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         val friendId = request.friendId
-        friendShipService.removeFriendShip(UserId.of(userId), UserId.of(friendId))
+        friendShipService.removeFriendShip(userId, UserId.of(friendId))
         return ResponseHelper.successOnly()
     }
 
     @DeleteMapping("/block")
     fun blockFriend(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: FriendRequest.Block,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         val friendId = request.friendId
-        friendShipService.blockFriendShip(UserId.of(userId), UserId.of(friendId))
+        friendShipService.blockFriendShip(userId, UserId.of(friendId))
         return ResponseHelper.successOnly()
     }
 
     @PutMapping("/name")
     fun changeFriendName(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: FriendRequest.UpdateName,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
-        friendShipService.changeFriendName(UserId.of(userId), request.toFriendId(), request.toFriendName())
+        friendShipService.changeFriendName(userId, request.toFriendId(), request.toFriendName())
         return ResponseHelper.successOnly()
     }
 }

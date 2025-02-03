@@ -11,6 +11,7 @@ import org.chewing.v1.service.user.UserService
 import org.chewing.v1.util.helper.FileHelper
 import org.chewing.v1.util.helper.ResponseHelper
 import org.chewing.v1.util.aliases.SuccessResponseEntity
+import org.chewing.v1.util.security.CurrentUser
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -22,9 +23,9 @@ class UserController(
 ) {
     @GetMapping("/profile")
     fun getProfile(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
     ): SuccessResponseEntity<AccountResponse> {
-        val user = userService.getUser(UserId.of(userId), AccessStatus.ACCESS)
+        val user = userService.getUser(userId, AccessStatus.ACCESS)
         return ResponseHelper.success(AccountResponse.of(user))
     }
 
@@ -35,27 +36,27 @@ class UserController(
     @PostMapping("/image")
     fun changeUserImage(
         @RequestPart("file") file: MultipartFile,
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         val convertedFile = FileHelper.convertMultipartFileToFileData(file)
-        userService.updateFile(convertedFile, UserId.of(userId), FileCategory.PROFILE)
+        userService.updateFile(convertedFile, userId, FileCategory.PROFILE)
         return ResponseHelper.successOnly()
     }
 
     @DeleteMapping("")
     fun deleteUser(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
-        accountFacade.deleteAccount(UserId.of(userId))
+        accountFacade.deleteAccount(userId)
         return ResponseHelper.successOnly()
     }
 
     @PutMapping("/status/message")
     fun changeStatusMessage(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody statusMessage: UserRequest.UpdateStatusMessage,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
-        userService.updateStatusMessage(UserId.of(userId), statusMessage.toStatusMessage())
+        userService.updateStatusMessage(userId, statusMessage.toStatusMessage())
         return ResponseHelper.successOnly()
     }
 }

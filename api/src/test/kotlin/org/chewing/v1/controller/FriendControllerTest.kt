@@ -13,8 +13,10 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.controller.friend.FriendController
 import org.chewing.v1.dto.request.friend.FriendRequest
 import org.chewing.v1.facade.FriendFacade
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.friend.FriendShipService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.chewing.v1.util.security.UserArgumentResolver
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -24,6 +26,8 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
@@ -32,14 +36,19 @@ class FriendControllerTest : RestDocsTest() {
     private lateinit var friendShipService: FriendShipService
     private lateinit var friendController: FriendController
     private lateinit var exceptionHandler: GlobalExceptionHandler
+    private lateinit var userArgumentResolver: UserArgumentResolver
 
     @BeforeEach
     fun setUp() {
         friendFacade = mockk()
         friendShipService = mockk()
         exceptionHandler = GlobalExceptionHandler()
+        userArgumentResolver = UserArgumentResolver()
         friendController = FriendController(friendFacade, friendShipService)
-        mockMvc = mockController(friendController, exceptionHandler)
+        mockMvc = mockController(friendController, exceptionHandler, userArgumentResolver)
+        val userId = UserId.of("testUserId")
+        val authentication = UsernamePasswordAuthenticationToken(userId, null)
+        SecurityContextHolder.getContext().authentication = authentication
     }
 
     @Test

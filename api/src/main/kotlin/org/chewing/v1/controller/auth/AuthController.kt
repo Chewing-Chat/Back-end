@@ -14,6 +14,7 @@ import org.chewing.v1.response.SuccessOnlyResponse
 import org.chewing.v1.service.auth.AuthService
 import org.chewing.v1.util.helper.ResponseHelper
 import org.chewing.v1.util.aliases.SuccessResponseEntity
+import org.chewing.v1.util.security.CurrentUser
 import org.chewing.v1.util.security.JwtTokenUtil
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -70,10 +71,10 @@ class AuthController(
     @PostMapping("/change/password")
     fun changePassword(
         @RequestBody request: SignUpRequest.Password,
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
     ): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
         accountFacade.changePassword(
-            UserId.of(userId),
+            userId,
             request.password,
         )
         return ResponseHelper.successOnly()
@@ -82,10 +83,10 @@ class AuthController(
     @PostMapping("/create/password")
     fun makePassword(
         @RequestBody request: SignUpRequest.Password,
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
     ): SuccessResponseEntity<SuccessCreateResponse> {
-        accountFacade.changePassword(
-            UserId.of(userId),
+        accountFacade.createPassword(
+            userId,
             request.password,
         )
         return ResponseHelper.successCreateOnly()

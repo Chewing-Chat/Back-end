@@ -22,6 +22,7 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder
+import org.springframework.web.method.support.HandlerMethodArgumentResolver
 
 @Tag("restdocs")
 @ExtendWith(RestDocumentationExtension::class)
@@ -41,29 +42,32 @@ abstract class RestDocsTest {
     protected fun mockController(
         controller: Any,
         handler: Any,
+        argumentResolver: HandlerMethodArgumentResolver?,
     ): MockMvcRequestSpecification =
-        RestAssuredMockMvc.given().mockMvc(createMockMvc(controller, handler, null))
+        RestAssuredMockMvc.given().mockMvc(createMockMvc(controller, handler, null, argumentResolver))
 
     protected fun mockControllerWithAdvice(controller: Any, advice: Any): MockMvcRequestSpecification =
-        RestAssuredMockMvc.given().mockMvc(createMockMvc(controller, advice, null))
+        RestAssuredMockMvc.given().mockMvc(createMockMvc(controller, advice, null, null))
 
     protected fun mockControllerWithCustomConverter(
         controller: Any,
         customConverter: Converter<String, *>,
-    ): MockMvcRequestSpecification = RestAssuredMockMvc.given().mockMvc(createMockMvc(controller, null, customConverter))
+    ): MockMvcRequestSpecification = RestAssuredMockMvc.given().mockMvc(createMockMvc(controller, null, customConverter, null))
 
     protected fun mockControllerWithAdviceAndCustomConverter(
         controller: Any,
         advice: Any,
         customConverter: Converter<String, *>,
-    ): MockMvcRequestSpecification = RestAssuredMockMvc.given().mockMvc(createMockMvc(controller, advice, customConverter))
+        argumentResolver: HandlerMethodArgumentResolver?,
+    ): MockMvcRequestSpecification = RestAssuredMockMvc.given().mockMvc(createMockMvc(controller, advice, customConverter, argumentResolver))
 
-    private fun createMockMvc(controller: Any, advice: Any?, customConverter: Converter<String, *>?): MockMvc {
+    private fun createMockMvc(controller: Any, advice: Any?, customConverter: Converter<String, *>?, argumentResolver: HandlerMethodArgumentResolver?): MockMvc {
         val converter = MappingJackson2HttpMessageConverter(objectMapper())
 
         val builder = MockMvcBuilders.standaloneSetup(controller)
             .apply<StandaloneMockMvcBuilder>(MockMvcRestDocumentation.documentationConfiguration(restDocumentation))
             .setMessageConverters(converter)
+            .setCustomArgumentResolvers(argumentResolver)
 
         advice?.let {
             builder.setControllerAdvice(it)
@@ -92,7 +96,6 @@ abstract class RestDocsTest {
     fun MockMvcRequestSpecification.setupAuthenticatedMultipartRequest(userId: String = "testUserId", token: String = "accessToken"): MockMvcRequestSpecification {
         return this
             .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-            .attribute("userId", userId)
             .header("Authorization", "Bearer $token")
     }
 
