@@ -11,9 +11,9 @@ import org.chewing.v1.response.SuccessOnlyResponse
 import org.chewing.v1.service.chat.RoomService
 import org.chewing.v1.util.helper.ResponseHelper
 import org.chewing.v1.util.aliases.SuccessResponseEntity
+import org.chewing.v1.util.security.CurrentUser
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestAttribute
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -27,64 +27,64 @@ class ChatRoomController(
 ) {
     @PostMapping("/list")
     fun getChatRooms(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestParam("sort") sort: ChatRoomSortCriteria,
     ): SuccessResponseEntity<ChatRoomListResponse> {
-        val chatRooms = chatRoomFacade.getChatRooms(UserId.of(userId), sort)
+        val chatRooms = chatRoomFacade.getChatRooms(userId, sort)
         return ResponseHelper.success(ChatRoomListResponse.ofList(chatRooms))
     }
 
     @PostMapping("/delete")
     fun deleteChatRooms(
         @RequestBody request: ChatRoomRequest.Delete,
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
     ): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
-        roomService.deleteChatRoom(request.chatRoomIds, UserId.of(userId))
+        roomService.deleteChatRoom(request.chatRoomIds, userId)
         return ResponseHelper.successOnly()
     }
 
     @PostMapping("/delete/group")
     fun deleteGroupChatRooms(
         @RequestBody request: ChatRoomRequest.Delete,
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
     ): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
-        chatRoomFacade.leavesChatRoom(request.chatRoomIds, UserId.of(userId))
+        chatRoomFacade.leavesChatRoom(request.chatRoomIds, userId)
         return ResponseHelper.successOnly()
     }
 
     @PostMapping("/create")
     fun createChatRoom(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.Create,
     ): SuccessResponseEntity<ChatRoomIdResponse> {
-        val roomId = roomService.createChatRoom(UserId.of(userId), request.toFriendId())
+        val roomId = roomService.createChatRoom(userId, request.toFriendId())
         return ResponseHelper.successCreate(ChatRoomIdResponse.from(roomId))
     }
 
     @PostMapping("/create/group")
     fun createGroupChatRoom(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.CreateGroup,
     ): SuccessResponseEntity<ChatRoomIdResponse> {
-        val roomId = chatRoomFacade.createGroupChatRoom(UserId.of(userId), request.toFriendIds())
+        val roomId = chatRoomFacade.createGroupChatRoom(userId, request.toFriendIds())
         return ResponseHelper.successCreate(ChatRoomIdResponse.from(roomId))
     }
 
     @PostMapping("/invite")
     fun inviteChatRoom(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.Invite,
     ): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
-        chatRoomFacade.inviteChatRoom(UserId.of(userId), request.chatRoomId, request.toFriendId())
+        chatRoomFacade.inviteChatRoom(userId, request.chatRoomId, request.toFriendId())
         return ResponseHelper.successOnly()
     }
 
     @PostMapping("/favorite")
     fun updateFavorite(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.Favorite,
     ): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
-        roomService.favoriteChatRoom(request.chatRoomId, UserId.of(userId), request.favorite)
+        roomService.favoriteChatRoom(request.chatRoomId, userId, request.favorite)
         return ResponseHelper.successOnly()
     }
 }

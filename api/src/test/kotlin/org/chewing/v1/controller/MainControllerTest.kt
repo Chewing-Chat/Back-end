@@ -4,9 +4,13 @@ import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.controller.main.MainController
 import org.chewing.v1.facade.MainFacade
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.util.converter.StringToFriendSortCriteriaConverter
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.chewing.v1.util.security.UserArgumentResolver
 import org.junit.jupiter.api.BeforeEach
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
@@ -14,16 +18,22 @@ class MainControllerTest : RestDocsTest() {
 
     private lateinit var mainFacade: MainFacade
     private lateinit var mainController: MainController
+    private lateinit var userArgumentResolver: UserArgumentResolver
 
     @BeforeEach
     fun setUp() {
         mainFacade = mockk()
         mainController = MainController(mainFacade)
+        userArgumentResolver = UserArgumentResolver()
         mockMvc = mockControllerWithAdviceAndCustomConverter(
             mainController,
             GlobalExceptionHandler(),
             StringToFriendSortCriteriaConverter(),
+            userArgumentResolver,
         )
+        val userId = UserId.of("testUserId")
+        val authentication = UsernamePasswordAuthenticationToken(userId, null)
+        SecurityContextHolder.getContext().authentication = authentication
     }
 //
 //    @Test

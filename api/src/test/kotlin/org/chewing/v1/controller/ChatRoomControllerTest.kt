@@ -4,10 +4,14 @@ import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.controller.chat.ChatRoomController
 import org.chewing.v1.facade.ChatRoomFacade
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.chat.RoomService
 import org.chewing.v1.util.converter.StringToChatRoomSortCriteriaConverter
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.chewing.v1.util.security.UserArgumentResolver
 import org.junit.jupiter.api.BeforeEach
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
@@ -17,6 +21,7 @@ class ChatRoomControllerTest : RestDocsTest() {
     private lateinit var roomService: RoomService
     private lateinit var chatRoomController: ChatRoomController
     private lateinit var exceptionHandler: GlobalExceptionHandler
+    private lateinit var userArgumentResolver: UserArgumentResolver
 
     @BeforeEach
     fun setUp() {
@@ -24,11 +29,16 @@ class ChatRoomControllerTest : RestDocsTest() {
         exceptionHandler = GlobalExceptionHandler()
         roomService = mockk()
         chatRoomController = ChatRoomController(chatRoomFacade, roomService)
+        userArgumentResolver = UserArgumentResolver()
         mockMvc = mockControllerWithAdviceAndCustomConverter(
             chatRoomController,
             exceptionHandler,
             StringToChatRoomSortCriteriaConverter(),
+            userArgumentResolver,
         )
+        val userId = UserId.of("testUserId")
+        val authentication = UsernamePasswordAuthenticationToken(userId, null)
+        SecurityContextHolder.getContext().authentication = authentication
     }
 
 //    @Test

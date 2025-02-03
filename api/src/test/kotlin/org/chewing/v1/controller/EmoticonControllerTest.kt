@@ -3,9 +3,13 @@ package org.chewing.v1.controller
 import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.controller.emoticon.EmoticonController
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.emoticon.EmoticonService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.chewing.v1.util.security.UserArgumentResolver
 import org.junit.jupiter.api.BeforeEach
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
@@ -13,13 +17,18 @@ class EmoticonControllerTest : RestDocsTest() {
     private lateinit var emoticonService: EmoticonService
     private lateinit var emoticonController: EmoticonController
     private lateinit var exceptionHandler: GlobalExceptionHandler
+    private lateinit var userArgumentResolver: UserArgumentResolver
 
     @BeforeEach
     fun setUp() {
         emoticonService = mockk()
         exceptionHandler = GlobalExceptionHandler()
+        userArgumentResolver = UserArgumentResolver()
         emoticonController = EmoticonController(emoticonService)
-        mockMvc = mockController(emoticonController, exceptionHandler)
+        mockMvc = mockController(emoticonController, exceptionHandler, userArgumentResolver)
+        val userId = UserId.of("testUserId")
+        val authentication = UsernamePasswordAuthenticationToken(userId, null)
+        SecurityContextHolder.getContext().authentication = authentication
     }
 
 //    @Test

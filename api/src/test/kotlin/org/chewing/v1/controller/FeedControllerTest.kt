@@ -17,6 +17,7 @@ import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.feed.FeedService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.chewing.v1.util.security.UserArgumentResolver
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -33,6 +34,8 @@ import org.springframework.restdocs.request.RequestDocumentation.partWithName
 import org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import org.springframework.restdocs.request.RequestDocumentation.queryParameters
 import org.springframework.restdocs.request.RequestDocumentation.requestParts
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import java.time.format.DateTimeFormatter
 
@@ -42,14 +45,19 @@ class FeedControllerTest : RestDocsTest() {
     private lateinit var feedAccessFacade: FeedAccessFacade
     private lateinit var feedController: FeedController
     private lateinit var exceptionHandler: GlobalExceptionHandler
+    private lateinit var userArgumentResolver: UserArgumentResolver
 
     @BeforeEach
     fun setUp() {
         feedService = mockk()
         feedAccessFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
+        userArgumentResolver = UserArgumentResolver()
         feedController = FeedController(feedService, feedAccessFacade)
-        mockMvc = mockController(feedController, exceptionHandler)
+        mockMvc = mockController(feedController, exceptionHandler, userArgumentResolver)
+        val userId = UserId.of("testUserId")
+        val authentication = UsernamePasswordAuthenticationToken(userId, null)
+        SecurityContextHolder.getContext().authentication = authentication
     }
 
     @Test

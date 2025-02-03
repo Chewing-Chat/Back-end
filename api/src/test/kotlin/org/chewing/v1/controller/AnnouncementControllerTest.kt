@@ -11,8 +11,10 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.controller.announcement.AnnouncementController
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.announcement.AnnouncementService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
+import org.chewing.v1.util.security.UserArgumentResolver
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -23,6 +25,8 @@ import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
 import org.springframework.restdocs.request.RequestDocumentation.pathParameters
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import java.time.format.DateTimeFormatter
 
@@ -32,13 +36,18 @@ class AnnouncementControllerTest : RestDocsTest() {
     private lateinit var announcementService: AnnouncementService
     private lateinit var announcementController: AnnouncementController
     private lateinit var exceptionHandler: GlobalExceptionHandler
+    private lateinit var userArgumentResolver: UserArgumentResolver
 
     @BeforeEach
     fun setUp() {
         announcementService = mockk()
         exceptionHandler = GlobalExceptionHandler()
+        userArgumentResolver = UserArgumentResolver()
         announcementController = AnnouncementController(announcementService)
-        mockMvc = mockController(announcementController, exceptionHandler)
+        mockMvc = mockController(announcementController, exceptionHandler, userArgumentResolver)
+        val userId = UserId.of("testUserId")
+        val authentication = UsernamePasswordAuthenticationToken(userId, null)
+        SecurityContextHolder.getContext().authentication = authentication
     }
 
     @Test
