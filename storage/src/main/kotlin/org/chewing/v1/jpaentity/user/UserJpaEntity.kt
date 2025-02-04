@@ -29,8 +29,6 @@ internal class UserJpaEntity(
     @Enumerated(EnumType.STRING)
     private var backgroundPictureType: MediaType,
 
-    private var birth: String,
-
     private var phoneNumber: String,
 
     private var password: String,
@@ -49,7 +47,6 @@ internal class UserJpaEntity(
                 pictureType = MediaType.IMAGE_BASIC,
                 backgroundPictureUrl = "",
                 backgroundPictureType = MediaType.IMAGE_BASIC,
-                birth = "",
                 phoneNumber = phoneNumber.e164PhoneNumber,
                 status = access,
                 name = userName,
@@ -63,7 +60,6 @@ internal class UserJpaEntity(
         return UserInfo.of(
             UserId.of(this.userId),
             this.name,
-            this.birth,
             Media.of(FileCategory.PROFILE, this.pictureUrl, 0, this.pictureType),
             this.status,
             PhoneNumber.of(this.phoneNumber),

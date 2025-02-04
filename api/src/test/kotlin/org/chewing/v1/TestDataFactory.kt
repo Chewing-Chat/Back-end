@@ -81,7 +81,6 @@ object TestDataFactory {
         return UserInfo.of(
             UserId.of(userId),
             "testUserName",
-            "20000101",
             Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
             accessStatus,
             PhoneNumber.of("testPhoneNumber"),

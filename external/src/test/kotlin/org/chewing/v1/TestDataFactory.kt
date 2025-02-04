@@ -25,7 +25,6 @@ object TestDataFactory {
     fun createUser(userId: UserId): UserInfo = UserInfo.of(
         userId,
         "name",
-        "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.ACCESS,
         PhoneNumber.of("testPhoneNumber"),
@@ -37,7 +36,6 @@ object TestDataFactory {
         return UserInfo.of(
             UserId.of("testUserId"),
             "testUserName",
-            "20000101",
             Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
             accessStatus,
             PhoneNumber.of("testPhoneNumber"),
