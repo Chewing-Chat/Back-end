@@ -30,7 +30,7 @@ class ContactFormatter(
         return try {
             val parsedNumber = phoneUtil.parse(e164PhoneNumber.e164PhoneNumber, null)
             val countryCode = "${parsedNumber.countryCode}"
-            val localNumber = "0${parsedNumber.nationalNumber.toString()}"
+            val localNumber = "0${parsedNumber.nationalNumber}"
             LocalPhoneNumber.of(localNumber, countryCode)
         } catch (e: NumberParseException) {
             throw ConflictException(ErrorCode.INVALID_PHONE_NUMBER)

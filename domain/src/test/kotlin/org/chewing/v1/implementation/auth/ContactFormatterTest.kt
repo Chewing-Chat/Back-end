@@ -4,7 +4,6 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.implementation.contact.ContactFormatter
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.platform.commons.annotation.Testable
 
 @DisplayName("ContactFormatter 테스트")
 class ContactFormatterTest {
