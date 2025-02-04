@@ -45,7 +45,7 @@ import java.time.LocalDateTime
 
 object TestDataFactory {
 
-    fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("testPhoneNumber")
+    fun createPhoneNumber(): PhoneNumber = PhoneNumber.of("+821012345678")
 
     fun createUserName(): String = "testUserName"
     fun createUserId(): UserId = UserId.of("testUserId")
