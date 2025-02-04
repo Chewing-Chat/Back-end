@@ -16,7 +16,6 @@ object UserProvider {
         return UserInfo.of(
             userId,
             "testName",
-            "2000-00-00",
             Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_BASIC),
             AccessStatus.NOT_ACCESS,
             PhoneNumberProvider.buildPhoneNumber(),

@@ -88,7 +88,6 @@ object TestDataFactory {
         return UserInfo.of(
             userId,
             "testUserName",
-            "20000101",
             Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
             accessStatus,
             PhoneNumber.of("+821012345678"),
@@ -109,7 +108,6 @@ object TestDataFactory {
     fun createEncryptedUser(userId: UserId, password: String): UserInfo = UserInfo.of(
         userId,
         "testName",
-        "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.ACCESS,
         PhoneNumber.of("testPhoneNumber"),
@@ -120,7 +118,6 @@ object TestDataFactory {
     fun createNotAccessUser(): UserInfo = UserInfo.of(
         UserId.of("testUserId"),
         "testName",
-        "2000-00-00",
         Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
         AccessStatus.NOT_ACCESS,
         PhoneNumber.of("testPhoneNumber"),

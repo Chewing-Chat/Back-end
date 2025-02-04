@@ -4,7 +4,6 @@ import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.contact.Contact
 import org.chewing.v1.model.user.AccessStatus
-import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.repository.user.UserRepository
 import org.springframework.stereotype.Component
 
@@ -12,12 +11,6 @@ import org.springframework.stereotype.Component
 class UserValidator(
     val userRepository: UserRepository,
 ) {
-    fun isAccess(userInfo: UserInfo) {
-        if (userInfo.status != AccessStatus.ACCESS) {
-            throw ConflictException(ErrorCode.USER_NOT_ACCESS)
-        }
-    }
-
     fun isNotAlreadyCreated(contact: Contact) {
         val user = userRepository.readByContact(contact, AccessStatus.ACCESS)
         if (user != null) {
