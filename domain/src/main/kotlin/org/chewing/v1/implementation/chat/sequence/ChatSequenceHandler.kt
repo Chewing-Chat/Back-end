@@ -17,8 +17,18 @@ class ChatSequenceHandler(
         return chatRoomSequenceRepository.updateIncreaseSequence(chatRoomId)
     }
 
-    fun handleMemberJoinSequence(chatRoomId: ChatRoomId, userId: UserId, chatLogSequence: ChatSequence): ChatSequence {
+    fun handleJoinMemberSequence(chatRoomId: ChatRoomId, userId: UserId, chatLogSequence: ChatSequence): ChatSequence {
         return chatRoomMemberSequenceRepository.updateJoinSequence(chatRoomId, userId, chatLogSequence)
+    }
+
+    fun handleCreateMemberSequences(chatRoomId: ChatRoomId, memberIds : List<UserId>) {
+        memberIds.forEach { userId ->
+            chatRoomMemberSequenceRepository.appendSequence(chatRoomId, userId)
+        }
+    }
+
+    fun handleCreateRoomSequence(chatRoomId: ChatRoomId): ChatSequence {
+        return chatRoomSequenceRepository.appendSequence(chatRoomId)
     }
 
     fun handleMemberReadSequence(chatRoomId: ChatRoomId, userId: UserId, chatLogSequence: ChatSequence): ChatSequence {

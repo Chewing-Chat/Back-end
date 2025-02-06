@@ -58,6 +58,7 @@ enum class ErrorCode(
     CHATROOM_CREATE_FAILED("CHATROOM_2", "채팅방 생성을 실패하였습니다."),
     CHATROOM_NOT_SELF("CHATROOM_5", "자신과 채팅 할 수 없습니다."),
     CHATROOM_IS_NOT_GROUP("CHATROOM_3", "그룹 채팅방이 아닙니다."),
+    CHATROOM_NOT_PARTICIPANT("CHATROOM_6", "채팅방 참여자가 아닙니다."),
     CHATROOM_FAVORITE_FAILED("CHATROOM_4", "채팅방 즐겨찾기 설정을 실패하였습니다."),
     CHATLOG_NOT_FOUND("CHATLOG_1", "채팅 로그를 찾을 수 없음."),
 
@@ -65,7 +66,7 @@ enum class ErrorCode(
 
     SCHEDULE_NOT_FOUND("SCHEDULE_1", "일정을 찾을 수 없음."),
     SCHEDULE_UPDATE_FAILED("SCHEDULE_3", "일정 수정을 실패하였습니다."),
-    SCHEDULE_NOT_PARTICIPANT("SCHEDULE_4", "참여자가 아닙니다."),
+    SCHEDULE_NOT_PARTICIPANT("SCHEDULE_4", "일정 참여자가 아닙니다."),
     SCHEDULE_NOT_OWNER("SCHEDULE_5", "일정 작성자가 아닙니다."),
     SCHEDULE_NOT_OWNER_DELETE("SCHEDULE_6", "일정 작성자는 삭제할 수 없습니다."),
     SCHEDULE_CREATE_FAILED("SCHEDULE_2", "일정 생성을 실패하였습니다."),

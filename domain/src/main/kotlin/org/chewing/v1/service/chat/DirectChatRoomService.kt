@@ -41,20 +41,21 @@ class DirectChatRoomService(
         return if (existingChatRoom != null) {
             if (existingChatRoom.status == ChatRoomMemberStatus.DELETED) {
                 directChatRoomUpdater.updateMemberStatus(userId, existingChatRoom.chatRoomId, ChatRoomMemberStatus.ACTIVE)
-                val chatLogSequence = chatSequenceFinder.findCurrentRoomSequence(existingChatRoom.chatRoomId)
-                val chatMemberSequence = chatSequenceFinder.findCurrentMemberSequence(existingChatRoom.chatRoomId, userId)
-                DirectChatRoom.of(existingChatRoom, chatLogSequence, chatMemberSequence)
+                val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(existingChatRoom.chatRoomId)
+                val chatMemberSequence = chatSequenceHandler.handleJoinMemberSequence(existingChatRoom.chatRoomId, userId, chatRoomSequence)
+                DirectChatRoom.of(existingChatRoom, chatRoomSequence, chatMemberSequence)
             } else {
-                val chatLogSequence = chatSequenceFinder.findCurrentRoomSequence(existingChatRoom.chatRoomId)
+                val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(existingChatRoom.chatRoomId)
                 val chatMemberSequence = chatSequenceFinder.findCurrentMemberSequence(existingChatRoom.chatRoomId, userId)
-                DirectChatRoom.of(existingChatRoom, chatLogSequence, chatMemberSequence)
+                DirectChatRoom.of(existingChatRoom, chatRoomSequence, chatMemberSequence)
             }
         } else {
             val newChatRoomInfo = directChatRoomAppender.appendRoom(userId, friendId)
-
-            val chatLogSequence = chatSequenceFinder.findCurrentRoomSequence(newChatRoomInfo.chatRoomId)
-            val chatMemberSequence = chatSequenceHandler.handleMemberJoinSequence(newChatRoomInfo.chatRoomId, userId, chatLogSequence)
-            DirectChatRoom.of(newChatRoomInfo, chatLogSequence, chatMemberSequence)
+            val chatRoomSequence = chatSequenceHandler.handleCreateRoomSequence(newChatRoomInfo.chatRoomId)
+            val memberIds = listOf(userId, friendId)
+            chatSequenceHandler.handleCreateMemberSequences(newChatRoomInfo.chatRoomId, memberIds)
+            val chatMemberSequence = chatSequenceFinder.findCurrentMemberSequence(newChatRoomInfo.chatRoomId, userId)
+            DirectChatRoom.of(newChatRoomInfo, chatRoomSequence, chatMemberSequence)
         }
     }
 

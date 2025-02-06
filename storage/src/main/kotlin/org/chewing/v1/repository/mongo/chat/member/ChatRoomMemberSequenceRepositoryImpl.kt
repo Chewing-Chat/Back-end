@@ -32,10 +32,8 @@ class ChatRoomMemberSequenceRepositoryImpl(
             .setOnInsert("chatRoomId", chatRoomId.id)
             .setOnInsert("memberId", userId.id)
 
-        // upsert(true) → 문서가 없으면 Insert, 있으면 업데이트
-        // returnNew(true) → 수정(또는 Insert) 후의 최신 도큐먼트를 반환
         val options = FindAndModifyOptions.options()
-            .upsert(true)
+            .upsert(false)
             .returnNew(true)
 
         val updatedEntity = mongoTemplate.findAndModify(
@@ -59,7 +57,7 @@ class ChatRoomMemberSequenceRepositoryImpl(
         )
 
         val options = FindAndModifyOptions.options()
-            .upsert(true)
+            .upsert(false)
             .returnNew(true)
 
         val update = Update()
@@ -102,5 +100,16 @@ class ChatRoomMemberSequenceRepositoryImpl(
         )
 
         return mongoTemplate.findOne(query, ChatRoomMemberSequenceMongoEntity::class.java)?.toChatRoomMemberSequence()
+    }
+
+    override fun appendSequence(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+    ) {
+        val entity = ChatRoomMemberSequenceMongoEntity.generate(
+            chatRoomId = chatRoomId,
+            memberId = userId,
+        )
+        mongoTemplate.save(entity)
     }
 }

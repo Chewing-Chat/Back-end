@@ -2,6 +2,7 @@ package org.chewing.v1.mongoentity
 
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.ChatSequence
+import org.chewing.v1.model.user.UserId
 import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -18,5 +19,19 @@ data class ChatRoomMemberSequenceMongoEntity(
             chatRoomId = ChatRoomId.of(chatRoomId),
             sequenceNumber = readSeqNumber,
         )
+    }
+
+    companion object {
+        fun generate(
+            chatRoomId: ChatRoomId,
+            memberId: UserId,
+        ): ChatRoomMemberSequenceMongoEntity {
+            return ChatRoomMemberSequenceMongoEntity(
+                chatRoomId = chatRoomId.id,
+                memberId = memberId.id,
+                readSeqNumber = 0,
+                joinSeqNumber = 0,
+            )
+        }
     }
 }
