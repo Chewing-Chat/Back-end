@@ -160,7 +160,6 @@ class UserControllerTest : RestDocsTest() {
             .body("data.name", equalTo(user.info.name))
             .body("data.phoneNumber", equalTo(user.localPhoneNumber.number))
             .body("data.countryCode", equalTo(user.localPhoneNumber.countryCode))
-            .body("data.birth", equalTo(user.info.birth))
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -170,7 +169,6 @@ class UserControllerTest : RestDocsTest() {
                     responseFields(
                         fieldWithPath("status").description("상태 코드"),
                         fieldWithPath("data.name").description("사용자 이름"),
-                        fieldWithPath("data.birth").description("생년월일"),
                         fieldWithPath("data.phoneNumber").description("전화번호"),
                         fieldWithPath("data.countryCode").description("국가 코드"),
                     ),

@@ -4,7 +4,6 @@ import org.chewing.v1.model.user.User
 
 data class AccountResponse(
     val name: String,
-    val birth: String,
     val phoneNumber: String,
     val countryCode: String,
 ) {
@@ -14,7 +13,6 @@ data class AccountResponse(
         ): AccountResponse {
             return AccountResponse(
                 name = user.info.name,
-                birth = user.info.birth,
                 phoneNumber = user.localPhoneNumber.number,
                 countryCode = user.localPhoneNumber.countryCode,
             )

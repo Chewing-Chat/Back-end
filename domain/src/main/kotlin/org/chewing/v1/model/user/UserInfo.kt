@@ -6,7 +6,6 @@ import org.chewing.v1.model.media.Media
 class UserInfo private constructor(
     val userId: UserId,
     val name: String,
-    val birth: String,
     val image: Media,
     val status: AccessStatus,
     val phoneNumber: PhoneNumber,
@@ -17,7 +16,6 @@ class UserInfo private constructor(
         fun of(
             userId: UserId,
             name: String,
-            birth: String,
             image: Media,
             status: AccessStatus,
             phoneNumber: PhoneNumber,
@@ -26,7 +24,6 @@ class UserInfo private constructor(
         ): UserInfo {
             return UserInfo(
                 userId = userId,
-                birth = birth,
                 image = image,
                 name = name,
                 status = status,
