@@ -1,7 +1,7 @@
 package org.chewing.v1.mongoentity
 
 import org.chewing.v1.model.chat.room.ChatRoomId
-import org.chewing.v1.model.chat.room.ChatSequence
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -20,8 +20,8 @@ data class ChatRoomSequenceMongoEntity(
         }
     }
 
-    fun toChatRoomSequence(): ChatSequence {
-        return ChatSequence.of(
+    fun toChatRoomSequence(): ChatRoomSequence {
+        return ChatRoomSequence.of(
             chatRoomId = ChatRoomId.of(chatRoomId),
             sequenceNumber = seqNumber,
         )

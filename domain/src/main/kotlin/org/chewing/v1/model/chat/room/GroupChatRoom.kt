@@ -3,15 +3,15 @@ package org.chewing.v1.model.chat.room
 class GroupChatRoom private constructor(
     val chatRoomInfo: GroupChatRoomInfo,
     val chatRoomMembers : List<GroupChatRoomMemberInfo>,
-    val chatRoomSequence: ChatSequence,
-    val chatRoomOwnSequence: ChatSequence,
+    val chatRoomSequence: ChatRoomSequence,
+    val chatRoomOwnSequence: ChatRoomMemberSequence,
 ) {
     companion object {
         fun of(
             chatRoomInfo: GroupChatRoomInfo,
             chatRoomMembers : List<GroupChatRoomMemberInfo>,
-            chatRoomSequence: ChatSequence,
-            chatRoomMemberSequence: ChatSequence,
+            chatRoomSequence: ChatRoomSequence,
+            chatRoomMemberSequence: ChatRoomMemberSequence,
         ): GroupChatRoom {
             return GroupChatRoom(
                 chatRoomInfo = chatRoomInfo,

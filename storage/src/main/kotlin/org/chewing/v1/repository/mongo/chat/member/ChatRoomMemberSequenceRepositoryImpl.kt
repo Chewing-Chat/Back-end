@@ -1,7 +1,8 @@
 package org.chewing.v1.repository.mongo.chat.member
 
 import org.chewing.v1.model.chat.room.ChatRoomId
-import org.chewing.v1.model.chat.room.ChatSequence
+import org.chewing.v1.model.chat.room.ChatRoomMemberSequence
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.mongoentity.ChatRoomMemberSequenceMongoEntity
 import org.chewing.v1.repository.chat.ChatRoomMemberSequenceRepository
@@ -20,15 +21,15 @@ class ChatRoomMemberSequenceRepositoryImpl(
     override fun updateReadSequence(
         chatRoomId: ChatRoomId,
         userId: UserId,
-        chatLogSequence: ChatSequence,
-    ): ChatSequence {
+        sequenceNumber: Int,
+    ): ChatRoomMemberSequence? {
         val query = Query(
             Criteria.where("chatRoomId").`is`(chatRoomId.id)
                 .and("memberId").`is`(userId.id),
         )
 
         val update = Update()
-            .set("readSeqNumber", chatLogSequence.sequenceNumber)
+            .set("readSeqNumber", sequenceNumber)
             .setOnInsert("chatRoomId", chatRoomId.id)
             .setOnInsert("memberId", userId.id)
 
@@ -43,25 +44,26 @@ class ChatRoomMemberSequenceRepositoryImpl(
             ChatRoomMemberSequenceMongoEntity::class.java,
         )
 
-        return updatedEntity?.toChatRoomMemberSequence() ?: chatLogSequence
+        return updatedEntity?.toChatRoomMemberSequence()
     }
 
     override fun updateJoinSequence(
         chatRoomId: ChatRoomId,
         userId: UserId,
-        chatLogSequence: ChatSequence,
-    ): ChatSequence {
+        chatLogSequence: ChatRoomSequence,
+    ): ChatRoomMemberSequence? {
         val query = Query(
             Criteria.where("chatRoomId").`is`(chatRoomId.id)
                 .and("memberId").`is`(userId.id),
         )
 
         val options = FindAndModifyOptions.options()
-            .upsert(false)
+            .upsert(true)
             .returnNew(true)
 
         val update = Update()
             .set("joinSeqNumber", chatLogSequence.sequenceNumber)
+            .set("readSeqNumber", chatLogSequence.sequenceNumber)
             .setOnInsert("chatRoomId", chatRoomId.id)
             .setOnInsert("memberId", userId.id)
 
@@ -72,13 +74,13 @@ class ChatRoomMemberSequenceRepositoryImpl(
             ChatRoomMemberSequenceMongoEntity::class.java,
         )
 
-        return updatedEntity?.toChatRoomMemberSequence() ?: chatLogSequence
+        return updatedEntity?.toChatRoomMemberSequence()
     }
 
     override fun readsSequences(
         chatRoomIds: List<ChatRoomId>,
         userId: UserId,
-    ): List<ChatSequence> {
+    ): List<ChatRoomMemberSequence> {
         val roomIdList = chatRoomIds.map { it.id }
 
         // 조건: chatRoomId in (roomIdList) AND memberId == userId
@@ -90,10 +92,10 @@ class ChatRoomMemberSequenceRepositoryImpl(
         return mongoTemplate.find(query, ChatRoomMemberSequenceMongoEntity::class.java).map { it.toChatRoomMemberSequence() }
     }
 
-    override fun readSequences(
+    override fun readSequence(
         chatRoomId: ChatRoomId,
         userId: UserId,
-    ): ChatSequence? {
+    ): ChatRoomMemberSequence? {
         val query = Query(
             Criteria.where("chatRoomId").`is`(chatRoomId.id)
                 .and("memberId").`is`(userId.id),

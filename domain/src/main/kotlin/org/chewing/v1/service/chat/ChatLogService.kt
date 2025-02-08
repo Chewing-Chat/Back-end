@@ -1,5 +1,6 @@
 package org.chewing.v1.service.chat
 
+import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.implementation.chat.message.ChatAppender
 import org.chewing.v1.implementation.chat.message.ChatGenerator
 import org.chewing.v1.implementation.chat.message.ChatReader
@@ -8,7 +9,8 @@ import org.chewing.v1.implementation.media.FileHandler
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatRoomId
-import org.chewing.v1.model.chat.room.ChatSequence
+import org.chewing.v1.model.chat.room.ChatRoomType
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.media.Media
@@ -30,53 +32,106 @@ class ChatLogService(
     fun mediasMessage(
         chatRoomId: ChatRoomId,
         userId: UserId,
-        chatRoomNumber: ChatSequence,
+        chatRoomNumber: ChatRoomSequence,
         medias: List<Media>,
+        chatRoomType: ChatRoomType,
     ): ChatFileMessage {
-        val chatMessage = chatGenerator.generateFileMessage(chatRoomId, userId, chatRoomNumber, medias)
+        val chatMessage = chatGenerator.generateFileMessage(chatRoomId, userId, chatRoomNumber, medias, chatRoomType)
         chatAppender.appendChatLog(chatMessage)
         return chatMessage
     }
 
-    fun readMessage(chatRoomId: ChatRoomId, userId: UserId, chatRoomNumber: ChatSequence): ChatReadMessage {
-        return chatGenerator.generateReadMessage(chatRoomId, userId, chatRoomNumber)
+    fun readMessage(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        chatRoomNumber: ChatRoomSequence,
+        chatRoomType: ChatRoomType,
+    ): ChatReadMessage {
+        return chatGenerator.generateReadMessage(chatRoomId, userId, chatRoomNumber, chatRoomType)
     }
 
-    fun deleteMessage(chatRoomId: ChatRoomId, userId: UserId, messageId: String, chatRoomNumber: ChatSequence): ChatDeleteMessage {
-        val chatMessage = chatGenerator.generateDeleteMessage(chatRoomId, userId, chatRoomNumber, messageId)
+    fun deleteMessage(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        messageId: String,
+        chatRoomType: ChatRoomType,
+    ): ChatDeleteMessage {
+        val parentMessage = chatReader.readChatMessage(messageId)
+        val chatMessage =
+            chatGenerator.generateDeleteMessage(chatRoomId, userId, parentMessage.number, messageId, chatRoomType)
         chatRemover.removeChatLog(messageId)
         return chatMessage
     }
 
-    fun replyMessage(chatRoomId: ChatRoomId, userId: UserId, parentMessageId: String, text: String, chatRoomNumber: ChatSequence): ChatReplyMessage {
+    fun replyMessage(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        parentMessageId: String,
+        text: String,
+        chatRoomNumber: ChatRoomSequence,
+        chatRoomType: ChatRoomType,
+    ): ChatReplyMessage {
         val parentMessage = chatReader.readChatMessage(parentMessageId)
-        val chatMessage = chatGenerator.generateReplyMessage(chatRoomId, userId, chatRoomNumber, text, parentMessage)
+        val chatMessage =
+            chatGenerator.generateReplyMessage(chatRoomId, userId, chatRoomNumber, text, parentMessage, chatRoomType)
         chatAppender.appendChatLog(chatMessage)
         return chatMessage
     }
 
-    fun chatNormalMessage(chatRoomId: ChatRoomId, userId: UserId, text: String, chatRoomNumber: ChatSequence): ChatNormalMessage {
-        val chatMessage = chatGenerator.generateNormalMessage(chatRoomId, userId, chatRoomNumber, text)
+    fun chatNormalMessage(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        text: String,
+        chatRoomNumber: ChatRoomSequence,
+        chatRoomType: ChatRoomType,
+    ): ChatNormalMessage {
+        val chatMessage = chatGenerator.generateNormalMessage(chatRoomId, userId, chatRoomNumber, text, chatRoomType)
         chatAppender.appendChatLog(chatMessage)
         return chatMessage
     }
 
-    fun leaveMessages(userId: UserId, numbers: List<ChatSequence>): List<ChatLeaveMessage> {
-        return numbers.map { number ->
-            val chatMessage = chatGenerator.generateLeaveMessage(number.chatRoomId, userId, number)
-            chatAppender.appendChatLog(chatMessage)
-            chatMessage
-        }
+    fun chatErrorMessages(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        errorCode: ErrorCode,
+        chatRoomType: ChatRoomType,
+    ): ChatErrorMessage {
+        return chatGenerator.generateErrorMessage(chatRoomId, userId, errorCode, chatRoomType)
     }
 
-    fun inviteMessages(friendIds: List<UserId>, chatRoomId: ChatRoomId, userId: UserId, chatRoomNumber: ChatSequence): ChatInviteMessage {
-        val chatMessage = chatGenerator.generateInviteMessage(chatRoomId, userId, chatRoomNumber, friendIds)
+    fun leaveMessage(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        number: ChatRoomSequence,
+        chatRoomType: ChatRoomType,
+    ): ChatLeaveMessage {
+        val chatMessage = chatGenerator.generateLeaveMessage(chatRoomId, userId, number, chatRoomType)
         chatAppender.appendChatLog(chatMessage)
         return chatMessage
     }
 
-    fun inviteMessage(chatRoomId: ChatRoomId, friendId: UserId, userId: UserId, chatRoomNumber: ChatSequence): ChatInviteMessage {
-        val chatMessage = chatGenerator.generateInviteMessage(chatRoomId, userId, chatRoomNumber, listOf(friendId))
+    fun inviteMessages(
+        friendIds: List<UserId>,
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        chatRoomNumber: ChatRoomSequence,
+        chatRoomType: ChatRoomType,
+    ): ChatInviteMessage {
+        val chatMessage =
+            chatGenerator.generateInviteMessage(chatRoomId, userId, chatRoomNumber, friendIds, chatRoomType)
+        chatAppender.appendChatLog(chatMessage)
+        return chatMessage
+    }
+
+    fun inviteMessage(
+        chatRoomId: ChatRoomId,
+        friendId: UserId,
+        userId: UserId,
+        chatRoomNumber: ChatRoomSequence,
+        chatRoomType: ChatRoomType,
+    ): ChatInviteMessage {
+        val chatMessage =
+            chatGenerator.generateInviteMessage(chatRoomId, userId, chatRoomNumber, listOf(friendId), chatRoomType)
         chatAppender.appendChatLog(chatMessage)
         return chatMessage
     }
@@ -86,7 +141,6 @@ class ChatLogService(
     }
 
     fun getChatLog(chatRoomId: ChatRoomId, sequenceNumber: Int, userStartSequence: Int): List<ChatLog> {
-        val chatLogs = chatReader.readChatLog(chatRoomId, sequenceNumber)
-        return chatLogs.filter { it.number.sequenceNumber > userStartSequence }
+        return chatReader.readChatLog(chatRoomId, sequenceNumber, userStartSequence)
     }
 }

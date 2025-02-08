@@ -2,7 +2,8 @@ package org.chewing.v1.model.chat.message
 
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.room.ChatRoomId
-import org.chewing.v1.model.chat.room.ChatSequence
+import org.chewing.v1.model.chat.room.ChatRoomType
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
@@ -11,13 +12,14 @@ class ChatReplyMessage private constructor(
     override val chatRoomId: ChatRoomId,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    override val number: ChatSequence,
+    val number: ChatRoomSequence,
     override val type: MessageType,
     val text: String,
     val parentMessageId: String,
     val parentMessageText: String,
     val parentSeqNumber: Int,
     val parentMessageType: ChatLogType,
+    override val chatRoomType: ChatRoomType
 ) : ChatMessage() {
     companion object {
         fun of(
@@ -27,11 +29,12 @@ class ChatReplyMessage private constructor(
             parentMessageId: String,
             parentSeqNumber: Int,
             timestamp: LocalDateTime,
-            number: ChatSequence,
+            number: ChatRoomSequence,
             text: String,
             parentMessageText: String,
             type: MessageType,
             parentMessageType: ChatLogType,
+            chatRoomType: ChatRoomType
         ): ChatReplyMessage {
             return ChatReplyMessage(
                 messageId = messageId,
@@ -45,6 +48,7 @@ class ChatReplyMessage private constructor(
                 parentMessageText = parentMessageText,
                 type = type,
                 parentMessageType = parentMessageType,
+                chatRoomType = chatRoomType
             )
         }
     }

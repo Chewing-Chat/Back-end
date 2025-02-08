@@ -8,8 +8,9 @@ import org.chewing.v1.implementation.chat.grouproom.GroupChatRoomValidator
 import org.chewing.v1.implementation.chat.sequence.ChatSequenceFinder
 import org.chewing.v1.implementation.chat.sequence.ChatSequenceHandler
 import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatRoomMemberSequence
 import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
-import org.chewing.v1.model.chat.room.ChatSequence
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.chat.room.GroupChatRoom
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
@@ -55,7 +56,7 @@ class GroupChatRoomService(
     fun getGroupChatRooms(userId: UserId): List<GroupChatRoom> {
         val userParticipatedRooms = groupChatRoomReader.readRoomUserInfos(userId)
         val chatRooms = groupChatRoomReader.readRoomInfos(userParticipatedRooms.map { it.chatRoomId })
-        val chatRoomMembers = groupChatRoomReader.readRoomMemberInfos(chatRooms.map { it.chatRoomId })
+        val chatRoomMembers = groupChatRoomReader.readsRoomMemberInfos(chatRooms.map { it.chatRoomId })
         val chatRoomSequences = chatSequenceFinder.findCurrentRoomSequences(chatRooms.map { it.chatRoomId })
         val memberSequences = chatSequenceFinder.findCurrentMemberSequences(chatRooms.map { it.chatRoomId }, userId)
         return chatRooms.map { chatRoom ->
@@ -66,8 +67,19 @@ class GroupChatRoomService(
         }
     }
 
-    fun readGroupChatRoom(userId: UserId, chatRoomId: ChatRoomId): ChatSequence {
-        val chatLogSequence = chatSequenceFinder.findCurrentRoomSequence(chatRoomId)
-        return chatSequenceHandler.handleMemberReadSequence(chatRoomId, userId, chatLogSequence)
+    fun readGroupChatRoom(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): ChatRoomMemberSequence {
+        return chatSequenceHandler.handleMemberReadSequence(chatRoomId, userId, sequenceNumber)
+    }
+
+    fun increaseGroupChatRoomSequence(chatRoomId: ChatRoomId): ChatRoomSequence {
+        return chatSequenceHandler.handleRoomIncreaseSequence(chatRoomId)
+    }
+
+    fun getGroupChatRoom(userId: UserId, chatRoomId: ChatRoomId): GroupChatRoom {
+        val existingChatRoom = groupChatRoomReader.readRoomInfo(chatRoomId)
+        val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(chatRoomId)
+        val chatMemberSequence = chatSequenceFinder.findCurrentMemberSequence(chatRoomId, userId)
+        val chatRoomMemberInfos = groupChatRoomReader.readRoomMemberInfos(chatRoomId)
+        return GroupChatRoom.of(existingChatRoom, chatRoomMemberInfos, chatRoomSequence, chatMemberSequence)
     }
 }

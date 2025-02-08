@@ -3,9 +3,18 @@ package org.chewing.v1.dto
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import org.chewing.v1.domain.ChatMessageOwner
-import org.chewing.v1.model.chat.message.*
+import org.chewing.v1.model.chat.message.ChatDeleteMessage
+import org.chewing.v1.model.chat.message.ChatErrorMessage
+import org.chewing.v1.model.chat.message.ChatFileMessage
+import org.chewing.v1.model.chat.message.ChatInviteMessage
+import org.chewing.v1.model.chat.message.ChatLeaveMessage
+import org.chewing.v1.model.chat.message.ChatMessage
+import org.chewing.v1.model.chat.message.ChatNormalMessage
+import org.chewing.v1.model.chat.message.ChatReadMessage
+import org.chewing.v1.model.chat.message.ChatReplyMessage
 import org.chewing.v1.model.chat.room.ChatRoomType
 import java.time.format.DateTimeFormatter
+
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -13,28 +22,27 @@ import java.time.format.DateTimeFormatter
     property = "type",
 )
 @JsonSubTypes(
-    JsonSubTypes.Type(value = ChatMessageDto.Reply::class, name = "Reply"),
-    JsonSubTypes.Type(value = ChatMessageDto.Delete::class, name = "Delete"),
-    JsonSubTypes.Type(value = ChatMessageDto.Leave::class, name = "Leave"),
-    JsonSubTypes.Type(value = ChatMessageDto.Invite::class, name = "Invite"),
-    JsonSubTypes.Type(value = ChatMessageDto.File::class, name = "File"),
-    JsonSubTypes.Type(value = ChatMessageDto.Normal::class, name = "Message"),
-    JsonSubTypes.Type(value = ChatMessageDto.Read::class, name = "Read"),
-    JsonSubTypes.Type(value = ChatMessageDto.Error::class, name = "Error"),
+    JsonSubTypes.Type(value = OwnedChatMessageDto.Reply::class, name = "Reply"),
+    JsonSubTypes.Type(value = OwnedChatMessageDto.Delete::class, name = "Delete"),
+    JsonSubTypes.Type(value = OwnedChatMessageDto.Leave::class, name = "Leave"),
+    JsonSubTypes.Type(value = OwnedChatMessageDto.Invite::class, name = "Invite"),
+    JsonSubTypes.Type(value = OwnedChatMessageDto.File::class, name = "File"),
+    JsonSubTypes.Type(value = OwnedChatMessageDto.Normal::class, name = "Message"),
+    JsonSubTypes.Type(value = OwnedChatMessageDto.Read::class, name = "Read"),
+    JsonSubTypes.Type(value = OwnedChatMessageDto.Error::class, name = "Error"),
 )
-sealed class ChatMessageDto {
+sealed class OwnedChatMessageDto {
     data class Reply(
         val messageId: String,
         val type: String,
         val chatRoomId: String,
-        val senderId: String,
         val parentMessageId: String,
         val parentSeqNumber: Int,
         val parentMessageText: String,
         val timestamp: String,
         val seqNumber: Int,
         val text: String,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
+        val owner: String = ChatMessageOwner.ME.name.lowercase(),
         val chatRoomType: String
     ) : ChatMessageDto()
 
@@ -42,10 +50,9 @@ sealed class ChatMessageDto {
         val targetMessageId: String,
         val type: String,
         val chatRoomId: String,
-        val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
+        val owner: String = ChatMessageOwner.ME.name.lowercase(),
         val chatRoomType: String
     ) : ChatMessageDto()
 
@@ -53,10 +60,9 @@ sealed class ChatMessageDto {
         val messageId: String,
         val type: String,
         val chatRoomId: String,
-        val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
+        val owner: String = ChatMessageOwner.ME.name.lowercase(),
         val chatRoomType: String
     ) : ChatMessageDto()
 
@@ -64,10 +70,9 @@ sealed class ChatMessageDto {
         val messageId: String,
         val type: String,
         val chatRoomId: String,
-        val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
+        val owner: String = ChatMessageOwner.ME.name.lowercase(),
         val chatRoomType: String
     ) : ChatMessageDto()
 
@@ -75,11 +80,10 @@ sealed class ChatMessageDto {
         val messageId: String,
         val type: String,
         val chatRoomId: String,
-        val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
         val files: List<MediaDto>,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
+        val owner: String = ChatMessageOwner.ME.name.lowercase(),
         val chatRoomType: String
     ) : ChatMessageDto()
 
@@ -87,32 +91,29 @@ sealed class ChatMessageDto {
         val messageId: String,
         val type: String,
         val chatRoomId: String,
-        val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
         val text: String,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
+        val owner: String = ChatMessageOwner.ME.name.lowercase(),
         val chatRoomType: String
     ) : ChatMessageDto()
 
     data class Read(
         val type: String,
         val chatRoomId: String,
-        val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
+        val owner: String = ChatMessageOwner.ME.name.lowercase(),
         val chatRoomType: String
     ) : ChatMessageDto()
 
     data class Error(
         val type: String,
         val chatRoomId: String,
-        val senderId: String,
         val timestamp: String,
         val errorCode: String,
         val errorMessage: String,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
+        val owner: String = ChatMessageOwner.ME.name.lowercase(),
         val chatRoomType: String
     ) : ChatMessageDto()
 
@@ -125,7 +126,6 @@ sealed class ChatMessageDto {
                     messageId = chatMessage.messageId,
                     type = chatMessage.type.name.lowercase(),
                     chatRoomId = chatMessage.chatRoomId.id,
-                    senderId = chatMessage.senderId.id,
                     parentMessageId = chatMessage.parentMessageId,
                     parentSeqNumber = chatMessage.parentSeqNumber,
                     parentMessageText = chatMessage.parentMessageText,
@@ -133,14 +133,12 @@ sealed class ChatMessageDto {
                     seqNumber = chatMessage.number.sequenceNumber,
                     text = chatMessage.text,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
-
                 )
 
                 is ChatLeaveMessage -> Leave(
                     messageId = chatMessage.messageId,
                     type = chatMessage.type.name.lowercase(),
                     chatRoomId = chatMessage.chatRoomId.id,
-                    senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
@@ -150,7 +148,6 @@ sealed class ChatMessageDto {
                     messageId = chatMessage.messageId,
                     type = chatMessage.type.name.lowercase(),
                     chatRoomId = chatMessage.chatRoomId.id,
-                    senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
@@ -160,7 +157,6 @@ sealed class ChatMessageDto {
                     messageId = chatMessage.messageId,
                     type = chatMessage.type.name.lowercase(),
                     chatRoomId = chatMessage.chatRoomId.id,
-                    senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
                     files = chatMessage.medias.map { MediaDto.from(it) },
@@ -171,7 +167,6 @@ sealed class ChatMessageDto {
                     messageId = chatMessage.messageId,
                     type = chatMessage.type.name.lowercase(),
                     chatRoomId = chatMessage.chatRoomId.id,
-                    senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
                     text = chatMessage.text,
@@ -181,7 +176,6 @@ sealed class ChatMessageDto {
                 is ChatReadMessage -> Read(
                     type = chatMessage.type.name.lowercase(),
                     chatRoomId = chatMessage.chatRoomId.id,
-                    senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
@@ -191,7 +185,6 @@ sealed class ChatMessageDto {
                     targetMessageId = chatMessage.targetMessageId,
                     type = chatMessage.type.name.lowercase(),
                     chatRoomId = chatMessage.chatRoomId.id,
-                    senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
@@ -200,7 +193,6 @@ sealed class ChatMessageDto {
                 is ChatErrorMessage -> Error(
                     type = chatMessage.type.name.lowercase(),
                     chatRoomId = chatMessage.chatRoomId.id,
-                    senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     errorCode = chatMessage.errorCode.code,
                     errorMessage = chatMessage.errorCode.message,

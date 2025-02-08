@@ -5,7 +5,7 @@ import org.chewing.v1.model.chat.message.ChatMessage
 import org.chewing.v1.model.chat.room.ChatRoomId
 
 interface ChatLogRepository {
-    fun readChatMessages(chatRoomId: ChatRoomId, sequence: Int): List<ChatLog>
+    fun readChatMessages(chatRoomId: ChatRoomId, sequence: Int, startSequence: Int): List<ChatLog>
     fun removeLog(messageId: String) // 메시지 삭제 기능 추가
     fun appendChatLog(chatMessage: ChatMessage)
     fun readChatMessage(messageId: String): ChatLog?

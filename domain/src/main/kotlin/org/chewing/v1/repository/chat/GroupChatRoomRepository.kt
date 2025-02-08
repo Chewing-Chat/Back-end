@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository
 interface GroupChatRoomRepository {
     fun append(groupName: String): GroupChatRoomInfo
     fun readRoomInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomInfo>
+    fun readRoomInfo(chatRoomId: ChatRoomId): GroupChatRoomInfo?
 }

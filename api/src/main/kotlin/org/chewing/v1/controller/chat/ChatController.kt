@@ -1,12 +1,11 @@
 package org.chewing.v1.controller.chat
 
-import org.chewing.v1.facade.ChatFacade
+import org.chewing.v1.facade.DirectChatFacade
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.*
 
 @Controller
 class ChatController(
-    private val chatFacade: ChatFacade,
+    private val directChatFacade: DirectChatFacade,
 ) {
 //    @MessageMapping("/chat/read")
 //    fun readMessage(

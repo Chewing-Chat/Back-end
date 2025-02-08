@@ -2,14 +2,14 @@ package org.chewing.v1.model.chat.room
 
 class DirectChatRoom private constructor(
     val chatRoomInfo: DirectChatRoomInfo,
-    val chatRoomSequence: ChatSequence,
-    val chatRoomOwnSequence: ChatSequence,
+    val chatRoomSequence: ChatRoomSequence,
+    val chatRoomOwnSequence: ChatRoomMemberSequence,
 ) {
     companion object {
         fun of(
             chatRoomInfo: DirectChatRoomInfo,
-            chatRoomSequence: ChatSequence,
-            chatRoomMemberSequence: ChatSequence,
+            chatRoomSequence: ChatRoomSequence,
+            chatRoomMemberSequence: ChatRoomMemberSequence,
         ): DirectChatRoom {
             return DirectChatRoom(
                 chatRoomInfo = chatRoomInfo,

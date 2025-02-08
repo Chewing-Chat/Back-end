@@ -69,4 +69,5 @@ internal class GroupChatRoomMemberRepositoryImpl(
             .toList()
     }
 
+
 }

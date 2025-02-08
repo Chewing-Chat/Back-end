@@ -13,19 +13,6 @@ class NotificationGenerator {
 
     private val logger = LoggerFactory.getLogger(NotificationGenerator::class.java)
 
-    fun generateCommentNotification(
-        sourceUserInfo: UserInfo,
-        pushTokens: List<PushToken>,
-        feedId: String,
-        comment: String,
-    ): List<Notification> = createNotifications(
-        sourceUserInfo = sourceUserInfo,
-        pushTokens = pushTokens,
-        type = NotificationType.COMMENT,
-        targetId = feedId,
-        content = comment,
-    )
-
     fun generateMessageNotification(
         sourceUserInfo: UserInfo,
         pushTokens: List<PushToken>,

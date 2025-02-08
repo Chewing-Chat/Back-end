@@ -3,6 +3,7 @@ package org.chewing.v1.implementation.notification
 import org.chewing.v1.external.ExternalChatNotificationClient
 import org.chewing.v1.external.ExternalPushNotificationClient
 import org.chewing.v1.model.chat.message.ChatMessage
+import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.notification.Notification
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.util.AsyncJobExecutor
@@ -21,5 +22,8 @@ class NotificationSender(
     }
     fun sendChatNotification(chatMessage: ChatMessage, userId: UserId) {
         externalChatNotificationClient.sendMessage(chatMessage, userId)
+    }
+    fun sendOwnedChatNotification(chatMessage: ChatMessage) {
+        externalChatNotificationClient.sendOwnedMessage(chatMessage)
     }
 }

@@ -1,7 +1,8 @@
 package org.chewing.v1.model.chat.message
 
 import org.chewing.v1.model.chat.room.ChatRoomId
-import org.chewing.v1.model.chat.room.ChatSequence
+import org.chewing.v1.model.chat.room.ChatRoomType
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
@@ -10,8 +11,9 @@ class ChatInviteMessage private constructor(
     override val chatRoomId: ChatRoomId,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    override val number: ChatSequence,
+    val number: ChatRoomSequence,
     val targetUserIds: List<UserId>,
+    override val chatRoomType: ChatRoomType
 ) : ChatMessage() {
     override val type: MessageType = MessageType.INVITE
 
@@ -21,8 +23,9 @@ class ChatInviteMessage private constructor(
             chatRoomId: ChatRoomId,
             senderId: UserId,
             timestamp: LocalDateTime,
-            number: ChatSequence,
+            number: ChatRoomSequence,
             targetUserIds: List<UserId>,
+            chatRoomType: ChatRoomType
         ): ChatInviteMessage {
             return ChatInviteMessage(
                 messageId = messageId,
@@ -31,6 +34,8 @@ class ChatInviteMessage private constructor(
                 timestamp = timestamp,
                 number = number,
                 targetUserIds = targetUserIds,
+                chatRoomType = chatRoomType
+
             )
         }
     }

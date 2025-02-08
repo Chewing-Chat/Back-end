@@ -61,6 +61,9 @@ enum class ErrorCode(
     CHATROOM_NOT_PARTICIPANT("CHATROOM_6", "채팅방 참여자가 아닙니다."),
     CHATROOM_FAVORITE_FAILED("CHATROOM_4", "채팅방 즐겨찾기 설정을 실패하였습니다."),
     CHATLOG_NOT_FOUND("CHATLOG_1", "채팅 로그를 찾을 수 없음."),
+    CHATROOM_JOIN_FAILED("CHATROOM_7", "채팅방 참여를 실패하였습니다."),
+    CHATROOM_READ_FAILED("CHATROOM_8", "채팅방 읽음 처리를 실패하였습니다."),
+    CHATROOM_FIND_FAILED("CHATROOM_9", "채팅방 찾기를 실패하였습니다."),
 
     ANNOUNCEMENT_NOT_FOUND("ANNOUNCEMENT_1", "공지사항을 찾을 수 없음."),
 

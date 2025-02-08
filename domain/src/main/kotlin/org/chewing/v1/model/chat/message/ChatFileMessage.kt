@@ -1,7 +1,8 @@
 package org.chewing.v1.model.chat.message
 
 import org.chewing.v1.model.chat.room.ChatRoomId
-import org.chewing.v1.model.chat.room.ChatSequence
+import org.chewing.v1.model.chat.room.ChatRoomType
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
@@ -11,9 +12,10 @@ class ChatFileMessage private constructor(
     override val chatRoomId: ChatRoomId,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    override val number: ChatSequence,
+    val number: ChatRoomSequence,
     override val type: MessageType = MessageType.FILE,
     val medias: List<Media>,
+    override val chatRoomType: ChatRoomType
 ) : ChatMessage() {
 
     companion object {
@@ -23,7 +25,8 @@ class ChatFileMessage private constructor(
             senderId: UserId,
             medias: List<Media>,
             timestamp: LocalDateTime,
-            number: ChatSequence,
+            number: ChatRoomSequence,
+            chatRoomType: ChatRoomType
         ): ChatFileMessage {
             return ChatFileMessage(
                 messageId = messageId,
@@ -32,6 +35,7 @@ class ChatFileMessage private constructor(
                 medias = medias,
                 timestamp = timestamp,
                 number = number,
+                chatRoomType = chatRoomType
             )
         }
     }

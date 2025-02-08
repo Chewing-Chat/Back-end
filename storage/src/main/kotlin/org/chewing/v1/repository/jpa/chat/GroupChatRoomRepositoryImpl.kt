@@ -23,4 +23,10 @@ internal class GroupChatRoomRepositoryImpl(
             .toList()
     }
 
+    override fun readRoomInfo(chatRoomId: ChatRoomId): GroupChatRoomInfo? {
+        return groupChatRoomJpaRepository.findById(chatRoomId.id)
+            .map { it.toChatRoom() }
+            .orElse(null)
+    }
+
 }

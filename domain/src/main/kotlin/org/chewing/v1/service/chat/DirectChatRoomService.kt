@@ -9,8 +9,9 @@ import org.chewing.v1.implementation.chat.sequence.ChatSequenceFinder
 import org.chewing.v1.implementation.chat.sequence.ChatSequenceHandler
 import org.chewing.v1.model.chat.room.DirectChatRoom
 import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatRoomMemberSequence
 import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
-import org.chewing.v1.model.chat.room.ChatSequence
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
 
@@ -59,9 +60,8 @@ class DirectChatRoomService(
         }
     }
 
-    fun readDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId): ChatSequence {
-        val chatLogSequence = chatSequenceFinder.findCurrentRoomSequence(chatRoomId)
-        return chatSequenceHandler.handleMemberReadSequence(chatRoomId, userId, chatLogSequence)
+    fun readDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): ChatRoomMemberSequence {
+        return chatSequenceHandler.handleMemberReadSequence(chatRoomId, userId, sequenceNumber)
     }
 
     fun getDirectChatRooms(userId: UserId): List<DirectChatRoom> {
@@ -75,7 +75,18 @@ class DirectChatRoomService(
         }
     }
 
-    fun increaseDirectChatRoomSequence(chatRoomId: ChatRoomId): ChatSequence {
+    fun getDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId): DirectChatRoom {
+        val existingChatRoom = directChatRoomReader.readRoomInfo(chatRoomId, userId)
+        val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(chatRoomId)
+        val chatMemberSequence = chatSequenceFinder.findCurrentMemberSequence(chatRoomId, userId)
+        return DirectChatRoom.of(existingChatRoom, chatRoomSequence, chatMemberSequence)
+    }
+
+    fun increaseDirectChatRoomSequence(chatRoomId: ChatRoomId): ChatRoomSequence {
         return chatSequenceHandler.handleRoomIncreaseSequence(chatRoomId)
+    }
+
+    fun getDirectChatRoomSequence(chatRoomId: ChatRoomId): ChatRoomSequence {
+        return chatSequenceFinder.findCurrentRoomSequence(chatRoomId)
     }
 }

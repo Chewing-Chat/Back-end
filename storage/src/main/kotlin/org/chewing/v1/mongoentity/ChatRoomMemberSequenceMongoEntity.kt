@@ -1,7 +1,8 @@
 package org.chewing.v1.mongoentity
 
 import org.chewing.v1.model.chat.room.ChatRoomId
-import org.chewing.v1.model.chat.room.ChatSequence
+import org.chewing.v1.model.chat.room.ChatRoomMemberSequence
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.user.UserId
 import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.mapping.Document
@@ -14,10 +15,11 @@ data class ChatRoomMemberSequenceMongoEntity(
     var readSeqNumber: Int,
     var joinSeqNumber: Int,
 ) {
-    fun toChatRoomMemberSequence(): ChatSequence {
-        return ChatSequence.of(
+    fun toChatRoomMemberSequence(): ChatRoomMemberSequence {
+        return ChatRoomMemberSequence.of(
             chatRoomId = ChatRoomId.of(chatRoomId),
-            sequenceNumber = readSeqNumber,
+            readSequenceNumber = readSeqNumber,
+            joinSequenceNumber = joinSeqNumber,
         )
     }
 
