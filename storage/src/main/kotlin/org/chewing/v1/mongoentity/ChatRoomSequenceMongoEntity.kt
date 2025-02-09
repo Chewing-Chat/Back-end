@@ -10,7 +10,7 @@ data class ChatRoomSequenceMongoEntity(
     @Id
     val chatRoomId: String,
     var seqNumber: Int,
-){
+) {
     companion object {
         fun generate(chatRoomId: ChatRoomId): ChatRoomSequenceMongoEntity {
             return ChatRoomSequenceMongoEntity(

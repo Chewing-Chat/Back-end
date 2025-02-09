@@ -37,8 +37,8 @@ internal class DirectChatRoomJpaEntity(
             return DirectChatRoomJpaEntity(
                 userAId = aId.id,
                 userBId = bId.id,
-                userAStatus = ChatRoomMemberStatus.ACTIVE,
-                userBStatus = ChatRoomMemberStatus.ACTIVE,
+                userAStatus = ChatRoomMemberStatus.NORMAL,
+                userBStatus = ChatRoomMemberStatus.NORMAL,
             )
         }
     }
@@ -49,6 +49,7 @@ internal class DirectChatRoomJpaEntity(
             userId = userId,
             friendId = UserId.of(if (userId.id == userAId) userBId else userAId),
             status = if (userId.id == userAId) userAStatus else userBStatus,
+            friendStatus = if (userId.id == userAId) userBStatus else userAStatus,
         )
     }
 

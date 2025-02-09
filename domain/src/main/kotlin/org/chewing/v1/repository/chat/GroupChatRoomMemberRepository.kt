@@ -4,7 +4,6 @@ import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
 import org.chewing.v1.model.chat.room.GroupChatRoomMemberInfo
 import org.chewing.v1.model.user.UserId
-import org.springframework.stereotype.Repository
 
 interface GroupChatRoomMemberRepository {
     fun append(chatRoomId: ChatRoomId, userId: UserId): GroupChatRoomMemberInfo

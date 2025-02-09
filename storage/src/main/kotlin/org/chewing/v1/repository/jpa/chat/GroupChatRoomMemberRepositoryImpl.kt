@@ -2,7 +2,6 @@ package org.chewing.v1.repository.jpa.chat
 
 import org.chewing.v1.jpaentity.chat.ChatRoomMemberId
 import org.chewing.v1.jpaentity.chat.GroupChatRoomMemberJpaEntity
-import org.chewing.v1.jparepository.chat.GroupChatRoomJpaRepository
 import org.chewing.v1.jparepository.chat.GroupChatRoomMemberJpaRepository
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
@@ -13,8 +12,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 internal class GroupChatRoomMemberRepositoryImpl(
-    private val groupChatRoomMemberJpaRepository: GroupChatRoomMemberJpaRepository
-): GroupChatRoomMemberRepository {
+    private val groupChatRoomMemberJpaRepository: GroupChatRoomMemberJpaRepository,
+) : GroupChatRoomMemberRepository {
     override fun append(
         chatRoomId: ChatRoomId,
         userId: UserId,
@@ -68,6 +67,4 @@ internal class GroupChatRoomMemberRepositoryImpl(
             .map { it.toChatRoomMember() }
             .toList()
     }
-
-
 }

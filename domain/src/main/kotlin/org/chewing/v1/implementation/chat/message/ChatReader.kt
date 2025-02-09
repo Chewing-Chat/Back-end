@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component
 class ChatReader(
     private val chatLogRepository: ChatLogRepository,
 ) {
-    fun readChatLog(chatRoomId: ChatRoomId, sequence: Int, startSequence: Int): List<ChatLog> {
-        return chatLogRepository.readChatMessages(chatRoomId, sequence, startSequence)
+    fun readChatLog(chatRoomId: ChatRoomId, sequence: Int, joinSequence: Int): List<ChatLog> {
+        return chatLogRepository.readChatMessages(chatRoomId, sequence, joinSequence)
     }
 
     fun readChatMessage(messageId: String): ChatLog {

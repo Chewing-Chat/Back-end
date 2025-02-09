@@ -1,7 +1,5 @@
 package org.chewing.v1.model.chat.room
 
-import org.chewing.v1.model.user.UserId
-
 class GroupChatRoomInfo private constructor(
     val chatRoomId: ChatRoomId,
     val name: String,

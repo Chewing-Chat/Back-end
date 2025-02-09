@@ -15,7 +15,7 @@ class ChatFileMessage private constructor(
     val number: ChatRoomSequence,
     override val type: MessageType = MessageType.FILE,
     val medias: List<Media>,
-    override val chatRoomType: ChatRoomType
+    override val chatRoomType: ChatRoomType,
 ) : ChatMessage() {
 
     companion object {
@@ -26,7 +26,7 @@ class ChatFileMessage private constructor(
             medias: List<Media>,
             timestamp: LocalDateTime,
             number: ChatRoomSequence,
-            chatRoomType: ChatRoomType
+            chatRoomType: ChatRoomType,
         ): ChatFileMessage {
             return ChatFileMessage(
                 messageId = messageId,
@@ -35,7 +35,7 @@ class ChatFileMessage private constructor(
                 medias = medias,
                 timestamp = timestamp,
                 number = number,
-                chatRoomType = chatRoomType
+                chatRoomType = chatRoomType,
             )
         }
     }

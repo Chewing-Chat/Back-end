@@ -1,5 +1,8 @@
 package org.chewing.v1.service.chat
 
+import org.chewing.v1.error.ConflictException
+import org.chewing.v1.error.ErrorCode
+import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.implementation.chat.directroom.DirectChatRoomAppender
 import org.chewing.v1.implementation.chat.directroom.DirectChatRoomReader
 import org.chewing.v1.implementation.chat.directroom.DirectChatRoomRemover
@@ -25,39 +28,47 @@ class DirectChatRoomService(
     private val chatSequenceFinder: ChatSequenceFinder,
     private val chatSequenceHandler: ChatSequenceHandler,
 ) {
+    //채팅방 0부터 시작
     //채팅방 삭제 -> soft delete
     fun deleteDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId) {
         directChatRoomRemover.removeMember(userId, chatRoomId)
     }
 
     //채팅방 타입 변경 -> favorite, normal
-    fun favoriteDirectChatRoomType(userId: UserId, chatRoomId: ChatRoomId) {
-        directChatRoomUpdater.updateMemberStatus(userId, chatRoomId, ChatRoomMemberStatus.FAVORITE)
+    fun favoriteDirectChatRoomType(userId: UserId, chatRoomId: ChatRoomId, status: ChatRoomMemberStatus) {
+        directChatRoomUpdater.updateMemberStatus(userId, chatRoomId, status)
+    }
+
+    fun restoreDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId) {
+        directChatRoomUpdater.updateMemberStatus(userId, chatRoomId, ChatRoomMemberStatus.NORMAL)
     }
 
     // 채팅방 제공
-    fun produceDirectChatRoom(userId: UserId, friendId: UserId): DirectChatRoom {
+    //joinSequence -> 채팅방 입장 시 볼 수 있는 sequence 시작점
+    fun getDirectChatRoom(userId: UserId, friendId: UserId): DirectChatRoom {
         directChatRoomValidator.isNotSelf(userId, friendId)
         val existingChatRoom = directChatRoomReader.readRoomInfoByRelation(userId, friendId)
-        return if (existingChatRoom != null) {
-            if (existingChatRoom.status == ChatRoomMemberStatus.DELETED) {
-                directChatRoomUpdater.updateMemberStatus(userId, existingChatRoom.chatRoomId, ChatRoomMemberStatus.ACTIVE)
-                val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(existingChatRoom.chatRoomId)
-                val chatMemberSequence = chatSequenceHandler.handleJoinMemberSequence(existingChatRoom.chatRoomId, userId, chatRoomSequence)
-                DirectChatRoom.of(existingChatRoom, chatRoomSequence, chatMemberSequence)
-            } else {
-                val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(existingChatRoom.chatRoomId)
-                val chatMemberSequence = chatSequenceFinder.findCurrentMemberSequence(existingChatRoom.chatRoomId, userId)
-                DirectChatRoom.of(existingChatRoom, chatRoomSequence, chatMemberSequence)
-            }
-        } else {
-            val newChatRoomInfo = directChatRoomAppender.appendRoom(userId, friendId)
-            val chatRoomSequence = chatSequenceHandler.handleCreateRoomSequence(newChatRoomInfo.chatRoomId)
-            val memberIds = listOf(userId, friendId)
-            chatSequenceHandler.handleCreateMemberSequences(newChatRoomInfo.chatRoomId, memberIds)
-            val chatMemberSequence = chatSequenceFinder.findCurrentMemberSequence(newChatRoomInfo.chatRoomId, userId)
-            DirectChatRoom.of(newChatRoomInfo, chatRoomSequence, chatMemberSequence)
+        directChatRoomValidator.isActivated(existingChatRoom)
+        val chatRoomSequences = chatSequenceFinder.findCurrentRoomSequence(existingChatRoom!!.chatRoomId)
+        val memberSequences = chatSequenceFinder.findCurrentMemberSequence(existingChatRoom.chatRoomId, userId)
+        return DirectChatRoom.of(existingChatRoom, chatRoomSequences, memberSequences)
+    }
+
+    fun createDirectChatRoom(userId: UserId, friendId: UserId): ChatRoomId {
+        directChatRoomValidator.isNotSelf(userId, friendId)
+        val existingChatRoom = directChatRoomReader.readRoomInfoByRelation(userId, friendId)
+        directChatRoomValidator.isNotActivated(existingChatRoom)
+        if (existingChatRoom == null){
+            val newChatRoom = directChatRoomAppender.appendRoom(userId, friendId)
+            chatSequenceHandler.handleCreateRoomSequence(newChatRoom.chatRoomId)
+            chatSequenceHandler.handleCreateMemberSequences(newChatRoom.chatRoomId, listOf(userId, friendId))
         }
+        if(existingChatRoom!!.status == ChatRoomMemberStatus.DELETED){
+            directChatRoomUpdater.updateMemberStatus(userId, existingChatRoom.chatRoomId, ChatRoomMemberStatus.NORMAL)
+            return existingChatRoom.chatRoomId
+        }
+
+        return existingChatRoom.chatRoomId
     }
 
     fun readDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): ChatRoomMemberSequence {
@@ -68,10 +79,29 @@ class DirectChatRoomService(
         val chatRooms = directChatRoomReader.readRoomInfos(userId)
         val chatRoomSequences = chatSequenceFinder.findCurrentRoomSequences(chatRooms.map { it.chatRoomId })
         val memberSequences = chatSequenceFinder.findCurrentMemberSequences(chatRooms.map { it.chatRoomId }, userId)
-        return chatRooms.map { chatRoom ->
+        return chatRooms.mapNotNull { chatRoom ->
             val chatRoomSequence = chatRoomSequences.find { it.chatRoomId == chatRoom.chatRoomId }
             val memberSequence = memberSequences.find { it.chatRoomId == chatRoom.chatRoomId }
-            DirectChatRoom.of(chatRoom, chatRoomSequence!!, memberSequence!!)
+            if (chatRoomSequence != null && memberSequence != null) {
+                DirectChatRoom.of(chatRoom, chatRoomSequence, memberSequence)
+            } else {
+                null
+            }
+        }
+    }
+
+    fun getUnReadDirectChatRooms(userId: UserId): List<DirectChatRoom> {
+        val chatRooms = directChatRoomReader.readRoomInfos(userId)
+        val chatRoomSequences = chatSequenceFinder.findCurrentRoomSequences(chatRooms.map { it.chatRoomId })
+        val memberSequences = chatSequenceFinder.findCurrentMemberSequences(chatRooms.map { it.chatRoomId }, userId)
+        return chatRooms.mapNotNull { chatRoom ->
+            val chatRoomSequence = chatRoomSequences.find { it.chatRoomId == chatRoom.chatRoomId }
+            val memberSequence = memberSequences.find { it.chatRoomId == chatRoom.chatRoomId }
+            if (chatRoomSequence != null && memberSequence != null && memberSequence.readSequenceNumber < chatRoomSequence.sequenceNumber) {
+                DirectChatRoom.of(chatRoom, chatRoomSequence, memberSequence)
+            } else {
+                null
+            }
         }
     }
 

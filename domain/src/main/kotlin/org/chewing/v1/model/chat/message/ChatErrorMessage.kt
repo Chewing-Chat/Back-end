@@ -11,21 +11,21 @@ class ChatErrorMessage private constructor(
     val errorCode: ErrorCode,
     override val timestamp: LocalDateTime = LocalDateTime.now(),
     override val type: MessageType = MessageType.ERROR,
-    override val senderId : UserId,
-    override val chatRoomType: ChatRoomType
-): ChatMessage() {
+    override val senderId: UserId,
+    override val chatRoomType: ChatRoomType,
+) : ChatMessage() {
     companion object {
         fun of(
             chatRoomId: ChatRoomId,
             errorCode: ErrorCode,
             userId: UserId,
-            chatRoomType: ChatRoomType
+            chatRoomType: ChatRoomType,
         ): ChatErrorMessage {
             return ChatErrorMessage(
                 chatRoomId = chatRoomId,
                 errorCode = errorCode,
                 senderId = userId,
-                chatRoomType = chatRoomType
+                chatRoomType = chatRoomType,
             )
         }
     }

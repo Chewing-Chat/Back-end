@@ -22,23 +22,23 @@ class ChatSequenceHandler(
 
     fun handleJoinMemberSequence(chatRoomId: ChatRoomId, userId: UserId, chatLogSequence: ChatRoomSequence): ChatRoomMemberSequence {
         return chatRoomMemberSequenceRepository.updateJoinSequence(chatRoomId, userId, chatLogSequence) ?: throw ConflictException(
-            ErrorCode.CHATROOM_JOIN_FAILED
+            ErrorCode.CHATROOM_JOIN_FAILED,
         )
     }
 
-    fun handleCreateMemberSequences(chatRoomId: ChatRoomId, memberIds : List<UserId>) {
+    fun handleCreateMemberSequences(chatRoomId: ChatRoomId, memberIds: List<UserId>) {
         memberIds.forEach { userId ->
             chatRoomMemberSequenceRepository.appendSequence(chatRoomId, userId)
         }
     }
 
-    fun handleCreateRoomSequence(chatRoomId: ChatRoomId): ChatRoomSequence {
-        return chatRoomSequenceRepository.appendSequence(chatRoomId)
+    fun handleCreateRoomSequence(chatRoomId: ChatRoomId) {
+        chatRoomSequenceRepository.appendSequence(chatRoomId)
     }
 
     fun handleMemberReadSequence(chatRoomId: ChatRoomId, userId: UserId, sequenceNumber: Int): ChatRoomMemberSequence {
         return chatRoomMemberSequenceRepository.updateReadSequence(chatRoomId, userId, sequenceNumber) ?: throw ConflictException(
-            ErrorCode.CHATROOM_READ_FAILED
+            ErrorCode.CHATROOM_READ_FAILED,
         )
     }
 }

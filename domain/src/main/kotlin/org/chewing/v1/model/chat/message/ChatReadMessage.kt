@@ -12,7 +12,7 @@ class ChatReadMessage private constructor(
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
     val number: ChatRoomSequence,
-    override val chatRoomType: ChatRoomType
+    override val chatRoomType: ChatRoomType,
 ) : ChatMessage() {
     companion object {
         fun of(
@@ -20,14 +20,14 @@ class ChatReadMessage private constructor(
             senderId: UserId,
             timestamp: LocalDateTime,
             number: ChatRoomSequence,
-            chatRoomType: ChatRoomType
+            chatRoomType: ChatRoomType,
         ): ChatReadMessage {
             return ChatReadMessage(
                 chatRoomId = chatRoomId,
                 senderId = senderId,
                 timestamp = timestamp,
                 number = number,
-                chatRoomType = chatRoomType
+                chatRoomType = chatRoomType,
             )
         }
     }

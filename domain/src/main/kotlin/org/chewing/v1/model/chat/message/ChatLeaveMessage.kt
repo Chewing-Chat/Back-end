@@ -13,7 +13,7 @@ class ChatLeaveMessage private constructor(
     override val timestamp: LocalDateTime,
     override val type: MessageType = MessageType.LEAVE,
     val number: ChatRoomSequence,
-    override val chatRoomType: ChatRoomType
+    override val chatRoomType: ChatRoomType,
 ) : ChatMessage() {
 
     companion object {
@@ -23,7 +23,7 @@ class ChatLeaveMessage private constructor(
             senderId: UserId,
             timestamp: LocalDateTime,
             number: ChatRoomSequence,
-            chatRoomType: ChatRoomType
+            chatRoomType: ChatRoomType,
         ): ChatLeaveMessage {
             return ChatLeaveMessage(
                 messageId = messageId,
@@ -31,7 +31,7 @@ class ChatLeaveMessage private constructor(
                 senderId = senderId,
                 timestamp = timestamp,
                 number = number,
-                chatRoomType = chatRoomType
+                chatRoomType = chatRoomType,
             )
         }
     }

@@ -2,14 +2,11 @@ package org.chewing.v1.mongorepository
 
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.mongoentity.ChatMessageMongoEntity
-import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 import org.springframework.data.mongodb.repository.Update
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.PageRequest
-
 
 internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEntity, String> {
 
@@ -30,7 +27,7 @@ internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEnti
     fun findByChatRoomIdAndSeqNumberLessThanEqualAndSeqNumberGreaterThanOrderBySeqNumberDesc(
         chatRoomId: String,
         sequence: Int,
-        startSequence: Int,
+        joinSequence: Int,
         pageable: Pageable,
     ): List<ChatMessageMongoEntity>
 }

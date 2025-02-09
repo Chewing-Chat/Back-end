@@ -4,14 +4,13 @@ import org.chewing.v1.jpaentity.chat.GroupChatRoomJpaEntity
 import org.chewing.v1.jparepository.chat.GroupChatRoomJpaRepository
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.GroupChatRoomInfo
-import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.chat.GroupChatRoomRepository
 import org.springframework.stereotype.Repository
 
 @Repository
 internal class GroupChatRoomRepositoryImpl(
-    private val groupChatRoomJpaRepository: GroupChatRoomJpaRepository
-): GroupChatRoomRepository {
+    private val groupChatRoomJpaRepository: GroupChatRoomJpaRepository,
+) : GroupChatRoomRepository {
     override fun append(groupName: String): GroupChatRoomInfo {
         return groupChatRoomJpaRepository.save(GroupChatRoomJpaEntity.generate(groupName)).toChatRoom()
     }
@@ -28,5 +27,4 @@ internal class GroupChatRoomRepositoryImpl(
             .map { it.toChatRoom() }
             .orElse(null)
     }
-
 }

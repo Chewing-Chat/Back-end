@@ -1,26 +1,24 @@
 package org.chewing.v1.model.chat.room
 
 class GroupChatRoom private constructor(
-    val chatRoomInfo: GroupChatRoomInfo,
-    val chatRoomMembers : List<GroupChatRoomMemberInfo>,
-    val chatRoomSequence: ChatRoomSequence,
-    val chatRoomOwnSequence: ChatRoomMemberSequence,
+    val roomInfo: GroupChatRoomInfo,
+    val memberInfos: List<GroupChatRoomMemberInfo>,
+    val memberSequence: ChatRoomSequence,
+    val ownSequence: ChatRoomMemberSequence,
 ) {
     companion object {
         fun of(
             chatRoomInfo: GroupChatRoomInfo,
-            chatRoomMembers : List<GroupChatRoomMemberInfo>,
+            chatRoomMembers: List<GroupChatRoomMemberInfo>,
             chatRoomSequence: ChatRoomSequence,
             chatRoomMemberSequence: ChatRoomMemberSequence,
         ): GroupChatRoom {
             return GroupChatRoom(
-                chatRoomInfo = chatRoomInfo,
-                chatRoomSequence = chatRoomSequence,
-                chatRoomOwnSequence = chatRoomMemberSequence,
-                chatRoomMembers = chatRoomMembers,
-
+                roomInfo = chatRoomInfo,
+                memberSequence = chatRoomSequence,
+                ownSequence = chatRoomMemberSequence,
+                memberInfos = chatRoomMembers,
             )
         }
     }
 }
-

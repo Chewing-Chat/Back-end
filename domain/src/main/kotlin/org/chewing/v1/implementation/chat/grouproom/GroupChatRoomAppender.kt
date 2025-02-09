@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component
 @Component
 class GroupChatRoomAppender(
     private val groupChatRoomRepository: GroupChatRoomRepository,
-    private val groupChatRoomMemberRepository: GroupChatRoomMemberRepository
+    private val groupChatRoomMemberRepository: GroupChatRoomMemberRepository,
 ) {
-    fun appendRoom(groupName: String) : GroupChatRoomInfo {
+    fun appendRoom(groupName: String): GroupChatRoomInfo {
         return groupChatRoomRepository.append(groupName)
     }
 

@@ -13,7 +13,7 @@ class ChatInviteMessage private constructor(
     override val timestamp: LocalDateTime,
     val number: ChatRoomSequence,
     val targetUserIds: List<UserId>,
-    override val chatRoomType: ChatRoomType
+    override val chatRoomType: ChatRoomType,
 ) : ChatMessage() {
     override val type: MessageType = MessageType.INVITE
 
@@ -25,7 +25,7 @@ class ChatInviteMessage private constructor(
             timestamp: LocalDateTime,
             number: ChatRoomSequence,
             targetUserIds: List<UserId>,
-            chatRoomType: ChatRoomType
+            chatRoomType: ChatRoomType,
         ): ChatInviteMessage {
             return ChatInviteMessage(
                 messageId = messageId,
@@ -34,7 +34,7 @@ class ChatInviteMessage private constructor(
                 timestamp = timestamp,
                 number = number,
                 targetUserIds = targetUserIds,
-                chatRoomType = chatRoomType
+                chatRoomType = chatRoomType,
 
             )
         }

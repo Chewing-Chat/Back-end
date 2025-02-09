@@ -4,7 +4,6 @@ import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
-import jakarta.persistence.Id
 import jakarta.persistence.Table
 import org.chewing.v1.jpaentity.common.BaseEntity
 import org.chewing.v1.model.chat.room.ChatRoomId
@@ -12,7 +11,6 @@ import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
 import org.chewing.v1.model.chat.room.GroupChatRoomMemberInfo
 import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
-import java.util.UUID
 
 @DynamicInsert
 @Entity
@@ -28,7 +26,7 @@ internal class GroupChatRoomMemberJpaEntity(
         fun generate(chatRoomId: ChatRoomId, userId: UserId): GroupChatRoomMemberJpaEntity {
             return GroupChatRoomMemberJpaEntity(
                 id = ChatRoomMemberId.of(chatRoomId, userId),
-                userStatus = ChatRoomMemberStatus.ACTIVE,
+                userStatus = ChatRoomMemberStatus.NORMAL,
             )
         }
     }

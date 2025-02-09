@@ -18,15 +18,15 @@ internal class ChatLogRepositoryImpl(
     override fun readChatMessages(
         chatRoomId: ChatRoomId,
         sequence: Int,
-        startSequence: Int,
+        joinSequence: Int,
     ): List<ChatLog> {
         val pageable: Pageable = PageRequest.of(0, 50, Sort.by(Sort.Direction.DESC, "seqNumber"))
         return chatLogMongoRepository
             .findByChatRoomIdAndSeqNumberLessThanEqualAndSeqNumberGreaterThanOrderBySeqNumberDesc(
                 chatRoomId.id,
                 sequence,
-                startSequence,
-                pageable
+                joinSequence,
+                pageable,
             )
             .map { it.toChatLog() }
     }
@@ -46,7 +46,7 @@ internal class ChatLogRepositoryImpl(
 
     override fun readLatestMessages(chatRoomIds: List<ChatRoomId>): List<ChatLog> {
         return chatLogMongoRepository.findByRoomIdAndSeqNumbers(
-            chatRoomIds.map { mapOf("chatRoomId" to it.id) }
+            chatRoomIds.map { mapOf("chatRoomId" to it.id) },
         ).map { it.toChatLog() }
     }
 

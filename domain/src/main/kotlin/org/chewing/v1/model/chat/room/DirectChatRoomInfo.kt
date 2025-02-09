@@ -7,6 +7,7 @@ class DirectChatRoomInfo private constructor(
     val userId: UserId,
     val friendId: UserId,
     val status: ChatRoomMemberStatus,
+    val friendStatus: ChatRoomMemberStatus,
 ) {
     companion object {
         fun of(
@@ -14,12 +15,14 @@ class DirectChatRoomInfo private constructor(
             userId: UserId,
             friendId: UserId,
             status: ChatRoomMemberStatus,
+            friendStatus: ChatRoomMemberStatus,
         ): DirectChatRoomInfo {
             return DirectChatRoomInfo(
                 chatRoomId = chatRoomId,
                 userId = userId,
                 friendId = friendId,
                 status = status,
+                friendStatus = friendStatus,
             )
         }
     }

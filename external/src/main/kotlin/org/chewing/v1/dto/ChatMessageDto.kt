@@ -2,9 +2,7 @@ package org.chewing.v1.dto
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import org.chewing.v1.domain.ChatMessageOwner
 import org.chewing.v1.model.chat.message.*
-import org.chewing.v1.model.chat.room.ChatRoomType
 import java.time.format.DateTimeFormatter
 
 @JsonTypeInfo(
@@ -34,8 +32,7 @@ sealed class ChatMessageDto {
         val timestamp: String,
         val seqNumber: Int,
         val text: String,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
-        val chatRoomType: String
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class Delete(
@@ -45,8 +42,7 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
-        val chatRoomType: String
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class Leave(
@@ -56,8 +52,7 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
-        val chatRoomType: String
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class Invite(
@@ -67,8 +62,7 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
-        val chatRoomType: String
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class File(
@@ -79,8 +73,7 @@ sealed class ChatMessageDto {
         val timestamp: String,
         val seqNumber: Int,
         val files: List<MediaDto>,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
-        val chatRoomType: String
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class Normal(
@@ -91,8 +84,7 @@ sealed class ChatMessageDto {
         val timestamp: String,
         val seqNumber: Int,
         val text: String,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
-        val chatRoomType: String
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class Read(
@@ -101,8 +93,7 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
-        val chatRoomType: String
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class Error(
@@ -112,8 +103,7 @@ sealed class ChatMessageDto {
         val timestamp: String,
         val errorCode: String,
         val errorMessage: String,
-        val owner: String = ChatMessageOwner.FRIEND.name.lowercase(),
-        val chatRoomType: String
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     companion object {

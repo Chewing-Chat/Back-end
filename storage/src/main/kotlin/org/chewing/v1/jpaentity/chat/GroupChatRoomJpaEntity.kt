@@ -9,7 +9,6 @@ import org.chewing.v1.model.chat.room.GroupChatRoomInfo
 import org.hibernate.annotations.DynamicInsert
 import java.util.UUID
 
-
 @DynamicInsert
 @Entity
 @Table(name = "group_chat_room", schema = "chewing")
@@ -18,7 +17,7 @@ internal class GroupChatRoomJpaEntity(
     private val chatRoomId: String = UUID.randomUUID().toString(),
 
     val name: String,
-): BaseEntity() {
+) : BaseEntity() {
     companion object {
         fun generate(name: String): GroupChatRoomJpaEntity {
             return GroupChatRoomJpaEntity(

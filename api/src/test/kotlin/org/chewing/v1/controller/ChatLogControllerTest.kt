@@ -3,8 +3,9 @@ package org.chewing.v1.controller
 import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.controller.chat.ChatLogController
+import org.chewing.v1.facade.DirectChatFacade
+import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.model.user.UserId
-import org.chewing.v1.service.chat.ChatLogService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.chewing.v1.util.security.UserArgumentResolver
 import org.junit.jupiter.api.BeforeEach
@@ -14,17 +15,19 @@ import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
 class ChatLogControllerTest : RestDocsTest() {
-    private lateinit var chatLogService: ChatLogService
+    private lateinit var directChatFacade: DirectChatFacade
+    private lateinit var groupChatFacade: GroupChatFacade
     private lateinit var chatLogController: ChatLogController
     private lateinit var exceptionHandler: GlobalExceptionHandler
     private lateinit var userArgumentResolver: UserArgumentResolver
 
     @BeforeEach
     fun setUp() {
-        chatLogService = mockk()
+        directChatFacade = mockk()
+        groupChatFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
         userArgumentResolver = UserArgumentResolver()
-        chatLogController = ChatLogController(chatLogService)
+        chatLogController = ChatLogController(groupChatFacade, directChatFacade)
         mockMvc = mockController(chatLogController, exceptionHandler, userArgumentResolver)
         val userId = UserId.of("testUserId")
         val authentication = UsernamePasswordAuthenticationToken(userId, null)

@@ -6,6 +6,7 @@ import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.chat.room.ChatRoomSequence
+import org.chewing.v1.model.chat.room.GroupChatRoom
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.chat.ChatLogService
@@ -22,19 +23,32 @@ class GroupChatFacade(
 
     fun processGroupChatLogs(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): List<ChatLog> {
         val joinSequence =
-            groupChatRoomService.getGroupChatRoom(userId, chatRoomId).chatRoomOwnSequence.joinSequenceNumber
+            groupChatRoomService.getGroupChatRoom(userId, chatRoomId).ownSequence.joinSequenceNumber
         val chatLogs = chatLogService.getChatLog(chatRoomId, sequenceNumber, joinSequence)
         return chatLogs
     }
+
+    fun processGroupChatRooms(userId: UserId): List<Pair<GroupChatRoom, ChatLog>> {
+        val chatRooms = groupChatRoomService.getGroupChatRooms(userId)
+        val chatRoomIds = getChatRoomIds(chatRooms)
+        val chatMessages = chatLogService.getLatestChat(chatRoomIds)
+            .associateBy { it.chatRoomId }
+
+        return chatRooms.mapNotNull { chatRoom ->
+            chatMessages[chatRoom.roomInfo.chatRoomId]?.let { latestMessage ->
+                chatRoom to latestMessage
+            }
+        }
+    }
+
     fun processGroupChatFiles(fileDataList: List<FileData>, userId: UserId, chatRoomId: ChatRoomId) {
         val medias = chatLogService.uploadFiles(fileDataList, userId)
         val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
         val chatMessage = chatLogService.mediasMessage(chatRoomId, userId, chatSequence, medias, ChatRoomType.GROUP)
 
-        val targetFriendIds = getFriendIds(userId, chatRoomId)
+        val targetMemberIds = getMemberIds(userId, chatRoomId)
 
-        notificationService.handleMessagesNotification(chatMessage, targetFriendIds, userId)
-        notificationService.handleOwnedMessageNotification(chatMessage)
+        notificationService.handleMessagesNotification(chatMessage, targetMemberIds, userId)
     }
 
     fun processGroupChatRead(chatRoomId: ChatRoomId, userId: UserId, sequenceNumber: Int) {
@@ -47,10 +61,10 @@ class GroupChatFacade(
                     ChatRoomSequence.of(chatRoomId, sequenceNumber),
                     ChatRoomType.GROUP,
                 )
-            notificationService.handleOwnedMessageNotification(chatMessage)
+            notificationService.handleMessageNotification(chatMessage, userId, userId)
         } catch (e: NotFoundException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
-            notificationService.handleOwnedMessageNotification(errorMessage)
+            notificationService.handleMessageNotification(errorMessage, userId, userId)
         }
     }
 
@@ -58,13 +72,14 @@ class GroupChatFacade(
         try {
             groupChatRoomService.deleteGroupChatRoom(userId, chatRoomId)
             val chatMessage = chatLogService.deleteMessage(chatRoomId, userId, messageId, ChatRoomType.GROUP)
-            val targetFriendIds = getFriendIds(userId, chatRoomId)
-
-            notificationService.handleMessagesNotification(chatMessage, targetFriendIds, userId)
-            notificationService.handleOwnedMessageNotification(chatMessage)
+            val targetMemberIds = getMemberIds(userId, chatRoomId)
+            notificationService.handleMessagesNotification(chatMessage, targetMemberIds, userId)
         } catch (e: NotFoundException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
-            notificationService.handleOwnedMessageNotification(errorMessage)
+            notificationService.handleMessageNotification(errorMessage, userId, userId)
+        } catch (e: ConflictException) {
+            val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
+            notificationService.handleMessageNotification(errorMessage, userId, userId)
         }
     }
 
@@ -73,13 +88,12 @@ class GroupChatFacade(
             val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
             val chatMessage =
                 chatLogService.replyMessage(chatRoomId, userId, parentMessageId, text, chatSequence, ChatRoomType.GROUP)
-            val targetFriendIds = getFriendIds(userId, chatRoomId)
+            val targetMemberIds = getMemberIds(userId, chatRoomId)
 
-            notificationService.handleMessagesNotification(chatMessage, targetFriendIds, userId)
-            notificationService.handleOwnedMessageNotification(chatMessage)
+            notificationService.handleMessagesNotification(chatMessage, targetMemberIds, userId)
         } catch (e: NotFoundException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
-            notificationService.handleOwnedMessageNotification(errorMessage)
+            notificationService.handleMessageNotification(errorMessage, userId, userId)
         }
     }
 
@@ -89,13 +103,12 @@ class GroupChatFacade(
             val chatMessage =
                 chatLogService.chatNormalMessage(chatRoomId, userId, text, chatSequence, ChatRoomType.GROUP)
 
-            val targetFriendIds = getFriendIds(userId, chatRoomId)
+            val targetMemberIds = getMemberIds(userId, chatRoomId)
 
-            notificationService.handleMessagesNotification(chatMessage, targetFriendIds, userId)
-            notificationService.handleOwnedMessageNotification(chatMessage)
+            notificationService.handleMessagesNotification(chatMessage, targetMemberIds, userId)
         } catch (e: NotFoundException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
-            notificationService.handleOwnedMessageNotification(errorMessage)
+            notificationService.handleMessageNotification(errorMessage, userId, userId)
         }
     }
 
@@ -105,11 +118,11 @@ class GroupChatFacade(
             groupChatRoomService.inviteGroupChatRoom(userId, chatRoomId, inviteUserId)
             val chatMessage =
                 chatLogService.inviteMessage(chatRoomId, userId, inviteUserId, chatSequence, ChatRoomType.GROUP)
-            notificationService.handleOwnedMessageNotification(chatMessage)
-            notificationService.handleMessageNotification(chatMessage, inviteUserId, userId)
+            val memberIds = getMemberIds(userId, chatRoomId)
+            notificationService.handleMessagesNotification(chatMessage, memberIds, userId)
         } catch (e: ConflictException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
-            notificationService.handleOwnedMessageNotification(errorMessage)
+            notificationService.handleMessageNotification(errorMessage, userId, userId)
         }
     }
 
@@ -117,31 +130,35 @@ class GroupChatFacade(
         try {
             val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
             val chatMessage = chatLogService.leaveMessage(chatRoomId, userId, chatSequence, ChatRoomType.GROUP)
-            notificationService.handleOwnedMessageNotification(chatMessage)
+            notificationService.handleMessageNotification(chatMessage, userId, userId)
         } catch (e: NotFoundException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
-            notificationService.handleOwnedMessageNotification(errorMessage)
+            notificationService.handleMessageNotification(errorMessage, userId, userId)
         }
     }
 
-    fun processGroupChatCreate(chatRoomId: ChatRoomId, userId: UserId, friendIds: List<UserId>, groupName: String) {
-        try {
-            val chatRoom = groupChatRoomService.produceGroupChatRoom(userId,friendIds, groupName)
-            val chatMessage =
-                chatLogService.inviteMessages(friendIds, chatRoomId, userId, chatRoom.chatRoomSequence, ChatRoomType.GROUP)
-            notificationService.handleOwnedMessageNotification(chatMessage)
-        } catch (e: NotFoundException) {
-            val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
-            notificationService.handleOwnedMessageNotification(errorMessage)
-        }
+    fun processGroupChatCreate(userId: UserId, friendIds: List<UserId>, groupName: String): GroupChatRoom {
+        val chatRoomId = groupChatRoomService.produceGroupChatRoom(userId, friendIds, groupName)
+        val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
+        val chatMessage =
+            chatLogService.inviteMessages(
+                friendIds,
+                chatRoomId,
+                userId,
+                chatSequence,
+                ChatRoomType.GROUP,
+            )
+        val chatRoom = groupChatRoomService.getGroupChatRoom(userId, chatRoomId)
+        notificationService.handleMessageNotification(chatMessage, userId, userId)
+        return chatRoom
     }
 
-    private fun getFriendIds(userId: UserId, chatRoomId: ChatRoomId): List<UserId> {
+    private fun getMemberIds(userId: UserId, chatRoomId: ChatRoomId): List<UserId> {
         val groupChatRoom = groupChatRoomService.getGroupChatRoom(userId, chatRoomId)
-        return groupChatRoom.chatRoomMembers
-            .asSequence()
-            .map { it.memberId }
-            .filter { it != userId }
-            .toList()
+        return groupChatRoom.memberInfos.map { it.memberId }
+    }
+
+    private fun getChatRoomIds(chatRooms: List<GroupChatRoom>): List<ChatRoomId> {
+        return chatRooms.map { it.roomInfo.chatRoomId }
     }
 }

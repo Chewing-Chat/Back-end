@@ -5,7 +5,6 @@ import org.chewing.v1.implementation.notification.NotificationSender
 import org.chewing.v1.implementation.session.SessionProvider
 import org.chewing.v1.implementation.user.user.UserReader
 import org.chewing.v1.model.chat.message.ChatMessage
-import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
@@ -17,11 +16,6 @@ class NotificationService(
     private val notificationSender: NotificationSender,
     private val sessionProvider: SessionProvider,
 ) {
-    // sender에게 메시지 알림
-    fun handleOwnedMessageNotification(chatMessage: ChatMessage) {
-        notificationSender.sendOwnedChatNotification(chatMessage)
-    }
-
     fun handleMessagesNotification(chatMessage: ChatMessage, targetUserIds: List<UserId>, userId: UserId) {
         val user = userReader.read(userId, AccessStatus.ACCESS)
         targetUserIds.forEach { memberId ->

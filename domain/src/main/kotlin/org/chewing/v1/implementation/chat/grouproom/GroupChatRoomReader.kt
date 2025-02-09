@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository
 @Repository
 class GroupChatRoomReader(
     private val groupChatRoomRepository: GroupChatRoomRepository,
-    private val groupChatRoomMemberRepository: GroupChatRoomMemberRepository
+    private val groupChatRoomMemberRepository: GroupChatRoomMemberRepository,
 ) {
-    fun readRoomInfos(chatRoomIds : List<ChatRoomId>): List<GroupChatRoomInfo> {
+    fun readRoomInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomInfo> {
         return groupChatRoomRepository.readRoomInfos(chatRoomIds)
     }
     fun readsRoomMemberInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomMemberInfo> {

@@ -13,7 +13,7 @@ class ChatNormalMessage private constructor(
     override val timestamp: LocalDateTime,
     val number: ChatRoomSequence,
     val text: String,
-    override val chatRoomType: ChatRoomType
+    override val chatRoomType: ChatRoomType,
 ) : ChatMessage() {
     override val type: MessageType = MessageType.NORMAL
 
@@ -25,7 +25,7 @@ class ChatNormalMessage private constructor(
             text: String,
             number: ChatRoomSequence,
             timestamp: LocalDateTime,
-            chatRoomType: ChatRoomType
+            chatRoomType: ChatRoomType,
         ): ChatNormalMessage {
             return ChatNormalMessage(
                 messageId = messageId,
@@ -34,7 +34,7 @@ class ChatNormalMessage private constructor(
                 text = text,
                 number = number,
                 timestamp = timestamp,
-                chatRoomType = chatRoomType
+                chatRoomType = chatRoomType,
             )
         }
     }

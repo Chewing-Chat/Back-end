@@ -19,7 +19,7 @@ class ChatReplyMessage private constructor(
     val parentMessageText: String,
     val parentSeqNumber: Int,
     val parentMessageType: ChatLogType,
-    override val chatRoomType: ChatRoomType
+    override val chatRoomType: ChatRoomType,
 ) : ChatMessage() {
     companion object {
         fun of(
@@ -34,7 +34,7 @@ class ChatReplyMessage private constructor(
             parentMessageText: String,
             type: MessageType,
             parentMessageType: ChatLogType,
-            chatRoomType: ChatRoomType
+            chatRoomType: ChatRoomType,
         ): ChatReplyMessage {
             return ChatReplyMessage(
                 messageId = messageId,
@@ -48,7 +48,7 @@ class ChatReplyMessage private constructor(
                 parentMessageText = parentMessageText,
                 type = type,
                 parentMessageType = parentMessageType,
-                chatRoomType = chatRoomType
+                chatRoomType = chatRoomType,
             )
         }
     }

@@ -16,15 +16,15 @@ import java.time.LocalDateTime
     // 채팅방 내 최신 메시지 조회 최적화
     CompoundIndex(
         name = "chatRoomId_seqNumber_desc_idx",
-        def = "{'chatRoomId': 1, 'seqNumber': -1}"
+        def = "{'chatRoomId': 1, 'seqNumber': -1}",
     ),
 
     // 메시지 타입과 내용 검색 최적화 (Partial Index)
     CompoundIndex(
         name = "chatRoom_message_partial_idx",
         def = "{'chatRoomId': 1, 'type': 1, 'message': 1}",
-        partialFilter = "{ 'type': { \$in: ['NORMAL', 'REPLY'] } }"
-    )
+        partialFilter = "{ 'type': { \$in: ['NORMAL', 'REPLY'] } }",
+    ),
 )
 internal sealed class ChatMessageMongoEntity(
     @Id

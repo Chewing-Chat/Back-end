@@ -41,7 +41,7 @@ internal class ChatSequenceRepositoryImpl(
         return ChatRoomSequence.of(chatRoomId, sequenceNumber)
     }
 
-    override fun appendSequence(chatRoomId: ChatRoomId) : ChatRoomSequence {
+    override fun appendSequence(chatRoomId: ChatRoomId): ChatRoomSequence {
         val entity = ChatRoomSequenceMongoEntity.generate(chatRoomId)
         return mongoTemplate.save(entity).toChatRoomSequence()
     }

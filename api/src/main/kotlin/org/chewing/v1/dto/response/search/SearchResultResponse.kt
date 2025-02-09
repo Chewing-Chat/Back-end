@@ -1,11 +1,11 @@
 package org.chewing.v1.dto.response.search
 
-import org.chewing.v1.dto.response.chat.ChatRoomResponse
+import org.chewing.v1.dto.response.chat.FullDirectChatRoomResponse
 import org.chewing.v1.dto.response.friend.FriendShipResponse
 
 data class SearchResultResponse(
     val friends: List<FriendShipResponse>,
-    val chatRooms: List<ChatRoomResponse>,
+    val chatRooms: List<FullDirectChatRoomResponse>,
 ) {
     companion object {
 //        fun ofList(search: Search): SearchResultResponse {

@@ -5,6 +5,7 @@ import org.chewing.v1.implementation.chat.message.ChatAppender
 import org.chewing.v1.implementation.chat.message.ChatGenerator
 import org.chewing.v1.implementation.chat.message.ChatReader
 import org.chewing.v1.implementation.chat.message.ChatRemover
+import org.chewing.v1.implementation.chat.message.ChatValidator
 import org.chewing.v1.implementation.media.FileHandler
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.message.*
@@ -24,6 +25,7 @@ class ChatLogService(
     private val chatReader: ChatReader,
     private val chatGenerator: ChatGenerator,
     private val chatRemover: ChatRemover,
+    private val chatValidator: ChatValidator,
 ) {
     fun uploadFiles(fileDataList: List<FileData>, userId: UserId): List<Media> {
         return fileHandler.handleNewFiles(userId, fileDataList, FileCategory.CHAT)
@@ -57,6 +59,7 @@ class ChatLogService(
         chatRoomType: ChatRoomType,
     ): ChatDeleteMessage {
         val parentMessage = chatReader.readChatMessage(messageId)
+        chatValidator.isPossibleDeleteMessage(parentMessage)
         val chatMessage =
             chatGenerator.generateDeleteMessage(chatRoomId, userId, parentMessage.number, messageId, chatRoomType)
         chatRemover.removeChatLog(messageId)
@@ -140,7 +143,7 @@ class ChatLogService(
         return chatReader.readLatestMessages(chatRoomIds)
     }
 
-    fun getChatLog(chatRoomId: ChatRoomId, sequenceNumber: Int, userStartSequence: Int): List<ChatLog> {
-        return chatReader.readChatLog(chatRoomId, sequenceNumber, userStartSequence)
+    fun getChatLog(chatRoomId: ChatRoomId, sequenceNumber: Int, joinSequence: Int): List<ChatLog> {
+        return chatReader.readChatLog(chatRoomId, sequenceNumber, joinSequence)
     }
 }
