@@ -1,6 +1,7 @@
 package org.chewing.v1.repository.mongo.chat.log
 
 import org.chewing.v1.model.chat.log.ChatLog
+import org.chewing.v1.model.chat.log.UnReadTarget
 import org.chewing.v1.model.chat.message.ChatMessage
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.mongoentity.ChatMessageMongoEntity
@@ -22,7 +23,7 @@ internal class ChatLogRepositoryImpl(
     ): List<ChatLog> {
         val pageable: Pageable = PageRequest.of(0, 50, Sort.by(Sort.Direction.DESC, "seqNumber"))
         return chatLogMongoRepository
-            .findByChatRoomIdAndSeqNumberLessThanEqualAndSeqNumberGreaterThanOrderBySeqNumberDesc(
+            .findByChatRoomIdAndSeqNumberLessThanEqualAndSeqNumberGreaterThanOrderBySeqNumberAsc(
                 chatRoomId.id,
                 sequence,
                 joinSequence,
@@ -55,5 +56,20 @@ internal class ChatLogRepositoryImpl(
         keyword: String,
     ): List<ChatLog> {
         return chatLogMongoRepository.searchByKeywords(keyword, chatRoomId.id).map { it.toChatLog() }
+    }
+
+    override fun readUnreadChatLogs(
+        targets: List<UnReadTarget>,
+    ): List<ChatLog> {
+        val conditions = targets.map { target ->
+            mapOf(
+                "chatRoomId" to target.chatRoomId.id,
+                "seqNumber" to mapOf("\$gt" to target.readSequence, "\$lte" to target.chatRoomSequence)
+            )
+        }
+
+        return chatLogMongoRepository
+            .findByChatRoomIdAndSeqNumberInRange(conditions)
+            .map { it.toChatLog() }
     }
 }

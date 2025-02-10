@@ -31,7 +31,6 @@ class DirectChatFacade(
         return chatLogs
     }
 
-
     fun processGetDirectChatRooms(userId: UserId): List<Pair<DirectChatRoom, ChatLog>> {
         val chatRooms = directChatRoomService.getDirectChatRooms(userId)
         val chatRoomIds = chatRooms.map { it.roomInfo.chatRoomId }
@@ -84,7 +83,6 @@ class DirectChatFacade(
         notificationService.handleMessageNotification(chatMessage, friendId, userId)
         return directChatRoom
     }
-
 
     fun processDirectChatFiles(fileDataList: List<FileData>, userId: UserId, chatRoomId: ChatRoomId) {
         val medias = chatLogService.uploadFiles(fileDataList, userId)

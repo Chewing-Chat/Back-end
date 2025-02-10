@@ -20,8 +20,8 @@ class ChatRoomRequest {
         fun toName() = name
     }
     data class Delete(
-        val chatRoomId: String
-    ){
+        val chatRoomId: String,
+    ) {
         fun toChatRoomId() = ChatRoomId.of(chatRoomId)
     }
     data class Invite(

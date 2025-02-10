@@ -24,10 +24,19 @@ internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEnti
     )
     fun searchByKeywords(keywords: String, chatRoomId: String): List<ChatMessageMongoEntity>
 
-    fun findByChatRoomIdAndSeqNumberLessThanEqualAndSeqNumberGreaterThanOrderBySeqNumberDesc(
+    fun findByChatRoomIdAndSeqNumberLessThanEqualAndSeqNumberGreaterThanOrderBySeqNumberAsc(
         chatRoomId: String,
         sequence: Int,
         joinSequence: Int,
         pageable: Pageable,
+    ): List<ChatMessageMongoEntity>
+
+    @Query(
+        "{ \$or: [ " +
+                " { 'chatRoomId': ?0, 'seqNumber': { \$gt: ?1, \$lte: ?2 } } " +
+                "] }"
+    )
+    fun findByChatRoomIdAndSeqNumberInRange(
+        conditions: List<Map<String, Any>>
     ): List<ChatMessageMongoEntity>
 }

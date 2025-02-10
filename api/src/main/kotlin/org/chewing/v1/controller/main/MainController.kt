@@ -13,13 +13,11 @@ import org.springframework.web.bind.annotation.*
 class MainController(
     private val mainFacade: MainFacade,
 ) {
-    @GetMapping("")
-    fun getMainPage(
-        @RequestAttribute("userId") userId: String,
-        @RequestParam("sort") sort: FriendSortCriteria,
-    ): SuccessResponseEntity<MainResponse> {
-        val (user, friends) = mainFacade.getMainPage(UserId.of(userId), sort)
-        // 성공 응답 200 반환
-        return ResponseHelper.success(MainResponse.ofList(user.info, friends))
-    }
+//    @GetMapping("")
+//    fun getMainPage(
+//        @RequestAttribute("userId") userId: String,
+//    ): SuccessResponseEntity<MainResponse> {
+//
+//        return ResponseHelper.success(MainResponse.ofList(user.info, friends))
+//    }
 }

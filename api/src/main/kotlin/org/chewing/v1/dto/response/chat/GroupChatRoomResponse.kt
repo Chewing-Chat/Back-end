@@ -15,17 +15,17 @@ data class GroupChatRoomResponse(
     companion object {
         fun of(
             groupChatRoom: GroupChatRoom,
-            userId: UserId
+            userId: UserId,
         ): GroupChatRoomResponse {
             val friendIds = groupChatRoom.memberInfos
                 .filter { it.memberId != userId }
                 .map { it.memberId.id }
             val chatRoomMemberStatus = groupChatRoom.memberInfos
-                .find { it.memberId == userId } !!
+                .find { it.memberId == userId }!!
             return GroupChatRoomResponse(
                 chatRoomId = groupChatRoom.roomInfo.chatRoomId.id,
                 chatRoomName = groupChatRoom.roomInfo.name,
-                chatRoomSequenceNumber = groupChatRoom.memberSequence.sequenceNumber,
+                chatRoomSequenceNumber = groupChatRoom.roomSequence.sequenceNumber,
                 chatRoomMemberStatus = chatRoomMemberStatus.status.name.lowercase(),
                 readSequenceNumber = groupChatRoom.ownSequence.readSequenceNumber,
                 joinSequenceNumber = groupChatRoom.ownSequence.joinSequenceNumber,

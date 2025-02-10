@@ -23,16 +23,15 @@ data class FullGroupChatRoomResponse(
                 .filter { it.memberId != userId }
                 .map { it.memberId.id }
             val chatRoomMemberStatus = chatRoom.memberInfos
-                .find { it.memberId == userId } !!
+                .find { it.memberId == userId }!!
             return when (chatLog) {
-
                 is ChatReplyLog -> FullGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomMemberStatus = chatRoomMemberStatus.status.name.lowercase(),
                     latestChatLog = ChatLogMessageResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
-                    friendIds =friendIds,
+                    friendIds = friendIds,
                 )
 
                 is ChatFileLog -> FullGroupChatRoomResponse(

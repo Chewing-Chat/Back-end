@@ -27,7 +27,7 @@ class ChatControllerTest2 : RestDocsTest() {
         groupChatFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
         userArgumentResolver = UserArgumentResolver()
-        chatController = ChatController(directChatFacade,groupChatFacade)
+        chatController = ChatController(directChatFacade, groupChatFacade)
         mockMvc = mockController(chatController, exceptionHandler, userArgumentResolver)
         val userId = UserId.of("testUserId")
         val authentication = UsernamePasswordAuthenticationToken(userId, null)

@@ -13,14 +13,14 @@ data class ChatRoomListResponse(
         fun from(
             directChats: List<Pair<DirectChatRoom, ChatLog>>,
             groupChats: List<Pair<GroupChatRoom, ChatLog>>,
-            userId: UserId
+            userId: UserId,
         ): ChatRoomListResponse {
             val directChatResponses = directChats.map { (chatRoom, chatLog) ->
                 FullDirectChatRoomResponse.of(chatRoom, chatLog)
             }
 
             val groupChatResponses = groupChats.map { (chatRoom, chatLog) ->
-                FullGroupChatRoomResponse.of(chatRoom, chatLog,userId)
+                FullGroupChatRoomResponse.of(chatRoom, chatLog, userId)
             }
 
             return ChatRoomListResponse(directChatResponses, groupChatResponses)

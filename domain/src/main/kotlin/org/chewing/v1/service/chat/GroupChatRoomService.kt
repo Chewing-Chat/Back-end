@@ -72,6 +72,25 @@ class GroupChatRoomService(
         }
     }
 
+    fun getUnreadGroupChatRooms(userId: UserId): List<GroupChatRoom> {
+        val userParticipatedRooms = groupChatRoomReader.readRoomUserInfos(userId)
+        val chatRoomIds = userParticipatedRooms.map { it.chatRoomId }
+        val chatRooms = groupChatRoomReader.readRoomInfos(chatRoomIds)
+        val chatRoomMembers = groupChatRoomReader.readsRoomMemberInfos(chatRoomIds)
+        val chatRoomSequences = chatSequenceFinder.findCurrentRoomSequences(chatRoomIds)
+        val memberSequences = chatSequenceFinder.findCurrentMemberSequences(chatRoomIds, userId)
+
+        return chatRooms.mapNotNull { chatRoom ->
+            val chatRoomSequence = chatRoomSequences.find { it.chatRoomId == chatRoom.chatRoomId }
+            val memberSequence = memberSequences.find { it.chatRoomId == chatRoom.chatRoomId }
+            val members = chatRoomMembers.filter { it.chatRoomId == chatRoom.chatRoomId }
+            if (chatRoomSequence != null && memberSequence != null && memberSequence.readSequenceNumber < chatRoomSequence.sequenceNumber) {
+                GroupChatRoom.of(chatRoom, members, chatRoomSequence, memberSequence)
+            } else {
+                null
+            }
+        }
+    }
 
     fun readGroupChatRoom(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): ChatRoomMemberSequence {
         return chatSequenceHandler.handleMemberReadSequence(chatRoomId, userId, sequenceNumber)

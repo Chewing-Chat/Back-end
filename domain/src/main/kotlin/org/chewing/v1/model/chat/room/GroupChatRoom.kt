@@ -3,7 +3,7 @@ package org.chewing.v1.model.chat.room
 class GroupChatRoom private constructor(
     val roomInfo: GroupChatRoomInfo,
     val memberInfos: List<GroupChatRoomMemberInfo>,
-    val memberSequence: ChatRoomSequence,
+    val roomSequence: ChatRoomSequence,
     val ownSequence: ChatRoomMemberSequence,
 ) {
     companion object {
@@ -15,7 +15,7 @@ class GroupChatRoom private constructor(
         ): GroupChatRoom {
             return GroupChatRoom(
                 roomInfo = chatRoomInfo,
-                memberSequence = chatRoomSequence,
+                roomSequence = chatRoomSequence,
                 ownSequence = chatRoomMemberSequence,
                 memberInfos = chatRoomMembers,
             )

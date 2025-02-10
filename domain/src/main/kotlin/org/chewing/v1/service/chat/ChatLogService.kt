@@ -8,8 +8,10 @@ import org.chewing.v1.implementation.chat.message.ChatRemover
 import org.chewing.v1.implementation.chat.message.ChatValidator
 import org.chewing.v1.implementation.media.FileHandler
 import org.chewing.v1.model.chat.log.ChatLog
+import org.chewing.v1.model.chat.log.UnReadTarget
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatRoomMemberSequence
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.media.FileCategory
@@ -141,6 +143,10 @@ class ChatLogService(
 
     fun getLatestChat(chatRoomIds: List<ChatRoomId>): List<ChatLog> {
         return chatReader.readLatestMessages(chatRoomIds)
+    }
+
+    fun getUnreadChatLogs(targets: List<UnReadTarget>): List<ChatLog> {
+        return chatReader.readsUnreadChatLogs(targets)
     }
 
     fun getChatLog(chatRoomId: ChatRoomId, sequenceNumber: Int, joinSequence: Int): List<ChatLog> {

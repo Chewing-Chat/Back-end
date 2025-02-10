@@ -1,8 +1,5 @@
 package org.chewing.v1.service.chat
 
-import org.chewing.v1.error.ConflictException
-import org.chewing.v1.error.ErrorCode
-import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.implementation.chat.directroom.DirectChatRoomAppender
 import org.chewing.v1.implementation.chat.directroom.DirectChatRoomReader
 import org.chewing.v1.implementation.chat.directroom.DirectChatRoomRemover
@@ -58,12 +55,12 @@ class DirectChatRoomService(
         directChatRoomValidator.isNotSelf(userId, friendId)
         val existingChatRoom = directChatRoomReader.readRoomInfoByRelation(userId, friendId)
         directChatRoomValidator.isNotActivated(existingChatRoom)
-        if (existingChatRoom == null){
+        if (existingChatRoom == null) {
             val newChatRoom = directChatRoomAppender.appendRoom(userId, friendId)
             chatSequenceHandler.handleCreateRoomSequence(newChatRoom.chatRoomId)
             chatSequenceHandler.handleCreateMemberSequences(newChatRoom.chatRoomId, listOf(userId, friendId))
         }
-        if(existingChatRoom!!.status == ChatRoomMemberStatus.DELETED){
+        if (existingChatRoom!!.status == ChatRoomMemberStatus.DELETED) {
             directChatRoomUpdater.updateMemberStatus(userId, existingChatRoom.chatRoomId, ChatRoomMemberStatus.NORMAL)
             return existingChatRoom.chatRoomId
         }
@@ -73,6 +70,19 @@ class DirectChatRoomService(
 
     fun readDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): ChatRoomMemberSequence {
         return chatSequenceHandler.handleMemberReadSequence(chatRoomId, userId, sequenceNumber)
+    }
+
+    fun getUnreadDirectChatRooms(userId: UserId): List<DirectChatRoom> {
+        val chatRooms = directChatRoomReader.readRoomInfos(userId)
+        return chatRooms.mapNotNull {
+            val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(it.chatRoomId)
+            val memberSequence = chatSequenceFinder.findCurrentMemberSequence(it.chatRoomId, userId)
+            if (memberSequence.readSequenceNumber < chatRoomSequence.sequenceNumber) {
+                DirectChatRoom.of(it, chatRoomSequence, memberSequence)
+            } else {
+                null
+            }
+        }
     }
 
     fun getDirectChatRooms(userId: UserId): List<DirectChatRoom> {
