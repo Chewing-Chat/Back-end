@@ -1,6 +1,7 @@
 package org.chewing.v1.dto.response.main
 
 import org.chewing.v1.dto.response.chat.ChatLogsResponse
+import org.chewing.v1.dto.response.friend.FriendResponse
 import org.chewing.v1.dto.response.user.UserResponse
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.room.DirectChatRoom
@@ -10,7 +11,7 @@ import org.chewing.v1.model.user.UserId
 import org.chewing.v1.model.user.UserInfo
 
 data class MainResponse(
-    val friends: List<FriendMainResponse>,
+    val friends: List<FriendResponse>,
     val user: UserResponse,
     val totalFriends: Int,
     val directChatRooms: List<DirectMainChatRoomResponse>,
@@ -58,27 +59,6 @@ data class MainResponse(
         }
     }
 
-    data class FriendMainResponse(
-        val friendId: String,
-        val name: String,
-        val imageUrl: String,
-        val imageType: String,
-        val favorite: Boolean,
-        val statusMessage: String,
-    ) {
-        companion object {
-            fun of(friend: Friend): FriendMainResponse {
-                return FriendMainResponse(
-                    friendId = friend.user.info.userId.id,
-                    name = friend.name,
-                    imageUrl = friend.user.info.image.url,
-                    imageType = friend.user.info.image.type.value().lowercase(),
-                    statusMessage = friend.user.info.statusMessage,
-                    favorite = friend.isFavorite,
-                )
-            }
-        }
-    }
 
     companion object {
         fun ofList(
@@ -88,7 +68,7 @@ data class MainResponse(
             userId: UserId,
         ): MainResponse {
             return MainResponse(
-                friends = friends.map { FriendMainResponse.of(it) },
+                friends = friends.map { FriendResponse.of(it) },
                 user = UserResponse.of(userInfo),
                 totalFriends = friends.size,
                 directChatRooms = directChats.map { (chatRoom, chatLogs) ->
