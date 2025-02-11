@@ -187,6 +187,36 @@ class UserControllerTest : RestDocsTest() {
     }
 
     @Test
+    fun changeProfileImageFailedFileConvertFailed() {
+        val mockFile = MockMultipartFile(
+            "file",
+            "testFile.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+
+        every { userService.updateFile(any(), any(), any()) } throws ConflictException(ErrorCode.FILE_CONVERT_FAILED)
+
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .multiPart("file", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
+            .post("/api/user/image")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FILE_CONVERT_FAILED,
+                        "파일 변환에 실패했습니다. - 파일이 손상되었거나, 지원하지 않는 형식입니다.",
+                    ),
+                ),
+            )
+    }
+
+    @Test
     fun changeProfileImageFailedFileUploadFailed() {
         val mockFile = MockMultipartFile(
             "file",
