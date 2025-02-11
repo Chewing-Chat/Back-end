@@ -57,6 +57,38 @@ include::{snippets}/friend-controller-test/update-friend-name/http-response.adoc
 === 응답 필드 설명(Response Fields)
 include::{snippets}/friend-controller-test/update-friend-name/response-fields.adoc[]
 
+== 4.1 친구 이름 변경 실패 (친구를 차단 함) 02/12 수정
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/update-friend-name-failed-blocked/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/update-friend-name-failed-blocked/response-fields.adoc[]
+
+== 4.2 친구 이름 변경 실패 (친구가 아님) 02/12 수정
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/update-friend-name-failed-normal/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/update-friend-name-failed-normal/response-fields.adoc[]
+
+== 4.3 친구 이름 변경 실패 (내가 차단됨) 02/12 수정
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/update-friend-name-failed-blocked/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/update-friend-name-failed-blocked/response-fields.adoc[]
+
+== 4.4 친구를 삭제함 02/12 수정
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/update-friend-name-failed-delete/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/update-friend-name-failed-delete/response-fields.adoc[]
+
 == 5. 친구 즐겨찾기 변경하기 01/24 수정
 
 === 요청(Request)
@@ -71,5 +103,34 @@ include::{snippets}/friend-controller-test/change-favorite/http-response.adoc[]
 === 응답 필드 설명(Response Fields)
 include::{snippets}/friend-controller-test/change-favorite/response-fields.adoc[]
 
+== 5.1 친구 즐겨찾기 변경 실패 (친구가 아님) 02/12 수정
 
+=== 응답(Response)
+include::{snippets}/friend-controller-test/change-favorite-failed-normal/http-response.adoc[]
 
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/change-favorite-failed-normal/response-fields.adoc[]
+
+== 5.2 친구 즐겨찾기 변경 실패 (내가 차단됨) 02/12 수정
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/change-favorite-failed-blocked/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/change-favorite-failed-blocked/response-fields.adoc[]
+
+== 5.3 친구 즐겨찾기 변경 실패 (친구를 차단 함) 02/12 수정
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/change-favorite-failed-blocked/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/change-favorite-failed-blocked/response-fields.adoc[]
+
+== 5.4 친구 즐겨찾기 변경 실패 (친구를 삭제함) 02/12 수정
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/change-favorite-failed-delete/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/change-favorite-failed-delete/response-fields.adoc[]

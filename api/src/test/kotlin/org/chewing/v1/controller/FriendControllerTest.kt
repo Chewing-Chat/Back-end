@@ -7,11 +7,14 @@ import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.RestDocsUtils.requestAccessTokenFields
 import org.chewing.v1.RestDocsUtils.requestPreprocessor
+import org.chewing.v1.RestDocsUtils.responseErrorFields
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.controller.friend.FriendController
 import org.chewing.v1.dto.request.friend.FriendRequest
+import org.chewing.v1.error.ConflictException
+import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.facade.FriendFacade
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.friend.FriendShipService
@@ -109,7 +112,7 @@ class FriendControllerTest : RestDocsTest() {
                         fieldWithPath("data.friends[].countryCode").description("국가 코드"),
                         fieldWithPath("data.friends[].name").description("친구 이름"),
                         fieldWithPath("data.friends[].favorite").description("즐겨찾기 여부"),
-                        fieldWithPath("data.friends[].status").description("차단 여부"),
+                        fieldWithPath("data.friends[].status").description("차단 여부/삭제 여부/NORMAL 시 친구가 아닌 상태(전화번호 추가 필요)"),
                         fieldWithPath("data.friends[].friendId").description("친구 ID"),
                         fieldWithPath("data.friends[].profileImageUrl").description("프로필 이미지 URL"),
                         fieldWithPath("data.friends[].profileImageType").description("프로필 이미지 타입(image/jpeg, image/png)"),
@@ -147,6 +150,118 @@ class FriendControllerTest : RestDocsTest() {
                     ),
                     requestAccessTokenFields(),
                     responseSuccessFields(),
+                ),
+            )
+    }
+
+    @Test
+    fun changeFavoriteFailedDelete() {
+        val requestBody = FriendRequest.UpdateFavorite(
+            friendId = "testFriendId",
+            favorite = true,
+        )
+
+        every { friendShipService.changeFriendFavorite(any(), any(), any()) } throws ConflictException(ErrorCode.FRIEND_DELETED)
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/friend/favorite")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FRIEND_DELETED,
+                        "친구를 삭제한 상태",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun changeFavoriteFailedBlocked() {
+        val requestBody = FriendRequest.UpdateFavorite(
+            friendId = "testFriendId",
+            favorite = true,
+        )
+
+        every { friendShipService.changeFriendFavorite(any(), any(), any()) } throws ConflictException(ErrorCode.FRIEND_BLOCKED)
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/friend/favorite")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FRIEND_BLOCKED,
+                        "내가 차단된 상태",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun changeFavoriteFailedBlock() {
+        val requestBody = FriendRequest.UpdateFavorite(
+            friendId = "testFriendId",
+            favorite = true,
+        )
+
+        every { friendShipService.changeFriendFavorite(any(), any(), any()) } throws ConflictException(ErrorCode.FRIEND_BLOCK)
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/friend/favorite")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FRIEND_BLOCK,
+                        "친구를 차단한 상태",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun changeFavoriteFailedNormal() {
+        val requestBody = FriendRequest.UpdateFavorite(
+            friendId = "testFriendId",
+            favorite = true,
+        )
+
+        every { friendShipService.changeFriendFavorite(any(), any(), any()) } throws ConflictException(ErrorCode.FRIEND_BLOCK)
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/friend/favorite")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FRIEND_BLOCK,
+                        "친구가 아닌 상태(전화번호 추가 필요)",
+                    ),
                 ),
             )
     }
@@ -224,7 +339,6 @@ class FriendControllerTest : RestDocsTest() {
             .body(requestBody)
             .put("/api/friend/name")
             .then()
-            .assertCommonSuccessResponse()
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -236,6 +350,118 @@ class FriendControllerTest : RestDocsTest() {
                     ),
                     requestAccessTokenFields(),
                     responseSuccessFields(),
+                ),
+            )
+    }
+
+    @Test
+    fun updateFriendNameFailedDelete() {
+        val requestBody = FriendRequest.UpdateName(
+            friendId = "testFriendId",
+            name = "testName",
+        )
+
+        every { friendShipService.changeFriendName(any(), any(), any()) } throws ConflictException(ErrorCode.FRIEND_DELETED)
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/friend/name")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FRIEND_DELETED,
+                        "친구를 삭제한 상태",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun updateFriendNameFailedBlocked() {
+        val requestBody = FriendRequest.UpdateName(
+            friendId = "testFriendId",
+            name = "testName",
+        )
+
+        every { friendShipService.changeFriendName(any(), any(), any()) } throws ConflictException(ErrorCode.FRIEND_BLOCKED)
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/friend/name")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FRIEND_BLOCKED,
+                        "내가 차단된 상태",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun updateFriendNameFailedBlock() {
+        val requestBody = FriendRequest.UpdateName(
+            friendId = "testFriendId",
+            name = "testName",
+        )
+
+        every { friendShipService.changeFriendName(any(), any(), any()) } throws ConflictException(ErrorCode.FRIEND_BLOCK)
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/friend/name")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FRIEND_BLOCK,
+                        "친구를 차단한 상태",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun updateFriendNameFailedNormal() {
+        val requestBody = FriendRequest.UpdateName(
+            friendId = "testFriendId",
+            name = "testName",
+        )
+
+        every { friendShipService.changeFriendName(any(), any(), any()) } throws ConflictException(ErrorCode.FRIEND_BLOCK)
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/friend/name")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FRIEND_BLOCK,
+                        "친구가 아닌 상태(전화번호 추가 필요)",
+                    ),
                 ),
             )
     }
