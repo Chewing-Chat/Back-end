@@ -11,7 +11,6 @@ import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.UnReadTarget
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatRoomId
-import org.chewing.v1.model.chat.room.ChatRoomMemberSequence
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.media.FileCategory

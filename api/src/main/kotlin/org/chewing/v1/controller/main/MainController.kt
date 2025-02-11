@@ -4,7 +4,6 @@ import org.chewing.v1.dto.response.main.MainResponse
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.FriendFacade
 import org.chewing.v1.facade.GroupChatFacade
-import org.chewing.v1.model.friend.FriendSortCriteria
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.user.UserService
@@ -28,6 +27,6 @@ class MainController(
         val friends = friendFacade.getFriends(UserId.of(userId))
         val directChat = directChatFacade.processUnreadDirectChatLog(UserId.of(userId))
         val groupChats = groupChatFacade.processUnreadGroupChatLog(UserId.of(userId))
-        return ResponseHelper.success(MainResponse.ofList(user.info, friends, directChat, groupChats, UserId.of(userId)),)
+        return ResponseHelper.success(MainResponse.ofList(user.info, friends, directChat, groupChats, UserId.of(userId)))
     }
 }

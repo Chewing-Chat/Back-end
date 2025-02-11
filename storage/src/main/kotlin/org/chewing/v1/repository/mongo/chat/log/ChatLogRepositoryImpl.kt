@@ -64,7 +64,7 @@ internal class ChatLogRepositoryImpl(
         val conditions = targets.map { target ->
             mapOf(
                 "chatRoomId" to target.chatRoomId.id,
-                "seqNumber" to mapOf("\$gt" to target.readSequence, "\$lte" to target.chatRoomSequence)
+                "seqNumber" to mapOf("\$gt" to target.readSequence, "\$lte" to target.chatRoomSequence),
             )
         }
 

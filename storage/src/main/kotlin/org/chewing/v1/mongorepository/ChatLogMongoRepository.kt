@@ -33,10 +33,10 @@ internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEnti
 
     @Query(
         "{ \$or: [ " +
-                " { 'chatRoomId': ?0, 'seqNumber': { \$gt: ?1, \$lte: ?2 } } " +
-                "] }"
+            " { 'chatRoomId': ?0, 'seqNumber': { \$gt: ?1, \$lte: ?2 } } " +
+            "] }",
     )
     fun findByChatRoomIdAndSeqNumberInRange(
-        conditions: List<Map<String, Any>>
+        conditions: List<Map<String, Any>>,
     ): List<ChatMessageMongoEntity>
 }

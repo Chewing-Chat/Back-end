@@ -11,7 +11,7 @@ class Friend private constructor(
     companion object {
         fun of(
             friend: User,
-            friendShip: FriendShip
+            friendShip: FriendShip,
         ): Friend {
             return Friend(
                 user = friend,

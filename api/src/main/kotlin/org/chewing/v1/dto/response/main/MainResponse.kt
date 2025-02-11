@@ -59,10 +59,10 @@ data class MainResponse(
         }
     }
 
-
     companion object {
         fun ofList(
-            userInfo: UserInfo, friends: List<Friend>,
+            userInfo: UserInfo,
+            friends: List<Friend>,
             directChats: List<Pair<DirectChatRoom, List<ChatLog>>>,
             groupChats: List<Pair<GroupChatRoom, List<ChatLog>>>,
             userId: UserId,
