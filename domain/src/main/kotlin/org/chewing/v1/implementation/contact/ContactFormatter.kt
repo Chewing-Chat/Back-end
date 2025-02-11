@@ -29,8 +29,15 @@ class ContactFormatter(
     fun extractCountryCodeAndLocalNumber(e164PhoneNumber: PhoneNumber): LocalPhoneNumber {
         return try {
             val parsedNumber = phoneUtil.parse(e164PhoneNumber.e164PhoneNumber, null)
-            val countryCode = "${parsedNumber.countryCode}"
-            val localNumber = "0${parsedNumber.nationalNumber}"
+            if (!phoneUtil.isValidNumber(parsedNumber)) {
+                throw ConflictException(ErrorCode.INVALID_PHONE_NUMBER)
+            }
+
+            val countryCode = parsedNumber.countryCode.toString()
+
+            val nationalFormatted = phoneUtil.format(parsedNumber, PhoneNumberUtil.PhoneNumberFormat.NATIONAL)
+            val localNumber = nationalFormatted.replace(Regex("\\D"), "")
+
             LocalPhoneNumber.of(localNumber, countryCode)
         } catch (e: NumberParseException) {
             throw ConflictException(ErrorCode.INVALID_PHONE_NUMBER)

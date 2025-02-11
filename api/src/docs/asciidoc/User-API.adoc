@@ -18,6 +18,38 @@ include::{snippets}/user-controller-test/change-profile-image/http-response.adoc
 === 응답 필드 설명(Response Fields)
 include::{snippets}/user-controller-test/change-profile-image/response-fields.adoc[]
 
+== 1-1. 프로필 이미지 변경 (파일 이름 없음) 02/11 수정
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/change-profile-image-failed-file-name-could-not-be-empty/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/change-profile-image-failed-file-name-could-not-be-empty/response-fields.adoc[]
+
+== 1-2. 프로필 이미지 변경 (파일 변환 실패) 02/11 수정
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/change-profile-image-failed-file-convert-failed/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/change-profile-image-failed-file-convert-failed/response-fields.adoc[]
+
+== 1-3. 프로필 이미지 변경 (파일 저장 실패) 02/11 수정
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/change-profile-image-failed-file-upload-failed/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/change-profile-image-failed-file-upload-failed/response-fields.adoc[]
+
+== 1-4. 프로필 이미지 변경 (적절하지 않은 이름) 02/11 수정
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/change-profile-image-failed-file-name-incorrect/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/change-profile-image-failed-file-name-incorrect/response-fields.adoc[]
+
 == 2. 상태메시지 변경 01/15 수정
 
 === 요청(Request)
@@ -50,3 +82,16 @@ include::{snippets}/user-controller-test/get-profile/http-response.adoc[]
 === 응답 필드 설명(Response Fields)
 include::{snippets}/user-controller-test/get-profile/response-fields.adoc[]
 
+== 4. 사용자 정보 삭제 02/11 수정
+
+=== 요청(Request)
+include::{snippets}/user-controller-test/delete-user/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/user-controller-test/delete-user/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/delete-user/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/delete-user/response-fields.adoc[]
