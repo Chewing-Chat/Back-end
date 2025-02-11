@@ -216,8 +216,6 @@ class UserControllerTest : RestDocsTest() {
             )
     }
 
-
-
     @Test
     @DisplayName("사용자 삭제")
     fun deleteUser() {

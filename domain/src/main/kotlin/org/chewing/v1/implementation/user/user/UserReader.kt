@@ -11,7 +11,6 @@ import org.chewing.v1.repository.user.PushNotificationRepository
 import org.chewing.v1.repository.user.UserRepository
 import org.springframework.stereotype.Component
 
-
 @Component
 class UserReader(
     private val userRepository: UserRepository,
