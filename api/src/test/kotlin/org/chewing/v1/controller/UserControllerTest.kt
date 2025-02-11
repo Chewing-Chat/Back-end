@@ -8,11 +8,14 @@ import io.mockk.verify
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.RestDocsUtils.requestAccessTokenFields
 import org.chewing.v1.RestDocsUtils.requestPreprocessor
+import org.chewing.v1.RestDocsUtils.responseErrorFields
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.controller.user.UserController
 import org.chewing.v1.dto.request.user.UserRequest
+import org.chewing.v1.error.ConflictException
+import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
@@ -24,6 +27,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
@@ -95,6 +99,124 @@ class UserControllerTest : RestDocsTest() {
             )
         verify { userService.updateFile(any(), any(), any()) }
     }
+
+    @Test
+    fun changeProfileImageFailedFileNameCouldNotBeEmpty() {
+        val mockFile = MockMultipartFile(
+            "file",
+            "",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .multiPart("file", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
+            .post("/api/user/image")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FILE_NAME_COULD_NOT_EMPTY,
+                        "파일 이름을 넣어주세요.",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun changeProfileImageFailedNotSupportFileType() {
+        val mockFile = MockMultipartFile(
+            "file",
+            "testFile.jpg",
+            "image/png",
+            "Test content".toByteArray(),
+        )
+
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .multiPart("file", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
+            .post("/api/user/image")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.NOT_SUPPORT_FILE_TYPE,
+                        "지원하지 않는 파일 형식입니다.",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun changeProfileImageFailedFileNameIncorrect() {
+        val mockFile = MockMultipartFile(
+            "file",
+            "testFile.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+
+        every { userService.updateFile(any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_INCORRECT)
+
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .multiPart("file", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
+            .post("/api/user/image")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FILE_NAME_INCORRECT,
+                        "파일 이름이 잘못되었습니다. 0.jpg .. 1.jpg .. 처럼 순서대로 넣어주세요.",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun changeProfileImageFailedFileUploadFailed() {
+        val mockFile = MockMultipartFile(
+            "file",
+            "testFile.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+
+        every { userService.updateFile(any(), any(), any()) } throws ConflictException(ErrorCode.FILE_UPLOAD_FAILED)
+
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .multiPart("file", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
+            .post("/api/user/image")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FILE_UPLOAD_FAILED,
+                        "파일 업로드에 실패 했음. 서버 오류, 네트워크 오류.",
+                    ),
+                ),
+            )
+    }
+
+
 
     @Test
     @DisplayName("사용자 삭제")
