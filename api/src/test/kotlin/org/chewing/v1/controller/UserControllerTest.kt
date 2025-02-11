@@ -210,7 +210,7 @@ class UserControllerTest : RestDocsTest() {
                     responseErrorFields(
                         HttpStatus.CONFLICT,
                         ErrorCode.FILE_CONVERT_FAILED,
-                        "파일 변환에 실패했습니다. - 파일이 손상되었거나, 지원하지 않는 형식입니다.",
+                        "파일 변환에 실패했습니다. - 파일이 손상되었거나, 기타오류.",
                     ),
                 ),
             )
