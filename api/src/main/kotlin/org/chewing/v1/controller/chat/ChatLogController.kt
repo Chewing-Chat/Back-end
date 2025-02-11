@@ -1,6 +1,6 @@
 package org.chewing.v1.controller.chat
 
-import org.chewing.v1.dto.response.chat.ChatLogResponse
+import org.chewing.v1.dto.response.chat.ChatLogsResponse
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.model.chat.room.ChatRoomId
@@ -25,9 +25,9 @@ class ChatLogController(
         @CurrentUser userId: UserId,
         @PathVariable chatRoomId: String,
         @RequestParam sequenceNumber: Int,
-    ): HttpResponse<ChatLogResponse> {
+    ): HttpResponse<ChatLogsResponse> {
         val chatLog = directChatFacade.processDirectChatLogs(userId, ChatRoomId.of(chatRoomId), sequenceNumber)
-        return HttpResponse.success(ChatLogResponse.from(chatLog))
+        return HttpResponse.success(ChatLogsResponse.from(chatLog))
     }
 
     @GetMapping("/group/log")
@@ -35,8 +35,8 @@ class ChatLogController(
         @CurrentUser userId: UserId,
         @PathVariable chatRoomId: String,
         @RequestParam sequenceNumber: Int,
-    ): HttpResponse<ChatLogResponse> {
+    ): HttpResponse<ChatLogsResponse> {
         val chatLog = groupChatFacade.processGroupChatLogs(userId, ChatRoomId.of(chatRoomId), sequenceNumber)
-        return HttpResponse.success(ChatLogResponse.from(chatLog))
+        return HttpResponse.success(ChatLogsResponse.from(chatLog))
     }
 }

@@ -3,6 +3,7 @@ package org.chewing.v1.facade
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.model.chat.log.ChatLog
+import org.chewing.v1.model.chat.log.UnReadTarget
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.chat.room.ChatRoomSequence
@@ -151,6 +152,21 @@ class GroupChatFacade(
         val chatRoom = groupChatRoomService.getGroupChatRoom(userId, chatRoomId)
         notificationService.handleMessageNotification(chatMessage, userId, userId)
         return chatRoom
+    }
+
+    fun processUnreadGroupChatLog(userId: UserId): List<Pair<GroupChatRoom, List<ChatLog>>> {
+        val groupChatRooms = groupChatRoomService.getUnreadGroupChatRooms(userId)
+        val unReadGroupTargets = groupChatRooms.map {
+            UnReadTarget.of(it.roomInfo.chatRoomId, it.roomSequence.sequenceNumber, it.ownSequence.readSequenceNumber)
+        }
+        val chatLogsByRoomId = chatLogService.getUnreadChatLogs(unReadGroupTargets)
+            .groupBy { it.chatRoomId }
+
+        return groupChatRooms.mapNotNull { chatRoom ->
+            chatLogsByRoomId[chatRoom.roomInfo.chatRoomId]?.let { chatLogs ->
+                chatRoom to chatLogs
+            }
+        }
     }
 
     private fun getMemberIds(userId: UserId, chatRoomId: ChatRoomId): List<UserId> {

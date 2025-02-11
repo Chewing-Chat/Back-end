@@ -11,6 +11,7 @@ import org.chewing.v1.model.feed.FeedDetailId
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
 import org.chewing.v1.model.friend.Friend
+import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
@@ -93,12 +94,20 @@ object TestDataFactory {
         )
     }
 
+    fun createFriendShip(userId: String, friendId: String, friendShipStatus: FriendShipStatus): FriendShip {
+        return FriendShip.of(
+            UserId.of(userId),
+            UserId.of(friendId),
+            "testFriendName",
+            true,
+            friendShipStatus,
+        )
+    }
+
     fun createFriend(userId: String): Friend {
         return Friend.of(
             createUser(userId, AccessStatus.ACCESS),
-            true,
-            createFriendName(),
-            FriendShipStatus.FRIEND,
+            createFriendShip(userId, "testFriendId", FriendShipStatus.FRIEND),
         )
     }
 

@@ -13,7 +13,7 @@ data class FullGroupChatRoomResponse(
     val chatRoomId: String,
     val readSequenceNumber: Int,
     val joinSequenceNumber: Int,
-    val latestChatLog: ChatLogMessageResponse,
+    val latestChatLog: ChatLogResponse,
     val chatRoomMemberStatus: String,
     val friendIds: List<String>,
 ) {
@@ -28,7 +28,7 @@ data class FullGroupChatRoomResponse(
                 is ChatReplyLog -> FullGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomMemberStatus = chatRoomMemberStatus.status.name.lowercase(),
-                    latestChatLog = ChatLogMessageResponse.from(chatLog),
+                    latestChatLog = ChatLogResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
@@ -37,7 +37,7 @@ data class FullGroupChatRoomResponse(
                 is ChatFileLog -> FullGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomMemberStatus = chatRoomMemberStatus.status.name.lowercase(),
-                    latestChatLog = ChatLogMessageResponse.from(chatLog),
+                    latestChatLog = ChatLogResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
@@ -45,7 +45,7 @@ data class FullGroupChatRoomResponse(
                 is ChatInviteLog -> FullGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomMemberStatus = chatRoomMemberStatus.status.name.lowercase(),
-                    latestChatLog = ChatLogMessageResponse.from(chatLog),
+                    latestChatLog = ChatLogResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
@@ -53,7 +53,7 @@ data class FullGroupChatRoomResponse(
                 is ChatLeaveLog -> FullGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomMemberStatus = chatRoomMemberStatus.status.name.lowercase(),
-                    latestChatLog = ChatLogMessageResponse.from(chatLog),
+                    latestChatLog = ChatLogResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
@@ -61,7 +61,7 @@ data class FullGroupChatRoomResponse(
                 is ChatNormalLog -> FullGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomMemberStatus = chatRoomMemberStatus.status.name.lowercase(),
-                    latestChatLog = ChatLogMessageResponse.from(chatLog),
+                    latestChatLog = ChatLogResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,

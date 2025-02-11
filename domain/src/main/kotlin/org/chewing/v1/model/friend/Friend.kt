@@ -11,15 +11,13 @@ class Friend private constructor(
     companion object {
         fun of(
             friend: User,
-            favorite: Boolean,
-            friendName: String,
-            status: FriendShipStatus,
+            friendShip: FriendShip
         ): Friend {
             return Friend(
                 user = friend,
-                isFavorite = favorite,
-                name = friendName,
-                status = status,
+                isFavorite = friendShip.isFavorite,
+                name = friendShip.friendName,
+                status = friendShip.status,
             )
         }
     }

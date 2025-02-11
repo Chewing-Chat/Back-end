@@ -3,6 +3,7 @@ package org.chewing.v1.facade
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.model.chat.log.ChatLog
+import org.chewing.v1.model.chat.log.UnReadTarget
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
 import org.chewing.v1.model.chat.room.ChatRoomType
@@ -40,6 +41,27 @@ class DirectChatFacade(
         return chatRooms.mapNotNull { chatRoom ->
             chatMessages[chatRoom.roomInfo.chatRoomId]?.let { latestMessage ->
                 chatRoom to latestMessage
+            }
+        }
+    }
+
+    fun processUnreadDirectChatLog(userId: UserId): List<Pair<DirectChatRoom, List<ChatLog>>> {
+        val directChatRooms = directChatRoomService.getUnreadDirectChatRooms(userId)
+
+        val unReadDirectTargets = directChatRooms.map { chatRoom ->
+            UnReadTarget.of(
+                chatRoom.roomInfo.chatRoomId,
+                chatRoom.roomSequence.sequenceNumber,
+                chatRoom.ownSequence.readSequenceNumber,
+            )
+        }
+
+        val chatLogsByRoomId = chatLogService.getUnreadChatLogs(unReadDirectTargets)
+            .groupBy { it.chatRoomId }
+
+        return directChatRooms.mapNotNull { chatRoom ->
+            chatLogsByRoomId[chatRoom.roomInfo.chatRoomId]?.let { chatLogs ->
+                chatRoom to chatLogs
             }
         }
     }
