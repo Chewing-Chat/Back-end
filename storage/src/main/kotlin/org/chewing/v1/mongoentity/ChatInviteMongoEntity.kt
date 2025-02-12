@@ -48,7 +48,7 @@ internal class ChatInviteMongoEntity(
             senderId = UserId.of(senderId),
             timestamp = sendTime,
             number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), seqNumber),
-            targetUserIds = targetUserIds,
+            targetUserIds = targetUserIds.map { UserId.of(it) },
             type = type,
         )
     }

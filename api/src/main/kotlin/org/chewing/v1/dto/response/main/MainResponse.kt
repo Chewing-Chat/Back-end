@@ -1,6 +1,6 @@
 package org.chewing.v1.dto.response.main
 
-import org.chewing.v1.dto.response.chat.ChatLogsResponse
+import org.chewing.v1.dto.response.chat.ChatLogResponse
 import org.chewing.v1.dto.response.friend.FriendResponse
 import org.chewing.v1.dto.response.user.UserResponse
 import org.chewing.v1.model.chat.log.ChatLog
@@ -20,7 +20,7 @@ data class MainResponse(
     data class DirectMainChatRoomResponse(
         val chatRoomId: String,
         val friendId: String,
-        val chatLogs: ChatLogsResponse,
+        val chatLogs: List<ChatLogResponse>,
     ) {
         companion object {
             fun of(
@@ -30,7 +30,7 @@ data class MainResponse(
                 return DirectMainChatRoomResponse(
                     chatRoomId = directChatRoom.roomInfo.chatRoomId.id,
                     friendId = directChatRoom.roomInfo.friendId.id,
-                    chatLogs = ChatLogsResponse.from(chatLogs),
+                    chatLogs = chatLogs.map { ChatLogResponse.from(it) },
                 )
             }
         }
@@ -39,7 +39,7 @@ data class MainResponse(
     data class GroupMainChatRoomResponse(
         val chatRoomId: String,
         val friendIds: List<String>,
-        val chatLogs: ChatLogsResponse,
+        val chatLogs: List<ChatLogResponse>,
     ) {
         companion object {
             fun of(
@@ -52,7 +52,7 @@ data class MainResponse(
                     .map { it.memberId.id }
                 return GroupMainChatRoomResponse(
                     chatRoomId = groupChatRoom.roomInfo.chatRoomId.id,
-                    chatLogs = ChatLogsResponse.from(chatLogs),
+                    chatLogs = chatLogs.map { ChatLogResponse.from(it) },
                     friendIds = friendIds,
                 )
             }

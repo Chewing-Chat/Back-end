@@ -71,3 +71,5 @@ include::Feed-API.adoc[]
 include::Schedule-API.adoc[]
 
 include::Friend-API.adoc[]
+
+include::Main-API.adoc[]

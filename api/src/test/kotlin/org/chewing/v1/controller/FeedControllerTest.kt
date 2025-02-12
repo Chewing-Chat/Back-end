@@ -15,7 +15,7 @@ import org.chewing.v1.controller.feed.FeedController
 import org.chewing.v1.dto.request.feed.FeedRequest
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
-import org.chewing.v1.facade.FeedAccessFacade
+import org.chewing.v1.facade.FriendFeedFacade
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.feed.FeedService

@@ -190,7 +190,7 @@ object TestDataFactory {
         userId,
         LocalDateTime.now(),
         chatRoomNumber,
-        listOf("targetUserId"),
+        listOf(UserId.of("targetUserId")),
         ChatLogType.INVITE,
     )
 

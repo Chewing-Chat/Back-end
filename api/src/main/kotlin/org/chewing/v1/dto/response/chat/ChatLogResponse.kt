@@ -93,7 +93,7 @@ sealed class ChatLogResponse {
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatLog.number.sequenceNumber,
-                    targetUserIds = chatLog.targetUserIds,
+                    targetUserIds = chatLog.targetUserIds.map { it.id },
                 )
 
                 is ChatFileLog -> File(
