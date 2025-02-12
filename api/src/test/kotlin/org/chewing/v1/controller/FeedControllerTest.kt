@@ -7,12 +7,15 @@ import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.RestDocsUtils.requestAccessTokenFields
 import org.chewing.v1.RestDocsUtils.requestPreprocessor
+import org.chewing.v1.RestDocsUtils.responseErrorFields
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory.createFeed
 import org.chewing.v1.controller.feed.FeedController
 import org.chewing.v1.dto.request.feed.FeedRequest
-import org.chewing.v1.facade.FriendFeedFacade
+import org.chewing.v1.error.ConflictException
+import org.chewing.v1.error.ErrorCode
+import org.chewing.v1.facade.FeedAccessFacade
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.feed.FeedService
@@ -185,6 +188,30 @@ class FeedControllerTest : RestDocsTest() {
     }
 
     @Test
+    fun getFeedFailedNotVisible() {
+        val testFeedId = "testFeedId"
+        val userId = "testUserId"
+        every { feedService.getFeed(any(), UserId.of(userId)) } throws ConflictException(ErrorCode.FEED_IS_NOT_VISIBLE)
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .get("/api/feed/{feedId}/detail", testFeedId)
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FEED_IS_NOT_VISIBLE,
+                        "피드의 접근 권한이 없습니다.",
+                    ),
+                ),
+            )
+    }
+
+    @Test
     @DisplayName("피드 삭제")
     fun deleteFeeds() {
         val requestBody = listOf(
@@ -213,6 +240,37 @@ class FeedControllerTest : RestDocsTest() {
                         fieldWithPath("[].feedId").description("삭제할 피드 아이디"),
                     ),
                     responseSuccessFields(),
+                ),
+            )
+    }
+
+    @Test
+    fun deleteFeedFailedNotOwner() {
+        val requestBody = listOf(
+            FeedRequest.Delete(
+                feedId = "testFeedId",
+            ),
+            FeedRequest.Delete(
+                feedId = "testFeedId2",
+            ),
+        )
+        every { feedService.removes(any(), requestBody.map { it.toFeedId() }) } throws ConflictException(ErrorCode.FEED_IS_NOT_OWNED)
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .delete("/api/feed")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FEED_IS_NOT_OWNED,
+                        "피드의 소유자가 아닙니다.",
+                    ),
                 ),
             )
     }
@@ -266,6 +324,203 @@ class FeedControllerTest : RestDocsTest() {
                     responseFields(
                         fieldWithPath("status").description("상태 코드"),
                         fieldWithPath("data.feedId").description("피드 아이디"),
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun addFeedFailedFileNameCouldNotBeEmpty() {
+        val mockFile1 = MockMultipartFile(
+            "files",
+            "0.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+        val mockFile2 = MockMultipartFile(
+            "files",
+            "1.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+
+        val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
+
+        every { feedService.make(any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_COULD_NOT_EMPTY)
+
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .queryParam("content", "testContent")
+            .queryParam("friendIds", *testFriendIds.toTypedArray())
+            .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
+            .multiPart("files", mockFile2.originalFilename, mockFile2.bytes, MediaType.IMAGE_JPEG_VALUE)
+            .post("/api/feed")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FILE_NAME_COULD_NOT_EMPTY,
+                        "파일 이름을 넣어주세요.",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun addFeedFailedFileNameIncorrect() {
+        val mockFile1 = MockMultipartFile(
+            "files",
+            "0.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+        val mockFile2 = MockMultipartFile(
+            "files",
+            "1.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+
+        val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
+
+        every { feedService.make(any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_INCORRECT)
+
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .queryParam("content", "testContent")
+            .queryParam("friendIds", *testFriendIds.toTypedArray())
+            .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
+            .multiPart("files", mockFile2.originalFilename, mockFile2.bytes, MediaType.IMAGE_JPEG_VALUE)
+            .post("/api/feed")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FILE_NAME_INCORRECT,
+                        "파일 이름이 올바르지 않습니다.",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun addFeedFailedFileNotSupportFileType() {
+        val mockFile = MockMultipartFile(
+            "file",
+            "testFile.exe",
+            "application/octet-stream",
+            "Test content".toByteArray(),
+        )
+
+        val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
+
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .queryParam("content", "testContent")
+            .queryParam("friendIds", *testFriendIds.toTypedArray())
+            .multiPart("files", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
+            .multiPart("files", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
+            .post("/api/feed")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.NOT_SUPPORT_FILE_TYPE,
+                        "지원하지 않는 파일 형식입니다.",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun addFeedFailedFileConvertFailed() {
+        val mockFile1 = MockMultipartFile(
+            "files",
+            "0.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+        val mockFile2 = MockMultipartFile(
+            "files",
+            "1.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+
+        val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
+
+        every { feedService.make(any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_CONVERT_FAILED)
+
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .queryParam("content", "testContent")
+            .queryParam("friendIds", *testFriendIds.toTypedArray())
+            .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
+            .multiPart("files", mockFile2.originalFilename, mockFile2.bytes, MediaType.IMAGE_JPEG_VALUE)
+            .post("/api/feed")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FILE_CONVERT_FAILED,
+                        "파일 변환에 실패했습니다. - 파일이 손상되었거나, 기타오류.",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun addFeedFailedFileUploadFailed() {
+        val mockFile1 = MockMultipartFile(
+            "files",
+            "0.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+        val mockFile2 = MockMultipartFile(
+            "files",
+            "1.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            "Test content".toByteArray(),
+        )
+
+        val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
+
+        every { feedService.make(any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_UPLOAD_FAILED)
+
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .queryParam("content", "testContent")
+            .queryParam("friendIds", *testFriendIds.toTypedArray())
+            .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
+            .multiPart("files", mockFile2.originalFilename, mockFile2.bytes, MediaType.IMAGE_JPEG_VALUE)
+            .post("/api/feed")
+            .then()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    responseErrorFields(
+                        HttpStatus.CONFLICT,
+                        ErrorCode.FILE_UPLOAD_FAILED,
+                        "파일 업로드에 실패 했음. 서버 오류, 네트워크 오류.",
                     ),
                 ),
             )

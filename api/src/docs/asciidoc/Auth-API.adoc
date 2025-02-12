@@ -18,9 +18,6 @@ include::{snippets}/auth-controller-test/send-phone-verification/response-fields
 
 == 1-1 회원가입 인증번호 전송 (이미 가입된 번호) 01/14 수정
 
-=== 요청(Request)
-include::{snippets}/auth-controller-test/send-phone-verification-already-created/http-request.adoc[]
-
 === 응답(Response)
 include::{snippets}/auth-controller-test/send-phone-verification-already-created/http-response.adoc[]
 
@@ -39,9 +36,6 @@ include::{snippets}/auth-controller-test/send-phone-verification-reset/request-f
 include::{snippets}/auth-controller-test/send-phone-verification-reset/http-response.adoc[]
 
 == 2-1 비밀번호 초기화를 위한 인증번호 전송 (가입되지 않은 번호) 01/14 수정
-
-=== 요청(Request)
-include::{snippets}/auth-controller-test/send-phone-verification-reset-not-created/http-request.adoc[]
 
 === 응답(Response)
 include::{snippets}/auth-controller-test/send-phone-verification-reset-not-created/http-response.adoc[]
@@ -65,9 +59,6 @@ include::{snippets}/auth-controller-test/sign-up/response-fields.adoc[]
 
 == 3-1 회원가입을 위한 휴대폰 인증 번호 확인 (이미 가입된 번호) 01/14 수정
 
-=== 요청(Request)
-include::{snippets}/auth-controller-test/sign-up-already-created/http-request.adoc[]
-
 === 응답(Response)
 include::{snippets}/auth-controller-test/sign-up-already-created/http-response.adoc[]
 
@@ -76,9 +67,6 @@ include::{snippets}/auth-controller-test/sign-up-already-created/response-fields
 
 == 3-2 회원가입을 위한 휴대폰 인증 번호 확인 (인증번호 불일치) 01/14 수정
 
-=== 요청(Request)
-include::{snippets}/auth-controller-test/sign-up-wrong-verification-code/http-request.adoc[]
-
 === 응답(Response)
 include::{snippets}/auth-controller-test/sign-up-wrong-verification-code/http-response.adoc[]
 
@@ -86,9 +74,6 @@ include::{snippets}/auth-controller-test/sign-up-wrong-verification-code/http-re
 include::{snippets}/auth-controller-test/sign-up-wrong-verification-code/response-fields.adoc[]
 
 == 3-3 회원가입을 위한 휴대폰 인증 번호 확인 (인증번호 만료) 01/14 수정
-
-=== 요청(Request)
-include::{snippets}/auth-controller-test/sign-up-expired-verification-code/http-request.adoc[]
 
 === 응답(Response)
 include::{snippets}/auth-controller-test/sign-up-expired-verification-code/http-response.adoc[]
@@ -112,9 +97,6 @@ include::{snippets}/auth-controller-test/reset-credential/response-fields.adoc[]
 
 == 4-1 비밀번호 초기화를 위한 휴대폰 인증 번호 확인 (가입되지 않은 번호) 01/14 수정
 
-=== 요청(Request)
-include::{snippets}/auth-controller-test/reset-credential-user-not-found/http-request.adoc[]
-
 === 응답(Response)
 include::{snippets}/auth-controller-test/reset-credential-user-not-found/http-response.adoc[]
 
@@ -123,9 +105,6 @@ include::{snippets}/auth-controller-test/reset-credential-user-not-found/respons
 
 == 4-2 비밀번호 초기화를 위한 휴대폰 인증 번호 확인 (인증번호 불일치) 01/14 수정
 
-=== 요청(Request)
-include::{snippets}/auth-controller-test/reset-credential-wrong-verification-code/http-request.adoc[]
-
 === 응답(Response)
 include::{snippets}/auth-controller-test/reset-credential-wrong-verification-code/http-response.adoc[]
 
@@ -133,9 +112,6 @@ include::{snippets}/auth-controller-test/reset-credential-wrong-verification-cod
 include::{snippets}/auth-controller-test/reset-credential-wrong-verification-code/response-fields.adoc[]
 
 == 4-3 비밀번호 초기화를 위한 휴대폰 인증 번호 확인 (인증번호 만료) 01/14 수정
-
-=== 요청(Request)
-include::{snippets}/auth-controller-test/reset-credential-expired-verification-code/http-request.adoc[]
 
 === 응답(Response)
 include::{snippets}/auth-controller-test/reset-credential-expired-verification-code/http-response.adoc[]
@@ -194,9 +170,6 @@ include::{snippets}/auth-controller-test/login/response-fields.adoc[]
 
 == 7-1 로그인 (비밀번호 불일치) 01/14 수정
 
-=== 요청(Request)
-include::{snippets}/auth-controller-test/login-wrong-password/http-request.adoc[]
-
 === 응답(Response)
 include::{snippets}/auth-controller-test/login-wrong-password/http-response.adoc[]
 
@@ -204,9 +177,6 @@ include::{snippets}/auth-controller-test/login-wrong-password/http-response.adoc
 include::{snippets}/auth-controller-test/login-wrong-password/response-fields.adoc[]
 
 == 7-2 로그인 (존재하지 않는 사용자) 01/14 수정
-
-=== 요청(Request)
-include::{snippets}/auth-controller-test/login-not-found-user/http-request.adoc[]
 
 === 응답(Response)
 include::{snippets}/auth-controller-test/login-not-found-user/http-response.adoc[]
