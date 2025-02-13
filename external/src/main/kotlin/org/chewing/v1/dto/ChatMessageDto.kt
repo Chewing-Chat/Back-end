@@ -108,7 +108,7 @@ sealed class ChatMessageDto {
 
     companion object {
         fun from(chatMessage: ChatMessage): ChatMessageDto {
-            val dateTimeFormatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss")
+            val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             val formattedTime = chatMessage.timestamp.format(dateTimeFormatter)
             return when (chatMessage) {
                 is ChatReplyMessage -> Reply(

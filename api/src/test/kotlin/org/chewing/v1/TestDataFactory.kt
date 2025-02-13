@@ -1,5 +1,6 @@
 package org.chewing.v1
 
+import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.announcement.AnnouncementId
 import org.chewing.v1.model.auth.JwtToken
@@ -11,6 +12,7 @@ import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.log.ChatReplyLog
 import org.chewing.v1.model.chat.message.ChatDeleteMessage
+import org.chewing.v1.model.chat.message.ChatErrorMessage
 import org.chewing.v1.model.chat.message.ChatFileMessage
 import org.chewing.v1.model.chat.message.ChatInviteMessage
 import org.chewing.v1.model.chat.message.ChatLeaveMessage
@@ -461,6 +463,15 @@ object TestDataFactory {
             parentSeqNumber = 1,
             type = MessageType.REPLY,
             text = "text",
+            chatRoomType = chatRoomType,
+        )
+    }
+
+    fun createErrorMessage(chatRoomId: ChatRoomId, chatRoomType: ChatRoomType): ChatErrorMessage {
+        return ChatErrorMessage.of(
+            chatRoomId = chatRoomId,
+            userId = UserId.of("testUserId"),
+            errorCode = ErrorCode.CHATROOM_READ_FAILED,
             chatRoomType = chatRoomType,
         )
     }

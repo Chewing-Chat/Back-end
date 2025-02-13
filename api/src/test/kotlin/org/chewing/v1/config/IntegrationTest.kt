@@ -3,6 +3,7 @@ package org.chewing.v1.config
 import com.ninjasquad.springmockk.MockkBean
 import org.chewing.v1.facade.AccountFacade
 import org.chewing.v1.facade.DirectChatFacade
+import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.service.auth.AuthService
 import org.junit.jupiter.api.TestInstance
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -16,6 +17,9 @@ import org.springframework.context.annotation.Import
 abstract class IntegrationTest {
     @MockkBean
     protected lateinit var directChatFacade: DirectChatFacade
+
+    @MockkBean
+    protected lateinit var groupChatFacade: GroupChatFacade
 
     @MockkBean
     protected lateinit var authService: AuthService

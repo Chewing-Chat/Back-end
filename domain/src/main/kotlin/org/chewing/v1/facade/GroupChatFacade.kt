@@ -71,7 +71,6 @@ class GroupChatFacade(
 
     fun processGroupChatDelete(chatRoomId: ChatRoomId, userId: UserId, messageId: String) {
         try {
-            groupChatRoomService.deleteGroupChatRoom(userId, chatRoomId)
             val chatMessage = chatLogService.deleteMessage(chatRoomId, userId, messageId, ChatRoomType.GROUP)
             val targetMemberIds = getMemberIds(userId, chatRoomId)
             notificationService.handleMessagesNotification(chatMessage, targetMemberIds, userId)
@@ -129,6 +128,7 @@ class GroupChatFacade(
 
     fun processGroupChatLeave(chatRoomId: ChatRoomId, userId: UserId) {
         try {
+            groupChatRoomService.deleteGroupChatRoom(userId, chatRoomId)
             val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
             val chatMessage = chatLogService.leaveMessage(chatRoomId, userId, chatSequence, ChatRoomType.GROUP)
             notificationService.handleMessageNotification(chatMessage, userId, userId)
