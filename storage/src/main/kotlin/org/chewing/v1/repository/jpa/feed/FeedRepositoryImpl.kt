@@ -46,4 +46,10 @@ internal class FeedRepositoryImpl(
     override fun isOwners(feedIds: List<FeedId>, userId: UserId): Boolean {
         return feedJpaRepository.existsByFeedIdInAndUserId(feedIds.map { it.id }, userId.id)
     }
+    override fun readsOneDay(targetUserIds: List<UserId>): List<FeedInfo> {
+        val now = LocalDateTime.now()
+        val startDate = now.minusDays(1)
+        return feedJpaRepository.findAllByUserIdInAndCreatedAtAfterOrderByCreatedAtAsc(targetUserIds.map { it.id }, startDate)
+            .map { it.toFeedInfo() }
+    }
 }

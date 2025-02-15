@@ -8,7 +8,9 @@ import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.log.ChatReplyLog
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.message.MessageType
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatRoomType
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Component
@@ -18,23 +20,26 @@ import java.util.UUID
 @Component
 class ChatGenerator {
     fun generateReadMessage(
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatRoomSequence,
+        chatRoomType: ChatRoomType,
     ): ChatReadMessage {
         return ChatReadMessage.of(
             chatRoomId = chatRoomId,
             senderId = userId,
             timestamp = LocalDateTime.now(),
             number = number,
+            chatRoomType = chatRoomType,
         )
     }
 
     fun generateDeleteMessage(
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatRoomSequence,
         messageId: String,
+        chatRoomType: ChatRoomType,
     ): ChatDeleteMessage {
         return ChatDeleteMessage.of(
             targetMessageId = messageId,
@@ -42,14 +47,16 @@ class ChatGenerator {
             senderId = userId,
             timestamp = LocalDateTime.now(),
             number = number,
+            chatRoomType = chatRoomType,
         )
     }
 
     fun generateNormalMessage(
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatRoomSequence,
         text: String,
+        chatRoomType: ChatRoomType,
     ): ChatNormalMessage {
         return ChatNormalMessage.of(
             generateKey(chatRoomId),
@@ -58,14 +65,30 @@ class ChatGenerator {
             timestamp = LocalDateTime.now(),
             number = number,
             text = text,
+            chatRoomType = chatRoomType,
+        )
+    }
+
+    fun generateErrorMessage(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        errorCode: ErrorCode,
+        chatRoomType: ChatRoomType,
+    ): ChatErrorMessage {
+        return ChatErrorMessage.of(
+            chatRoomId = chatRoomId,
+            errorCode = errorCode,
+            userId = userId,
+            chatRoomType = chatRoomType,
         )
     }
 
     fun generateInviteMessage(
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatRoomSequence,
         targetUserIds: List<UserId>,
+        chatRoomType: ChatRoomType,
     ): ChatInviteMessage {
         return ChatInviteMessage.of(
             generateKey(chatRoomId),
@@ -74,13 +97,15 @@ class ChatGenerator {
             timestamp = LocalDateTime.now(),
             number = number,
             targetUserIds = targetUserIds,
+            chatRoomType = chatRoomType,
         )
     }
 
     fun generateLeaveMessage(
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatRoomSequence,
+        chatRoomType: ChatRoomType,
     ): ChatLeaveMessage {
         return ChatLeaveMessage.of(
             generateKey(chatRoomId),
@@ -88,14 +113,16 @@ class ChatGenerator {
             senderId = userId,
             timestamp = LocalDateTime.now(),
             number = number,
+            chatRoomType = chatRoomType,
         )
     }
 
     fun generateFileMessage(
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatRoomSequence,
         medias: List<Media>,
+        chatRoomType: ChatRoomType,
     ): ChatFileMessage {
         return ChatFileMessage.of(
             generateKey(chatRoomId),
@@ -104,15 +131,17 @@ class ChatGenerator {
             timestamp = LocalDateTime.now(),
             number = number,
             medias = medias,
+            chatRoomType = chatRoomType,
         )
     }
 
     fun generateReplyMessage(
-        chatRoomId: String,
+        chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatNumber,
+        number: ChatRoomSequence,
         text: String,
         parentLog: ChatLog,
+        chatRoomType: ChatRoomType,
     ): ChatReplyMessage {
         val (parentMessageId, parentMessageText) = when (parentLog) {
             is ChatNormalLog -> Pair(parentLog.messageId, parentLog.text)
@@ -129,33 +158,15 @@ class ChatGenerator {
             number = number,
             text = text,
             parentMessageId = parentMessageId,
-            parentMessagePage = parentLog.number.page,
             parentMessageText = parentMessageText,
             parentSeqNumber = parentLog.number.sequenceNumber,
             parentMessageType = parentLog.type,
             type = MessageType.REPLY,
+            chatRoomType = chatRoomType,
         )
     }
 
-    fun generateBombMessage(
-        chatRoomId: String,
-        userId: UserId,
-        number: ChatNumber,
-        text: String,
-        expiredAt: LocalDateTime,
-    ): ChatBombMessage {
-        return ChatBombMessage.of(
-            generateKey(chatRoomId),
-            chatRoomId = chatRoomId,
-            senderId = userId,
-            timestamp = LocalDateTime.now(),
-            number = number,
-            text = text,
-            expiredAt = expiredAt,
-        )
-    }
-
-    private fun generateKey(chatRoomId: String): String {
-        return chatRoomId + UUID.randomUUID().toString().substring(0, 8)
+    private fun generateKey(chatRoomId: ChatRoomId): String {
+        return chatRoomId.id + UUID.randomUUID().toString().substring(0, 8)
     }
 }

@@ -1,8 +1,12 @@
 package org.chewing.v1.controller.chat
 
-import org.chewing.v1.dto.response.chat.ChatLogResponse
+import org.chewing.v1.dto.response.chat.ChatLogsResponse
+import org.chewing.v1.facade.DirectChatFacade
+import org.chewing.v1.facade.GroupChatFacade
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.HttpResponse
-import org.chewing.v1.service.chat.ChatLogService
+import org.chewing.v1.util.security.CurrentUser
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -10,14 +14,29 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/chatRooms/{chatRoomId}")
+@RequestMapping("/api/chatRoom/{chatRoomId}")
 class ChatLogController(
-    private val chatLogService: ChatLogService,
+    private val groupChatFacade: GroupChatFacade,
+    private val directChatFacade: DirectChatFacade,
 ) {
 
-    @GetMapping("/log")
-    fun getChatLog(@PathVariable chatRoomId: String, @RequestParam page: Int): HttpResponse<ChatLogResponse> {
-        val chatLog = chatLogService.getChatLog(chatRoomId, page)
-        return HttpResponse.success(ChatLogResponse.from(chatLog))
+    @GetMapping("/direct/log")
+    fun getDirectChatLog(
+        @CurrentUser userId: UserId,
+        @PathVariable chatRoomId: String,
+        @RequestParam sequenceNumber: Int,
+    ): HttpResponse<ChatLogsResponse> {
+        val chatLog = directChatFacade.processDirectChatLogs(userId, ChatRoomId.of(chatRoomId), sequenceNumber)
+        return HttpResponse.success(ChatLogsResponse.from(chatLog))
+    }
+
+    @GetMapping("/group/log")
+    fun getGroupChatLog(
+        @CurrentUser userId: UserId,
+        @PathVariable chatRoomId: String,
+        @RequestParam sequenceNumber: Int,
+    ): HttpResponse<ChatLogsResponse> {
+        val chatLog = groupChatFacade.processGroupChatLogs(userId, ChatRoomId.of(chatRoomId), sequenceNumber)
+        return HttpResponse.success(ChatLogsResponse.from(chatLog))
     }
 }

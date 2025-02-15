@@ -120,8 +120,8 @@ tasks {
                         exclude(
                             "**/ChewingApplicationKt.class",
                             "**/ChewingApplicationKt\$*.class",
-                            "**/model/**",
-                            "**/dto/**",
+//                            "**/model/**",
+//                            "**/dto/**",
                         )
                     }
                 },

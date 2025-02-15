@@ -4,7 +4,5 @@ enum class AccessStatus {
     ACCESS,
     NOT_ACCESS,
     DELETE,
-    BLOCK,
-    BLOCKED,
     NEED_CREATE_PASSWORD,
 }

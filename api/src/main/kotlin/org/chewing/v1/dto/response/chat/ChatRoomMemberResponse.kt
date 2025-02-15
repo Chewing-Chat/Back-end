@@ -5,7 +5,6 @@ import org.chewing.v1.model.chat.member.ChatRoomMember
 data class ChatRoomMemberResponse(
     val memberId: String,
     val readSeqNumber: Int,
-    val owned: Boolean,
 ) {
     companion object {
         // ChatFriend를 ChatFriendResponse로 변환하는 함수
@@ -13,7 +12,6 @@ data class ChatRoomMemberResponse(
             return ChatRoomMemberResponse(
                 memberId = chatRoomMember.memberId.id,
                 readSeqNumber = chatRoomMember.readSeqNumber,
-                owned = chatRoomMember.isOwned,
             )
         }
     }

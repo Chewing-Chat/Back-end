@@ -1,45 +1,46 @@
 package org.chewing.v1.model.chat.message
 
 import org.chewing.v1.model.chat.log.ChatLogType
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatRoomType
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.user.UserId
 import java.time.LocalDateTime
 
 class ChatReplyMessage private constructor(
     val messageId: String,
-    override val chatRoomId: String,
+    override val chatRoomId: ChatRoomId,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    override val number: ChatNumber,
+    val number: ChatRoomSequence,
     override val type: MessageType,
     val text: String,
     val parentMessageId: String,
-    val parentMessagePage: Int,
     val parentMessageText: String,
     val parentSeqNumber: Int,
     val parentMessageType: ChatLogType,
+    override val chatRoomType: ChatRoomType,
 ) : ChatMessage() {
     companion object {
         fun of(
             messageId: String,
-            chatRoomId: String,
+            chatRoomId: ChatRoomId,
             senderId: UserId,
             parentMessageId: String,
-            parentMessagePage: Int,
             parentSeqNumber: Int,
             timestamp: LocalDateTime,
-            number: ChatNumber,
+            number: ChatRoomSequence,
             text: String,
             parentMessageText: String,
             type: MessageType,
             parentMessageType: ChatLogType,
+            chatRoomType: ChatRoomType,
         ): ChatReplyMessage {
             return ChatReplyMessage(
                 messageId = messageId,
                 chatRoomId = chatRoomId,
                 senderId = senderId,
                 parentMessageId = parentMessageId,
-                parentMessagePage = parentMessagePage,
                 parentSeqNumber = parentSeqNumber,
                 timestamp = timestamp,
                 number = number,
@@ -47,6 +48,7 @@ class ChatReplyMessage private constructor(
                 parentMessageText = parentMessageText,
                 type = type,
                 parentMessageType = parentMessageType,
+                chatRoomType = chatRoomType,
             )
         }
     }

@@ -3,7 +3,8 @@ package org.chewing.v1.controller
 import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.controller.chat.ChatController
-import org.chewing.v1.facade.ChatFacade
+import org.chewing.v1.facade.DirectChatFacade
+import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.chewing.v1.util.security.UserArgumentResolver
@@ -14,17 +15,19 @@ import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
 class ChatControllerTest2 : RestDocsTest() {
-    private lateinit var chatFacade: ChatFacade
+    private lateinit var directChatFacade: DirectChatFacade
+    private lateinit var groupChatFacade: GroupChatFacade
     private lateinit var chatController: ChatController
     private lateinit var exceptionHandler: GlobalExceptionHandler
     private lateinit var userArgumentResolver: UserArgumentResolver
 
     @BeforeEach
     fun setUp() {
-        chatFacade = mockk()
+        directChatFacade = mockk()
+        groupChatFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
         userArgumentResolver = UserArgumentResolver()
-        chatController = ChatController(chatFacade)
+        chatController = ChatController(directChatFacade, groupChatFacade)
         mockMvc = mockController(chatController, exceptionHandler, userArgumentResolver)
         val userId = UserId.of("testUserId")
         val authentication = UsernamePasswordAuthenticationToken(userId, null)

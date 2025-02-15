@@ -16,19 +16,6 @@ class NotificationService(
     private val notificationSender: NotificationSender,
     private val sessionProvider: SessionProvider,
 ) {
-    fun handleCommentNotification(userId: UserId, feedId: String, comment: String) {
-        val user = userReader.read(userId, AccessStatus.ACCESS)
-        val pushTokens = userReader.readsPushToken(userId)
-        val commentNotificationList =
-            notificationGenerator.generateCommentNotification(user, pushTokens, feedId, comment)
-        notificationSender.sendPushNotification(commentNotificationList)
-    }
-
-    // sender에게 메시지 알림
-    fun handleOwnedMessageNotification(chatMessage: ChatMessage) {
-        notificationSender.sendChatNotification(chatMessage, chatMessage.senderId)
-    }
-
     fun handleMessagesNotification(chatMessage: ChatMessage, targetUserIds: List<UserId>, userId: UserId) {
         val user = userReader.read(userId, AccessStatus.ACCESS)
         targetUserIds.forEach { memberId ->
@@ -41,6 +28,18 @@ class NotificationService(
             } else {
                 notificationSender.sendChatNotification(chatMessage, memberId)
             }
+        }
+    }
+    fun handleMessageNotification(chatMessage: ChatMessage, targetUserId: UserId, userId: UserId) {
+        val user = userReader.read(userId, AccessStatus.ACCESS)
+        // 온라인 상태 확인
+        if (!sessionProvider.isOnline(targetUserId)) {
+            // 오프라인 유저에게 푸시 알림 전송
+            val pushTokens = userReader.readsPushToken(targetUserId)
+            val notificationList = notificationGenerator.generateMessageNotification(user, pushTokens, chatMessage)
+            notificationSender.sendPushNotification(notificationList)
+        } else {
+            notificationSender.sendChatNotification(chatMessage, targetUserId)
         }
     }
 }

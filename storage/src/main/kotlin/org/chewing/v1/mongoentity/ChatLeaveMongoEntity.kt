@@ -4,7 +4,8 @@ import org.chewing.v1.model.chat.log.ChatLeaveLog
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.message.ChatLeaveMessage
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.user.UserId
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
@@ -15,15 +16,13 @@ internal class ChatLeaveMongoEntity(
     chatRoomId: String,
     senderId: String,
     seqNumber: Int,
-    page: Int,
     sendTime: LocalDateTime,
 ) : ChatMessageMongoEntity(
     messageId = messageId,
     chatRoomId = chatRoomId,
-    senderId = senderId,
     type = ChatLogType.LEAVE,
+    senderId = senderId,
     seqNumber = seqNumber,
-    page = page,
     sendTime = sendTime,
 ) {
 
@@ -33,10 +32,9 @@ internal class ChatLeaveMongoEntity(
         ): ChatLeaveMongoEntity {
             return ChatLeaveMongoEntity(
                 messageId = chatLeaveMessage.messageId,
-                chatRoomId = chatLeaveMessage.chatRoomId,
+                chatRoomId = chatLeaveMessage.chatRoomId.id,
                 senderId = chatLeaveMessage.senderId.id,
                 seqNumber = chatLeaveMessage.number.sequenceNumber,
-                page = chatLeaveMessage.number.page,
                 sendTime = chatLeaveMessage.timestamp,
             )
         }
@@ -45,10 +43,10 @@ internal class ChatLeaveMongoEntity(
     override fun toChatLog(): ChatLog {
         return ChatLeaveLog.of(
             messageId = messageId,
-            chatRoomId = chatRoomId,
+            chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
             timestamp = sendTime,
-            number = ChatNumber.of(chatRoomId, seqNumber, page),
+            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), seqNumber),
             type = type,
         )
     }

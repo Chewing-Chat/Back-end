@@ -16,7 +16,7 @@ class FriendAggregator {
         return friendShips.mapNotNull { friendShip ->
             val matchedUser = userById[friendShip.friendId]
             matchedUser?.let { user ->
-                Friend.of(user, friendShip.isFavorite, friendShip.friendName, friendShip.status)
+                Friend.of(user, friendShip)
             }
         }
     }
