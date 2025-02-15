@@ -20,7 +20,7 @@ class FriendShipServiceTest {
     private val friendShipReader = FriendShipReader(friendShipRepository)
     private val friendShipRemover = FriendShipRemover(friendShipRepository)
     private val friendShipAppender = FriendShipAppender(friendShipRepository)
-    private val friendShipValidator = FriendShipValidator(friendShipRepository)
+    private val friendShipValidator = FriendShipValidator()
     private val friendShipUpdater = FriendShipUpdater(friendShipRepository)
     private val friendShipFilter = FriendShipFilter()
     private val friendShipService = FriendShipService(

@@ -4,13 +4,10 @@ import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.friend.FriendShipStatus
-import org.chewing.v1.repository.friend.FriendShipRepository
 import org.springframework.stereotype.Component
 
 @Component
-class FriendShipValidator(
-    private val friendShipRepository: FriendShipRepository,
-) {
+class FriendShipValidator() {
     private fun validateBlock(friendShip: FriendShip) {
         if (friendShip.status == FriendShipStatus.BLOCK) {
             throw ConflictException(ErrorCode.FRIEND_BLOCK)

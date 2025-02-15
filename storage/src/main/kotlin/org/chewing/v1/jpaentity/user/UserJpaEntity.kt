@@ -93,4 +93,8 @@ internal class UserJpaEntity(
     fun toUserId(): UserId {
         return UserId.of(this.userId)
     }
+
+    fun updateUserName(name: String) {
+        this.name = name
+    }
 }
