@@ -2,6 +2,7 @@ package org.chewing.v1.jpaentity.chat
 
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
+import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.user.UserId
 import java.io.Serializable
 
@@ -13,8 +14,8 @@ data class ChatRoomMemberId(
     val userId: String,
 ) : Serializable {
     companion object {
-        fun of(chatRoomId: String, userId: UserId): ChatRoomMemberId {
-            return ChatRoomMemberId(chatRoomId, userId.id)
+        fun of(chatRoomId: ChatRoomId, userId: UserId): ChatRoomMemberId {
+            return ChatRoomMemberId(chatRoomId.id, userId.id)
         }
     }
 }

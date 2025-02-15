@@ -20,7 +20,7 @@ class FriendShipService(
 ) {
 
     fun getFriendShips(userId: UserId, sort: FriendSortCriteria): List<FriendShip> = friendShipReader.readsSorted(userId, sort)
-
+    fun getFavoriteFriendShips(userId: UserId): List<FriendShip> = friendShipReader.readsFavorite(userId)
     fun createFriendShips(
         userId: UserId,
         user: User,

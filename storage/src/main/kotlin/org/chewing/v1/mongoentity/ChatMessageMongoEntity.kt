@@ -13,13 +13,15 @@ import java.time.LocalDateTime
 // 복합 인덱스 설정
 
 @CompoundIndexes(
+    // 채팅방 내 최신 메시지 조회 최적화
     CompoundIndex(
-        name = "chatRoomId_page_seqNumber_idx",
-        def = "{'chatRoomId': 1, 'page': 1, 'seqNumber': 1}",
+        name = "chatRoomId_seqNumber_desc_idx",
+        def = "{'chatRoomId': 1, 'seqNumber': -1}",
     ),
-    CompoundIndex(name = "chatRoomId_seqNumber_idx", def = "{'chatRoomId': 1, 'seqNumber': 1}"),
+
+    // 메시지 타입과 내용 검색 최적화 (Partial Index)
     CompoundIndex(
-        name = "chatRoom_message_compound_idx",
+        name = "chatRoom_message_partial_idx",
         def = "{'chatRoomId': 1, 'type': 1, 'message': 1}",
         partialFilter = "{ 'type': { \$in: ['NORMAL', 'REPLY'] } }",
     ),
@@ -31,7 +33,6 @@ internal sealed class ChatMessageMongoEntity(
     protected var type: ChatLogType,
     protected val senderId: String,
     protected val seqNumber: Int,
-    protected val page: Int,
     protected val sendTime: LocalDateTime,
 ) {
 
@@ -44,7 +45,7 @@ internal sealed class ChatMessageMongoEntity(
             is ChatDeleteMessage -> null
             is ChatReadMessage -> null
             is ChatReplyMessage -> ChatReplyMongoEntity.from(chatMessage)
-            is ChatBombMessage -> ChatBombMongoEntity.from(chatMessage)
+            is ChatErrorMessage -> null
         }
     }
 

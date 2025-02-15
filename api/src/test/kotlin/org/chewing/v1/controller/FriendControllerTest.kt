@@ -16,6 +16,7 @@ import org.chewing.v1.dto.request.friend.FriendRequest
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.facade.FriendFacade
+import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.friend.FriendShipService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
@@ -71,8 +72,10 @@ class FriendControllerTest : RestDocsTest() {
 
         val friends =
             listOf(
-                TestDataFactory.createFriend("testFriendId1"),
-                TestDataFactory.createFriend("testFriendId2"),
+                TestDataFactory.createFriend("testFriendId1", FriendShipStatus.FRIEND),
+                TestDataFactory.createFriend("testFriendId2", FriendShipStatus.DELETE),
+                TestDataFactory.createFriend("testFriendId3", FriendShipStatus.BLOCK),
+                TestDataFactory.createFriend("testFriendId4", FriendShipStatus.FRIEND),
             )
 
         every { friendFacade.createFriends(any(), any()) } returns friends

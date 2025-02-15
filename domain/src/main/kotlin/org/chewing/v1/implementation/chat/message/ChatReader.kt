@@ -3,7 +3,8 @@ package org.chewing.v1.implementation.chat.message
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.model.chat.log.ChatLog
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.log.UnReadTarget
+import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.repository.chat.ChatLogRepository
 import org.springframework.stereotype.Component
 
@@ -11,18 +12,19 @@ import org.springframework.stereotype.Component
 class ChatReader(
     private val chatLogRepository: ChatLogRepository,
 ) {
-    fun readChatLog(chatRoomId: String, page: Int): List<ChatLog> {
-        return chatLogRepository.readChatMessages(chatRoomId, page)
-    }
-    fun readChatKeyWordLog(chatRoomId: String, keyword: String): List<ChatLog> {
-        return chatLogRepository.readChatKeyWordMessages(chatRoomId, keyword)
+    fun readChatLog(chatRoomId: ChatRoomId, sequence: Int, joinSequence: Int): List<ChatLog> {
+        return chatLogRepository.readChatMessages(chatRoomId, sequence, joinSequence)
     }
 
     fun readChatMessage(messageId: String): ChatLog {
         return chatLogRepository.readChatMessage(messageId) ?: throw NotFoundException(ErrorCode.CHATLOG_NOT_FOUND)
     }
 
-    fun readLatestMessages(numbers: List<ChatNumber>): List<ChatLog> {
+    fun readLatestMessages(numbers: List<ChatRoomId>): List<ChatLog> {
         return chatLogRepository.readLatestMessages(numbers)
+    }
+
+    fun readsUnreadChatLogs(targets: List<UnReadTarget>): List<ChatLog> {
+        return chatLogRepository.readUnreadChatLogs(targets)
     }
 }

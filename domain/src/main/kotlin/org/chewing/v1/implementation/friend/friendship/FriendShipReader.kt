@@ -14,4 +14,5 @@ class FriendShipReader(
 ) {
     fun readsSorted(userId: UserId, sort: FriendSortCriteria): List<FriendShip> = friendShipRepository.readsSorted(userId, sort)
     fun read(userId: UserId, friendId: UserId): FriendShip = friendShipRepository.read(userId, friendId) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
+    fun readsFavorite(userId: UserId): List<FriendShip> = friendShipRepository.readsFavorite(userId)
 }

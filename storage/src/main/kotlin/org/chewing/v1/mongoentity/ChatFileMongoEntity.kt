@@ -4,7 +4,8 @@ import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.message.ChatFileMessage
-import org.chewing.v1.model.chat.room.ChatNumber
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.user.UserId
 import org.springframework.data.mongodb.core.mapping.Document
@@ -16,7 +17,6 @@ internal class ChatFileMongoEntity(
     chatRoomId: String,
     senderId: String,
     seqNumber: Int,
-    page: Int,
     sendTime: LocalDateTime,
     val medias: List<Media>,
 ) : ChatMessageMongoEntity(
@@ -25,7 +25,6 @@ internal class ChatFileMongoEntity(
     senderId = senderId,
     type = ChatLogType.FILE,
     seqNumber = seqNumber,
-    page = page,
     sendTime = sendTime,
 ) {
     companion object {
@@ -34,10 +33,9 @@ internal class ChatFileMongoEntity(
         ): ChatFileMongoEntity {
             return ChatFileMongoEntity(
                 chatFileMessage.messageId,
-                chatFileMessage.chatRoomId,
+                chatFileMessage.chatRoomId.id,
                 chatFileMessage.senderId.id,
                 chatFileMessage.number.sequenceNumber,
-                chatFileMessage.number.page,
                 chatFileMessage.timestamp,
                 chatFileMessage.medias,
             )
@@ -47,10 +45,10 @@ internal class ChatFileMongoEntity(
     override fun toChatLog(): ChatLog {
         return ChatFileLog.of(
             messageId = messageId,
-            chatRoomId = chatRoomId,
+            chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
             timestamp = sendTime,
-            number = ChatNumber.of(chatRoomId, seqNumber, page),
+            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), seqNumber),
             medias = medias,
             type = type,
         )

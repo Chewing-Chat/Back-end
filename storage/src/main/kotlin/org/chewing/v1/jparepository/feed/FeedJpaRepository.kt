@@ -11,4 +11,6 @@ internal interface FeedJpaRepository : JpaRepository<FeedJpaEntity, String> {
     fun findAllByUserIdAndCreatedAtAfterOrderByCreatedAtAsc(userId: String, createdAt: LocalDateTime): List<FeedJpaEntity>
 
     fun existsByFeedIdInAndUserId(feedIds: List<String>, userId: String): Boolean
+
+    fun findAllByUserIdInAndCreatedAtAfterOrderByCreatedAtAsc(userIds: List<String>, createdAt: LocalDateTime): List<FeedJpaEntity>
 }

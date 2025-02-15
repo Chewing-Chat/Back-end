@@ -25,7 +25,6 @@ class WebConfig : WebMvcConfigurer {
     }
 
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver>) {
-        println("🔍 [DEBUG] ProviderArgumentResolver 등록됨") // 디버깅 로그 추가
         resolvers.add(UserArgumentResolver())
     }
 }

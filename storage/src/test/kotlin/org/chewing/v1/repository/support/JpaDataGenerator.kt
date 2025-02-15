@@ -2,9 +2,6 @@ package org.chewing.v1.repository.support
 
 import org.chewing.v1.jpaentity.announcement.AnnouncementJpaEntity
 import org.chewing.v1.jpaentity.auth.LoggedInJpaEntity
-import org.chewing.v1.jpaentity.chat.ChatRoomJpaEntity
-import org.chewing.v1.jpaentity.chat.GroupChatRoomMemberJpaEntity
-import org.chewing.v1.jpaentity.chat.PersonalChatRoomMemberJpaEntity
 import org.chewing.v1.jpaentity.emoticon.EmoticonJpaEntity
 import org.chewing.v1.jpaentity.emoticon.EmoticonPackJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedDetailJpaEntity
@@ -21,9 +18,6 @@ import org.chewing.v1.jpaentity.user.UserEmoticonJpaEntity
 import org.chewing.v1.jpaentity.user.UserJpaEntity
 import org.chewing.v1.jparepository.announcement.AnnouncementJpaRepository
 import org.chewing.v1.jparepository.auth.LoggedInJpaRepository
-import org.chewing.v1.jparepository.chat.ChatRoomJpaRepository
-import org.chewing.v1.jparepository.chat.GroupChatRoomMemberJpaRepository
-import org.chewing.v1.jparepository.chat.PersonalChatRoomMemberJpaRepository
 import org.chewing.v1.jparepository.emoticon.EmoticonJpaRepository
 import org.chewing.v1.jparepository.emoticon.EmoticonPackJpaRepository
 import org.chewing.v1.jparepository.feed.FeedDetailJpaRepository
@@ -39,8 +33,6 @@ import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
-import org.chewing.v1.model.chat.room.ChatNumber
-import org.chewing.v1.model.chat.room.ChatRoomInfo
 import org.chewing.v1.model.emoticon.EmoticonInfo
 import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.FeedDetail
@@ -100,15 +92,6 @@ class JpaDataGenerator {
 
     @Autowired
     private lateinit var emoticonJpaRepository: EmoticonJpaRepository
-
-    @Autowired
-    private lateinit var chatRoomJpaRepository: ChatRoomJpaRepository
-
-    @Autowired
-    private lateinit var groupChatRoomMemberJpaRepository: GroupChatRoomMemberJpaRepository
-
-    @Autowired
-    private lateinit var personalChatRoomMemberJpaRepository: PersonalChatRoomMemberJpaRepository
 
     @Autowired
     private lateinit var feedVisibilityJpaRepository: FeedVisibilityJpaRepository
@@ -242,38 +225,5 @@ class JpaDataGenerator {
         }
         emoticonJpaRepository.saveAll(emoticonList)
         return emoticonList.map { it.toEmoticon() }
-    }
-
-    fun chatRoomEntityData(isGroup: Boolean): ChatRoomInfo {
-        val chatRoom = ChatRoomJpaEntity.generate(isGroup)
-        chatRoomJpaRepository.save(chatRoom)
-        return chatRoom.toChatRoomInfo()
-    }
-
-    fun groupChatRoomMemberEntityData(chatRoomId: String, userId: UserId, number: ChatNumber) {
-        groupChatRoomMemberJpaRepository.save(GroupChatRoomMemberJpaEntity.generate(userId, chatRoomId, number))
-    }
-
-    fun groupChatRoomMemberEntityDataList(chatRoomId: String, userIds: List<UserId>, number: ChatNumber) {
-        groupChatRoomMemberJpaRepository.saveAll(
-            userIds.map {
-                GroupChatRoomMemberJpaEntity.generate(
-                    it,
-                    chatRoomId,
-                    number,
-                )
-            },
-        )
-    }
-
-    fun personalChatRoomMemberEntityData(userId: UserId, friendId: UserId, chatRoomId: String, number: ChatNumber) {
-        personalChatRoomMemberJpaRepository.save(
-            PersonalChatRoomMemberJpaEntity.generate(
-                userId,
-                friendId,
-                chatRoomId,
-                number,
-            ),
-        )
     }
 }

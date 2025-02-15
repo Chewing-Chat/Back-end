@@ -4,7 +4,7 @@ import org.chewing.v1.dto.response.feed.FeedIdResponse
 import org.chewing.v1.dto.request.feed.FeedRequest
 import org.chewing.v1.dto.response.feed.FeedResponse
 import org.chewing.v1.dto.response.feed.ThumbnailFeedsResponse
-import org.chewing.v1.facade.FeedAccessFacade
+import org.chewing.v1.facade.FriendFeedFacade
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.user.UserId
@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/api/feed")
 class FeedController(
     private val feedService: FeedService,
-    private val feedAccessFacade: FeedAccessFacade,
+    private val friendFeedFacade: FriendFeedFacade,
 ) {
 
     @GetMapping("/{feedId}/detail")
@@ -46,7 +46,7 @@ class FeedController(
         @CurrentUser userId: UserId,
         @PathVariable("friendId") friendId: String,
     ): SuccessResponseEntity<ThumbnailFeedsResponse> {
-        val feeds = feedAccessFacade.getFriendFeeds(userId, UserId.of(friendId))
+        val feeds = friendFeedFacade.getFriendFeeds(userId, UserId.of(friendId))
         return ResponseHelper.success(ThumbnailFeedsResponse.of(feeds))
     }
 

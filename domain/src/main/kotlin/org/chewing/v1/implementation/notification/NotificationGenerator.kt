@@ -13,19 +13,6 @@ class NotificationGenerator {
 
     private val logger = LoggerFactory.getLogger(NotificationGenerator::class.java)
 
-    fun generateCommentNotification(
-        sourceUserInfo: UserInfo,
-        pushTokens: List<PushToken>,
-        feedId: String,
-        comment: String,
-    ): List<Notification> = createNotifications(
-        sourceUserInfo = sourceUserInfo,
-        pushTokens = pushTokens,
-        type = NotificationType.COMMENT,
-        targetId = feedId,
-        content = comment,
-    )
-
     fun generateMessageNotification(
         sourceUserInfo: UserInfo,
         pushTokens: List<PushToken>,
@@ -38,9 +25,6 @@ class NotificationGenerator {
             }
             is ChatNormalMessage -> {
                 Triple(NotificationType.CHAT_NORMAL, message.chatRoomId, message.text)
-            }
-            is ChatBombMessage -> {
-                Triple(NotificationType.CHAT_BOMB, message.chatRoomId, message.text)
             }
             is ChatInviteMessage -> {
                 Triple(NotificationType.CHAT_INVITE, message.chatRoomId, null)
@@ -61,7 +45,7 @@ class NotificationGenerator {
             sourceUserInfo = sourceUserInfo,
             pushTokens = pushTokens,
             type = type,
-            targetId = targetId,
+            targetId = targetId.id,
             content = content,
         )
     }

@@ -16,6 +16,7 @@ interface FriendShipRepository {
     fun block(userId: UserId, friendId: UserId): UserId?
     fun blocked(userId: UserId, friendId: UserId): UserId?
     fun read(userId: UserId, friendId: UserId): FriendShip?
+    fun readsFavorite(userId: UserId): List<FriendShip>
     fun updateFavorite(userId: UserId, friendId: UserId, favorite: Boolean): UserId?
     fun updateName(userId: UserId, friendId: UserId, friendName: String): UserId?
 }
