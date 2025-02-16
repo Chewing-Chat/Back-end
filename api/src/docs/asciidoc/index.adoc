@@ -73,3 +73,5 @@ include::Schedule-API.adoc[]
 include::Friend-API.adoc[]
 
 include::Main-API.adoc[]
+
+include::Chat-API.adoc[]

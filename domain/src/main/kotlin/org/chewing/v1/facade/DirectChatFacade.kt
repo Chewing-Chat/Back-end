@@ -132,7 +132,7 @@ class DirectChatFacade(
                 )
             directChatRoomService.readDirectChatRoom(userId, chatRoomId, sequenceNumber)
             notificationService.handleMessageNotification(chatMessage, userId, userId)
-        } catch (e: NotFoundException) {
+        } catch (e: ConflictException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.DIRECT)
             notificationService.handleMessageNotification(errorMessage, userId, userId)
         }

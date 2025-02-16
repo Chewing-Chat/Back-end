@@ -1,0 +1,643 @@
+= Chat WebSocket API 문서
+
+:toc:
+:toclevels: 2
+:sectanchors:
+
+본 문서는 WebSocket(STOMP) 채팅 기능을 **Spring REST Docs**와 유사한 형식으로 정리한 예시입니다.
+
+== 1. WebSocket 연결 (Handshake)
+
+- **URL**: `ws://118.67.142.14:80/ws-stomp`
+- **프로토콜**: STOMP
+- **Authorization 헤더**: `Authorization: Bearer {JWT_ACCESS_TOKEN}`
+
+연결 순서는 대략 다음과 같습니다.
+
+1. 클라이언트가 `ws://118.67.142.14:80/ws-stomp`로 WebSocket **핸드셰이크**를 시도 이때에도 헤더 파일을 넣어야함
+2. 서버가 HTTP 101 Switching Protocol로 업그레이드하면, STOMP CONNECT를 통해 연결 완료
+3. 연결 완료 후 클라이언트는 `/app/...` 경로로 **SEND** 메시지를 전송할 수 있고, 필요한 **SUBSCRIBE**를 통해 응답(브로드캐스트)을 수신
+
+== 2. 개인 채팅방 STOMP 메시지 송신
+
+개인 채팅방에서 4가지 메시지 전송을 확인할 수 있습니다.
+
+[options="header"]
+|===
+|메시지 타입 |설명
+
+|`Normal` |일반 텍스트 메시지
+|`Delete` |메시지 삭제 메시지
+|`Reply`  |답장(Reply) 메시지
+|`Read`  |읽음 표시 메시지
+|===
+
+=== 2.1 개인 채팅방 일반 메시지 송신
+
+- **STOMP SEND Destination**: `/app/chat/direct/common`
+- **Request**:
+
+[source,json]
+----
+{
+"chatRoomId": "testRoomId",
+"message": "testMessage"
+}
+----
+
+|===
+|응답 필드 |설명
+|`chatRoomId` |채팅방 ID
+|`message` |메시지 내용
+|===
+
+=== 2.2 개인 채팅방 읽기 메시지 송신
+
+- **STOMP SEND Destination**: `/app/chat/direct/read`
+- **Request**:
+
+[source,json]
+----
+{
+"chatRoomId": "testRoomId",
+"sequenceNumber": "0"
+}
+----
+
+|===
+|응답 필드 |설명
+|`chatRoomId` |채팅방 ID
+|`sequenceNumber` |읽은 메시지 순번
+|===
+
+
+=== 2.3 개인 채팅방 삭제 메시지 송신
+- **STOMP SEND Destination**: `/app/chat/direct/delete`
+- **Request**:
+
+[source,json]
+----
+{
+"chatRoomId": "testRoomId",
+"messageId": "testMessageId"
+}
+----
+
+=== 2.4 개인 채팅방 답장 메시지 송신
+- **STOMP SEND Destination**: `/app/chat/direct/reply`
+- **Request**:
+
+[source,json]
+----
+{
+"chatRoomId": "testRoomId",
+"parentMessageId": "testParentMessageId",
+"message": "testMessage"
+}
+----
+
+|===
+|응답 필드 |설명
+|`chatRoomId` |채팅방 ID
+|`parentMessageId` |부모 메시지 ID
+|`message` |메시지 내용
+|===
+
+== 3. 그룹 채팅방 STOMP 메시지 송신
+
+그룹 채팅방에서 4가지 메시지 전송을 확인할 수 있습니다.
+
+[options="header"]
+|===
+|메시지 타입 |설명
+
+|`Normal` |일반 텍스트 메시지
+|`Delete` |메시지 삭제 메시지
+|`Reply`  |답장(Reply) 메시지
+|`Read`  |읽음 표시 메시지
+|===
+
+=== 3.1 그룹 채팅방 일반 메시지 송신
+
+- **STOMP SEND Destination**: `/app/chat/group/common`
+- **Request**:
+
+[source,json]
+----
+{
+"chatRoomId": "testRoomId",
+"message": "testMessage"
+}
+----
+
+|===
+|응답 필드 |설명
+|`chatRoomId` |채팅방 ID
+|`message` |메시지 내용
+|===
+
+=== 3.2 그룹 채팅방 읽기 메시지 송신
+
+- **STOMP SEND Destination**: `/app/chat/group/read`
+- **Request**:
+
+[source,json]
+----
+{
+"chatRoomId": "testRoomId",
+"sequenceNumber": "0"
+}
+----
+
+|===
+|응답 필드 |설명
+|`chatRoomId` |채팅방 ID
+|`sequenceNumber` |읽은 메시지 순번
+|===
+
+=== 3.3 그룹 채팅방 삭제 메시지 송신
+- **STOMP SEND Destination**: `/app/chat/group/delete`
+- **Request**:
+
+[source,json]
+----
+{
+   "chatRoomId": "testRoomId",
+   "messageId": "testMessageId"
+}
+----
+
+|===
+|응답 필드 |설명
+|`chatRoomId` |채팅방 ID
+|`messageId` |메시지 ID
+|===
+
+=== 3.4 그룹 채팅방 답장 메시지 송신
+- **STOMP SEND Destination**: `/app/chat/group/reply`
+- **Request**:
+
+[source,json]
+----
+{
+  "chatRoomId": "testRoomId",
+  "parentMessageId": "testParentMessageId",
+  "message": "testMessage"
+}
+----
+
+|===
+|응답 필드 |설명
+|`chatRoomId` |채팅방 ID
+|`parentMessageId` |부모 메시지 ID
+|`message` |메시지 내용
+|===
+
+== 4. 개인 채팅방 STOMP 메시지 수신
+
+개인 채팅방에서 5가지 메시지 수신을 확인할 수 있습니다.
+
+개인 채팅방 메시지는 **서버가** `/user/queue/chat/direct` 경로로 발행하며, 클라이언트는 해당 경로를 SUBSCRIBE해야 수신할 수 있습니다.
+
+[options="header"]
+|===
+|메시지 타입 |설명
+
+|`Normal` |일반 텍스트 메시지
+|`File`   |파일(이미지, 문서 등) 전송 메시지
+|`Delete` |메시지 삭제 알림
+|`Reply`  |답장(Reply) 메시지
+|`Error`  |에러 상태 전달 (예: 권한 없음, 유효성 오류 등)
+|===
+
+=== 4.1 개인 채팅방 일반 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/direct`
+- **Response**:
+
+[source,json]
+----
+{
+  "messageId": "testMessageId1",
+  "chatRoomId": "testChatRoomId1",
+  "chatRoomType": "direct",
+  "senderId": "someUserId",
+  "type": "normal",
+  "text": "이곳에 실제 메시지 내용",
+  "timestamp": "2025-02-13 10:00:00",
+  "seqNumber": 1
+}
+----
+|===
+|응답 필드 |설명
+
+|`messageId` |메시지 ID
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`text` |메시지 내용
+|`timestamp` |메시지 생성 시간
+|`seqNumber` |메시지 순번
+|===
+
+=== 4.2 개인 채팅방 파일 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/group`
+- **Response**:
+
+[source,json]
+----
+{
+  "messageId": "testMessageId2",
+  "chatRoomId": "testChatRoomId2",
+  "chatRoomType": "group",
+  "senderId": "someUserId",
+  "type": "file",
+  "timestamp": "2025-02-13 10:00:00",
+  "seqNumber": 2,
+  "files" : {
+    "fileType": "image/png",
+    "fileUrl": "http://some-url.com/some-image.jpg",
+    "fileName": "some-image.jpg"
+  }
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`messageId` |메시지 ID
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`timestamp` |메시지 생성 시간
+|`seqNumber` |메시지 순번
+|`files` |파일 정보
+|`fileType` |파일 타입
+|`fileUrl` |파일 URL
+|`fileName` |파일 이름
+|===
+
+=== 4.3 개인 채팅방 삭제 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/direct`
+- **Response**:
+
+[source,json]
+----
+{
+  "targetMessageId": "testMessageId3",
+  "chatRoomId": "testChatRoomId3",
+  "chatRoomType": "direct",
+  "senderId": "someUserId",
+  "type": "delete",
+  "timestamp": "2025-02-13 10:00:00",
+  "seqNumber": 3
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`targetMessageId` |삭제 대상 메시지 ID
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`timestamp` |메시지 생성 시간
+|`seqNumber` |메시지 순번
+|===
+
+=== 4.4 개인 채팅방 답장 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/direct`
+- **Response**:
+
+[source,json]
+----
+{
+  "messageId": "testMessageId4",
+  "chatRoomId": "testChatRoomId4",
+  "chatRoomType": "direct",
+  "senderId": "someUserId",
+  "type": "reply",
+  "text": "이곳에 실제 메시지 내용",
+  "timestamp": "2025-02-13 10:00:00",
+  "seqNumber": 4,
+  "parentMessageId": "testParentMessageId",
+  "parentSeqNumber": 3,
+  "parentMessageText": "부모 메시지 내용"
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`messageId` |메시지 ID
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`text` |메시지 내용
+|`timestamp` |메시지 생성 시간
+|`seqNumber` |메시지 순번
+|`parentMessageId` |부모 메시지 ID
+|`parentSeqNumber` |부모 메시지 순번
+|`parentMessageText` |부모 메시지 내용
+|===
+
+=== 4.5 개인 채팅방 에러 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/direct`
+- **Response**:
+
+[source,json]
+----
+{
+  "chatRoomId": "testChatRoomId5",
+  "chatRoomType": "direct",
+  "senderId": "someUserId",
+  "type": "error",
+  "timestamp": "2025-02-13 10:00:00",
+  "errorCode": "ERR-001",
+  "errorMessage": "에러 메시지 내용"
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`timestamp` |메시지 생성 시간
+|`errorCode` |에러 코드
+|`errorMessage` |에러 메시지 내용
+|===
+
+== 5. 그룹 채팅방 STOMP 메시지 수신
+
+그룹 채팅방에서 7가지 메시지 수신을 확인할 수 있습니다.
+
+개인 채팅방 메시지는 **서버가** `/user/queue/chat/group` 경로로 발행하며, 클라이언트는 해당 경로를 SUBSCRIBE해야 수신할 수 있습니다.
+
+[options="header"]
+|===
+|메시지 타입 |설명
+
+|`Normal` |일반 텍스트 메시지
+|`File`   |파일(이미지, 문서 등) 전송 메시지
+|`Delete` |메시지 삭제 알림
+|`Reply`  |답장(Reply) 메시지
+|`Invite`   |그룹 채팅방 초대 메시지
+|`Leave`    |그룹 채팅방 나감 메시지
+|`Error`  |에러 상태 전달 (예: 권한 없음, 유효성 오류 등)
+|===
+
+=== 5.1 그룹 채팅방 일반 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/group`
+- **Response**:
+
+[source,json]
+----
+{
+  "messageId": "testMessageId1",
+  "chatRoomId": "testChatRoomId1",
+  "chatRoomType": "group",
+  "senderId": "someUserId",
+  "type": "normal",
+  "text": "이곳에 실제 메시지 내용",
+  "timestamp": "2025-02-13 10:00:00",
+  "seqNumber": 1
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`messageId` |메시지 ID
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`text` |메시지 내용
+|`timestamp` |메시지 생성 시간
+|`seqNumber` |메시지 순번
+|===
+
+=== 5.2 그룹 채팅방 파일 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/group`
+- **Response**:
+
+[source,json]
+----
+{
+  "messageId": "testMessageId2",
+  "chatRoomId": "testChatRoomId2",
+  "chatRoomType": "group",
+  "senderId": "someUserId",
+  "type": "file",
+  "timestamp": "2025-02-13 10:00:00",
+  "seqNumber": 2,
+  "files" : {
+    "fileType": "image/png",
+    "fileUrl": "http://some-url.com/some-image.jpg",
+    "fileName": "some-image.jpg"
+  }
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`messageId` |메시지 ID
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`timestamp` |메시지 생성 시간
+|`seqNumber` |메시지 순번
+|`files` |파일 정보
+|`fileType` |파일 타입
+|`fileUrl` |파일 URL
+|`fileName` |파일 이름
+|===
+
+=== 5.3 그룹 채팅방 삭제 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/group`
+- **Response**:
+
+[source,json]
+----
+{
+  "targetMessageId": "testMessageId3",
+  "chatRoomId": "testChatRoomId3",
+  "chatRoomType": "group",
+  "senderId": "someUserId",
+  "type": "delete",
+  "timestamp": "2025-02-13 10:00:00",
+  "seqNumber": 3
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`targetMessageId` |삭제 대상 메시지 ID
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`timestamp` |메시지 생성 시간
+|`seqNumber` |메시지 순번
+|===
+
+
+=== 5.4 그룹 채팅방 답장 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/group`
+- **Response**:
+
+[source,json]
+----
+{
+  "messageId": "testMessageId4",
+  "chatRoomId": "testChatRoomId4",
+  "chatRoomType": "group",
+  "senderId": "someUserId",
+  "type": "reply",
+  "text": "이곳에 실제 메시지 내용",
+  "timestamp": "2025-02-13 10:00:00",
+  "seqNumber": 4,
+  "parentMessageId": "testParentMessageId",
+  "parentSeqNumber": 3,
+  "parentMessageText": "부모 메시지 내용"
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`messageId` |메시지 ID
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`text` |메시지 내용
+|`timestamp` |메시지 생성 시간
+|`seqNumber` |메시지 순번
+|`parentMessageId` |부모 메시지 ID
+|`parentSeqNumber` |부모 메시지 순번
+|`parentMessageText` |부모 메시지 내용
+|===
+
+=== 5.5 그룹 채팅방 초대 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/group`
+- **Response**:
+
+[source,json]
+----
+{
+  "messageId": "testMessageId5",
+  "chatRoomId": "testChatRoomId5",
+  "chatRoomType": "group",
+  "senderId": "someUserId",
+  "type": "invite",
+  "timestamp": "2025-02-13 10:00:00",
+  "invitedUserId": "someInvitedUserId"
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`messageId` |메시지 ID
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`timestamp` |메시지 생성 시간
+|`invitedUserId` |초대된 사용자 ID
+|===
+
+
+=== 5.6 그룹 채팅방 나감 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/group`
+
+- **Response**:
+
+[source,json]
+----
+{
+  "messageId": "testMessageId6",
+  "chatRoomId": "testChatRoomId6",
+  "chatRoomType": "group",
+  "senderId": "someUserId",
+  "type": "leave",
+  "timestamp": "2025-02-13 10:00:00",
+  "seqNumber": 6
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`messageId` |메시지 ID
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`timestamp` |메시지 생성 시간
+|`seqNumber` |메시지 순번
+|===
+
+=== 5.7 그룹 채팅방 에러 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/group`
+- **Response**:
+
+[source,json]
+----
+{
+  "chatRoomId": "testChatRoomId7",
+  "chatRoomType": "group",
+  "senderId": "someUserId",
+  "type": "error",
+  "timestamp": "2025-02-13 10:00:00",
+  "errorCode": "ERR-001",
+  "errorMessage": "에러 메시지 내용"
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`timestamp` |메시지 생성 시간
+|`errorCode` |에러 코드
+|`errorMessage` |에러 메시지 내용
+|===
+
+=== 6. 에러 메시지 종류
+
+에러 메시지는 다음과 같은 종류가 있습니다.
+
+[options="header"]
+|===
+|에러 코드 |에러 메시지 |설명
+
+CHATROOM_READ_FAILED |채팅방 읽음처리 실패 |채팅방 읽음처리 실패했을 때 발생
+CHATLOG_DELETE_MESSAGE_TIME_LIMIT |채팅방 삭제 실패 |채팅방 삭제 실패했을 때 발생 시간초과
+CHATROOM_NOT_FOUND |채팅방을 찾을 수 없음 |채팅방을 찾을 수 없을 때 발생
+|===
