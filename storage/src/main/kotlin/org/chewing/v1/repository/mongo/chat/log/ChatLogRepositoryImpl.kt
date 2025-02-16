@@ -7,28 +7,27 @@ import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.mongoentity.ChatMessageMongoEntity
 import org.chewing.v1.mongorepository.ChatLogMongoRepository
 import org.chewing.v1.repository.chat.ChatLogRepository
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Repository
 
 @Repository
 internal class ChatLogRepositoryImpl(
     private val chatLogMongoRepository: ChatLogMongoRepository,
+    private val mongoTemplate: MongoTemplate,
 ) : ChatLogRepository {
-    override fun readChatMessages(
-        chatRoomId: ChatRoomId,
-        sequence: Int,
-        joinSequence: Int,
-    ): List<ChatLog> {
-        val pageable: Pageable = PageRequest.of(0, 50, Sort.by(Sort.Direction.DESC, "seqNumber"))
-        return chatLogMongoRepository
-            .findByChatRoomIdAndSeqNumberLessThanEqualAndSeqNumberGreaterThanOrderBySeqNumberAsc(
-                chatRoomId.id,
-                sequence,
-                joinSequence,
-                pageable,
-            )
+    override fun readChatMessages(chatRoomId: ChatRoomId, sequence: Int, joinSequence: Int): List<ChatLog> {
+        val criteria = Criteria
+            .where("chatRoomId").`is`(chatRoomId.id)
+            .and("seqNumber").lte(sequence).gt(joinSequence)
+
+        val query = Query(criteria)
+            .with(Sort.by(Sort.Direction.ASC, "seqNumber"))
+            .limit(50)
+
+        return mongoTemplate.find(query, ChatMessageMongoEntity::class.java)
             .map { it.toChatLog() }
     }
 
@@ -37,8 +36,9 @@ internal class ChatLogRepositoryImpl(
     }
 
     override fun appendChatLog(chatMessage: ChatMessage) {
-        val entity = ChatMessageMongoEntity.fromChatMessage(chatMessage)
-        chatLogMongoRepository.save(entity!!)
+        ChatMessageMongoEntity.fromChatMessage(chatMessage)?. let {
+            chatLogMongoRepository.save(it)
+        }
     }
 
     override fun readChatMessage(messageId: String): ChatLog? {

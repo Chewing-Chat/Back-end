@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
 import org.springframework.data.mongodb.repository.Update
-import org.springframework.data.domain.Pageable
 
 internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEntity, String> {
 
@@ -23,13 +22,6 @@ internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEnti
         sort = "{ score: { \$meta: 'textScore' } }",
     )
     fun searchByKeywords(keywords: String, chatRoomId: String): List<ChatMessageMongoEntity>
-
-    fun findByChatRoomIdAndSeqNumberLessThanEqualAndSeqNumberGreaterThanOrderBySeqNumberAsc(
-        chatRoomId: String,
-        sequence: Int,
-        joinSequence: Int,
-        pageable: Pageable,
-    ): List<ChatMessageMongoEntity>
 
     @Query(
         "{ \$or: [ " +
