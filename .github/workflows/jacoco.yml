@@ -19,6 +19,12 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
+      - name: Invalidate and Refresh Dependencies
+        run: ./gradlew --refresh-dependencies
+
+      - name: Clean Build Directory
+        run: ./gradlew clean
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
