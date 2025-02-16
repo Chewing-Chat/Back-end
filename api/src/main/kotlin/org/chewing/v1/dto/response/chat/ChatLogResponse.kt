@@ -60,7 +60,7 @@ sealed class ChatLogResponse {
 
     companion object {
         fun from(chatLog: ChatLog): ChatLogResponse {
-            val formattedTime = chatLog.timestamp.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
+            val formattedTime = chatLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
             return when (chatLog) {
                 is ChatReplyLog -> Reply(

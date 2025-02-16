@@ -9,10 +9,10 @@ import org.chewing.v1.response.SuccessCreateResponse
 import org.chewing.v1.util.aliases.SuccessResponseEntity
 import org.chewing.v1.util.helper.FileHelper
 import org.chewing.v1.util.helper.ResponseHelper
+import org.chewing.v1.util.security.CurrentUser
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestAttribute
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.multipart.MultipartFile
@@ -98,22 +98,22 @@ class ChatController(
     @PostMapping("/api/chat/direct/file/upload")
     fun uploadDirectFiles(
         @RequestPart("files") files: List<MultipartFile>,
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestParam("chatRoomId") chatRoomId: String,
     ): SuccessResponseEntity<SuccessCreateResponse> {
         val convertFiles = FileHelper.convertMultipartFileToFileDataList(files)
-        directChatFacade.processDirectChatFiles(convertFiles, UserId.of(userId), ChatRoomId.of(chatRoomId))
+        directChatFacade.processDirectChatFiles(convertFiles, userId, ChatRoomId.of(chatRoomId))
         return ResponseHelper.successCreateOnly()
     }
 
     @PostMapping("/api/chat/group/file/upload")
     fun uploadGroupFiles(
         @RequestPart("files") files: List<MultipartFile>,
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestParam("chatRoomId") chatRoomId: String,
     ): SuccessResponseEntity<SuccessCreateResponse> {
         val convertFiles = FileHelper.convertMultipartFileToFileDataList(files)
-        groupChatFacade.processGroupChatFiles(convertFiles, UserId.of(userId), ChatRoomId.of(chatRoomId))
+        groupChatFacade.processGroupChatFiles(convertFiles, userId, ChatRoomId.of(chatRoomId))
         return ResponseHelper.successCreateOnly()
     }
 }

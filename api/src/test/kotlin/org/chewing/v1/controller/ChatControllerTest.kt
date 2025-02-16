@@ -132,4 +132,59 @@ class ChatControllerTest : IntegrationTest() {
         latch.await(1, TimeUnit.MINUTES)
         verify { directChatFacade.processDirectChatReply(chatReplyDto.toChatRoomId(), userId, chatReplyDto.parentMessageId, chatReplyDto.message) }
     }
+
+    @Test
+    fun `그룹 채팅방 일반 메세지 전송`() {
+        val latch = CountDownLatch(1)
+        every { groupChatFacade.processGroupChatCommon(any(), any(), any()) } answers {
+            latch.countDown()
+        }
+        val chatDto = ChatRequest.Common("testRoomId", "testMessage")
+        session.send("/app/chat/group/common", chatDto)
+        latch.await(1, TimeUnit.MINUTES)
+        verify { groupChatFacade.processGroupChatCommon(chatDto.toChatRoomId(), any(), chatDto.message) }
+    }
+
+    @Test
+    fun `그룹 채팅방 읽기 메시지 전송`() {
+        val latch = CountDownLatch(1)
+        every { groupChatFacade.processGroupChatRead(any(), any(), any()) } answers {
+            latch.countDown()
+        }
+
+        val chatReadDto = ChatRequest.Read("testRoomId", 0)
+        session.send("/app/chat/group/read", chatReadDto)
+
+        latch.await(1, TimeUnit.MINUTES)
+
+        verify { groupChatFacade.processGroupChatRead(chatReadDto.toChatRoomId(), any(), any()) }
+    }
+
+    @Test
+    fun `그룹 채팅방 삭제 메시지 전송`() {
+        val latch = CountDownLatch(1)
+        every { groupChatFacade.processGroupChatDelete(any(), any(), any()) } answers {
+            latch.countDown()
+        }
+
+        val chatDeleteDto = ChatRequest.Delete("testRoomId", "testMessageId")
+        session.send("/app/chat/group/delete", chatDeleteDto)
+
+        latch.await(1, TimeUnit.MINUTES)
+        verify { groupChatFacade.processGroupChatDelete(chatDeleteDto.toChatRoomId(), userId, chatDeleteDto.messageId) }
+    }
+
+    @Test
+    fun `그룹 채팅방 답장 메시지 전송`() {
+        val latch = CountDownLatch(1)
+        every { groupChatFacade.processGroupChatReply(any(), any(), any(), any()) } answers {
+            latch.countDown()
+        }
+
+        val chatReplyDto = ChatRequest.Reply("testRoomId", "testParentMessageId", "testMessage")
+        session.send("/app/chat/group/reply", chatReplyDto)
+
+        latch.await(1, TimeUnit.MINUTES)
+        verify { groupChatFacade.processGroupChatReply(chatReplyDto.toChatRoomId(), userId, chatReplyDto.parentMessageId, chatReplyDto.message) }
+    }
 }

@@ -146,7 +146,7 @@ class FeedControllerTest : RestDocsTest() {
         val testFeedId = "testFeedId"
         val userId = "testUserId"
         val feed = createFeed()
-        val uploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
+        val uploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         every { feedService.getFeed(any(), UserId.of(userId)) } returns feed
 
         given()
@@ -177,7 +177,7 @@ class FeedControllerTest : RestDocsTest() {
                         fieldWithPath("status").description("상태 코드"),
                         fieldWithPath("data.feedId").description("피드 아이디"),
                         fieldWithPath("data.content").description("피드 내용"),
-                        fieldWithPath("data.uploadTime").description("피드 업로드 시간 - 형식 yy-MM-dd HH:mm:ss"),
+                        fieldWithPath("data.uploadTime").description("피드 업로드 시간 - 형식 yyyy-MM-dd HH:mm:ss"),
                         fieldWithPath("data.details[].index").description("미디어 인덱스(0부터 시작)"),
                         fieldWithPath("data.details[].fileUrl").description("미디어 파일 URL"),
                         fieldWithPath("data.details[].type").description("미디어 타입(image/png, image/jpeg, image/jpg, image/png)"),

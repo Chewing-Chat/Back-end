@@ -125,7 +125,7 @@ class MainControllerTest : RestDocsTest() {
                     logs.forEachIndexed { logIndex, log ->
                         // 응답 JSON Path 편하게 재사용하기 위한 변수
                         val path = "data.groupChatRooms[$index].chatLogs[$logIndex]"
-                        val formattedTime = log.timestamp.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
+                        val formattedTime = log.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
                         // (1) 공통 필드 검증
                         body("$path.messageId", equalTo(log.messageId))
@@ -172,7 +172,7 @@ class MainControllerTest : RestDocsTest() {
                     logs.forEachIndexed { logIndex, log ->
                         // 응답 JSON Path 편하게 재사용하기 위한 변수
                         val path = "data.directChatRooms[$directChatIndex].chatLogs[$logIndex]"
-                        val formattedTime = log.timestamp.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
+                        val formattedTime = log.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
                         // (1) 공통 필드 검증
                         body("$path.messageId", equalTo(log.messageId))
