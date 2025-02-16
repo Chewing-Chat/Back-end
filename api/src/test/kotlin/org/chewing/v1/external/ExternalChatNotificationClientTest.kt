@@ -78,24 +78,30 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
         session = connectStompSession()
 
         // 그룹 채팅 메시지 구독
-        session.subscribe("/user/queue/chat/group", object : StompFrameHandler {
-            override fun getPayloadType(headers: StompHeaders): Type = ChatMessageDto::class.java
-            override fun handleFrame(headers: StompHeaders, payload: Any?) {
-                val message = payload as ChatMessageDto
-                groupChatMessages.add(message)
-                groupLatch.countDown()
-            }
-        })
+        session.subscribe(
+            "/user/queue/chat/group",
+            object : StompFrameHandler {
+                override fun getPayloadType(headers: StompHeaders): Type = ChatMessageDto::class.java
+                override fun handleFrame(headers: StompHeaders, payload: Any?) {
+                    val message = payload as ChatMessageDto
+                    groupChatMessages.add(message)
+                    groupLatch.countDown()
+                }
+            },
+        )
 
         // 개인 채팅 메시지 구독
-        session.subscribe("/user/queue/chat/direct", object : StompFrameHandler {
-            override fun getPayloadType(headers: StompHeaders): Type = ChatMessageDto::class.java
-            override fun handleFrame(headers: StompHeaders, payload: Any?) {
-                val message = payload as ChatMessageDto
-                directChatMessages.add(message)
-                directLatch.countDown()
-            }
-        })
+        session.subscribe(
+            "/user/queue/chat/direct",
+            object : StompFrameHandler {
+                override fun getPayloadType(headers: StompHeaders): Type = ChatMessageDto::class.java
+                override fun handleFrame(headers: StompHeaders, payload: Any?) {
+                    val message = payload as ChatMessageDto
+                    directChatMessages.add(message)
+                    directLatch.countDown()
+                }
+            },
+        )
     }
 
     @AfterAll
@@ -121,7 +127,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
     private fun sendMessagesAndAwaitLatch(
         latch: CountDownLatch,
         waitSeconds: Long = 10L,
-        vararg messages: Pair<ChatMessage, UserId>
+        vararg messages: Pair<ChatMessage, UserId>,
     ) {
         messages.forEach { (chatData, sender) ->
             externalChatNotificationClient.sendMessage(chatData, sender)
@@ -151,8 +157,8 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
                 fileMessage to userId,
                 deleteMessage to userId,
                 replyMessage to userId,
-                errorMessage to userId
-            )
+                errorMessage to userId,
+            ),
         )
 
         // 검증
@@ -243,8 +249,8 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
                 deleteMessage to userId,
                 replyMessage to userId,
                 leaveMessage to userId,
-                errorMessage to userId
-            )
+                errorMessage to userId,
+            ),
         )
 
         assertThat(groupChatMessages.size).isEqualTo(7)
