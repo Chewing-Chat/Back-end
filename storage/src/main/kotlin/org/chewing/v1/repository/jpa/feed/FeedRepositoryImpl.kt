@@ -8,6 +8,7 @@ import org.chewing.v1.model.feed.FeedInfo
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.feed.FeedRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 internal class FeedRepositoryImpl(
