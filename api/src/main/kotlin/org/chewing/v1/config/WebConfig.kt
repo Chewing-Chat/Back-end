@@ -1,7 +1,6 @@
 package org.chewing.v1.config
 
 import org.chewing.v1.util.converter.StringToChatRoomSortCriteriaConverter
-import org.chewing.v1.util.converter.StringToDateTargetConverter
 import org.chewing.v1.util.converter.StringToFileCategoryConverter
 import org.chewing.v1.util.converter.StringToFriendSortCriteriaConverter
 import org.chewing.v1.util.security.UserArgumentResolver
@@ -16,7 +15,6 @@ class WebConfig : WebMvcConfigurer {
     override fun addFormatters(registry: FormatterRegistry) {
         registry.addConverter(StringToChatRoomSortCriteriaConverter())
         registry.addConverter(StringToFileCategoryConverter())
-        registry.addConverter(StringToDateTargetConverter())
         registry.addConverter(StringToFriendSortCriteriaConverter())
     }
 

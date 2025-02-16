@@ -80,6 +80,19 @@ class UserRepositoryTest : JpaContextTest() {
     }
 
     @Test
+    fun `휴대폰이 이미 생성되어 있다면 - 기존 유저의 이름만 변경후 반환`() {
+        val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
+        val userName = UserProvider.buildUserName()
+        val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.NEED_CREATE_PASSWORD)
+
+        val newUserName = UserProvider.buildUserName()
+        val result = userRepositoryImpl.append(phoneNumber, newUserName)
+
+        assert(result.userId == user.userId)
+        assert(result.name == newUserName)
+    }
+
+    @Test
     fun `유저 삭제`() {
         val phoneNumber = PhoneNumberProvider.buildPhoneNumber()
         val userName = UserProvider.buildUserName()

@@ -103,6 +103,19 @@ class FriendShipRepositoryTest : JpaContextTest() {
     }
 
     @Test
+    fun `친구 관계를 즐겨찾기 취소 설정한다`() {
+        val userId = generateUserId()
+        val friendId = generateUserId()
+
+        jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
+        friendShipRepositoryImpl.updateFavorite(userId, friendId, true)
+        friendShipRepositoryImpl.updateFavorite(userId, friendId, false)
+        val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
+
+        assert(entity.get().toFriendShip().isFavorite == false)
+    }
+
+    @Test
     fun `친구 관계를 이름을 변경한다`() {
         val userId = generateUserId()
         val friendId = generateUserId()

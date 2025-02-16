@@ -76,8 +76,6 @@ enum class ErrorCode(
     SCHEDULE_NOT_OWNER_DELETE("SCHEDULE_6", "일정 작성자는 삭제할 수 없습니다."),
     SCHEDULE_CREATE_FAILED("SCHEDULE_2", "일정 생성을 실패하였습니다."),
 
-    AI_CREATE_FAILED("AI_1", "AI 생성을 실패하였습니다."),
-
     INVALID_TYPE("INVALID_1", "잘못된 타입입니다."),
 
     ;
