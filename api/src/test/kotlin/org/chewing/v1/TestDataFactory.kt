@@ -116,11 +116,20 @@ object TestDataFactory {
         )
     }
 
+    fun createGroupChatOwnMemberInfo(chatRoomId: ChatRoomId, status: ChatRoomMemberStatus): GroupChatRoomMemberInfo {
+        return GroupChatRoomMemberInfo.of(
+            chatRoomId,
+            UserId.of("testUserId"),
+            status,
+        )
+    }
+
     fun createGroupChatRoom(chatRoomId: ChatRoomId): GroupChatRoom {
         return GroupChatRoom.of(
             createGroupChatRoomInfo(chatRoomId),
             listOf(
                 createGroupChatMemberInfo(chatRoomId, ChatRoomMemberStatus.NORMAL),
+                createGroupChatOwnMemberInfo(chatRoomId, ChatRoomMemberStatus.NORMAL),
             ),
             createChatRoomSequence(chatRoomId),
             createChatRoomMemberSequence(chatRoomId),

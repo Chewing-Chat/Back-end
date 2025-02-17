@@ -9,7 +9,7 @@ data class FullDirectChatRoomResponse(
     val readSequenceNumber: Int,
     val joinSequenceNumber: Int,
     val latestChatLog: ChatLogResponse,
-    val chatRoomMemberStatus: String,
+    val chatRoomOwnStatus: String,
     val friendId: String,
 ) {
     companion object {
@@ -20,7 +20,7 @@ data class FullDirectChatRoomResponse(
                 joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                 chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
                 latestChatLog = ChatLogResponse.from(chatLog),
-                chatRoomMemberStatus = chatRoom.roomInfo.status.name.lowercase(),
+                chatRoomOwnStatus = chatRoom.roomInfo.status.name.lowercase(),
                 friendId = chatRoom.roomInfo.friendId.id,
             )
         }

@@ -5,7 +5,7 @@ import org.chewing.v1.model.chat.room.DirectChatRoom
 data class DirectChatRoomResponse(
     val chatRoomId: String,
     val chatRoomSequenceNumber: Int,
-    val chatRoomMemberStatus: String,
+    val chatRoomOwnStatus: String,
     val friendId: String,
     val readSequenceNumber: Int,
     val joinSequenceNumber: Int,
@@ -17,7 +17,7 @@ data class DirectChatRoomResponse(
             return DirectChatRoomResponse(
                 chatRoomId = directChatRoom.roomInfo.chatRoomId.id,
                 chatRoomSequenceNumber = directChatRoom.roomSequence.sequenceNumber,
-                chatRoomMemberStatus = directChatRoom.roomInfo.status.name.lowercase(),
+                chatRoomOwnStatus = directChatRoom.roomInfo.status.name.lowercase(),
                 friendId = directChatRoom.roomInfo.friendId.id,
                 readSequenceNumber = directChatRoom.ownSequence.readSequenceNumber,
                 joinSequenceNumber = directChatRoom.ownSequence.joinSequenceNumber,

@@ -7,7 +7,7 @@ data class GroupChatRoomResponse(
     val chatRoomId: String,
     val chatRoomName: String,
     val chatRoomSequenceNumber: Int,
-    val chatRoomMemberStatus: String,
+    val chatRoomOwnStatus: String,
     val readSequenceNumber: Int,
     val joinSequenceNumber: Int,
     val friendIds: List<String>,
@@ -20,13 +20,13 @@ data class GroupChatRoomResponse(
             val friendIds = groupChatRoom.memberInfos
                 .filter { it.memberId != userId }
                 .map { it.memberId.id }
-            val chatRoomMemberStatus = groupChatRoom.memberInfos
+            val chatRoomOwnStatus = groupChatRoom.memberInfos
                 .find { it.memberId == userId }!!
             return GroupChatRoomResponse(
                 chatRoomId = groupChatRoom.roomInfo.chatRoomId.id,
                 chatRoomName = groupChatRoom.roomInfo.name,
                 chatRoomSequenceNumber = groupChatRoom.roomSequence.sequenceNumber,
-                chatRoomMemberStatus = chatRoomMemberStatus.status.name.lowercase(),
+                chatRoomOwnStatus = chatRoomOwnStatus.status.name.lowercase(),
                 readSequenceNumber = groupChatRoom.ownSequence.readSequenceNumber,
                 joinSequenceNumber = groupChatRoom.ownSequence.joinSequenceNumber,
                 friendIds = friendIds,

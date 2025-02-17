@@ -6,6 +6,8 @@ import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.HttpResponse
+import org.chewing.v1.util.aliases.SuccessResponseEntity
+import org.chewing.v1.util.helper.ResponseHelper
 import org.chewing.v1.util.security.CurrentUser
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -25,9 +27,9 @@ class ChatLogController(
         @CurrentUser userId: UserId,
         @PathVariable chatRoomId: String,
         @RequestParam sequenceNumber: Int,
-    ): HttpResponse<ChatLogsResponse> {
+    ): SuccessResponseEntity<ChatLogsResponse> {
         val chatLog = directChatFacade.processDirectChatLogs(userId, ChatRoomId.of(chatRoomId), sequenceNumber)
-        return HttpResponse.success(ChatLogsResponse.from(chatLog))
+        return ResponseHelper.success(ChatLogsResponse.from(chatLog))
     }
 
     @GetMapping("/group/log")
@@ -35,8 +37,8 @@ class ChatLogController(
         @CurrentUser userId: UserId,
         @PathVariable chatRoomId: String,
         @RequestParam sequenceNumber: Int,
-    ): HttpResponse<ChatLogsResponse> {
+    ): SuccessResponseEntity<ChatLogsResponse> {
         val chatLog = groupChatFacade.processGroupChatLogs(userId, ChatRoomId.of(chatRoomId), sequenceNumber)
-        return HttpResponse.success(ChatLogsResponse.from(chatLog))
+        return ResponseHelper.success(ChatLogsResponse.from(chatLog))
     }
 }

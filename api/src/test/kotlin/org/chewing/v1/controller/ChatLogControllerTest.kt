@@ -3,6 +3,7 @@ package org.chewing.v1.controller
 import io.mockk.every
 import io.mockk.mockk
 import org.chewing.v1.RestDocsTest
+import org.chewing.v1.RestDocsUtils.requestAccessTokenFields
 import org.chewing.v1.RestDocsUtils.requestPreprocessor
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.TestDataFactory
@@ -85,7 +86,6 @@ class ChatLogControllerTest : RestDocsTest() {
                         is ChatFileLog -> {
                             body("$prefix.messageId", equalTo(chatFileLog.messageId))
                             body("$prefix.type", equalTo(chatFileLog.type.name.lowercase()))
-                            body("$prefix.chatRoomId", equalTo(chatFileLog.chatRoomId.id))
                             body("$prefix.senderId", equalTo(chatFileLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatFileLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
                             body("$prefix.seqNumber", equalTo(chatFileLog.number.sequenceNumber))
@@ -100,7 +100,6 @@ class ChatLogControllerTest : RestDocsTest() {
                         is ChatNormalLog -> {
                             body("$prefix.messageId", equalTo(chatNormalLog.messageId))
                             body("$prefix.type", equalTo(chatNormalLog.type.name.lowercase()))
-                            body("$prefix.chatRoomId", equalTo(chatNormalLog.chatRoomId.id))
                             body("$prefix.senderId", equalTo(chatNormalLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatNormalLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
                             body("$prefix.seqNumber", equalTo(chatNormalLog.number.sequenceNumber))
@@ -109,7 +108,6 @@ class ChatLogControllerTest : RestDocsTest() {
                         is ChatReplyLog -> {
                             body("$prefix.messageId", equalTo(chatReplyLog.messageId))
                             body("$prefix.type", equalTo(chatReplyLog.type.name.lowercase()))
-                            body("$prefix.chatRoomId", equalTo(chatReplyLog.chatRoomId.id))
                             body("$prefix.senderId", equalTo(chatReplyLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatReplyLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
                             body("$prefix.seqNumber", equalTo(chatReplyLog.number.sequenceNumber))
@@ -128,6 +126,7 @@ class ChatLogControllerTest : RestDocsTest() {
                     "{class-name}/{method-name}",
                     requestPreprocessor(),
                     responsePreprocessor(),
+                    requestAccessTokenFields(),
                     pathParameters(
                         parameterWithName("chatRoomId").description("채팅방 ID"),
                     ),
@@ -140,7 +139,6 @@ class ChatLogControllerTest : RestDocsTest() {
                         // 공통 필드
                         fieldWithPath("data.chatLogs[].messageId").description("메시지 ID (모든 타입 공통)"),
                         fieldWithPath("data.chatLogs[].type").description("메시지 타입: normal, file, reply, invite, leave"),
-                        fieldWithPath("data.chatLogs[].chatRoomId").description("채팅방 ID"),
                         fieldWithPath("data.chatLogs[].senderId").description("보낸 사람 ID"),
                         fieldWithPath("data.chatLogs[].timestamp").description("보낸 시간(yyyy-MM-dd HH:mm:ss)"),
                         fieldWithPath("data.chatLogs[].seqNumber").description("시퀀스 번호"),
@@ -212,7 +210,6 @@ class ChatLogControllerTest : RestDocsTest() {
                         is ChatFileLog -> {
                             body("$prefix.messageId", equalTo(chatFileLog.messageId))
                             body("$prefix.type", equalTo(chatFileLog.type.name.lowercase()))
-                            body("$prefix.chatRoomId", equalTo(chatFileLog.chatRoomId.id))
                             body("$prefix.senderId", equalTo(chatFileLog.senderId.id))
                             body(
                                 "$prefix.timestamp",
@@ -230,7 +227,6 @@ class ChatLogControllerTest : RestDocsTest() {
                         is ChatNormalLog -> {
                             body("$prefix.messageId", equalTo(chatNormalLog.messageId))
                             body("$prefix.type", equalTo(chatNormalLog.type.name.lowercase()))
-                            body("$prefix.chatRoomId", equalTo(chatNormalLog.chatRoomId.id))
                             body("$prefix.senderId", equalTo(chatNormalLog.senderId.id))
                             body(
                                 "$prefix.timestamp",
@@ -243,7 +239,6 @@ class ChatLogControllerTest : RestDocsTest() {
                         is ChatReplyLog -> {
                             body("$prefix.messageId", equalTo(chatReplyLog.messageId))
                             body("$prefix.type", equalTo(chatReplyLog.type.name.lowercase()))
-                            body("$prefix.chatRoomId", equalTo(chatReplyLog.chatRoomId.id))
                             body("$prefix.senderId", equalTo(chatReplyLog.senderId.id))
                             body(
                                 "$prefix.timestamp",
@@ -263,7 +258,6 @@ class ChatLogControllerTest : RestDocsTest() {
                         is ChatInviteLog -> {
                             body("$prefix.messageId", equalTo(chatInviteLog.messageId))
                             body("$prefix.type", equalTo(chatInviteLog.type.name.lowercase()))
-                            body("$prefix.chatRoomId", equalTo(chatInviteLog.chatRoomId.id))
                             body("$prefix.senderId", equalTo(chatInviteLog.senderId.id))
                             body(
                                 "$prefix.timestamp",
@@ -279,7 +273,6 @@ class ChatLogControllerTest : RestDocsTest() {
                         is ChatLeaveLog -> {
                             body("$prefix.messageId", equalTo(chatLeaveLog.messageId))
                             body("$prefix.type", equalTo(chatLeaveLog.type.name.lowercase()))
-                            body("$prefix.chatRoomId", equalTo(chatLeaveLog.chatRoomId.id))
                             body("$prefix.senderId", equalTo(chatLeaveLog.senderId.id))
                             body(
                                 "$prefix.timestamp",
@@ -295,6 +288,7 @@ class ChatLogControllerTest : RestDocsTest() {
                     "{class-name}/{method-name}",
                     requestPreprocessor(),
                     responsePreprocessor(),
+                    requestAccessTokenFields(),
                     pathParameters(
                         parameterWithName("chatRoomId").description("채팅방 ID"),
                     ),
@@ -307,7 +301,6 @@ class ChatLogControllerTest : RestDocsTest() {
                         // 공통 필드
                         fieldWithPath("data.chatLogs[].messageId").description("메시지 ID (모든 타입 공통)"),
                         fieldWithPath("data.chatLogs[].type").description("메시지 타입: normal, file, reply, invite, leave"),
-                        fieldWithPath("data.chatLogs[].chatRoomId").description("채팅방 ID"),
                         fieldWithPath("data.chatLogs[].senderId").description("보낸 사람 ID"),
                         fieldWithPath("data.chatLogs[].timestamp").description("보낸 시간(yyyy-MM-dd HH:mm:ss)"),
                         fieldWithPath("data.chatLogs[].seqNumber").description("시퀀스 번호"),

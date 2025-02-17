@@ -8,7 +8,6 @@ sealed class ChatLogResponse {
     data class Reply(
         val messageId: String,
         val type: String,
-        val chatRoomId: String,
         val senderId: String,
         val parentMessageId: String,
         val parentSeqNumber: Int,
@@ -22,7 +21,6 @@ sealed class ChatLogResponse {
     data class Leave(
         val messageId: String,
         val type: String,
-        val chatRoomId: String,
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
@@ -31,7 +29,6 @@ sealed class ChatLogResponse {
     data class Invite(
         val messageId: String,
         val type: String,
-        val chatRoomId: String,
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
@@ -41,7 +38,6 @@ sealed class ChatLogResponse {
     data class File(
         val messageId: String,
         val type: String,
-        val chatRoomId: String,
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
@@ -51,7 +47,6 @@ sealed class ChatLogResponse {
     data class Normal(
         val messageId: String,
         val type: String,
-        val chatRoomId: String,
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
@@ -66,7 +61,6 @@ sealed class ChatLogResponse {
                 is ChatReplyLog -> Reply(
                     messageId = chatLog.messageId,
                     type = chatLog.type.name.lowercase(),
-                    chatRoomId = chatLog.chatRoomId.id,
                     senderId = chatLog.senderId.id,
                     parentMessageId = chatLog.parentMessageId,
                     parentSeqNumber = chatLog.parentSeqNumber,
@@ -80,7 +74,6 @@ sealed class ChatLogResponse {
                 is ChatLeaveLog -> Leave(
                     messageId = chatLog.messageId,
                     type = chatLog.type.name.lowercase(),
-                    chatRoomId = chatLog.chatRoomId.id,
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatLog.number.sequenceNumber,
@@ -89,7 +82,6 @@ sealed class ChatLogResponse {
                 is ChatInviteLog -> Invite(
                     messageId = chatLog.messageId,
                     type = chatLog.type.name.lowercase(),
-                    chatRoomId = chatLog.chatRoomId.id,
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatLog.number.sequenceNumber,
@@ -99,7 +91,6 @@ sealed class ChatLogResponse {
                 is ChatFileLog -> File(
                     messageId = chatLog.messageId,
                     type = chatLog.type.name.lowercase(),
-                    chatRoomId = chatLog.chatRoomId.id,
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatLog.number.sequenceNumber,
@@ -109,7 +100,6 @@ sealed class ChatLogResponse {
                 is ChatNormalLog -> Normal(
                     messageId = chatLog.messageId,
                     type = chatLog.type.name.lowercase(),
-                    chatRoomId = chatLog.chatRoomId.id,
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatLog.number.sequenceNumber,

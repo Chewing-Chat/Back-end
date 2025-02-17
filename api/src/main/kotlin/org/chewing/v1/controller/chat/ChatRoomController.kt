@@ -8,17 +8,19 @@ import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.HttpResponse
+import org.chewing.v1.response.SuccessCreateResponse
 import org.chewing.v1.response.SuccessOnlyResponse
 import org.chewing.v1.service.chat.DirectChatRoomService
 import org.chewing.v1.service.chat.GroupChatRoomService
+import org.chewing.v1.util.aliases.SuccessResponseEntity
 import org.chewing.v1.util.helper.FileHelper
+import org.chewing.v1.util.helper.ResponseHelper
 import org.chewing.v1.util.security.CurrentUser
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestAttribute
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -38,92 +40,92 @@ class ChatRoomController(
     @GetMapping("/list")
     fun getDirectChatLog(
         @CurrentUser userId: UserId,
-    ): HttpResponse<ChatRoomListResponse> {
+    ): SuccessResponseEntity<ChatRoomListResponse> {
         val directChatRooms = directChatFacade.processGetDirectChatRooms(userId)
         val groupChatRooms = groupChatFacade.processGroupChatRooms(userId)
-        return HttpResponse.success(ChatRoomListResponse.from(directChatRooms, groupChatRooms, userId))
+        return ResponseHelper.success(ChatRoomListResponse.from(directChatRooms, groupChatRooms, userId))
     }
 
     @GetMapping("/direct/{friendId}")
     fun getDirectChatRoom(
         @CurrentUser userId: UserId,
         @PathVariable friendId: String,
-    ): HttpResponse<DirectChatRoomResponse> {
+    ): SuccessResponseEntity<DirectChatRoomResponse> {
         val directChatRoom = directChatFacade.processGetDirectChatRoom(userId, UserId.of(friendId))
-        return HttpResponse.success(DirectChatRoomResponse.of(directChatRoom))
+        return ResponseHelper.success(DirectChatRoomResponse.of(directChatRoom))
     }
 
     @PostMapping("/direct/create/common")
     fun produceDirectChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.Create,
-    ): HttpResponse<DirectChatRoomResponse> {
+    ): SuccessResponseEntity<DirectChatRoomResponse> {
         val directChatRoom = directChatFacade.processCreateDirectChatRoomCommonChat(userId, request.toFriendId(), request.toMessage())
-        return HttpResponse.success(DirectChatRoomResponse.of(directChatRoom))
+        return ResponseHelper.successCreate(DirectChatRoomResponse.of(directChatRoom))
     }
 
-    @GetMapping("/direct/create/files")
+    @PostMapping("/direct/create/files")
     fun produceDirectChatRoom(
         @RequestPart("files") files: List<MultipartFile>,
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestParam("friendId") friendId: String,
-    ): HttpResponse<DirectChatRoomResponse> {
+    ): SuccessResponseEntity<DirectChatRoomResponse> {
         val convertFiles = FileHelper.convertMultipartFileToFileDataList(files)
-        val directChatRoom = directChatFacade.processCreateDirectChatRoomFilesChat(UserId.of(userId), UserId.of(friendId), convertFiles)
-        return HttpResponse.success(DirectChatRoomResponse.of(directChatRoom))
+        val directChatRoom = directChatFacade.processCreateDirectChatRoomFilesChat(userId, UserId.of(friendId), convertFiles)
+        return ResponseHelper.successCreate(DirectChatRoomResponse.of(directChatRoom))
     }
 
-    @PostMapping("/direct/delete")
+    @DeleteMapping("/direct/delete")
     fun deleteDirectChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.Delete,
-    ): HttpResponse<SuccessOnlyResponse> {
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
         directChatRoomService.deleteDirectChatRoom(userId, request.toChatRoomId())
-        return HttpResponse.successOnly()
+        return ResponseHelper.successOnly()
     }
 
     @PutMapping("/direct/favorite")
     fun favoriteDirectChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.Favorite,
-    ): HttpResponse<SuccessOnlyResponse> {
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
         directChatRoomService.favoriteDirectChatRoomType(userId, request.toChatRoomId(), request.toFavorite())
-        return HttpResponse.successOnly()
+        return ResponseHelper.successOnly()
     }
 
     @PostMapping("/group/create")
     fun produceGroupChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.CreateGroup,
-    ): HttpResponse<GroupChatRoomResponse> {
+    ): SuccessResponseEntity<GroupChatRoomResponse> {
         val groupChatRoom = groupChatFacade.processGroupChatCreate(userId, request.toFriendIds(), request.toName())
-        return HttpResponse.success(GroupChatRoomResponse.of(groupChatRoom, userId))
+        return ResponseHelper.successCreate(GroupChatRoomResponse.of(groupChatRoom, userId))
     }
 
     @PutMapping("/group/favorite")
     fun favoriteGroupChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.Favorite,
-    ): HttpResponse<SuccessOnlyResponse> {
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
         groupChatRoomService.favoriteGroupChatRoomType(userId, request.toChatRoomId(), request.toFavorite())
-        return HttpResponse.successOnly()
+        return ResponseHelper.successOnly()
     }
 
-    @PutMapping("/group/invite")
+    @PostMapping("/group/invite")
     fun inviteGroupChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.Invite,
-    ): HttpResponse<SuccessOnlyResponse> {
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
         groupChatFacade.processGroupChatInvite(request.toChatRoomId(), userId, request.toFriendId())
-        return HttpResponse.successOnly()
+        return ResponseHelper.successOnly()
     }
 
     @DeleteMapping("/group/leave")
     fun leaveGroupChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.Leave,
-    ): HttpResponse<SuccessOnlyResponse> {
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
         groupChatFacade.processGroupChatLeave(request.toChatRoomId(), userId)
-        return HttpResponse.successOnly()
+        return ResponseHelper.successOnly()
     }
 }

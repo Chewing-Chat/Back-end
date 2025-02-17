@@ -1,8 +1,6 @@
 [[Chat-Log-API]]
 = Chat Log API
 
-[[Chat-로그-목록-조회]]
-
 == 1. 개인 채팅방 로그 목록 조회 02/17 수정
 
 === 요청(Request)

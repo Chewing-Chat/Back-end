@@ -71,8 +71,9 @@ class MainControllerTest : RestDocsTest() {
     fun getMainPage() {
         val directChatRoomId = ChatRoomId.of("directChatRoomId")
         val groupChatRoomId = ChatRoomId.of("groupChatRoomId")
+        val userId = UserId.of("testUserId")
         val user = TestDataFactory.createUser(
-            "testUserId",
+            userId.id,
             AccessStatus.ACCESS,
         )
 
@@ -130,7 +131,6 @@ class MainControllerTest : RestDocsTest() {
                         // (1) 공통 필드 검증
                         body("$path.messageId", equalTo(log.messageId))
                         body("$path.type", equalTo((log.type.name.lowercase())))
-                        body("$path.chatRoomId", equalTo(log.chatRoomId.id))
                         body("$path.senderId", equalTo(log.senderId.id))
                         body("$path.timestamp", equalTo(formattedTime))
                         body("$path.seqNumber", equalTo(log.number.sequenceNumber))
@@ -177,7 +177,6 @@ class MainControllerTest : RestDocsTest() {
                         // (1) 공통 필드 검증
                         body("$path.messageId", equalTo(log.messageId))
                         body("$path.type", equalTo((log.type.name.lowercase())))
-                        body("$path.chatRoomId", equalTo(log.chatRoomId.id))
                         body("$path.senderId", equalTo(log.senderId.id))
                         body("$path.timestamp", equalTo(formattedTime))
                         // (2) 타입별 검증
@@ -243,7 +242,6 @@ class MainControllerTest : RestDocsTest() {
                         fieldWithPath("data.groupChatRooms[].chatLogs").description("해당 채팅방 채팅 로그 목록"),
                         fieldWithPath("data.groupChatRooms[].chatLogs[].messageId").description("메시지 ID"),
                         fieldWithPath("data.groupChatRooms[].chatLogs[].type").description("메시지 타입 (reply, file, normal, invite, leave 등)"),
-                        fieldWithPath("data.groupChatRooms[].chatLogs[].chatRoomId").description("채팅방 ID"),
                         fieldWithPath("data.groupChatRooms[].chatLogs[].senderId").description("메시지 전송자 ID"),
                         fieldWithPath("data.groupChatRooms[].chatLogs[].timestamp").description("메시지 전송 시각 (yy-MM-dd HH:mm:ss)"),
                         fieldWithPath("data.groupChatRooms[].chatLogs[].seqNumber").description("메시지 시퀀스 넘버 (1부터 시작)"),
@@ -281,7 +279,6 @@ class MainControllerTest : RestDocsTest() {
                         fieldWithPath("data.directChatRooms[].chatLogs").description("해당 채팅방 채팅 로그 목록"),
                         fieldWithPath("data.directChatRooms[].chatLogs[].messageId").description("메시지 ID"),
                         fieldWithPath("data.directChatRooms[].chatLogs[].type").description("메시지 타입"),
-                        fieldWithPath("data.directChatRooms[].chatLogs[].chatRoomId").description("채팅방 ID"),
                         fieldWithPath("data.directChatRooms[].chatLogs[].senderId").description("메시지 전송자 ID"),
                         fieldWithPath("data.directChatRooms[].chatLogs[].timestamp").description("메시지 전송 시각"),
                         fieldWithPath("data.directChatRooms[].chatLogs[].seqNumber").description("메시지 시퀀스 넘버(1부터 시작)"),
