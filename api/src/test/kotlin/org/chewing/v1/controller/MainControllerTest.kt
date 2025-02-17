@@ -121,8 +121,11 @@ class MainControllerTest : RestDocsTest() {
                 }
                 groupChat.forEachIndexed {
                         index, (groupChatRoom, logs) ->
+                    val friendIds = groupChatRoom.memberInfos
+                        .filter { it.memberId != userId }
+                        .map { it.memberId.id }
                     body("data.groupChatRooms[$index].chatRoomId", equalTo(groupChatRoom.roomInfo.chatRoomId.id))
-                    body("data.groupChatRooms[$index].friendIds", equalTo(groupChatRoom.memberInfos.map { it.memberId.id }))
+                    body("data.groupChatRooms[$index].friendIds", equalTo(friendIds))
                     logs.forEachIndexed { logIndex, log ->
                         // 응답 JSON Path 편하게 재사용하기 위한 변수
                         val path = "data.groupChatRooms[$index].chatLogs[$logIndex]"

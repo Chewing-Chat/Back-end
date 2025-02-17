@@ -2,9 +2,9 @@ package org.chewing.v1.implementation.notification
 
 import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.chat.message.*
+import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.notification.Notification
 import org.chewing.v1.model.notification.NotificationType
-import org.chewing.v1.model.user.UserInfo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -14,7 +14,7 @@ class NotificationGenerator {
     private val logger = LoggerFactory.getLogger(NotificationGenerator::class.java)
 
     fun generateMessageNotification(
-        sourceUserInfo: UserInfo,
+        friendShip: FriendShip,
         pushTokens: List<PushToken>,
         message: ChatMessage,
     ): List<Notification> {
@@ -42,7 +42,7 @@ class NotificationGenerator {
         }
 
         return createNotifications(
-            sourceUserInfo = sourceUserInfo,
+            friendShip = friendShip,
             pushTokens = pushTokens,
             type = type,
             targetId = targetId.id,
@@ -51,14 +51,14 @@ class NotificationGenerator {
     }
 
     private fun createNotifications(
-        sourceUserInfo: UserInfo,
+        friendShip: FriendShip,
         pushTokens: List<PushToken>,
         type: NotificationType,
         targetId: String,
         content: String?,
     ): List<Notification> = pushTokens.map { pushToken ->
         Notification.of(
-            userInfo = sourceUserInfo,
+            friendShip = friendShip,
             pushToken = pushToken,
             type = type,
             targetId = targetId,

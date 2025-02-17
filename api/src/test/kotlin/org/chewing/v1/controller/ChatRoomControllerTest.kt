@@ -11,7 +11,6 @@ import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.controller.chat.ChatRoomController
-import org.chewing.v1.dto.request.auth.VerificationRequest
 import org.chewing.v1.dto.request.chat.ChatRoomRequest
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
@@ -135,9 +134,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                     friendIds.forEachIndexed { friendIndex, friendId ->
                         body("$chatRoomJsonPath.friendIds[$friendIndex]", equalTo(friendId))
                     }
-
                 }
-
             }
             .apply(
                 document(
@@ -373,7 +370,6 @@ class ChatRoomControllerTest : RestDocsTest() {
             )
     }
 
-
     @Test
     fun favoriteDirectChatRoom() {
         val chatRoomId = ChatRoomId.of("testChatRoomId")
@@ -498,11 +494,10 @@ class ChatRoomControllerTest : RestDocsTest() {
                     ),
                 ),
             )
-
     }
 
     @Test
-    fun inviteGroupChatRoom(){
+    fun inviteGroupChatRoom() {
         val chatRoomId = ChatRoomId.of("testChatRoomId")
         val friendId = "testFriendId"
         val requestBody = ChatRoomRequest.Invite(
@@ -534,7 +529,7 @@ class ChatRoomControllerTest : RestDocsTest() {
     }
 
     @Test
-    fun leaveGroupChatRoom(){
+    fun leaveGroupChatRoom() {
         val chatRoomId = ChatRoomId.of("testChatRoomId")
         val requestBody = ChatRoomRequest.Leave(
             chatRoomId = chatRoomId.id,

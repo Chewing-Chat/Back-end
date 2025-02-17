@@ -35,7 +35,7 @@ data class FullGroupChatRoomResponse(
                     friendIds = friendIds,
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
 
-                    )
+                )
 
                 is ChatFileLog -> FullGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
@@ -46,7 +46,7 @@ data class FullGroupChatRoomResponse(
                     friendIds = friendIds,
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
 
-                    )
+                )
                 is ChatInviteLog -> FullGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomOwnStatus = chatRoomOwnStatus.status.name.lowercase(),
@@ -56,7 +56,7 @@ data class FullGroupChatRoomResponse(
                     friendIds = friendIds,
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
 
-                    )
+                )
                 is ChatLeaveLog -> FullGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomOwnStatus = chatRoomOwnStatus.status.name.lowercase(),
@@ -66,7 +66,7 @@ data class FullGroupChatRoomResponse(
                     friendIds = friendIds,
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
 
-                    )
+                )
                 is ChatNormalLog -> FullGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomOwnStatus = chatRoomOwnStatus.status.name.lowercase(),
@@ -76,7 +76,7 @@ data class FullGroupChatRoomResponse(
                     friendIds = friendIds,
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
 
-                    )
+                )
             }
         }
     }
