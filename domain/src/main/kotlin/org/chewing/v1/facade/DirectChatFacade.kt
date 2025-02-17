@@ -16,6 +16,7 @@ import org.chewing.v1.service.chat.DirectChatRoomService
 import org.chewing.v1.service.friend.FriendShipService
 import org.chewing.v1.service.notification.NotificationService
 import org.springframework.stereotype.Service
+import kotlin.collections.first
 
 @Service
 class DirectChatFacade(
@@ -42,11 +43,24 @@ class DirectChatFacade(
             chatMessages[chatRoom.roomInfo.chatRoomId]?.let { latestMessage ->
                 chatRoom to latestMessage
             }
-        }
+        }.sortedByDescending { it.second.timestamp }
+    }
+
+    fun searchDirectChatRooms(userId: UserId, friendIds: List<UserId>): List<Pair<DirectChatRoom, ChatLog>> {
+        val chatRooms = directChatRoomService.searchDirectChatRooms(userId, friendIds)
+        val chatRoomIds = chatRooms.map { it.roomInfo.chatRoomId }
+        val chatMessages = chatLogService.getLatestChat(chatRoomIds)
+            .associateBy { it.chatRoomId }
+
+        return chatRooms.mapNotNull { chatRoom ->
+            chatMessages[chatRoom.roomInfo.chatRoomId]?.let { latestMessage ->
+                chatRoom to latestMessage
+            }
+        }.sortedByDescending { it.second.timestamp }
     }
 
     fun processUnreadDirectChatLog(userId: UserId): List<Pair<DirectChatRoom, List<ChatLog>>> {
-        val directChatRooms = directChatRoomService.getUnreadDirectChatRooms(userId)
+        val directChatRooms = directChatRoomService.getUnReadDirectChatRooms(userId)
 
         val unReadDirectTargets = directChatRooms.map { chatRoom ->
             UnReadTarget.of(
@@ -61,9 +75,15 @@ class DirectChatFacade(
 
         return directChatRooms.mapNotNull { chatRoom ->
             chatLogsByRoomId[chatRoom.roomInfo.chatRoomId]?.let { chatLogs ->
-                chatRoom to chatLogs
+                chatRoom to chatLogs.sortedByDescending { it.timestamp }
             }
-        }
+        }.sortedByDescending { it.second.first().timestamp }
+    }
+
+    fun searchChatLog(userId: UserId, chatRoomId: ChatRoomId, keyword: String): List<ChatLog> {
+        directChatRoomService.validateIsParticipant(userId, chatRoomId)
+        return chatLogService.getChatKeyWordMessages(chatRoomId, keyword)
+            .sortedByDescending { it.timestamp }
     }
 
     fun processGetDirectChatRoom(userId: UserId, friendId: UserId): DirectChatRoom {

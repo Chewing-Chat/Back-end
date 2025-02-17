@@ -1,6 +1,7 @@
 package org.chewing.v1.config
 
 import org.chewing.v1.util.converter.StringToChatRoomSortCriteriaConverter
+import org.chewing.v1.util.converter.StringToFeedTypeConverter
 import org.chewing.v1.util.converter.StringToFileCategoryConverter
 import org.chewing.v1.util.converter.StringToFriendSortCriteriaConverter
 import org.chewing.v1.util.security.UserArgumentResolver
@@ -16,6 +17,7 @@ class WebConfig : WebMvcConfigurer {
         registry.addConverter(StringToChatRoomSortCriteriaConverter())
         registry.addConverter(StringToFileCategoryConverter())
         registry.addConverter(StringToFriendSortCriteriaConverter())
+        registry.addConverter(StringToFeedTypeConverter())
     }
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {

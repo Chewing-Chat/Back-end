@@ -140,3 +140,17 @@ include::{snippets}/chat-room-controller-test/favorite-group-chat-room/http-resp
 
 === 응답 필드 설명(Response Fields)
 include::{snippets}/chat-room-controller-test/favorite-group-chat-room/response-fields.adoc[]
+
+== 11. 채팅방 검색
+
+=== 요청(Request)
+include::{snippets}/chat-room-controller-test/search-chat-room/http-request.adoc[]
+
+=== 쿼리 파라미터 설명(Query Parameters)
+include::{snippets}/chat-room-controller-test/search-chat-room/query-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/chat-room-controller-test/search-chat-room/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/chat-room-controller-test/search-chat-room/response-fields.adoc[]

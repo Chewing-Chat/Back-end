@@ -18,6 +18,7 @@ import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedDetailId
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
+import org.chewing.v1.model.feed.FeedType
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.friend.UserSearch
@@ -150,7 +151,7 @@ object TestDataFactory {
         FriendShip.of(userId, friendId, createUserName(), true, status)
 
     fun createFeedInfo(feedId: FeedId, userId: UserId): FeedInfo =
-        FeedInfo.of(feedId, "topic", LocalDateTime.now(), userId)
+        FeedInfo.of(feedId, "topic", LocalDateTime.now(), userId, FeedType.FILE)
 
     private fun createFeedMedia(index: Int): Media =
         Media.of(FileCategory.FEED, "www.example.com", index, MediaType.IMAGE_PNG)

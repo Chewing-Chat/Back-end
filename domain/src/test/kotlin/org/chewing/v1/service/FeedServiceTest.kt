@@ -14,6 +14,7 @@ import org.chewing.v1.implementation.feed.FeedReader
 import org.chewing.v1.implementation.feed.FeedRemover
 import org.chewing.v1.implementation.feed.FeedValidator
 import org.chewing.v1.implementation.media.FileHandler
+import org.chewing.v1.model.feed.FeedType
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.repository.feed.FeedDetailRepository
 import org.chewing.v1.repository.feed.FeedRepository
@@ -210,13 +211,13 @@ class FeedServiceTest {
         val media = TestDataFactory.createProfileMedia()
         val visibleFriendIds = listOf(TestDataFactory.createFriendId())
 
-        every { feedRepository.append(userId, topic) } returns feedId
+        every { feedRepository.append(userId, topic, FeedType.FILE) } returns feedId
         every { feedDetailRepository.append(listOf(media), feedId) } just Runs
         every { feedVisibilityRepository.append(feedId, visibleFriendIds.plus(userId)) } just Runs
         every { fileHandler.handleNewFiles(userId, listOf(fileData), FileCategory.FEED) } returns listOf(media)
 
         val result =
-            feedService.make(userId, visibleFriendIds, listOf(fileData), topic, FileCategory.FEED)
+            feedService.make(userId, visibleFriendIds, listOf(fileData), topic, FileCategory.FEED, FeedType.FILE)
         assert(result == feedId)
     }
 }

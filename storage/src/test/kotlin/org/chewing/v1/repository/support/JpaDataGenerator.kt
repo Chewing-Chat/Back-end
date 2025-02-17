@@ -38,6 +38,7 @@ import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
+import org.chewing.v1.model.feed.FeedType
 import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleInfo
@@ -178,11 +179,11 @@ class JpaDataGenerator {
     }
 
     fun feedEntityData(userId: UserId): FeedInfo =
-        feedJpaRepository.save(FeedJpaEntity.generate("content", userId)).toFeedInfo()
+        feedJpaRepository.save(FeedJpaEntity.generate("content", userId, FeedType.FILE)).toFeedInfo()
 
     fun feedEntityDataList(userId: UserId): List<FeedInfo> {
         val feedJpaEntityList = (1..10).map {
-            FeedJpaEntity.generate("content $it", userId)
+            FeedJpaEntity.generate("content $it", userId, FeedType.FILE)
         }
         feedJpaRepository.saveAll(feedJpaEntityList)
         return feedJpaEntityList.map { it.toFeedInfo() }

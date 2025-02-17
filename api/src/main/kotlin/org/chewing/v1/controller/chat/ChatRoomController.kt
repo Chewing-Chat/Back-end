@@ -44,6 +44,16 @@ class ChatRoomController(
         return ResponseHelper.success(ChatRoomListResponse.from(directChatRooms, groupChatRooms, userId))
     }
 
+    @GetMapping("/search")
+    fun searchChatRoom(
+        @CurrentUser userId: UserId,
+        @RequestParam("friendIds") friendIds: List<String>,
+    ): SuccessResponseEntity<ChatRoomListResponse> {
+        val directChatRooms = directChatFacade.searchDirectChatRooms(userId, friendIds.map { UserId.of(it) })
+        val groupChatRooms = groupChatFacade.searchGroupChatRooms(userId, friendIds.map { UserId.of(it) })
+        return ResponseHelper.success(ChatRoomListResponse.from(directChatRooms, groupChatRooms, userId))
+    }
+
     @GetMapping("/direct/{friendId}")
     fun getDirectChatRoom(
         @CurrentUser userId: UserId,

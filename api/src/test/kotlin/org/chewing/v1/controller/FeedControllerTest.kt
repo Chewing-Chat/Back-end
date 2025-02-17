@@ -17,8 +17,10 @@ import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.facade.FriendFeedFacade
 import org.chewing.v1.model.feed.FeedId
+import org.chewing.v1.model.feed.FeedType
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.feed.FeedService
+import org.chewing.v1.util.converter.StringToFeedTypeConverter
 import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.chewing.v1.util.security.UserArgumentResolver
 import org.hamcrest.CoreMatchers.equalTo
@@ -49,6 +51,7 @@ class FeedControllerTest : RestDocsTest() {
     private lateinit var feedController: FeedController
     private lateinit var exceptionHandler: GlobalExceptionHandler
     private lateinit var userArgumentResolver: UserArgumentResolver
+    private lateinit var feedTypeConverter: StringToFeedTypeConverter
 
     @BeforeEach
     fun setUp() {
@@ -56,8 +59,9 @@ class FeedControllerTest : RestDocsTest() {
         friendFeedFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
         userArgumentResolver = UserArgumentResolver()
+        feedTypeConverter = StringToFeedTypeConverter()
         feedController = FeedController(feedService, friendFeedFacade)
-        mockMvc = mockController(feedController, exceptionHandler, userArgumentResolver)
+        mockMvc = mockControllerWithAdviceAndCustomConverter(feedController, exceptionHandler, feedTypeConverter, userArgumentResolver)
         val userId = UserId.of("testUserId")
         val authentication = UsernamePasswordAuthenticationToken(userId, null)
         SecurityContextHolder.getContext().authentication = authentication
@@ -293,13 +297,15 @@ class FeedControllerTest : RestDocsTest() {
 
         val feedId = FeedId.of("testFeedId1")
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
+        val feedType = FeedType.FILE
 
-        every { feedService.make(any(), any(), any(), any(), any()) } returns feedId
+        every { feedService.make(any(), any(), any(), any(), any(), feedType) } returns feedId
 
         given()
             .setupAuthenticatedMultipartRequest()
             .queryParam("content", "testContent")
             .queryParam("friendIds", *testFriendIds.toTypedArray())
+            .queryParam("type", FeedType.FILE.name.lowercase())
             .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
             .multiPart("files", mockFile2.originalFilename, mockFile2.bytes, MediaType.IMAGE_JPEG_VALUE)
             .post("/api/feed")
@@ -320,6 +326,7 @@ class FeedControllerTest : RestDocsTest() {
                     queryParameters(
                         parameterWithName("content").description("피드 내용"),
                         parameterWithName("friendIds").description("피드를 공유할 친구 ID 목록(POST /api/feed?content=testContent&friendIds=testFriendId&friendIds=testFriendId2) 형식"),
+                        parameterWithName("type").description("피드 타입(TEXT, FILE) Text만 보낼시 FILE은 제외하고 보내면 됨"),
                     ),
                     responseFields(
                         fieldWithPath("status").description("상태 코드"),
@@ -346,12 +353,13 @@ class FeedControllerTest : RestDocsTest() {
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
-        every { feedService.make(any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_COULD_NOT_EMPTY)
+        every { feedService.make(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_COULD_NOT_EMPTY)
 
         given()
             .setupAuthenticatedMultipartRequest()
             .queryParam("content", "testContent")
             .queryParam("friendIds", *testFriendIds.toTypedArray())
+            .queryParam("type", FeedType.FILE.name.lowercase())
             .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
             .multiPart("files", mockFile2.originalFilename, mockFile2.bytes, MediaType.IMAGE_JPEG_VALUE)
             .post("/api/feed")
@@ -387,12 +395,13 @@ class FeedControllerTest : RestDocsTest() {
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
-        every { feedService.make(any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_INCORRECT)
+        every { feedService.make(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_INCORRECT)
 
         given()
             .setupAuthenticatedMultipartRequest()
             .queryParam("content", "testContent")
             .queryParam("friendIds", *testFriendIds.toTypedArray())
+            .queryParam("type", FeedType.FILE.name.lowercase())
             .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
             .multiPart("files", mockFile2.originalFilename, mockFile2.bytes, MediaType.IMAGE_JPEG_VALUE)
             .post("/api/feed")
@@ -426,6 +435,7 @@ class FeedControllerTest : RestDocsTest() {
             .setupAuthenticatedMultipartRequest()
             .queryParam("content", "testContent")
             .queryParam("friendIds", *testFriendIds.toTypedArray())
+            .queryParam("type", FeedType.TEXT.name.lowercase())
             .multiPart("files", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
             .multiPart("files", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
             .post("/api/feed")
@@ -461,12 +471,13 @@ class FeedControllerTest : RestDocsTest() {
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
-        every { feedService.make(any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_CONVERT_FAILED)
+        every { feedService.make(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_CONVERT_FAILED)
 
         given()
             .setupAuthenticatedMultipartRequest()
             .queryParam("content", "testContent")
             .queryParam("friendIds", *testFriendIds.toTypedArray())
+            .queryParam("type", FeedType.FILE.name.lowercase())
             .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
             .multiPart("files", mockFile2.originalFilename, mockFile2.bytes, MediaType.IMAGE_JPEG_VALUE)
             .post("/api/feed")
@@ -502,12 +513,13 @@ class FeedControllerTest : RestDocsTest() {
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
-        every { feedService.make(any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_UPLOAD_FAILED)
+        every { feedService.make(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_UPLOAD_FAILED)
 
         given()
             .setupAuthenticatedMultipartRequest()
             .queryParam("content", "testContent")
             .queryParam("friendIds", *testFriendIds.toTypedArray())
+            .queryParam("type", FeedType.FILE.name.lowercase())
             .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
             .multiPart("files", mockFile2.originalFilename, mockFile2.bytes, MediaType.IMAGE_JPEG_VALUE)
             .post("/api/feed")

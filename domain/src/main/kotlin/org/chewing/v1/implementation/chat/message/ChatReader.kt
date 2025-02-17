@@ -27,4 +27,8 @@ class ChatReader(
     fun readsUnreadChatLogs(targets: List<UnReadTarget>): List<ChatLog> {
         return chatLogRepository.readUnreadChatLogs(targets)
     }
+
+    fun readChatKeyWordMessages(chatRoomId: ChatRoomId, keyword: String): List<ChatLog> {
+        return chatLogRepository.readChatKeyWordMessages(chatRoomId, keyword)
+    }
 }

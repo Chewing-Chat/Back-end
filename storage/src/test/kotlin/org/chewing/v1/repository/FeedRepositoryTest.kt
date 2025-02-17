@@ -2,6 +2,7 @@ package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
+import org.chewing.v1.model.feed.FeedType
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.feed.FeedRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
@@ -23,7 +24,7 @@ internal class FeedRepositoryTest : JpaContextTest() {
     fun `피드를 추가해야 한다`() {
         val userId = generateUserId()
         val content = "content"
-        val result = feedRepositoryImpl.append(userId, content)
+        val result = feedRepositoryImpl.append(userId, content, FeedType.FILE)
         assert(result.id.isNotEmpty())
     }
 
