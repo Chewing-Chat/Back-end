@@ -11,6 +11,7 @@ import org.chewing.v1.model.user.UserId
 
 data class FullGroupChatRoomResponse(
     val chatRoomId: String,
+    val chatRoomName: String,
     val readSequenceNumber: Int,
     val joinSequenceNumber: Int,
     val chatRoomSequenceNumber: Int,
@@ -34,6 +35,7 @@ data class FullGroupChatRoomResponse(
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
+                    chatRoomName = chatRoom.roomInfo.name,
 
                 )
 
@@ -45,6 +47,7 @@ data class FullGroupChatRoomResponse(
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
+                    chatRoomName = chatRoom.roomInfo.name,
 
                 )
                 is ChatInviteLog -> FullGroupChatRoomResponse(
@@ -55,6 +58,7 @@ data class FullGroupChatRoomResponse(
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
+                    chatRoomName = chatRoom.roomInfo.name,
 
                 )
                 is ChatLeaveLog -> FullGroupChatRoomResponse(
@@ -65,6 +69,7 @@ data class FullGroupChatRoomResponse(
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
+                    chatRoomName = chatRoom.roomInfo.name,
 
                 )
                 is ChatNormalLog -> FullGroupChatRoomResponse(
@@ -75,6 +80,7 @@ data class FullGroupChatRoomResponse(
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
+                    chatRoomName = chatRoom.roomInfo.name,
 
                 )
             }

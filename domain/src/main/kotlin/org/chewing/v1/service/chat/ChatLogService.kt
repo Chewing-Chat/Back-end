@@ -152,7 +152,10 @@ class ChatLogService(
         return chatReader.readChatKeyWordMessages(chatRoomId, keyword)
     }
 
-    fun getChatLog(chatRoomId: ChatRoomId, sequenceNumber: Int, joinSequence: Int): List<ChatLog> {
+    fun getChatLogs(chatRoomId: ChatRoomId, sequenceNumber: Int, joinSequence: Int): List<ChatLog> {
         return chatReader.readChatLog(chatRoomId, sequenceNumber, joinSequence)
+    }
+    fun getChatLog(messageId: String): ChatLog {
+        return chatReader.readChatMessage(messageId)
     }
 }
