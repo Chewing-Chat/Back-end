@@ -36,6 +36,7 @@ import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedDetailId
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
+import org.chewing.v1.model.feed.FeedType
 import org.chewing.v1.model.friend.Friend
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.friend.FriendShipStatus
@@ -255,6 +256,7 @@ object TestDataFactory {
             "testContent",
             LocalDateTime.now(),
             UserId.of("testUserId"),
+            FeedType.FILE,
         )
     }
 

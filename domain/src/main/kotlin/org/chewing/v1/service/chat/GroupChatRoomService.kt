@@ -52,6 +52,10 @@ class GroupChatRoomService(
         groupChatRoomUpdater.updateMemberStatus(chatRoomId, userId, status)
     }
 
+    fun validateIsParticipant(chatRoomId: ChatRoomId, userId: UserId) {
+        groupChatRoomValidator.isParticipant(chatRoomId, userId)
+    }
+
     fun getGroupChatRooms(userId: UserId): List<GroupChatRoom> {
         val userParticipatedRooms = groupChatRoomReader.readRoomUserInfos(userId)
         val chatRoomIds = userParticipatedRooms.map { it.chatRoomId }

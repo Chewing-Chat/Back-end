@@ -1,7 +1,7 @@
 [[FEED-API]]
 = FEED API
 
-== 1. 피드 작성 01/16 수정
+== 1. 피드 작성 02/17 수정
 
 === 요청(Request)
 include::{snippets}/feed-controller-test/add-feed/http-request.adoc[]

@@ -66,6 +66,11 @@ class DirectChatFacade(
         }
     }
 
+    fun searchChatLog(userId: UserId, chatRoomId: ChatRoomId, keyword: String): List<ChatLog> {
+        directChatRoomService.validateIsParticipant(userId, chatRoomId)
+        return chatLogService.getChatKeyWordMessages(chatRoomId, keyword)
+    }
+
     fun processGetDirectChatRoom(userId: UserId, friendId: UserId): DirectChatRoom {
         friendShipService.checkAccessibleFriendShip(userId, friendId)
         return directChatRoomService.getDirectChatRoom(userId, friendId)

@@ -138,6 +138,11 @@ class GroupChatFacade(
         }
     }
 
+    fun searchChatLog(userId: UserId, chatRoomId: ChatRoomId, keyword: String): List<ChatLog> {
+        groupChatRoomService.validateIsParticipant(chatRoomId, userId)
+        return chatLogService.getChatKeyWordMessages(chatRoomId, keyword)
+    }
+
     fun processGroupChatCreate(userId: UserId, friendIds: List<UserId>, groupName: String): GroupChatRoom {
         val chatRoomId = groupChatRoomService.produceGroupChatRoom(userId, friendIds, groupName)
         val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)

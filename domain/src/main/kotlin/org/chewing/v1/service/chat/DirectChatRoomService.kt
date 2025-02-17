@@ -68,6 +68,11 @@ class DirectChatRoomService(
         return existingChatRoom.chatRoomId
     }
 
+    fun validateIsParticipant(userId: UserId, chatRoomId: ChatRoomId) {
+        val existingChatRoom = directChatRoomReader.readRoomInfo(chatRoomId, userId)
+        directChatRoomValidator.isActivated(existingChatRoom)
+    }
+
     fun readDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): ChatRoomMemberSequence {
         return chatSequenceHandler.handleMemberReadSequence(chatRoomId, userId, sequenceNumber)
     }

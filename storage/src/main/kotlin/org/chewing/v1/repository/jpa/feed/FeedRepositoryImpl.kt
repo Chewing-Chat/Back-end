@@ -5,6 +5,7 @@ import org.chewing.v1.jpaentity.feed.FeedJpaEntity
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
+import org.chewing.v1.model.feed.FeedType
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.feed.FeedRepository
 import org.springframework.stereotype.Repository
@@ -29,16 +30,20 @@ internal class FeedRepositoryImpl(
         feedJpaRepository.deleteAllByUserId(userId.id)
     }
 
-    override fun append(userId: UserId, content: String) =
-        feedJpaRepository.save(FeedJpaEntity.generate(content, userId)).toFeedId()
+    override fun append(userId: UserId, content: String, type: FeedType) =
+        feedJpaRepository.save(FeedJpaEntity.generate(content, userId, type)).toFeedId()
 
     override fun isOwners(feedIds: List<FeedId>, userId: UserId): Boolean {
         return feedJpaRepository.existsByFeedIdInAndUserId(feedIds.map { it.id }, userId.id)
     }
+
     override fun readsOneDay(targetUserIds: List<UserId>): List<FeedInfo> {
         val now = LocalDateTime.now()
         val startDate = now.minusDays(1)
-        return feedJpaRepository.findAllByUserIdInAndCreatedAtAfterOrderByCreatedAtAsc(targetUserIds.map { it.id }, startDate)
+        return feedJpaRepository.findAllByUserIdInAndCreatedAtAfterOrderByCreatedAtAsc(
+            targetUserIds.map { it.id },
+            startDate,
+        )
             .map { it.toFeedInfo() }
     }
 }

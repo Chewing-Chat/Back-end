@@ -54,9 +54,10 @@ class FeedService(
         files: List<FileData>,
         content: String,
         category: FileCategory,
+        feedType: FeedType,
     ): FeedId {
         val medias = fileHandler.handleNewFiles(userId, files, category)
-        val feedId = feedAppender.append(medias, userId, content)
+        val feedId = feedAppender.append(medias, userId, content, feedType)
         val targetUserIds = targetFriends.plus(userId)
         feedAppender.appendVisibility(feedId, targetUserIds)
         return feedId

@@ -34,3 +34,37 @@ include::{snippets}/chat-log-controller-test/get-group-chat-logs/http-response.a
 
 === 응답 필드 설명(Response Fields)
 include::{snippets}/chat-log-controller-test/get-group-chat-logs/response-fields.adoc[]
+
+== 3. 개인 채팅방 로그 검색 02/17 수정
+
+=== 요청(Request)
+include::{snippets}/chat-log-controller-test/search-direct-chat-logs/http-request.adoc[]
+
+=== 요청 쿼리 파라미터 설명(Request Query Parameters)
+include::{snippets}/chat-log-controller-test/search-direct-chat-logs/query-parameters.adoc[]
+
+=== 요청 경로 파리미터 설명(Request Path Parameters)
+include::{snippets}/chat-log-controller-test/search-direct-chat-logs/path-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/chat-log-controller-test/search-direct-chat-logs/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/chat-log-controller-test/search-direct-chat-logs/response-fields.adoc[]
+
+== 4. 그룹 채팅방 로그 검색 02/17 수정
+
+=== 요청(Request)
+include::{snippets}/chat-log-controller-test/search-group-chat-logs/http-request.adoc[]
+
+=== 요청 쿼리 파라미터 설명(Request Query Parameters)
+include::{snippets}/chat-log-controller-test/search-group-chat-logs/query-parameters.adoc[]
+
+=== 요청 경로 파리미터 설명(Request Path Parameters)
+include::{snippets}/chat-log-controller-test/search-group-chat-logs/path-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/chat-log-controller-test/search-group-chat-logs/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/chat-log-controller-test/search-group-chat-logs/response-fields.adoc[]

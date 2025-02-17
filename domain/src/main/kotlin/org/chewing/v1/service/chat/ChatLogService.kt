@@ -148,6 +148,10 @@ class ChatLogService(
         return chatReader.readsUnreadChatLogs(targets)
     }
 
+    fun getChatKeyWordMessages(chatRoomId: ChatRoomId, keyword: String): List<ChatLog> {
+        return chatReader.readChatKeyWordMessages(chatRoomId, keyword)
+    }
+
     fun getChatLog(chatRoomId: ChatRoomId, sequenceNumber: Int, joinSequence: Int): List<ChatLog> {
         return chatReader.readChatLog(chatRoomId, sequenceNumber, joinSequence)
     }
