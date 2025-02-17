@@ -20,7 +20,9 @@ class FeedReader(
     fun readInfo(feedId: FeedId): FeedInfo =
         feedRepository.read(feedId) ?: throw NotFoundException(ErrorCode.FEED_NOT_FOUND)
 
-    fun readsInfo(userId: UserId): List<FeedInfo> = feedRepository.reads(userId)
+    fun readInfos(userId: UserId): List<FeedInfo> = feedRepository.reads(userId)
+
+    fun readsOneDayInfos(targetUserIds: List<UserId>): List<FeedInfo> = feedRepository.readsOneDay(targetUserIds)
 
     fun readVisibleFeedIds(userId: UserId, feedIds: List<FeedId>): List<FeedId> =
         feedVisibilityRepository.readVisibleFeedIds(userId, feedIds)

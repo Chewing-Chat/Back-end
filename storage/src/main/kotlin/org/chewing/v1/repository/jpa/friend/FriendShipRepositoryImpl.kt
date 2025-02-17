@@ -63,6 +63,9 @@ internal class FriendShipRepositoryImpl(
         friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
             .orElse(null)?.toFriendShip()
 
+    override fun readsFavorite(userId: UserId): List<FriendShip> =
+        friendShipJpaRepository.findAllByIdUserIdAndFavorite(userId.id, true).map { it.toFriendShip() }
+
     override fun updateFavorite(userId: UserId, friendId: UserId, favorite: Boolean): UserId? =
         friendShipJpaRepository.findById(FriendShipId.of(userId, friendId)).map {
             it.updateFavorite(favorite)

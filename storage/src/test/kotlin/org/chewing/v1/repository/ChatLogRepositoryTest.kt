@@ -1,16 +1,15 @@
 package org.chewing.v1.repository
 
 import org.chewing.v1.config.MongoContextTest
-import org.chewing.v1.error.ConflictException
-import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.chat.log.*
+import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.mongorepository.ChatLogMongoRepository
-import org.chewing.v1.repository.mongo.chat.ChatLogRepositoryImpl
+import org.chewing.v1.repository.mongo.chat.log.ChatLogRepositoryImpl
 import org.chewing.v1.repository.support.ChatMessageProvider
 import org.chewing.v1.repository.support.MongoDataGenerator
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.mongodb.core.MongoTemplate
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
@@ -21,8 +20,11 @@ class ChatLogRepositoryTest : MongoContextTest() {
     @Autowired
     private lateinit var mongoDataGenerator: MongoDataGenerator
 
+    @Autowired
+    private lateinit var mongoTemplate: MongoTemplate
+
     private val chatLogRepositoryImpl: ChatLogRepositoryImpl by lazy {
-        ChatLogRepositoryImpl(chatLogMongoRepository)
+        ChatLogRepositoryImpl(chatLogMongoRepository, mongoTemplate)
     }
 
     @Test
@@ -43,7 +45,6 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.senderId == chatMessage.senderId)
         assert(chatLog.text == chatMessage.text)
         assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
-        assert(chatLog.number.page == chatMessage.number.page)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -62,7 +63,6 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
         assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
-        assert(chatLog.number.page == chatMessage.number.page)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -81,7 +81,6 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
         assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
-        assert(chatLog.number.page == chatMessage.number.page)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -100,7 +99,6 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
         assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
-        assert(chatLog.number.page == chatMessage.number.page)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -122,7 +120,6 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
         assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
-        assert(chatLog.number.page == chatMessage.number.page)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -130,34 +127,9 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.text == chatMessage.text)
         assert(chatLog.type == ChatLogType.REPLY)
         assert(chatLog.parentMessageId == parentMessageId)
-        assert(chatLog.parentMessagePage == parentLog.number.page)
         assert(chatLog.parentMessageText == parentLog.text)
         assert(chatLog.parentSeqNumber == parentLog.number.sequenceNumber)
         assert(chatLog.parentMessageType == parentLog.type)
-    }
-
-    @Test
-    fun `폭탄 채팅 읽기 - 존재함`() {
-        val messageId = generateMessageId()
-        val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildBombMessage(messageId, chatRoomId)
-        mongoDataGenerator.chatLogEntityData(chatMessage)
-        val chatLog = chatLogRepositoryImpl.readChatMessage(messageId) as ChatBombLog
-        assert(chatLog.messageId == messageId)
-        assert(chatLog.chatRoomId == chatRoomId)
-        assert(chatLog.senderId == chatMessage.senderId)
-        assert(chatLog.text == chatMessage.text)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
-        assert(chatLog.number.page == chatMessage.number.page)
-        assert(
-            chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
-                .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
-        )
-        assert(chatLog.type == ChatLogType.BOMB)
-        assert(
-            chatLog.expiredAt.truncatedTo(ChronoUnit.MILLIS)
-                .equals(chatMessage.expiredAt.truncatedTo(ChronoUnit.MILLIS)),
-        )
     }
 
     @Test
@@ -172,21 +144,34 @@ class ChatLogRepositoryTest : MongoContextTest() {
             chatRoomId,
             ChatMessageProvider.buildNormalLog(generateMessageId(), chatRoomId),
         )
-        val chatBombeMessage = ChatMessageProvider.buildBombMessage(generateMessageId(), chatRoomId)
         mongoDataGenerator.chatLogEntityData(chatNormalMessage)
         mongoDataGenerator.chatLogEntityData(chatLeaveMessage)
         mongoDataGenerator.chatLogEntityData(chatInviteMessage)
         mongoDataGenerator.chatLogEntityData(chatFileMessage)
         mongoDataGenerator.chatLogEntityData(chatReplyMessage)
-        mongoDataGenerator.chatLogEntityData(chatBombeMessage)
-        val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 1)
-        assert(chatLogs.size == 6)
-        assert(chatLogs[0] is ChatNormalLog)
-        assert(chatLogs[1] is ChatLeaveLog)
-        assert(chatLogs[2] is ChatInviteLog)
-        assert(chatLogs[3] is ChatFileLog)
-        assert(chatLogs[4] is ChatReplyLog)
-        assert(chatLogs[5] is ChatBombLog)
+        val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 1, 0)
+        assert(chatLogs.size == 5)
+    }
+
+    @Test
+    fun `채팅로그 리스트 읽기 - 0개`() {
+        val chatRoomId = generateChatRoomId()
+        val chatNormalMessage = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId)
+        val chatLeaveMessage = ChatMessageProvider.buildLeaveMessage(generateMessageId(), chatRoomId)
+        val chatInviteMessage = ChatMessageProvider.buildInviteMessage(generateMessageId(), chatRoomId)
+        val chatFileMessage = ChatMessageProvider.buildFileMessage(generateMessageId(), chatRoomId)
+        val chatReplyMessage = ChatMessageProvider.buildReplyMessage(
+            generateMessageId(),
+            chatRoomId,
+            ChatMessageProvider.buildNormalLog(generateMessageId(), chatRoomId),
+        )
+        mongoDataGenerator.chatLogEntityData(chatNormalMessage)
+        mongoDataGenerator.chatLogEntityData(chatLeaveMessage)
+        mongoDataGenerator.chatLogEntityData(chatInviteMessage)
+        mongoDataGenerator.chatLogEntityData(chatFileMessage)
+        mongoDataGenerator.chatLogEntityData(chatReplyMessage)
+        val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 1, 1)
+        assert(chatLogs.size == 0)
     }
 
     @Test
@@ -258,34 +243,11 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.senderId == chatMessage.senderId)
         assert(chatLog.text == chatMessage.text)
         assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
-        assert(chatLog.number.page == chatMessage.number.page)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
         )
         assert(chatLog.type == ChatLogType.NORMAL)
-    }
-
-    @Test
-    fun `잘못된 타입의 메시지  저장시 에러 발생 - 읽기 메시지`() {
-        val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildReadMessage(chatRoomId)
-
-        val exception = assertThrows<ConflictException> {
-            chatLogRepositoryImpl.appendChatLog(chatMessage)
-        }
-        assert(exception.errorCode == ErrorCode.INVALID_TYPE)
-    }
-
-    @Test
-    fun `잘못된 타입의 메시지  저장시 에러 발생 - 삭제 메시지`() {
-        val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildDeleteMessage(chatRoomId)
-
-        val exception = assertThrows<ConflictException> {
-            chatLogRepositoryImpl.appendChatLog(chatMessage)
-        }
-        assert(exception.errorCode == ErrorCode.INVALID_TYPE)
     }
 
     @Test
@@ -298,29 +260,15 @@ class ChatLogRepositoryTest : MongoContextTest() {
         mongoDataGenerator.chatLogEntityData(chatMessage3)
         val chatLog = chatLogRepositoryImpl.readLatestMessages(
             listOf(
-                chatMessage1.number,
-                chatMessage2.number,
-                chatMessage3.number,
+                chatMessage1.chatRoomId,
+                chatMessage2.chatRoomId,
+                chatMessage3.chatRoomId,
             ),
         )
         assert(chatLog.size == 3)
     }
 
-    @Test
-    fun `키워드로 채팅 조회`() {
-        val chatRoomId = generateChatRoomId()
-        val chatMessage1 = ChatMessageProvider.buildNormalMessageForSearch(generateMessageId(), chatRoomId, "밥먹자")
-        val chatMessage2 = ChatMessageProvider.buildNormalMessageForSearch(generateMessageId(), chatRoomId, "언제 밥 먹을 건데?")
-        val chatMessage3 = ChatMessageProvider.buildNormalMessageForSearch(generateMessageId(), chatRoomId, "지금 밥 먹을 거야")
-        val keyword = "밥, 먹자, 언제, 지금"
-        mongoDataGenerator.chatLogEntityData(chatMessage1)
-        mongoDataGenerator.chatLogEntityData(chatMessage2)
-        mongoDataGenerator.chatLogEntityData(chatMessage3)
-        val chatLog = chatLogRepositoryImpl.readChatKeyWordMessages(chatMessage1.chatRoomId, keyword)
-        assert(chatLog.size == 3)
-    }
-
-    private fun generateChatRoomId(): String = UUID.randomUUID().toString()
+    private fun generateChatRoomId(): ChatRoomId = ChatRoomId.of(UUID.randomUUID().toString())
 
     private fun generateMessageId(): String = UUID.randomUUID().toString()
 }

@@ -74,7 +74,7 @@ class ScheduleControllerTest : RestDocsTest() {
         val schedules = listOf(schedule)
         val year = 2021
         val month = 1
-        val formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         // When
         every { scheduleService.fetches(any(), any()) } returns schedules
 
@@ -476,7 +476,7 @@ class ScheduleControllerTest : RestDocsTest() {
             ),
         )
 
-        val formatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss")
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val schedule = TestDataFactory.createSchedule(scheduleInfo, scheduleParticipants)
 
         every { scheduleService.fetch(any(), any()) } returns schedule

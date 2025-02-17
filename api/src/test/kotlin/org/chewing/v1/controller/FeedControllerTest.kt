@@ -15,7 +15,7 @@ import org.chewing.v1.controller.feed.FeedController
 import org.chewing.v1.dto.request.feed.FeedRequest
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
-import org.chewing.v1.facade.FeedAccessFacade
+import org.chewing.v1.facade.FriendFeedFacade
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.feed.FeedService
@@ -45,7 +45,7 @@ import java.time.format.DateTimeFormatter
 @ActiveProfiles("test")
 class FeedControllerTest : RestDocsTest() {
     private lateinit var feedService: FeedService
-    private lateinit var feedAccessFacade: FeedAccessFacade
+    private lateinit var friendFeedFacade: FriendFeedFacade
     private lateinit var feedController: FeedController
     private lateinit var exceptionHandler: GlobalExceptionHandler
     private lateinit var userArgumentResolver: UserArgumentResolver
@@ -53,10 +53,10 @@ class FeedControllerTest : RestDocsTest() {
     @BeforeEach
     fun setUp() {
         feedService = mockk()
-        feedAccessFacade = mockk()
+        friendFeedFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
         userArgumentResolver = UserArgumentResolver()
-        feedController = FeedController(feedService, feedAccessFacade)
+        feedController = FeedController(feedService, friendFeedFacade)
         mockMvc = mockController(feedController, exceptionHandler, userArgumentResolver)
         val userId = UserId.of("testUserId")
         val authentication = UsernamePasswordAuthenticationToken(userId, null)
@@ -106,7 +106,7 @@ class FeedControllerTest : RestDocsTest() {
         val friendId = "testFriendId"
         val feeds = listOf(createFeed())
 
-        every { feedAccessFacade.getFriendFeeds(UserId.of(userId), UserId.of(friendId)) } returns feeds
+        every { friendFeedFacade.getFriendFeeds(UserId.of(userId), UserId.of(friendId)) } returns feeds
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -146,7 +146,7 @@ class FeedControllerTest : RestDocsTest() {
         val testFeedId = "testFeedId"
         val userId = "testUserId"
         val feed = createFeed()
-        val uploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
+        val uploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         every { feedService.getFeed(any(), UserId.of(userId)) } returns feed
 
         given()
@@ -177,7 +177,7 @@ class FeedControllerTest : RestDocsTest() {
                         fieldWithPath("status").description("상태 코드"),
                         fieldWithPath("data.feedId").description("피드 아이디"),
                         fieldWithPath("data.content").description("피드 내용"),
-                        fieldWithPath("data.uploadTime").description("피드 업로드 시간 - 형식 yy-MM-dd HH:mm:ss"),
+                        fieldWithPath("data.uploadTime").description("피드 업로드 시간 - 형식 yyyy-MM-dd HH:mm:ss"),
                         fieldWithPath("data.details[].index").description("미디어 인덱스(0부터 시작)"),
                         fieldWithPath("data.details[].fileUrl").description("미디어 파일 URL"),
                         fieldWithPath("data.details[].type").description("미디어 타입(image/png, image/jpeg, image/jpg, image/png)"),

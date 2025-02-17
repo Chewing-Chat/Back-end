@@ -13,7 +13,7 @@ data class FeedResponse(
         fun of(
             feed: Feed,
         ): FeedResponse {
-            val formattedUploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss"))
+            val formattedUploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
             return FeedResponse(
                 feedId = feed.feed.feedId.id,
                 uploadTime = formattedUploadTime,

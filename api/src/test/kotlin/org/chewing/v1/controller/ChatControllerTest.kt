@@ -79,71 +79,112 @@ class ChatControllerTest : IntegrationTest() {
     }
 
     @Test
-    fun `일반 메세지 전송`() {
+    fun `개인 채팅방 일반 메세지 전송`() {
         val latch = CountDownLatch(1)
-        every { chatFacade.processCommon(any(), any(), any()) } answers {
+        every { directChatFacade.processDirectChatCommon(any(), any(), any()) } answers {
             latch.countDown()
         }
-        val chatDto = ChatRequest.Common("testRoomId", "testUserId")
-        session.send("/app/chat/common", chatDto)
+        val chatDto = ChatRequest.Common("testRoomId", "testMessage")
+        session.send("/app/chat/direct/common", chatDto)
         latch.await(1, TimeUnit.MINUTES)
-        verify { chatFacade.processCommon(chatDto.chatRoomId, any(), chatDto.message) }
+        verify { directChatFacade.processDirectChatCommon(chatDto.toChatRoomId(), any(), chatDto.message) }
     }
 
     @Test
-    fun `읽기 메시지 전송`() {
+    fun `개인 채팅방 읽기 메시지 전송`() {
         val latch = CountDownLatch(1)
-        every { chatFacade.processRead(any(), any()) } answers {
+        every { directChatFacade.processDirectChatRead(any(), any(), any()) } answers {
             latch.countDown()
         }
 
-        val chatReadDto = ChatRequest.Read("testRoomId")
-        session.send("/app/chat/read", chatReadDto)
+        val chatReadDto = ChatRequest.Read("testRoomId", 0)
+        session.send("/app/chat/direct/read", chatReadDto)
 
         latch.await(1, TimeUnit.MINUTES)
 
-        verify { chatFacade.processRead(chatReadDto.chatRoomId, userId) }
+        verify { directChatFacade.processDirectChatRead(chatReadDto.toChatRoomId(), any(), any()) }
     }
 
     @Test
-    fun `삭제 메시지 전송`() {
+    fun `개인 채팅방 삭제 메시지 전송`() {
         val latch = CountDownLatch(1)
-        every { chatFacade.processDelete(any(), any(), any()) } answers {
+        every { directChatFacade.processDirectChatDelete(any(), any(), any()) } answers {
             latch.countDown()
         }
 
         val chatDeleteDto = ChatRequest.Delete("testRoomId", "testMessageId")
-        session.send("/app/chat/delete", chatDeleteDto)
+        session.send("/app/chat/direct/delete", chatDeleteDto)
 
         latch.await(1, TimeUnit.MINUTES)
-        verify { chatFacade.processDelete(chatDeleteDto.chatRoomId, userId, chatDeleteDto.messageId) }
+        verify { directChatFacade.processDirectChatDelete(chatDeleteDto.toChatRoomId(), userId, chatDeleteDto.messageId) }
     }
 
     @Test
-    fun `답장 메시지 전송`() {
+    fun `개인 채팅방 답장 메시지 전송`() {
         val latch = CountDownLatch(1)
-        every { chatFacade.processReply(any(), any(), any(), any()) } answers {
+        every { directChatFacade.processDirectChatReply(any(), any(), any(), any()) } answers {
             latch.countDown()
         }
 
         val chatReplyDto = ChatRequest.Reply("testRoomId", "testParentMessageId", "testMessage")
-        session.send("/app/chat/reply", chatReplyDto)
+        session.send("/app/chat/direct/reply", chatReplyDto)
 
         latch.await(1, TimeUnit.MINUTES)
-        verify { chatFacade.processReply(chatReplyDto.chatRoomId, userId, chatReplyDto.parentMessageId, chatReplyDto.message) }
+        verify { directChatFacade.processDirectChatReply(chatReplyDto.toChatRoomId(), userId, chatReplyDto.parentMessageId, chatReplyDto.message) }
     }
 
     @Test
-    fun `폭탄 메시지 전송`() {
+    fun `그룹 채팅방 일반 메세지 전송`() {
         val latch = CountDownLatch(1)
-        every { chatFacade.processBombing(any(), any(), any(), any()) } answers {
+        every { groupChatFacade.processGroupChatCommon(any(), any(), any()) } answers {
+            latch.countDown()
+        }
+        val chatDto = ChatRequest.Common("testRoomId", "testMessage")
+        session.send("/app/chat/group/common", chatDto)
+        latch.await(1, TimeUnit.MINUTES)
+        verify { groupChatFacade.processGroupChatCommon(chatDto.toChatRoomId(), any(), chatDto.message) }
+    }
+
+    @Test
+    fun `그룹 채팅방 읽기 메시지 전송`() {
+        val latch = CountDownLatch(1)
+        every { groupChatFacade.processGroupChatRead(any(), any(), any()) } answers {
             latch.countDown()
         }
 
-        val chatBombMessage = ChatRequest.Bomb("testRoomId", "testMessage", "2024:10:22 13:45:30")
-        session.send("/app/chat/bomb", chatBombMessage)
+        val chatReadDto = ChatRequest.Read("testRoomId", 0)
+        session.send("/app/chat/group/read", chatReadDto)
 
         latch.await(1, TimeUnit.MINUTES)
-        verify { chatFacade.processBombing(chatBombMessage.chatRoomId, userId, chatBombMessage.message, chatBombMessage.toExpireAt()) }
+
+        verify { groupChatFacade.processGroupChatRead(chatReadDto.toChatRoomId(), any(), any()) }
+    }
+
+    @Test
+    fun `그룹 채팅방 삭제 메시지 전송`() {
+        val latch = CountDownLatch(1)
+        every { groupChatFacade.processGroupChatDelete(any(), any(), any()) } answers {
+            latch.countDown()
+        }
+
+        val chatDeleteDto = ChatRequest.Delete("testRoomId", "testMessageId")
+        session.send("/app/chat/group/delete", chatDeleteDto)
+
+        latch.await(1, TimeUnit.MINUTES)
+        verify { groupChatFacade.processGroupChatDelete(chatDeleteDto.toChatRoomId(), userId, chatDeleteDto.messageId) }
+    }
+
+    @Test
+    fun `그룹 채팅방 답장 메시지 전송`() {
+        val latch = CountDownLatch(1)
+        every { groupChatFacade.processGroupChatReply(any(), any(), any(), any()) } answers {
+            latch.countDown()
+        }
+
+        val chatReplyDto = ChatRequest.Reply("testRoomId", "testParentMessageId", "testMessage")
+        session.send("/app/chat/group/reply", chatReplyDto)
+
+        latch.await(1, TimeUnit.MINUTES)
+        verify { groupChatFacade.processGroupChatReply(chatReplyDto.toChatRoomId(), userId, chatReplyDto.parentMessageId, chatReplyDto.message) }
     }
 }

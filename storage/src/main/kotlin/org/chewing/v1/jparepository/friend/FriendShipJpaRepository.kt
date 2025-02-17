@@ -8,4 +8,5 @@ internal interface FriendShipJpaRepository : JpaRepository<FriendShipJpaEntity, 
 
     fun findAllByIdUserIdOrderByName(userId: String): List<FriendShipJpaEntity>
     fun findAllByIdUserIdOrderByFavoriteAscName(userId: String): List<FriendShipJpaEntity>
+    fun findAllByIdUserIdAndFavorite(userId: String, favorite: Boolean): List<FriendShipJpaEntity>
 }

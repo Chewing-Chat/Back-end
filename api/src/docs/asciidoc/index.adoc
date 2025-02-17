@@ -71,3 +71,15 @@ include::Feed-API.adoc[]
 include::Schedule-API.adoc[]
 
 include::Friend-API.adoc[]
+
+include::Main-API.adoc[]
+
+include::Chat-WebSocket-API.adoc[]
+
+include::Chat-API.adoc[]
+
+include::Chat-Room-API.adoc[]
+
+include::Chat-Log-API.adoc[]
+
+include::Notification-API.adoc[]

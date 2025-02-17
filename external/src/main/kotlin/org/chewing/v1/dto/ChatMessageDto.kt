@@ -17,8 +17,8 @@ import java.time.format.DateTimeFormatter
     JsonSubTypes.Type(value = ChatMessageDto.Invite::class, name = "Invite"),
     JsonSubTypes.Type(value = ChatMessageDto.File::class, name = "File"),
     JsonSubTypes.Type(value = ChatMessageDto.Normal::class, name = "Message"),
-    JsonSubTypes.Type(value = ChatMessageDto.Bomb::class, name = "Bomb"),
     JsonSubTypes.Type(value = ChatMessageDto.Read::class, name = "Read"),
+    JsonSubTypes.Type(value = ChatMessageDto.Error::class, name = "Error"),
 )
 sealed class ChatMessageDto {
     data class Reply(
@@ -27,13 +27,12 @@ sealed class ChatMessageDto {
         val chatRoomId: String,
         val senderId: String,
         val parentMessageId: String,
-        val parentMessagePage: Int,
         val parentSeqNumber: Int,
         val parentMessageText: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
         val text: String,
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class Delete(
@@ -43,7 +42,7 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class Leave(
@@ -53,7 +52,7 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class Invite(
@@ -63,7 +62,7 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class File(
@@ -73,8 +72,8 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
         val files: List<MediaDto>,
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class Normal(
@@ -84,20 +83,8 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
         val text: String,
-    ) : ChatMessageDto()
-
-    data class Bomb(
-        val messageId: String,
-        val type: String,
-        val chatRoomId: String,
-        val senderId: String,
-        val timestamp: String,
-        val seqNumber: Int,
-        val page: Int,
-        val expiredAt: String,
-        val text: String,
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     data class Read(
@@ -106,100 +93,108 @@ sealed class ChatMessageDto {
         val senderId: String,
         val timestamp: String,
         val seqNumber: Int,
-        val page: Int,
+        val chatRoomType: String,
+    ) : ChatMessageDto()
+
+    data class Error(
+        val type: String,
+        val chatRoomId: String,
+        val senderId: String,
+        val timestamp: String,
+        val errorCode: String,
+        val errorMessage: String,
+        val chatRoomType: String,
     ) : ChatMessageDto()
 
     companion object {
         fun from(chatMessage: ChatMessage): ChatMessageDto {
-            val dateTimeFormatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm:ss")
+            val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             val formattedTime = chatMessage.timestamp.format(dateTimeFormatter)
             return when (chatMessage) {
                 is ChatReplyMessage -> Reply(
                     messageId = chatMessage.messageId,
-                    type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    type = chatMessage.type.name.lowercase(),
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     parentMessageId = chatMessage.parentMessageId,
-                    parentMessagePage = chatMessage.parentMessagePage,
                     parentSeqNumber = chatMessage.parentSeqNumber,
                     parentMessageText = chatMessage.parentMessageText,
                     timestamp = chatMessage.timestamp.format(dateTimeFormatter),
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
                     text = chatMessage.text,
+                    chatRoomType = chatMessage.chatRoomType.name.lowercase(),
+
                 )
 
                 is ChatLeaveMessage -> Leave(
                     messageId = chatMessage.messageId,
-                    type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    type = chatMessage.type.name.lowercase(),
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
+                    chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
 
                 is ChatInviteMessage -> Invite(
                     messageId = chatMessage.messageId,
-                    type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    type = chatMessage.type.name.lowercase(),
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
+                    chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
 
                 is ChatFileMessage -> File(
                     messageId = chatMessage.messageId,
-                    type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    type = chatMessage.type.name.lowercase(),
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
                     files = chatMessage.medias.map { MediaDto.from(it) },
+                    chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
 
                 is ChatNormalMessage -> Normal(
                     messageId = chatMessage.messageId,
-                    type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    type = chatMessage.type.name.lowercase(),
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
                     text = chatMessage.text,
-                )
-
-                is ChatBombMessage -> Bomb(
-                    messageId = chatMessage.messageId,
-                    type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
-                    senderId = chatMessage.senderId.id,
-                    timestamp = formattedTime,
-                    seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
-                    expiredAt = chatMessage.expiredAt.format(dateTimeFormatter),
-                    text = chatMessage.text,
+                    chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
 
                 is ChatReadMessage -> Read(
-                    type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    type = chatMessage.type.name.lowercase(),
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
+                    chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
 
                 is ChatDeleteMessage -> Delete(
                     targetMessageId = chatMessage.targetMessageId,
-                    type = chatMessage.type.toString().lowercase(),
-                    chatRoomId = chatMessage.chatRoomId,
+                    type = chatMessage.type.name.lowercase(),
+                    chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
                     seqNumber = chatMessage.number.sequenceNumber,
-                    page = chatMessage.number.page,
+                    chatRoomType = chatMessage.chatRoomType.name.lowercase(),
+                )
+
+                is ChatErrorMessage -> Error(
+                    type = chatMessage.type.name.lowercase(),
+                    chatRoomId = chatMessage.chatRoomId.id,
+                    senderId = chatMessage.senderId.id,
+                    timestamp = formattedTime,
+                    errorCode = chatMessage.errorCode.code,
+                    errorMessage = chatMessage.errorCode.message,
+                    chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
             }
         }

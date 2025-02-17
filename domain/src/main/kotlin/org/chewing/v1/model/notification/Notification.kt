@@ -1,10 +1,10 @@
 package org.chewing.v1.model.notification
 
 import org.chewing.v1.model.auth.PushToken
-import org.chewing.v1.model.user.UserInfo
+import org.chewing.v1.model.friend.FriendShip
 
 class Notification private constructor(
-    val userInfo: UserInfo,
+    val friendShip: FriendShip,
     val pushToken: PushToken,
     val type: NotificationType,
     val targetId: String,
@@ -12,14 +12,14 @@ class Notification private constructor(
 ) {
     companion object {
         fun of(
-            userInfo: UserInfo,
+            friendShip: FriendShip,
             pushToken: PushToken,
             type: NotificationType,
             targetId: String,
             content: String,
         ): Notification {
             return Notification(
-                userInfo = userInfo,
+                friendShip = friendShip,
                 pushToken = pushToken,
                 type = type,
                 targetId = targetId,

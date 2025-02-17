@@ -1,0 +1,72 @@
+= Notification API 문서
+
+:toc:
+:toclevels: 2
+:sectanchors:
+
+본 문서는 Fcm을 이용한 Notification API에 대한 명세서입니다.
+
+[options="header"]
+|===
+|메시지 타입 |설명
+
+|`CHAT_NORMAL` |일반 텍스트 메시지
+|`CHAT_FILE` |파일 전송 메시지
+|`CHAT_LEAVE` |퇴장 메시지
+|`CHAT_INVITE` |초대 메시지
+|`CHAT_REPLY` |답장 메시지
+|===
+
+[source,json]
+----
+[
+    {
+        "senderId": "sender_id",
+        "senderName": "sender_name",
+        "type": "chat_file",
+        "targetId": "chat_room_id",
+        "content": "media_url"
+    },
+    {
+        "senderId": "sender_id",
+        "senderName": "sender_name",
+        "type": "chat_normal",
+        "targetId": "chat_room_id",
+        "content": "text_message"
+    },
+    {
+        "senderId": "sender_id",
+        "senderName": "sender_name",
+        "type": "chat_invite",
+        "targetId": "chat_room_id",
+        "content": ""
+    },
+    {
+        "senderId": "sender_id",
+        "senderName": "sender_name",
+        "type": "chat_leave",
+        "targetId": "chat_room_id",
+        "content": ""
+    },
+    {
+        "senderId": "sender_id",
+        "senderName": "sender_name",
+        "type": "chat_reply",
+        "targetId": "chat_room_id",
+        "content": "reply_message"
+    }
+]
+
+
+----
+== 3. 필드 설명
+
+[options="header"]
+|===
+| 필드명        | 타입     | 필수 여부 | 설명 |
+| senderId   | String | ✅ 필수 | 메시지를 보낸 사용자의 ID |
+| senderName | String | ✅ 필수 | 메시지를 보낸 사용자의 이름 |
+| type       | String | ✅ 필수 | 메시지 타입 (CHAT_NORMAL, CHAT_FILE, CHAT_LEAVE, CHAT_INVITE, CHAT_REPLY) |
+| targetId   | String | ✅ 필수 | 메시지가 전송될 채팅방 ID |
+| content    | String | 선택 | 메시지의 내용 (파일 URL, 텍스트, 답장 내용 등) CHAT_INVITE, CHAT_LEAVE 타입에서는 포함되지 않음 |
+|===

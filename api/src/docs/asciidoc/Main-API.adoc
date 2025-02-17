@@ -1,0 +1,16 @@
+[[Main-API]]
+= Main API
+
+== 메인 페이지 01/15 수정
+
+=== 요청(Request)
+include::{snippets}/main-controller-test/get-main-page/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/main-controller-test/get-main-page/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/main-controller-test/get-main-page/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/main-controller-test/get-main-page/response-fields.adoc[]

@@ -27,8 +27,16 @@ internal class UserRepositoryImpl(
 
     override fun append(contact: Contact, userName: String): UserInfo = when (contact) {
         is PhoneNumber -> {
-            val userEntity = UserJpaEntity.generate(contact, userName, AccessStatus.NEED_CREATE_PASSWORD)
-            userJpaRepository.save(userEntity).toUser()
+            userJpaRepository.findUserJpaEntityByPhoneNumberAndStatus(contact.e164PhoneNumber, AccessStatus.NEED_CREATE_PASSWORD)
+                .map {
+                    it.updateUserName(userName)
+                    userJpaRepository.save(it)
+                    it.toUser()
+                }
+                .orElseGet {
+                    val userEntity = UserJpaEntity.generate(contact, userName, AccessStatus.NEED_CREATE_PASSWORD)
+                    userJpaRepository.save(userEntity).toUser()
+                }
         }
     }
 

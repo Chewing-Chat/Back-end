@@ -30,6 +30,7 @@ class SecurityConfig(
                         "/api/auth/create/verify",
                         "/api/auth/refresh",
                         "/api/auth/logout",
+                        "/api/auth/login",
                         "/ws-stomp/**",
                         "/bot/chat",
                         "/api/tts",

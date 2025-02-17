@@ -2,9 +2,9 @@ package org.chewing.v1.implementation.notification
 
 import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.chat.message.*
+import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.notification.Notification
 import org.chewing.v1.model.notification.NotificationType
-import org.chewing.v1.model.user.UserInfo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -13,21 +13,8 @@ class NotificationGenerator {
 
     private val logger = LoggerFactory.getLogger(NotificationGenerator::class.java)
 
-    fun generateCommentNotification(
-        sourceUserInfo: UserInfo,
-        pushTokens: List<PushToken>,
-        feedId: String,
-        comment: String,
-    ): List<Notification> = createNotifications(
-        sourceUserInfo = sourceUserInfo,
-        pushTokens = pushTokens,
-        type = NotificationType.COMMENT,
-        targetId = feedId,
-        content = comment,
-    )
-
     fun generateMessageNotification(
-        sourceUserInfo: UserInfo,
+        friendShip: FriendShip,
         pushTokens: List<PushToken>,
         message: ChatMessage,
     ): List<Notification> {
@@ -38,9 +25,6 @@ class NotificationGenerator {
             }
             is ChatNormalMessage -> {
                 Triple(NotificationType.CHAT_NORMAL, message.chatRoomId, message.text)
-            }
-            is ChatBombMessage -> {
-                Triple(NotificationType.CHAT_BOMB, message.chatRoomId, message.text)
             }
             is ChatInviteMessage -> {
                 Triple(NotificationType.CHAT_INVITE, message.chatRoomId, null)
@@ -58,23 +42,23 @@ class NotificationGenerator {
         }
 
         return createNotifications(
-            sourceUserInfo = sourceUserInfo,
+            friendShip = friendShip,
             pushTokens = pushTokens,
             type = type,
-            targetId = targetId,
+            targetId = targetId.id,
             content = content,
         )
     }
 
     private fun createNotifications(
-        sourceUserInfo: UserInfo,
+        friendShip: FriendShip,
         pushTokens: List<PushToken>,
         type: NotificationType,
         targetId: String,
         content: String?,
     ): List<Notification> = pushTokens.map { pushToken ->
         Notification.of(
-            userInfo = sourceUserInfo,
+            friendShip = friendShip,
             pushToken = pushToken,
             type = type,
             targetId = targetId,

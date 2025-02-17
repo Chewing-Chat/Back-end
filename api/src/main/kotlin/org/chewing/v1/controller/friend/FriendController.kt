@@ -17,8 +17,6 @@ class FriendController(
     private val friendFacade: FriendFacade,
     private val friendShipService: FriendShipService,
 ) {
-    // 오류 관련 GlobalExceptionHandler 참조 404, 401, 409번만 사용
-
     @PostMapping("/list")
     fun createFriends(
         @CurrentUser userId: UserId,
