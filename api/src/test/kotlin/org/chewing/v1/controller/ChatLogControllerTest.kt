@@ -345,7 +345,7 @@ class ChatLogControllerTest : RestDocsTest() {
     }
 
     @Test
-    fun searchGroupChatLogs(){
+    fun searchGroupChatLogs() {
         val chatRoomId = ChatRoomId.of("testChatRoomId")
         val chatFileLog = TestDataFactory.createFileLog(chatRoomId)
         val chatReplyLog = TestDataFactory.createReplyLog(chatRoomId)
@@ -465,7 +465,7 @@ class ChatLogControllerTest : RestDocsTest() {
     }
 
     @Test
-    fun searchDirectChatLogs(){
+    fun searchDirectChatLogs() {
         val chatRoomId = ChatRoomId.of("testChatRoomId")
         val chatFileLog = TestDataFactory.createFileLog(chatRoomId)
         val chatReplyLog = TestDataFactory.createReplyLog(chatRoomId)

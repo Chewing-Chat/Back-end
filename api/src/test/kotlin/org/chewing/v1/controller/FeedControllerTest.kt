@@ -61,7 +61,7 @@ class FeedControllerTest : RestDocsTest() {
         userArgumentResolver = UserArgumentResolver()
         feedTypeConverter = StringToFeedTypeConverter()
         feedController = FeedController(feedService, friendFeedFacade)
-        mockMvc = mockControllerWithAdviceAndCustomConverter(feedController, exceptionHandler,feedTypeConverter, userArgumentResolver)
+        mockMvc = mockControllerWithAdviceAndCustomConverter(feedController, exceptionHandler, feedTypeConverter, userArgumentResolver)
         val userId = UserId.of("testUserId")
         val authentication = UsernamePasswordAuthenticationToken(userId, null)
         SecurityContextHolder.getContext().authentication = authentication

@@ -21,18 +21,18 @@ internal class FeedJpaEntity(
     private val feedContent: String,
     private val userId: String,
     @Enumerated(EnumType.STRING)
-    private val feedType: FeedType
+    private val feedType: FeedType,
 ) : BaseEntity() {
     companion object {
         fun generate(
             content: String,
             userId: UserId,
-            feedType: FeedType
+            feedType: FeedType,
         ): FeedJpaEntity {
             return FeedJpaEntity(
                 feedContent = content,
                 userId = userId.id,
-                feedType = feedType
+                feedType = feedType,
             )
         }
     }
@@ -47,7 +47,7 @@ internal class FeedJpaEntity(
                 content = feedContent,
                 uploadAt = createdAt,
                 userId = UserId.of(userId),
-                type = feedType
+                type = feedType,
             )
     }
 }

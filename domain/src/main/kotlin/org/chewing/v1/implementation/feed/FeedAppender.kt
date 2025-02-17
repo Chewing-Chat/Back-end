@@ -18,7 +18,7 @@ class FeedAppender(
 ) {
     @Transactional
     fun append(medias: List<Media>, userId: UserId, content: String, type: FeedType): FeedId {
-        val feedId = feedRepository.append(userId, content,type)
+        val feedId = feedRepository.append(userId, content, type)
         feedDetailRepository.append(medias, feedId)
         return feedId
     }

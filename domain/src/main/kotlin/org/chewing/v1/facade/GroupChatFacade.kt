@@ -26,7 +26,7 @@ class GroupChatFacade(
         val joinSequence =
             groupChatRoomService.getGroupChatRoom(userId, chatRoomId).ownSequence.joinSequenceNumber
         val chatLogs = chatLogService.getChatLog(chatRoomId, sequenceNumber, joinSequence)
-        return chatLogs
+        return chatLogs.sortedByDescending { it.timestamp }
     }
 
     fun processGroupChatRooms(userId: UserId): List<Pair<GroupChatRoom, ChatLog>> {
@@ -39,7 +39,20 @@ class GroupChatFacade(
             chatMessages[chatRoom.roomInfo.chatRoomId]?.let { latestMessage ->
                 chatRoom to latestMessage
             }
-        }
+        }.sortedByDescending { it.second.timestamp }
+    }
+
+    fun searchGroupChatRooms(userId: UserId, friendIds: List<UserId>): List<Pair<GroupChatRoom, ChatLog>> {
+        val chatRooms = groupChatRoomService.searchGroupChatRooms(userId, friendIds)
+        val chatRoomIds = getChatRoomIds(chatRooms)
+        val chatMessages = chatLogService.getLatestChat(chatRoomIds)
+            .associateBy { it.chatRoomId }
+
+        return chatRooms.mapNotNull { chatRoom ->
+            chatMessages[chatRoom.roomInfo.chatRoomId]?.let { latestMessage ->
+                chatRoom to latestMessage
+            }
+        }.sortedByDescending { it.second.timestamp }
     }
 
     fun processGroupChatFiles(fileDataList: List<FileData>, userId: UserId, chatRoomId: ChatRoomId) {
@@ -140,7 +153,7 @@ class GroupChatFacade(
 
     fun searchChatLog(userId: UserId, chatRoomId: ChatRoomId, keyword: String): List<ChatLog> {
         groupChatRoomService.validateIsParticipant(chatRoomId, userId)
-        return chatLogService.getChatKeyWordMessages(chatRoomId, keyword)
+        return chatLogService.getChatKeyWordMessages(chatRoomId, keyword).sortedByDescending { it.timestamp }
     }
 
     fun processGroupChatCreate(userId: UserId, friendIds: List<UserId>, groupName: String): GroupChatRoom {
@@ -169,9 +182,9 @@ class GroupChatFacade(
 
         return groupChatRooms.mapNotNull { chatRoom ->
             chatLogsByRoomId[chatRoom.roomInfo.chatRoomId]?.let { chatLogs ->
-                chatRoom to chatLogs
+                chatRoom to chatLogs.sortedByDescending { it.timestamp }
             }
-        }
+        }.sortedByDescending { it.second.first().timestamp }
     }
 
     private fun getMemberIds(userId: UserId, chatRoomId: ChatRoomId): List<UserId> {

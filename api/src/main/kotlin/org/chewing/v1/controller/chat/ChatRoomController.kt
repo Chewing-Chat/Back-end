@@ -6,7 +6,6 @@ import org.chewing.v1.dto.response.chat.DirectChatRoomResponse
 import org.chewing.v1.dto.response.chat.GroupChatRoomResponse
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
-import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.SuccessOnlyResponse
 import org.chewing.v1.service.chat.DirectChatRoomService
@@ -42,6 +41,16 @@ class ChatRoomController(
     ): SuccessResponseEntity<ChatRoomListResponse> {
         val directChatRooms = directChatFacade.processGetDirectChatRooms(userId)
         val groupChatRooms = groupChatFacade.processGroupChatRooms(userId)
+        return ResponseHelper.success(ChatRoomListResponse.from(directChatRooms, groupChatRooms, userId))
+    }
+
+    @GetMapping("/search")
+    fun searchChatRoom(
+        @CurrentUser userId: UserId,
+        @RequestParam("friendIds") friendIds: List<String>,
+    ): SuccessResponseEntity<ChatRoomListResponse> {
+        val directChatRooms = directChatFacade.searchDirectChatRooms(userId, friendIds.map { UserId.of(it) })
+        val groupChatRooms = groupChatFacade.searchGroupChatRooms(userId, friendIds.map { UserId.of(it) })
         return ResponseHelper.success(ChatRoomListResponse.from(directChatRooms, groupChatRooms, userId))
     }
 

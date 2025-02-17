@@ -1,7 +1,6 @@
 package org.chewing.v1.controller.chat
 
 import org.chewing.v1.dto.response.chat.ChatLogsResponse
-import org.chewing.v1.dto.response.chat.GroupChatRoomResponse
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.model.chat.room.ChatRoomId
@@ -61,5 +60,4 @@ class ChatLogController(
         val chatLogs = groupChatFacade.searchChatLog(userId, ChatRoomId.of(chatRoomId), keyword)
         return ResponseHelper.success(ChatLogsResponse.from(chatLogs))
     }
-
 }
