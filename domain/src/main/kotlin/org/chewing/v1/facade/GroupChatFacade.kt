@@ -25,7 +25,7 @@ class GroupChatFacade(
     fun processGroupChatLogs(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): List<ChatLog> {
         val joinSequence =
             groupChatRoomService.getGroupChatRoom(userId, chatRoomId).ownSequence.joinSequenceNumber
-        val chatLogs = chatLogService.getChatLog(chatRoomId, sequenceNumber, joinSequence)
+        val chatLogs = chatLogService.getChatLogs(chatRoomId, sequenceNumber, joinSequence)
         return chatLogs.sortedByDescending { it.timestamp }
     }
 
@@ -156,7 +156,7 @@ class GroupChatFacade(
         return chatLogService.getChatKeyWordMessages(chatRoomId, keyword).sortedByDescending { it.timestamp }
     }
 
-    fun processGroupChatCreate(userId: UserId, friendIds: List<UserId>, groupName: String): GroupChatRoom {
+    fun processGroupChatCreate(userId: UserId, friendIds: List<UserId>, groupName: String): Pair<GroupChatRoom, ChatLog> {
         val chatRoomId = groupChatRoomService.produceGroupChatRoom(userId, friendIds, groupName)
         val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
         val chatMessage =
@@ -168,8 +168,9 @@ class GroupChatFacade(
                 ChatRoomType.GROUP,
             )
         val chatRoom = groupChatRoomService.getGroupChatRoom(userId, chatRoomId)
-        notificationService.handleMessageNotification(chatMessage, userId, userId)
-        return chatRoom
+        val chatLog = chatLogService.getChatLog(chatMessage.messageId)
+        notificationService.handleMessagesNotification(chatMessage, friendIds, userId)
+        return Pair(chatRoom, chatLog)
     }
 
     fun processUnreadGroupChatLog(userId: UserId): List<Pair<GroupChatRoom, List<ChatLog>>> {

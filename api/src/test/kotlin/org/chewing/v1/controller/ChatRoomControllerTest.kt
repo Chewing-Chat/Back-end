@@ -120,6 +120,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                     body("$chatRoomJsonPath.readSequenceNumber", equalTo(chatRoom.ownSequence.readSequenceNumber))
                     body("$chatRoomJsonPath.joinSequenceNumber", equalTo(chatRoom.ownSequence.joinSequenceNumber))
                     body("$chatRoomJsonPath.chatRoomId", equalTo(chatRoom.roomInfo.chatRoomId.id))
+                    body("$chatRoomJsonPath.chatRoomName", equalTo(chatRoom.roomInfo.name))
                     body("$chatLogJsonPath.messageId", equalTo(chatLog.messageId))
                     body("$chatLogJsonPath.type", equalTo(chatLog.type.name.lowercase()))
                     body("$chatLogJsonPath.senderId", equalTo(chatLog.senderId.id))
@@ -159,6 +160,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("data.directChatRooms[].chatRoomOwnStatus").description("채팅방 멤버 상태"),
                         fieldWithPath("data.directChatRooms[].friendId").description("친구 ID"),
                         fieldWithPath("data.groupChatRooms[].chatRoomId").description("채팅방 ID"),
+                        fieldWithPath("data.groupChatRooms[].chatRoomName").description("채팅방 이름"),
                         fieldWithPath("data.groupChatRooms[].chatRoomSequenceNumber").description("채팅방 시퀀스 번호"),
                         fieldWithPath("data.groupChatRooms[].readSequenceNumber").description("읽은 시퀀스 번호"),
                         fieldWithPath("data.groupChatRooms[].joinSequenceNumber").description("참여한 시퀀스 번호"),
@@ -230,6 +232,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                     body("$chatRoomJsonPath.readSequenceNumber", equalTo(chatRoom.ownSequence.readSequenceNumber))
                     body("$chatRoomJsonPath.joinSequenceNumber", equalTo(chatRoom.ownSequence.joinSequenceNumber))
                     body("$chatRoomJsonPath.chatRoomId", equalTo(chatRoom.roomInfo.chatRoomId.id))
+                    body("$chatRoomJsonPath.chatRoomName", equalTo(chatRoom.roomInfo.name))
                     body("$chatLogJsonPath.messageId", equalTo(chatLog.messageId))
                     body("$chatLogJsonPath.type", equalTo(chatLog.type.name.lowercase()))
                     body("$chatLogJsonPath.senderId", equalTo(chatLog.senderId.id))
@@ -272,6 +275,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("data.directChatRooms[].chatRoomOwnStatus").description("채팅방 멤버 상태"),
                         fieldWithPath("data.directChatRooms[].friendId").description("친구 ID"),
                         fieldWithPath("data.groupChatRooms[].chatRoomId").description("채팅방 ID"),
+                        fieldWithPath("data.groupChatRooms[].chatRoomName").description("채팅방 이름"),
                         fieldWithPath("data.groupChatRooms[].chatRoomSequenceNumber").description("채팅방 시퀀스 번호"),
                         fieldWithPath("data.groupChatRooms[].readSequenceNumber").description("읽은 시퀀스 번호"),
                         fieldWithPath("data.groupChatRooms[].joinSequenceNumber").description("참여한 시퀀스 번호"),
@@ -338,6 +342,7 @@ class ChatRoomControllerTest : RestDocsTest() {
         val chatRoomId = ChatRoomId.of("testChatRoomId")
         val commonMessage = "testMessage"
         val directChatRoom = TestDataFactory.createDirectChatRoom(chatRoomId)
+        val chatNormalLog = TestDataFactory.createNormalLog(chatRoomId)
         val requestBody = ChatRoomRequest.Create(
             friendId = "testFriendId",
             message = commonMessage,
@@ -348,7 +353,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                 any(),
                 commonMessage,
             )
-        } returns directChatRoom
+        } returns Pair(directChatRoom, chatNormalLog)
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -360,12 +365,19 @@ class ChatRoomControllerTest : RestDocsTest() {
             .body("status", equalTo(201))
             .apply {
                 val chatRoomJsonPath = "data"
+                val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
                 body("$chatRoomJsonPath.chatRoomId", equalTo(directChatRoom.roomInfo.chatRoomId.id))
                 body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(directChatRoom.roomSequence.sequenceNumber))
                 body("$chatRoomJsonPath.readSequenceNumber", equalTo(directChatRoom.ownSequence.readSequenceNumber))
                 body("$chatRoomJsonPath.joinSequenceNumber", equalTo(directChatRoom.ownSequence.joinSequenceNumber))
                 body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(directChatRoom.roomInfo.status.name.lowercase()))
                 body("$chatRoomJsonPath.friendId", equalTo(directChatRoom.roomInfo.friendId.id))
+                body("$chatLogJsonPath.messageId", equalTo(chatNormalLog.messageId))
+                body("$chatLogJsonPath.type", equalTo(chatNormalLog.type.name.lowercase()))
+                body("$chatLogJsonPath.senderId", equalTo(chatNormalLog.senderId.id))
+                body("$chatLogJsonPath.timestamp", equalTo(chatNormalLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
+                body("$chatLogJsonPath.seqNumber", equalTo(chatNormalLog.number.sequenceNumber))
+                body("$chatLogJsonPath.text", equalTo(chatNormalLog.text))
             }
             .apply(
                 document(
@@ -385,6 +397,12 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("data.joinSequenceNumber").description("참여한 시퀀스 번호"),
                         fieldWithPath("data.chatRoomOwnStatus").description("채팅방 멤버 상태"),
                         fieldWithPath("data.friendId").description("친구 ID"),
+                        fieldWithPath("data.latestChatLog.messageId").description("채팅 메시지 ID"),
+                        fieldWithPath("data.latestChatLog.type").description("채팅 메시지 타입(Normal)"),
+                        fieldWithPath("data.latestChatLog.senderId").description("보낸 사람 ID"),
+                        fieldWithPath("data.latestChatLog.timestamp").description("보낸 시간"),
+                        fieldWithPath("data.latestChatLog.seqNumber").description("메시지 시퀀스 번호"),
+                        fieldWithPath("data.latestChatLog.text").description("메시지 내용"),
                     ),
                 ),
             )
@@ -407,7 +425,11 @@ class ChatRoomControllerTest : RestDocsTest() {
             "Test content".toByteArray(),
         )
         val testFriendId = "testFriendId"
-        every { directChatFacade.processCreateDirectChatRoomFilesChat(any(), any(), any()) } returns directChatRoom
+        val chatFileLog = TestDataFactory.createFileLog(chatRoomId)
+        every { directChatFacade.processCreateDirectChatRoomFilesChat(any(), any(), any()) } returns Pair(
+            directChatRoom,
+            chatFileLog,
+        )
 
         given()
             .setupAuthenticatedMultipartRequest()
@@ -421,12 +443,25 @@ class ChatRoomControllerTest : RestDocsTest() {
             .body("status", equalTo(201))
             .apply {
                 val chatRoomJsonPath = "data"
+                val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
                 body("$chatRoomJsonPath.chatRoomId", equalTo(directChatRoom.roomInfo.chatRoomId.id))
                 body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(directChatRoom.roomSequence.sequenceNumber))
                 body("$chatRoomJsonPath.readSequenceNumber", equalTo(directChatRoom.ownSequence.readSequenceNumber))
                 body("$chatRoomJsonPath.joinSequenceNumber", equalTo(directChatRoom.ownSequence.joinSequenceNumber))
                 body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(directChatRoom.roomInfo.status.name.lowercase()))
                 body("$chatRoomJsonPath.friendId", equalTo(directChatRoom.roomInfo.friendId.id))
+                body("$chatLogJsonPath.messageId", equalTo(chatFileLog.messageId))
+                body("$chatLogJsonPath.type", equalTo(chatFileLog.type.name.lowercase()))
+                body("$chatLogJsonPath.senderId", equalTo(chatFileLog.senderId.id))
+                body("$chatLogJsonPath.timestamp", equalTo(chatFileLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
+                body("$chatLogJsonPath.seqNumber", equalTo(chatFileLog.number.sequenceNumber))
+                chatFileLog.medias.forEachIndexed {
+                        mediaIndex, media ->
+                    val mediaPrefix = "$chatLogJsonPath.files[$mediaIndex]"
+                    body("$mediaPrefix.fileType", equalTo(media.type.value()))
+                    body("$mediaPrefix.fileUrl", equalTo(media.url))
+                    body("$mediaPrefix.index", equalTo(media.index))
+                }
             }
             .apply(
                 document(
@@ -449,6 +484,14 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("data.joinSequenceNumber").description("참여한 시퀀스 번호"),
                         fieldWithPath("data.chatRoomOwnStatus").description("채팅방 멤버 상태"),
                         fieldWithPath("data.friendId").description("친구 ID"),
+                        fieldWithPath("data.latestChatLog.messageId").description("채팅 메시지 ID"),
+                        fieldWithPath("data.latestChatLog.type").description("채팅 메시지 타입(file)"),
+                        fieldWithPath("data.latestChatLog.senderId").description("보낸 사람 ID"),
+                        fieldWithPath("data.latestChatLog.timestamp").description("보낸 시간"),
+                        fieldWithPath("data.latestChatLog.seqNumber").description("메시지 시퀀스 번호"),
+                        fieldWithPath("data.latestChatLog.files[].fileType").description("파일 타입"),
+                        fieldWithPath("data.latestChatLog.files[].fileUrl").description("파일 URL"),
+                        fieldWithPath("data.latestChatLog.files[].index").description("파일 인덱스"),
                     ),
                 ),
             )
@@ -558,7 +601,8 @@ class ChatRoomControllerTest : RestDocsTest() {
             friendIds = friendIds,
             name = name,
         )
-        every { groupChatFacade.processGroupChatCreate(any(), any(), any()) } returns groupChatRoom
+        val chatInviteLog = TestDataFactory.createInviteLog(chatRoomId)
+        every { groupChatFacade.processGroupChatCreate(any(), any(), any()) } returns Pair(groupChatRoom, chatInviteLog)
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -575,6 +619,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                 val chatRoomMemberStatus = groupChatRoom.memberInfos
                     .find { it.memberId == userId }!!
                 val chatRoomJsonPath = "data"
+                val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
                 body("$chatRoomJsonPath.chatRoomId", equalTo(groupChatRoom.roomInfo.chatRoomId.id))
                 body("$chatRoomJsonPath.chatRoomName", equalTo(groupChatRoom.roomInfo.name))
                 body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(groupChatRoom.roomSequence.sequenceNumber))
@@ -583,6 +628,18 @@ class ChatRoomControllerTest : RestDocsTest() {
                 body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoomMemberStatus.status.name.lowercase()))
                 friendIds.forEachIndexed { friendIndex, friendId ->
                     body("$chatRoomJsonPath.friendIds[$friendIndex]", equalTo(friendId))
+                }
+                body("$chatLogJsonPath.messageId", equalTo(chatInviteLog.messageId))
+                body("$chatLogJsonPath.type", equalTo(chatInviteLog.type.name.lowercase()))
+                body("$chatLogJsonPath.senderId", equalTo(chatInviteLog.senderId.id))
+                body(
+                    "$chatLogJsonPath.timestamp",
+                    equalTo(chatInviteLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
+                )
+                body("$chatLogJsonPath.seqNumber", equalTo(chatInviteLog.number.sequenceNumber))
+                chatInviteLog.targetUserIds.forEachIndexed { userIdIndex, userId ->
+                    val userIdPrefix = "$chatLogJsonPath.targetUserIds[$userIdIndex]"
+                    body(userIdPrefix, equalTo(userId.id))
                 }
             }
             .apply(
@@ -604,6 +661,12 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("data.chatRoomOwnStatus").description("채팅방 멤버 상태"),
                         fieldWithPath("data.friendIds").description("친구 ID 목록"),
                         fieldWithPath("data.chatRoomName").description("채팅방 이름"),
+                        fieldWithPath("data.latestChatLog.messageId").description("채팅 메시지 ID"),
+                        fieldWithPath("data.latestChatLog.type").description("채팅 메시지 타입(Invite)"),
+                        fieldWithPath("data.latestChatLog.senderId").description("보낸 사람 ID"),
+                        fieldWithPath("data.latestChatLog.timestamp").description("보낸 시간"),
+                        fieldWithPath("data.latestChatLog.seqNumber").description("메시지 시퀀스 번호"),
+                        fieldWithPath("data.latestChatLog.targetUserIds").description("초대된 사용자 ID 목록"),
                     ),
                 ),
             )

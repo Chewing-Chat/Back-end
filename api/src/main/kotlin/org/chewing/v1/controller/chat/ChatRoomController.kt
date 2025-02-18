@@ -3,7 +3,8 @@ package org.chewing.v1.controller.chat
 import org.chewing.v1.dto.request.chat.ChatRoomRequest
 import org.chewing.v1.dto.response.chat.ChatRoomListResponse
 import org.chewing.v1.dto.response.chat.DirectChatRoomResponse
-import org.chewing.v1.dto.response.chat.GroupChatRoomResponse
+import org.chewing.v1.dto.response.chat.FullDirectChatRoomResponse
+import org.chewing.v1.dto.response.chat.FullGroupChatRoomResponse
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.model.user.UserId
@@ -67,9 +68,9 @@ class ChatRoomController(
     fun produceDirectChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.Create,
-    ): SuccessResponseEntity<DirectChatRoomResponse> {
-        val directChatRoom = directChatFacade.processCreateDirectChatRoomCommonChat(userId, request.toFriendId(), request.toMessage())
-        return ResponseHelper.successCreate(DirectChatRoomResponse.of(directChatRoom))
+    ): SuccessResponseEntity<FullDirectChatRoomResponse> {
+        val (chatRoom, chatLog) = directChatFacade.processCreateDirectChatRoomCommonChat(userId, request.toFriendId(), request.toMessage())
+        return ResponseHelper.successCreate(FullDirectChatRoomResponse.of(chatRoom, chatLog))
     }
 
     @PostMapping("/direct/create/files")
@@ -77,10 +78,10 @@ class ChatRoomController(
         @RequestPart("files") files: List<MultipartFile>,
         @CurrentUser userId: UserId,
         @RequestParam("friendId") friendId: String,
-    ): SuccessResponseEntity<DirectChatRoomResponse> {
+    ): SuccessResponseEntity<FullDirectChatRoomResponse> {
         val convertFiles = FileHelper.convertMultipartFileToFileDataList(files)
-        val directChatRoom = directChatFacade.processCreateDirectChatRoomFilesChat(userId, UserId.of(friendId), convertFiles)
-        return ResponseHelper.successCreate(DirectChatRoomResponse.of(directChatRoom))
+        val (chatRoom, chatLog) = directChatFacade.processCreateDirectChatRoomFilesChat(userId, UserId.of(friendId), convertFiles)
+        return ResponseHelper.successCreate(FullDirectChatRoomResponse.of(chatRoom, chatLog))
     }
 
     @DeleteMapping("/direct/delete")
@@ -105,9 +106,9 @@ class ChatRoomController(
     fun produceGroupChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.CreateGroup,
-    ): SuccessResponseEntity<GroupChatRoomResponse> {
-        val groupChatRoom = groupChatFacade.processGroupChatCreate(userId, request.toFriendIds(), request.toName())
-        return ResponseHelper.successCreate(GroupChatRoomResponse.of(groupChatRoom, userId))
+    ): SuccessResponseEntity<FullGroupChatRoomResponse> {
+        val (chatRoom, chatLog) = groupChatFacade.processGroupChatCreate(userId, request.toFriendIds(), request.toName())
+        return ResponseHelper.successCreate(FullGroupChatRoomResponse.of(chatRoom, chatLog, userId))
     }
 
     @PutMapping("/group/favorite")
