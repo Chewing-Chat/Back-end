@@ -48,7 +48,7 @@ class FeedService(
         fileHandler.handleOldFiles(oldMedias)
     }
 
-    fun make(
+    fun makeFile(
         userId: UserId,
         targetFriends: List<UserId>,
         files: List<FileData>,
@@ -58,6 +58,18 @@ class FeedService(
     ): FeedId {
         val medias = fileHandler.handleNewFiles(userId, files, category)
         val feedId = feedAppender.append(medias, userId, content, feedType)
+        val targetUserIds = targetFriends.plus(userId)
+        feedAppender.appendVisibility(feedId, targetUserIds)
+        return feedId
+    }
+
+    fun makeText(
+        userId: UserId,
+        targetFriends: List<UserId>,
+        content: String,
+        feedType: FeedType,
+    ): FeedId {
+        val feedId = feedAppender.append(emptyList(), userId, content, feedType)
         val targetUserIds = targetFriends.plus(userId)
         feedAppender.appendVisibility(feedId, targetUserIds)
         return feedId

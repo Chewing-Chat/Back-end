@@ -60,16 +60,31 @@ class FeedController(
         return ResponseHelper.successOnly()
     }
 
-    @PostMapping("")
-    fun createFeed(
+    @PostMapping("/file")
+    fun creatFileFeed(
         @CurrentUser userId: UserId,
         @RequestPart("files") files: List<MultipartFile>,
         @RequestParam("content") content: String,
         @RequestParam("friendIds") friendIds: List<String>,
-        @RequestParam("type") feedType: FeedType,
     ): SuccessResponseEntity<FeedIdResponse> {
         val convertFiles = FileHelper.convertMultipartFileToFileDataList(files)
-        val feedId = feedService.make(userId, friendIds.map { UserId.of(it) }, convertFiles, content, FileCategory.FEED, feedType)
+        val feedId = feedService.makeFile(
+            userId,
+            friendIds.map { UserId.of(it) },
+            convertFiles,
+            content,
+            FileCategory.FEED,
+            FeedType.FILE,
+        )
+        return ResponseHelper.successCreate(FeedIdResponse.of(feedId))
+    }
+
+    @PostMapping("/text")
+    fun createTextFeed(
+        @CurrentUser userId: UserId,
+        @RequestBody request: FeedRequest.CreateText,
+    ): SuccessResponseEntity<FeedIdResponse> {
+        val feedId = feedService.makeText(userId, request.toFriendIds(), request.toContent(), request.toType())
         return ResponseHelper.successCreate(FeedIdResponse.of(feedId))
     }
 }

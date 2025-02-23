@@ -12,12 +12,12 @@ import org.chewing.v1.response.SuccessOnlyResponse
 import org.chewing.v1.service.user.ScheduleService
 import org.chewing.v1.util.aliases.SuccessResponseEntity
 import org.chewing.v1.util.helper.ResponseHelper
+import org.chewing.v1.util.security.CurrentUser
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestAttribute
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -30,68 +30,68 @@ class ScheduleController(
 ) {
     @GetMapping("/list")
     fun getSchedules(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestParam("year") year: Int,
         @RequestParam("month") month: Int,
     ): SuccessResponseEntity<ScheduleListResponse> {
         val type = ScheduleType.of(year, month)
-        val schedules = scheduleService.fetches(UserId.of(userId), type)
+        val schedules = scheduleService.fetches(userId, type)
         return ResponseHelper.success(ScheduleListResponse.of(schedules))
     }
 
     @GetMapping("/{scheduleId}")
     fun getSchedule(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @PathVariable("scheduleId") scheduleId: String,
     ): SuccessResponseEntity<ScheduleResponse> {
-        val schedule = scheduleService.fetch(UserId.of(userId), ScheduleId.of(scheduleId))
+        val schedule = scheduleService.fetch(userId, ScheduleId.of(scheduleId))
         return ResponseHelper.success(ScheduleResponse.of(schedule))
     }
 
     @DeleteMapping("")
     fun deleteSchedule(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: ScheduleRequest.Delete,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         val scheduleId = request.toScheduleId()
-        scheduleService.delete(UserId.of(userId), ScheduleId.of(scheduleId))
+        scheduleService.delete(userId, ScheduleId.of(scheduleId))
         return ResponseHelper.successOnly()
     }
 
     @DeleteMapping("/cancel")
     fun cancelSchedule(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: ScheduleRequest.Cancel,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         val scheduleId = request.toScheduleId()
-        scheduleService.cancel(UserId.of(userId), ScheduleId.of(scheduleId))
+        scheduleService.cancel(userId, ScheduleId.of(scheduleId))
         return ResponseHelper.successOnly()
     }
 
     @PostMapping("")
     fun addSchedule(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: ScheduleRequest.Create,
     ): SuccessResponseEntity<ScheduleIdResponse> {
         val scheduleId =
-            scheduleService.create(UserId.Companion.of(userId), request.toScheduleTime(), request.toScheduleContent(), request.toFriendIds())
+            scheduleService.create(userId, request.toScheduleTime(), request.toScheduleContent(), request.toFriendIds())
         return ResponseHelper.successCreate(ScheduleIdResponse(scheduleId.id))
     }
 
     @PutMapping("")
     fun updateSchedule(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
         @RequestBody request: ScheduleRequest.Update,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
-        scheduleService.update(UserId.of(userId), request.toScheduleId(), request.toScheduleTime(), request.toScheduleContent(), request.toFriendIds(), request.toParticipated())
+        scheduleService.update(userId, request.toScheduleId(), request.toScheduleTime(), request.toScheduleContent(), request.toFriendIds(), request.toParticipated())
         return ResponseHelper.successOnly()
     }
 
     @GetMapping("/logs")
     fun getScheduleLogs(
-        @RequestAttribute("userId") userId: String,
+        @CurrentUser userId: UserId,
     ): SuccessResponseEntity<ScheduleLogsResponse> {
-        val logs = scheduleService.fetchLogs(UserId.of(userId))
+        val logs = scheduleService.fetchLogs(userId)
         return ResponseHelper.success(ScheduleLogsResponse.of(logs))
     }
 }

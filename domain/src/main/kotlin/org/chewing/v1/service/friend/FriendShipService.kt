@@ -19,7 +19,9 @@ class FriendShipService(
     private val friendShipFilter: FriendShipFilter,
 ) {
 
-    fun getFriendShips(userId: UserId, sort: FriendSortCriteria): List<FriendShip> = friendShipReader.readsSorted(userId, sort)
+    fun getFriendShips(userId: UserId, sort: FriendSortCriteria): List<FriendShip> =
+        friendShipReader.readsSorted(userId, sort)
+
     fun getFavoriteFriendShips(userId: UserId): List<FriendShip> = friendShipReader.readsFavorite(userId)
     fun createFriendShips(
         userId: UserId,
@@ -43,6 +45,10 @@ class FriendShipService(
                 FriendShipStatus.FRIEND,
             )
         }
+    }
+
+    fun changeFriendShipStatus(userId: UserId, friendId: UserId, friendName: String) {
+        friendShipUpdater.updateStatus(userId, friendId, friendName, FriendShipStatus.FRIEND)
     }
 
     fun removeFriendShip(userId: UserId, friendId: UserId) {

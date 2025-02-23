@@ -468,4 +468,35 @@ class FriendControllerTest : RestDocsTest() {
                 ),
             )
     }
+
+    @Test
+    @DisplayName("친구 상태 변경")
+    fun changeFriendStatus() {
+        val requestBody = FriendRequest.UpdateStatus(
+            friendId = "testFriendId",
+            friendName = "testName",
+        )
+
+        every { friendShipService.changeFriendShipStatus(any(), any(), any()) } just Runs
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/friend/allowed")
+            .then()
+            .assertCommonSuccessResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestFields(
+                        fieldWithPath("friendId").description("친구 ID"),
+                        fieldWithPath("friendName").description("친구 이름"),
+                    ),
+                    requestAccessTokenFields(),
+                    responseSuccessFields(),
+                ),
+            )
+    }
 }

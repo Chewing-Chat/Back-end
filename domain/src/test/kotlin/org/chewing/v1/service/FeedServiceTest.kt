@@ -217,7 +217,7 @@ class FeedServiceTest {
         every { fileHandler.handleNewFiles(userId, listOf(fileData), FileCategory.FEED) } returns listOf(media)
 
         val result =
-            feedService.make(userId, visibleFriendIds, listOf(fileData), topic, FileCategory.FEED, FeedType.FILE)
+            feedService.makeFile(userId, visibleFriendIds, listOf(fileData), topic, FileCategory.FEED, FeedType.FILE)
         assert(result == feedId)
     }
 }

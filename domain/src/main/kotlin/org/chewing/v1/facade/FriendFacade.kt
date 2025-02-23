@@ -31,6 +31,11 @@ class FriendFacade(
         return friends
     }
 
+    fun updateFriendStatus(userId: UserId, friendId: UserId, friendName: String) {
+        friendShipService.checkAccessibleFriendShip(userId, friendId)
+        friendShipService.changeFriendShipStatus(userId, friendId, friendName)
+    }
+
     fun getFriends(userId: UserId): List<Friend> {
         val friendShips = friendShipService.getFavoriteFriendShips(userId)
         val friendIds = friendShips.map { it.friendId }

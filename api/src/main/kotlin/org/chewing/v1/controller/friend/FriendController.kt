@@ -64,4 +64,13 @@ class FriendController(
         friendShipService.changeFriendName(userId, request.toFriendId(), request.toFriendName())
         return ResponseHelper.successOnly()
     }
+
+    @PutMapping("/allowed")
+    fun changeFriendStatus(
+        @CurrentUser userId: UserId,
+        @RequestBody request: FriendRequest.UpdateStatus,
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
+        friendShipService.changeFriendShipStatus(userId, request.toFriendId(), request.toFriendName())
+        return ResponseHelper.successOnly()
+    }
 }
