@@ -47,6 +47,29 @@ class FriendShipService(
         }
     }
 
+    fun ensureAllMembersAreFriends(members: List<User>) {
+        members.asSequence()
+            .flatMapIndexed { i, userA ->
+                members.asSequence().drop(i + 1).map { userB ->
+                    userA to userB
+                }
+            }
+            .forEach { (userA, userB) ->
+                friendShipAppender.appendIfNotExist(
+                    userA.info.userId,
+                    userB.info.userId,
+                    userB.info.name,
+                    FriendShipStatus.NORMAL,
+                )
+                friendShipAppender.appendIfNotExist(
+                    userB.info.userId,
+                    userA.info.userId,
+                    userA.info.name,
+                    FriendShipStatus.NORMAL,
+                )
+            }
+    }
+
     fun changeFriendShipStatus(userId: UserId, friendId: UserId, friendName: String) {
         friendShipUpdater.updateStatus(userId, friendId, friendName, FriendShipStatus.FRIEND)
     }

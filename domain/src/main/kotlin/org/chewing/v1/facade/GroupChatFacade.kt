@@ -12,7 +12,9 @@ import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.chat.ChatLogService
 import org.chewing.v1.service.chat.GroupChatRoomService
+import org.chewing.v1.service.friend.FriendShipService
 import org.chewing.v1.service.notification.NotificationService
+import org.chewing.v1.service.user.UserService
 import org.springframework.stereotype.Service
 
 @Service
@@ -20,6 +22,8 @@ class GroupChatFacade(
     private val chatLogService: ChatLogService,
     private val groupChatRoomService: GroupChatRoomService,
     private val notificationService: NotificationService,
+    private val friendShipService: FriendShipService,
+    private val userService: UserService,
 ) {
 
     fun processGroupChatLogs(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): List<ChatLog> {
@@ -157,6 +161,9 @@ class GroupChatFacade(
     }
 
     fun processGroupChatCreate(userId: UserId, friendIds: List<UserId>, groupName: String): Pair<GroupChatRoom, ChatLog> {
+        val memberIds = friendIds + userId
+        val members = userService.getUsers(memberIds)
+        friendShipService.ensureAllMembersAreFriends(members)
         val chatRoomId = groupChatRoomService.produceGroupChatRoom(userId, friendIds, groupName)
         val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
         val chatMessage =
