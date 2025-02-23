@@ -134,3 +134,14 @@ include::{snippets}/friend-controller-test/change-favorite-failed-delete/http-re
 
 === 응답 필드 설명(Response Fields)
 include::{snippets}/friend-controller-test/change-favorite-failed-delete/response-fields.adoc[]
+
+== 6 친구 상태를 친구로 변경(친구가 됨) 02/24 수정
+
+=== 요청(Request)
+include::{snippets}/friend-controller-test/change-friend-status/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/friend-controller-test/change-friend-status/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/change-friend-status/http-response.adoc[]

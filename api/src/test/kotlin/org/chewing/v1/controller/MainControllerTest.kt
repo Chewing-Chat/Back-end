@@ -7,9 +7,11 @@ import org.chewing.v1.RestDocsUtils.requestAccessTokenFields
 import org.chewing.v1.RestDocsUtils.requestPreprocessor
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.TestDataFactory
+import org.chewing.v1.TestDataFactory.createFeed
 import org.chewing.v1.controller.main.MainController
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.FriendFacade
+import org.chewing.v1.facade.FriendFeedFacade
 import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatInviteLog
@@ -17,6 +19,8 @@ import org.chewing.v1.model.chat.log.ChatLeaveLog
 import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.log.ChatReplyLog
 import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.feed.FeedId
+import org.chewing.v1.model.feed.FeedType
 import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
@@ -43,6 +47,7 @@ class MainControllerTest : RestDocsTest() {
     private lateinit var friendFacade: FriendFacade
     private lateinit var directChatFacade: DirectChatFacade
     private lateinit var groupChatFacade: GroupChatFacade
+    private lateinit var friendFeedFacade: FriendFeedFacade
     private lateinit var userArgumentResolver: UserArgumentResolver
     private lateinit var mainController: MainController
     private lateinit var exceptionHandler: GlobalExceptionHandler
@@ -53,8 +58,9 @@ class MainControllerTest : RestDocsTest() {
         friendFacade = mockk()
         directChatFacade = mockk()
         groupChatFacade = mockk()
+        friendFeedFacade = mockk()
         exceptionHandler = GlobalExceptionHandler()
-        mainController = MainController(userService, friendFacade, directChatFacade, groupChatFacade)
+        mainController = MainController(userService, friendFacade, directChatFacade, groupChatFacade, friendFeedFacade)
         userArgumentResolver = UserArgumentResolver()
         mockMvc = mockController(
             mainController,
@@ -83,17 +89,25 @@ class MainControllerTest : RestDocsTest() {
             TestDataFactory.createFriend("testUserId", FriendShipStatus.BLOCK),
             TestDataFactory.createFriend("testUserId", FriendShipStatus.FRIEND),
         )
+        val feedId = FeedId.of("testFeedId")
         val directChatRoom = TestDataFactory.createDirectChatRoom(directChatRoomId)
         val directChatLogs = TestDataFactory.createDirectChatLogs(directChatRoomId)
         val directChat = listOf(Pair(directChatRoom, directChatLogs))
         val groupChatRoom = TestDataFactory.createGroupChatRoom(groupChatRoomId)
         val groupChatLogs = TestDataFactory.createGroupChatLogs(groupChatRoomId)
         val groupChat = listOf(Pair(groupChatRoom, groupChatLogs))
-
+        val feeds = listOf(
+            createFeed(feedId, FeedType.FILE),
+            createFeed(feedId, FeedType.TEXT_SKY),
+            createFeed(feedId, FeedType.TEXT_BLUE),
+        ).sortedByDescending {
+            it.feed.uploadAt
+        }
         every { userService.getUser(any(), any()) } returns user
         every { friendFacade.getFriends(any()) } returns friends
         every { directChatFacade.processUnreadDirectChatLog(any()) } returns directChat
         every { groupChatFacade.processUnreadGroupChatLog(any()) } returns groupChat
+        every { friendFeedFacade.getOneDayFeeds(userId) } returns feeds
         // when
         given()
             .setupAuthenticatedJsonRequest()
@@ -119,8 +133,7 @@ class MainControllerTest : RestDocsTest() {
                     body("data.friends[$index].profileImageType", equalTo(s.user.info.image.type.value()))
                     body("data.friends[$index].statusMessage", equalTo(s.user.info.statusMessage))
                 }
-                groupChat.forEachIndexed {
-                        index, (groupChatRoom, logs) ->
+                groupChat.forEachIndexed { index, (groupChatRoom, logs) ->
                     val friendIds = groupChatRoom.memberInfos
                         .filter { it.memberId != userId }
                         .map { it.memberId.id }
@@ -146,6 +159,7 @@ class MainControllerTest : RestDocsTest() {
                                 body("$path.parentMessageType", equalTo(log.parentMessageType.name.lowercase()))
                                 body("$path.text", equalTo(log.text))
                             }
+
                             is ChatLeaveLog -> {
                             }
 
@@ -157,9 +171,11 @@ class MainControllerTest : RestDocsTest() {
                                     body("$mediaPath.index", equalTo(media.index))
                                 }
                             }
+
                             is ChatInviteLog -> {
                                 body("$path.targetUserIds", equalTo(log.targetUserIds.map { it.id }))
                             }
+
                             is ChatNormalLog -> {
                                 body("$path.text", equalTo(log.text))
                             }
@@ -191,6 +207,7 @@ class MainControllerTest : RestDocsTest() {
                                 body("$path.parentMessageType", equalTo(log.parentMessageType.name.lowercase()))
                                 body("$path.text", equalTo(log.text))
                             }
+
                             is ChatLeaveLog -> null
 
                             is ChatFileLog -> {
@@ -201,10 +218,31 @@ class MainControllerTest : RestDocsTest() {
                                     body("$mediaPath.index", equalTo(media.index))
                                 }
                             }
+
                             is ChatInviteLog -> null
                             is ChatNormalLog -> {
                                 body("$path.text", equalTo(log.text))
                             }
+                        }
+                    }
+                }
+                feeds.forEachIndexed { index, feed ->
+                    val formattedUploadTime =
+                        feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    body("data.oneDayFeeds[$index].feedId", equalTo(feed.feed.feedId.id))
+                    body("data.oneDayFeeds[$index].feedType", equalTo(feed.feed.type.name.lowercase()))
+                    body("data.oneDayFeeds[$index].uploadAt", equalTo(formattedUploadTime))
+                    when (feed.feed.type) {
+                        FeedType.FILE -> {
+                            body("data.oneDayFeeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
+                        }
+
+                        FeedType.TEXT_BLUE -> {
+                            body("data.oneDayFeeds[$index].content", equalTo(feed.feed.content))
+                        }
+
+                        FeedType.TEXT_SKY -> {
+                            body("data.oneDayFeeds[$index].content", equalTo(feed.feed.content))
                         }
                     }
                 }
@@ -306,6 +344,18 @@ class MainControllerTest : RestDocsTest() {
                             .optional().description("파일 타입"),
                         fieldWithPath("data.directChatRooms[].chatLogs[].files[].index")
                             .optional().description("파일 순서(0 부터 시작)"),
+
+                        fieldWithPath("data.oneDayFeeds[].feedId").description("피드 아이디"),
+                        fieldWithPath("data.oneDayFeeds[].uploadAt").description("피드 업로드 시간 - 형식 yyyy-MM-dd HH:mm:ss"),
+                        fieldWithPath("data.oneDayFeeds[].feedType").description("피드 타입(TEXT_BLUE, TEXT_SKY, FILE)"),
+
+                        // FILE 타입에 대한 설명
+                        fieldWithPath("data.oneDayFeeds[].thumbnailFileUrl").optional().description("썸네일 파일 URL (파일 타입일 경우)"),
+                        fieldWithPath("data.oneDayFeeds[].fileType").optional().description("미디어 타입(image/png, image/jpeg, image/jpg, image/png) (파일 타입일 경우)"),
+
+                        // TEXT 타입에 대한 설명
+                        fieldWithPath("data.oneDayFeeds[].content").optional().description("텍스트 피드 내용 (TEXT_BLUE, TEXT_SKY 타입일 경우)"),
+
                     ),
                 ),
             )

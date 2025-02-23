@@ -19,4 +19,5 @@ interface FriendShipRepository {
     fun readsFavorite(userId: UserId): List<FriendShip>
     fun updateFavorite(userId: UserId, friendId: UserId, favorite: Boolean): UserId?
     fun updateName(userId: UserId, friendId: UserId, friendName: String): UserId?
+    fun updateStatus(userId: UserId, friendId: UserId, friendName: String, status: FriendShipStatus): UserId?
 }

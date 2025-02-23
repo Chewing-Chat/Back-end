@@ -19,7 +19,9 @@ class FriendShipService(
     private val friendShipFilter: FriendShipFilter,
 ) {
 
-    fun getFriendShips(userId: UserId, sort: FriendSortCriteria): List<FriendShip> = friendShipReader.readsSorted(userId, sort)
+    fun getFriendShips(userId: UserId, sort: FriendSortCriteria): List<FriendShip> =
+        friendShipReader.readsSorted(userId, sort)
+
     fun getFavoriteFriendShips(userId: UserId): List<FriendShip> = friendShipReader.readsFavorite(userId)
     fun createFriendShips(
         userId: UserId,
@@ -43,6 +45,33 @@ class FriendShipService(
                 FriendShipStatus.FRIEND,
             )
         }
+    }
+
+    fun ensureAllMembersAreFriends(members: List<User>) {
+        members.asSequence()
+            .flatMapIndexed { i, userA ->
+                members.asSequence().drop(i + 1).map { userB ->
+                    userA to userB
+                }
+            }
+            .forEach { (userA, userB) ->
+                friendShipAppender.appendIfNotExist(
+                    userA.info.userId,
+                    userB.info.userId,
+                    userB.info.name,
+                    FriendShipStatus.NORMAL,
+                )
+                friendShipAppender.appendIfNotExist(
+                    userB.info.userId,
+                    userA.info.userId,
+                    userA.info.name,
+                    FriendShipStatus.NORMAL,
+                )
+            }
+    }
+
+    fun changeFriendShipStatus(userId: UserId, friendId: UserId, friendName: String) {
+        friendShipUpdater.updateStatus(userId, friendId, friendName, FriendShipStatus.FRIEND)
     }
 
     fun removeFriendShip(userId: UserId, friendId: UserId) {

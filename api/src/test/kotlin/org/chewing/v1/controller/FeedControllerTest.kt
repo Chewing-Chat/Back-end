@@ -71,7 +71,14 @@ class FeedControllerTest : RestDocsTest() {
     @DisplayName("내 피드 가져오기 - 썸네일만")
     fun getOwnedFeedThumbnails() {
         val userId = "testUserId"
-        val feeds = listOf(createFeed())
+        val feedId = FeedId.of("testFeedId")
+        val feeds = listOf(
+            createFeed(feedId, FeedType.FILE),
+            createFeed(feedId, FeedType.TEXT_SKY),
+            createFeed(feedId, FeedType.TEXT_BLUE),
+        ).sortedByDescending {
+            it.feed.uploadAt
+        }
         every { feedService.getFeeds(UserId.of(userId), UserId.of(userId)) } returns feeds
 
         given()
@@ -82,9 +89,21 @@ class FeedControllerTest : RestDocsTest() {
             .body("status", equalTo(200))
             .apply {
                 feeds.forEachIndexed { index, feed ->
+                    val formattedUploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                     body("data.feeds[$index].feedId", equalTo(feed.feed.feedId.id))
-                    body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
-                    body("data.feeds[$index].type", equalTo(feed.feedDetails[0].media.type.value().lowercase()))
+                    body("data.feeds[$index].feedType", equalTo(feed.feed.type.name.lowercase()))
+                    body("data.feeds[$index].uploadAt", equalTo(formattedUploadTime))
+                    when (feed.feed.type) {
+                        FeedType.FILE -> {
+                            body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
+                        }
+                        FeedType.TEXT_BLUE -> {
+                            body("data.feeds[$index].content", equalTo(feed.feed.content))
+                        }
+                        FeedType.TEXT_SKY -> {
+                            body("data.feeds[$index].content", equalTo(feed.feed.content))
+                        }
+                    }
                 }
             }
             .apply(
@@ -96,8 +115,15 @@ class FeedControllerTest : RestDocsTest() {
                     responseFields(
                         fieldWithPath("status").description("상태 코드"),
                         fieldWithPath("data.feeds[].feedId").description("피드 아이디"),
-                        fieldWithPath("data.feeds[].thumbnailFileUrl").description("썸네일 파일 URL(피드 첫 번째 이미지)"),
-                        fieldWithPath("data.feeds[].type").description("미디어 타입(image/png, image/jpeg, image/jpg, image/png)"),
+                        fieldWithPath("data.feeds[].uploadAt").description("피드 업로드 시간 - 형식 yyyy-MM-dd HH:mm:ss"),
+                        fieldWithPath("data.feeds[].feedType").description("피드 타입(TEXT_BLUE, TEXT_SKY, FILE)"),
+
+                        // FILE 타입에 대한 설명
+                        fieldWithPath("data.feeds[].thumbnailFileUrl").optional().description("썸네일 파일 URL (파일 타입일 경우)"),
+                        fieldWithPath("data.feeds[].fileType").optional().description("미디어 타입(image/png, image/jpeg, image/jpg, image/png) (파일 타입일 경우)"),
+
+                        // TEXT 타입에 대한 설명
+                        fieldWithPath("data.feeds[].content").optional().description("텍스트 피드 내용 (TEXT_BLUE, TEXT_SKY 타입일 경우)"),
                     ),
                 ),
             )
@@ -108,8 +134,14 @@ class FeedControllerTest : RestDocsTest() {
     fun getFriendFeedThumbnails() {
         val userId = "testUserId"
         val friendId = "testFriendId"
-        val feeds = listOf(createFeed())
-
+        val feedId = FeedId.of("testFeedId")
+        val feeds = listOf(
+            createFeed(feedId, FeedType.FILE),
+            createFeed(feedId, FeedType.TEXT_SKY),
+            createFeed(feedId, FeedType.TEXT_BLUE),
+        ).sortedByDescending {
+            it.feed.uploadAt
+        }
         every { friendFeedFacade.getFriendFeeds(UserId.of(userId), UserId.of(friendId)) } returns feeds
 
         given()
@@ -120,9 +152,21 @@ class FeedControllerTest : RestDocsTest() {
             .body("status", equalTo(200))
             .apply {
                 feeds.forEachIndexed { index, feed ->
+                    val formattedUploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                     body("data.feeds[$index].feedId", equalTo(feed.feed.feedId.id))
-                    body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
-                    body("data.feeds[$index].type", equalTo(feed.feedDetails[0].media.type.value().lowercase()))
+                    body("data.feeds[$index].feedType", equalTo(feed.feed.type.name.lowercase()))
+                    body("data.feeds[$index].uploadAt", equalTo(formattedUploadTime))
+                    when (feed.feed.type) {
+                        FeedType.FILE -> {
+                            body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
+                        }
+                        FeedType.TEXT_BLUE -> {
+                            body("data.feeds[$index].content", equalTo(feed.feed.content))
+                        }
+                        FeedType.TEXT_SKY -> {
+                            body("data.feeds[$index].content", equalTo(feed.feed.content))
+                        }
+                    }
                 }
             }
             .apply(
@@ -137,8 +181,15 @@ class FeedControllerTest : RestDocsTest() {
                     responseFields(
                         fieldWithPath("status").description("상태 코드"),
                         fieldWithPath("data.feeds[].feedId").description("피드 아이디"),
-                        fieldWithPath("data.feeds[].thumbnailFileUrl").description("썸네일 파일 URL"),
-                        fieldWithPath("data.feeds[].type").description("미디어 타입(image/png, image/jpeg, image/jpg, image/png)"),
+                        fieldWithPath("data.feeds[].uploadAt").description("피드 업로드 시간 - 형식 yyyy-MM-dd HH:mm:ss"),
+                        fieldWithPath("data.feeds[].feedType").description("피드 타입(TEXT_BLUE, TEXT_SKY, FILE)"),
+
+                        // FILE 타입에 대한 설명
+                        fieldWithPath("data.feeds[].thumbnailFileUrl").optional().description("썸네일 파일 URL (파일 타입일 경우)"),
+                        fieldWithPath("data.feeds[].fileType").optional().description("미디어 타입(image/png, image/jpeg, image/jpg, image/png) (파일 타입일 경우)"),
+
+                        // TEXT 타입에 대한 설명
+                        fieldWithPath("data.feeds[].content").optional().description("텍스트 피드 내용 (TEXT_BLUE, TEXT_SKY 타입일 경우)"),
                     ),
                 ),
             )
@@ -149,7 +200,8 @@ class FeedControllerTest : RestDocsTest() {
     fun getFeed() {
         val testFeedId = "testFeedId"
         val userId = "testUserId"
-        val feed = createFeed()
+        val feedId = FeedId.of("testFeedId")
+        val feed = createFeed(feedId, FeedType.FILE)
         val uploadTime = feed.feed.uploadAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         every { feedService.getFeed(any(), UserId.of(userId)) } returns feed
 
@@ -280,8 +332,8 @@ class FeedControllerTest : RestDocsTest() {
     }
 
     @Test
-    @DisplayName("피드 추가")
-    fun addFeed() {
+    @DisplayName("피드 파일 추가")
+    fun addFileFeed() {
         val mockFile1 = MockMultipartFile(
             "files",
             "0.jpg",
@@ -297,18 +349,16 @@ class FeedControllerTest : RestDocsTest() {
 
         val feedId = FeedId.of("testFeedId1")
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
-        val feedType = FeedType.FILE
 
-        every { feedService.make(any(), any(), any(), any(), any(), feedType) } returns feedId
+        every { feedService.makeFile(any(), any(), any(), any(), any(), any()) } returns feedId
 
         given()
             .setupAuthenticatedMultipartRequest()
             .queryParam("content", "testContent")
             .queryParam("friendIds", *testFriendIds.toTypedArray())
-            .queryParam("type", FeedType.FILE.name.lowercase())
             .multiPart("files", mockFile1.originalFilename, mockFile1.bytes, MediaType.IMAGE_JPEG_VALUE)
             .multiPart("files", mockFile2.originalFilename, mockFile2.bytes, MediaType.IMAGE_JPEG_VALUE)
-            .post("/api/feed")
+            .post("/api/feed/file")
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .body("status", equalTo(201))
@@ -326,7 +376,6 @@ class FeedControllerTest : RestDocsTest() {
                     queryParameters(
                         parameterWithName("content").description("피드 내용"),
                         parameterWithName("friendIds").description("피드를 공유할 친구 ID 목록(POST /api/feed?content=testContent&friendIds=testFriendId&friendIds=testFriendId2) 형식"),
-                        parameterWithName("type").description("피드 타입(TEXT, FILE) Text만 보낼시 FILE은 제외하고 보내면 됨"),
                     ),
                     responseFields(
                         fieldWithPath("status").description("상태 코드"),
@@ -337,7 +386,7 @@ class FeedControllerTest : RestDocsTest() {
     }
 
     @Test
-    fun addFeedFailedFileNameCouldNotBeEmpty() {
+    fun addFileFeedFailedFileNameCouldNotBeEmpty() {
         val mockFile1 = MockMultipartFile(
             "files",
             "0.jpg",
@@ -353,7 +402,7 @@ class FeedControllerTest : RestDocsTest() {
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
-        every { feedService.make(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_COULD_NOT_EMPTY)
+        every { feedService.makeFile(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_COULD_NOT_EMPTY)
 
         given()
             .setupAuthenticatedMultipartRequest()
@@ -379,7 +428,7 @@ class FeedControllerTest : RestDocsTest() {
     }
 
     @Test
-    fun addFeedFailedFileNameIncorrect() {
+    fun addFileFeedFailedFileNameIncorrect() {
         val mockFile1 = MockMultipartFile(
             "files",
             "0.jpg",
@@ -395,7 +444,7 @@ class FeedControllerTest : RestDocsTest() {
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
-        every { feedService.make(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_INCORRECT)
+        every { feedService.makeFile(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_INCORRECT)
 
         given()
             .setupAuthenticatedMultipartRequest()
@@ -421,7 +470,7 @@ class FeedControllerTest : RestDocsTest() {
     }
 
     @Test
-    fun addFeedFailedFileNotSupportFileType() {
+    fun addFileFeedFailedFileNotSupportFileType() {
         val mockFile = MockMultipartFile(
             "file",
             "testFile.exe",
@@ -435,7 +484,7 @@ class FeedControllerTest : RestDocsTest() {
             .setupAuthenticatedMultipartRequest()
             .queryParam("content", "testContent")
             .queryParam("friendIds", *testFriendIds.toTypedArray())
-            .queryParam("type", FeedType.TEXT.name.lowercase())
+            .queryParam("type", FeedType.FILE.name.lowercase())
             .multiPart("files", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
             .multiPart("files", mockFile.originalFilename, mockFile.bytes, mockFile.contentType)
             .post("/api/feed")
@@ -455,7 +504,7 @@ class FeedControllerTest : RestDocsTest() {
     }
 
     @Test
-    fun addFeedFailedFileConvertFailed() {
+    fun addFileFeedFailedFileConvertFailed() {
         val mockFile1 = MockMultipartFile(
             "files",
             "0.jpg",
@@ -471,7 +520,7 @@ class FeedControllerTest : RestDocsTest() {
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
-        every { feedService.make(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_CONVERT_FAILED)
+        every { feedService.makeFile(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_CONVERT_FAILED)
 
         given()
             .setupAuthenticatedMultipartRequest()
@@ -497,7 +546,7 @@ class FeedControllerTest : RestDocsTest() {
     }
 
     @Test
-    fun addFeedFailedFileUploadFailed() {
+    fun addFileFeedFailedFileUploadFailed() {
         val mockFile1 = MockMultipartFile(
             "files",
             "0.jpg",
@@ -513,7 +562,7 @@ class FeedControllerTest : RestDocsTest() {
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
-        every { feedService.make(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_UPLOAD_FAILED)
+        every { feedService.makeFile(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_UPLOAD_FAILED)
 
         given()
             .setupAuthenticatedMultipartRequest()
@@ -533,6 +582,44 @@ class FeedControllerTest : RestDocsTest() {
                         HttpStatus.CONFLICT,
                         ErrorCode.FILE_UPLOAD_FAILED,
                         "파일 업로드에 실패 했음. 서버 오류, 네트워크 오류.",
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun addTextFeed() {
+        val requestBody = FeedRequest.CreateText(
+            content = "testContent",
+            type = FeedType.TEXT_BLUE.name.lowercase(),
+            friendIds = listOf("testFriendId", "testFriendId2"),
+        )
+        val feedId = FeedId.of("testFeedId1")
+
+        every { feedService.makeText(any(), any(), any(), any()) } returns feedId
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .post("/api/feed/text")
+            .then()
+            .statusCode(HttpStatus.CREATED.value())
+            .body("status", equalTo(201))
+            .body("data.feedId", equalTo(feedId.id))
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestAccessTokenFields(),
+                    requestFields(
+                        fieldWithPath("content").description("피드 내용"),
+                        fieldWithPath("type").description("피드 타입(TEXT_BLUE, TEXT_SKY)"),
+                        fieldWithPath("friendIds").description("피드를 공유할 친구 ID 목록"),
+                    ),
+                    responseFields(
+                        fieldWithPath("status").description("상태 코드"),
+                        fieldWithPath("data.feedId").description("피드 아이디"),
                     ),
                 ),
             )

@@ -1,11 +1,13 @@
 package org.chewing.v1.dto.response.main
 
 import org.chewing.v1.dto.response.chat.ChatLogResponse
+import org.chewing.v1.dto.response.feed.ThumbnailFeedResponse
 import org.chewing.v1.dto.response.friend.FriendResponse
 import org.chewing.v1.dto.response.user.UserResponse
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.room.DirectChatRoom
 import org.chewing.v1.model.chat.room.GroupChatRoom
+import org.chewing.v1.model.feed.Feed
 import org.chewing.v1.model.friend.Friend
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.model.user.UserInfo
@@ -16,6 +18,7 @@ data class MainResponse(
     val totalFriends: Int,
     val directChatRooms: List<DirectMainChatRoomResponse>,
     val groupChatRooms: List<GroupMainChatRoomResponse>,
+    val oneDayFeeds: List<ThumbnailFeedResponse>,
 ) {
     data class DirectMainChatRoomResponse(
         val chatRoomId: String,
@@ -66,6 +69,7 @@ data class MainResponse(
             directChats: List<Pair<DirectChatRoom, List<ChatLog>>>,
             groupChats: List<Pair<GroupChatRoom, List<ChatLog>>>,
             userId: UserId,
+            oneDayFeeds: List<Feed>,
         ): MainResponse {
             return MainResponse(
                 friends = friends.map { FriendResponse.of(it) },
@@ -77,6 +81,9 @@ data class MainResponse(
                 groupChatRooms = groupChats.map { (chatRoom, chatLogs) ->
                     GroupMainChatRoomResponse.of(chatRoom, chatLogs, userId)
                 },
+                oneDayFeeds = oneDayFeeds.sortedByDescending {
+                    it.feed.uploadAt
+                }.map { ThumbnailFeedResponse.of(it) },
             )
         }
     }

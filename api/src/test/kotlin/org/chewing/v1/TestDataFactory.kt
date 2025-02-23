@@ -250,13 +250,13 @@ object TestDataFactory {
         )
     }
 
-    fun createFeedInfo(): FeedInfo {
+    fun createFeedInfo(feedId: FeedId, feedType: FeedType): FeedInfo {
         return FeedInfo.of(
-            FeedId.of("testFeedId"),
+            feedId,
             "testContent",
             LocalDateTime.now(),
             UserId.of("testUserId"),
-            FeedType.FILE,
+            feedType,
         )
     }
 
@@ -268,11 +268,27 @@ object TestDataFactory {
         )
     }
 
-    fun createFeed(): Feed {
-        return Feed.of(
-            createFeedInfo(),
-            listOf(createFeedDetail1(), createFeedDetail2()),
-        )
+    fun createFeed(feedId: FeedId, feedType: FeedType): Feed {
+        return when (feedType) {
+            FeedType.FILE -> {
+                return Feed.of(
+                    createFeedInfo(feedId, feedType),
+                    listOf(createFeedDetail1(), createFeedDetail2()),
+                )
+            }
+            FeedType.TEXT_BLUE -> {
+                return Feed.of(
+                    createFeedInfo(feedId, feedType),
+                    listOf(),
+                )
+            }
+            FeedType.TEXT_SKY -> {
+                return Feed.of(
+                    createFeedInfo(feedId, feedType),
+                    listOf(),
+                )
+            }
+        }
     }
 
     fun createAnnouncement(): Announcement {

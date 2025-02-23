@@ -37,6 +37,10 @@ internal class FriendShipJpaEntity(
         this.name = name
     }
 
+    fun updateStatus(status: FriendShipStatus) {
+        this.status = status
+    }
+
     fun toFriendShip(): FriendShip {
         return FriendShip.of(
             userId = UserId.of(id.userId),

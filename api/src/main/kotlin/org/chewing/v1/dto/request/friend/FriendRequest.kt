@@ -42,4 +42,12 @@ class FriendRequest {
             )
         }
     }
+
+    data class UpdateStatus(
+        val friendId: String,
+        val friendName: String,
+    ) {
+        fun toFriendId(): UserId = UserId.of(friendId)
+        fun toFriendName(): String = friendName
+    }
 }
