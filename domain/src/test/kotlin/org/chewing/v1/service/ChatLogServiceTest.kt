@@ -319,7 +319,7 @@ class ChatLogServiceTest {
         assert(result.size == 1)
 
         result.forEachIndexed {
-            index, chatLog ->
+                index, chatLog ->
             assert(chatLog.chatRoomId == chatRoomId)
             assert(chatLog.messageId == chatNormalLog.messageId)
             assert(chatLog.senderId == chatNormalLog.senderId)
@@ -351,7 +351,7 @@ class ChatLogServiceTest {
     }
 
     @Test
-    fun `채팅 로그 가져오기`(){
+    fun `채팅 로그 가져오기`() {
         val messageId = "messageId"
         val chatRoomId = TestDataFactory.createChatRoomId()
         val userId = TestDataFactory.createUserId()
@@ -371,7 +371,7 @@ class ChatLogServiceTest {
     }
 
     @Test
-    fun `키워드로 채팅 로그 가져오기`(){
+    fun `키워드로 채팅 로그 가져오기`() {
         val chatRoomId = TestDataFactory.createChatRoomId()
         val keyword = "keyword"
         val chatNormalLog = TestDataFactory.createChatNormalLog(

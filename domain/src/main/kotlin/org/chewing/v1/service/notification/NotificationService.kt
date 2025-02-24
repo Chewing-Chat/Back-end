@@ -19,19 +19,7 @@ class NotificationService(
 ) {
     fun handleMessagesNotification(chatMessage: ChatMessage, targetUserIds: List<UserId>, userId: UserId) {
         targetUserIds.forEach { memberId ->
-            // 온라인 상태 확인
-            if (!sessionProvider.isOnline(memberId)) {
-                // 오프라인 유저에게 푸시 알림 전송
-                if (memberId != userId) {
-                    val friendShip = friendShipReader.read(memberId, userId)
-                    val pushTokens = userReader.readsPushToken(memberId)
-                    val notificationList =
-                        notificationGenerator.generateMessageNotification(friendShip, pushTokens, chatMessage)
-                    notificationSender.sendPushNotification(notificationList)
-                }
-            } else {
-                notificationSender.sendChatNotification(chatMessage, memberId)
-            }
+            handleMessageNotification(chatMessage, memberId, userId)
         }
     }
 
