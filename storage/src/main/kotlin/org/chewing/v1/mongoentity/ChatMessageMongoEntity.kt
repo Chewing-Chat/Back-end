@@ -16,7 +16,7 @@ import java.time.LocalDateTime
     // 채팅방 내 최신 메시지 조회 최적화
     CompoundIndex(
         name = "chatRoomId_seqNumber_desc_idx",
-        def = "{'chatRoomId': 1, 'seqNumber': -1}",
+        def = "{'chatRoomId': 1, 'sequence': -1}",
     ),
 
     // 메시지 타입과 내용 검색 최적화 (Partial Index)
@@ -32,8 +32,8 @@ internal sealed class ChatMessageMongoEntity(
     protected val chatRoomId: String,
     protected var type: ChatLogType,
     protected val senderId: String,
-    protected val seqNumber: Int,
-    protected val sendTime: LocalDateTime,
+    protected val sequence: Int,
+    protected val createAt: LocalDateTime,
 ) {
 
     companion object {

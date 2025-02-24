@@ -2,6 +2,7 @@ package org.chewing.v1.mongorepository
 
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.mongoentity.ChatMessageMongoEntity
+import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.mongodb.repository.Query
@@ -10,7 +11,7 @@ import org.springframework.data.mongodb.repository.Update
 internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEntity, String> {
 
     @Query("{ \$or: ?0 }")
-    fun findByRoomIdAndSeqNumbers(conditions: List<Map<String, Any>>): List<ChatMessageMongoEntity>
+    fun findByRoomIdAndSeqNumbers(conditions: List<Map<String, Any>>, sort: Sort): List<ChatMessageMongoEntity>
 
     @Modifying
     @Query("{ '_id': ?0 }")
@@ -19,7 +20,7 @@ internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEnti
 
     @Query(
         value = "{ 'chatRoomId': ?1, 'type': { \$in: ['NORMAL', 'REPLY'] }, \$text: { \$search: ?0 } }",
-        sort = "{ score: { \$meta: 'textScore' } }",
+        sort = "{ 'seqNumber': -1 }",
     )
     fun searchByKeywords(keywords: String, chatRoomId: String): List<ChatMessageMongoEntity>
 

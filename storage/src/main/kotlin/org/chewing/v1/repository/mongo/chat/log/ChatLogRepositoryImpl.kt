@@ -7,7 +7,7 @@ import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.mongoentity.ChatMessageMongoEntity
 import org.chewing.v1.mongorepository.ChatLogMongoRepository
 import org.chewing.v1.repository.chat.ChatLogRepository
-import org.springframework.data.domain.Sort
+import org.chewing.v1.util.SortType
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
@@ -21,10 +21,10 @@ internal class ChatLogRepositoryImpl(
     override fun readChatMessages(chatRoomId: ChatRoomId, sequence: Int, joinSequence: Int): List<ChatLog> {
         val criteria = Criteria
             .where("chatRoomId").`is`(chatRoomId.id)
-            .and("seqNumber").lte(sequence).gt(joinSequence)
+            .and("sequence").lte(sequence).gt(joinSequence)
 
         val query = Query(criteria)
-            .with(Sort.by(Sort.Direction.ASC, "seqNumber"))
+            .with(SortType.SEQUENCE_ASC.toSort())
             .limit(50)
 
         return mongoTemplate.find(query, ChatMessageMongoEntity::class.java)
@@ -48,6 +48,7 @@ internal class ChatLogRepositoryImpl(
     override fun readLatestMessages(chatRoomIds: List<ChatRoomId>): List<ChatLog> {
         return chatLogMongoRepository.findByRoomIdAndSeqNumbers(
             chatRoomIds.map { mapOf("chatRoomId" to it.id) },
+            SortType.OLDEST.toSort(),
         ).map { it.toChatLog() }
     }
 
@@ -64,7 +65,7 @@ internal class ChatLogRepositoryImpl(
         val conditions = targets.map { target ->
             mapOf(
                 "chatRoomId" to target.chatRoomId.id,
-                "seqNumber" to mapOf("\$gt" to target.readSequence, "\$lte" to target.chatRoomSequence),
+                "sequence" to mapOf("\$gt" to target.readSequence, "\$lte" to target.chatRoomSequence),
             )
         }
 

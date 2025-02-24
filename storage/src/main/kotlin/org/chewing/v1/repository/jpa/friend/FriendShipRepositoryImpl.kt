@@ -5,29 +5,27 @@ import org.chewing.v1.jpaentity.friend.FriendShipJpaEntity
 import org.chewing.v1.jparepository.friend.FriendShipJpaRepository
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.friend.FriendShipStatus
-import org.chewing.v1.model.friend.FriendSortCriteria
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.friend.FriendShipRepository
+import org.chewing.v1.util.SortType
 import org.springframework.stereotype.Repository
 
 @Repository
 internal class FriendShipRepositoryImpl(
     private val friendShipJpaRepository: FriendShipJpaRepository,
 ) : FriendShipRepository {
-    override fun readsSorted(userId: UserId, sort: FriendSortCriteria): List<FriendShip> =
-        when (sort) {
-            FriendSortCriteria.NAME ->
-                friendShipJpaRepository
-                    .findAllByIdUserIdOrderByName(userId.id)
-                    .map { it.toFriendShip() }
+    override fun reads(userId: UserId): List<FriendShip> =
+        friendShipJpaRepository.findAllByIdUserId(
+            userId.id,
+            SortType.FAVORITE_NAME_ASC.toSort(),
+        ).map { it.toFriendShip() }
 
-            FriendSortCriteria.FAVORITE ->
-                friendShipJpaRepository
-                    .findAllByIdUserIdOrderByFavoriteAscName(userId.id)
-                    .map { it.toFriendShip() }
-        }
-
-    override fun appendIfNotExist(userId: UserId, targetUserId: UserId, targetUserName: String, status: FriendShipStatus): FriendShip {
+    override fun appendIfNotExist(
+        userId: UserId,
+        targetUserId: UserId,
+        targetUserName: String,
+        status: FriendShipStatus,
+    ): FriendShip {
         val friendShipId = FriendShipId.of(userId, targetUserId)
 
         return friendShipJpaRepository.findById(friendShipId)

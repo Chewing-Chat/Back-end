@@ -10,9 +10,7 @@ data class ThumbnailFeedsResponse(
             feeds: List<Feed>,
         ): ThumbnailFeedsResponse {
             return ThumbnailFeedsResponse(
-                feeds = feeds.sortedByDescending {
-                    it.feed.uploadAt
-                }.map { ThumbnailFeedResponse.of(it) },
+                feeds = feeds.map { ThumbnailFeedResponse.of(it) },
             )
         }
     }

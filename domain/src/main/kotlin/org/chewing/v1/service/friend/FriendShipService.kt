@@ -4,7 +4,6 @@ import org.chewing.v1.implementation.friend.friendship.*
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.friend.FriendShipProfile
 import org.chewing.v1.model.friend.FriendShipStatus
-import org.chewing.v1.model.friend.FriendSortCriteria
 import org.chewing.v1.model.user.User
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
@@ -19,8 +18,8 @@ class FriendShipService(
     private val friendShipFilter: FriendShipFilter,
 ) {
 
-    fun getFriendShips(userId: UserId, sort: FriendSortCriteria): List<FriendShip> =
-        friendShipReader.readsSorted(userId, sort)
+    fun getFriendShips(userId: UserId): List<FriendShip> =
+        friendShipReader.reads(userId)
 
     fun getFavoriteFriendShips(userId: UserId): List<FriendShip> = friendShipReader.readsFavorite(userId)
     fun createFriendShips(

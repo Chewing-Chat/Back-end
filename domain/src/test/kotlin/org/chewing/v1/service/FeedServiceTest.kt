@@ -182,7 +182,7 @@ class FeedServiceTest {
 
         every { feedRepository.isOwners(feedIds, userId) } returns true
         every { feedRepository.removes(feedIds) } just Runs
-        every { feedDetailRepository.removes(feedIds) } returns listOf()
+        every { feedDetailRepository.removes(feedIds) } just Runs
         every { fileHandler.handleOldFiles(any()) } just Runs
         every { feedVisibilityRepository.removes(feedIds) } just Runs
 

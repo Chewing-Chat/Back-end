@@ -7,6 +7,7 @@ import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleLog
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.schedule.ScheduleLogRepository
+import org.chewing.v1.util.SortType
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -24,7 +25,7 @@ internal class ScheduleLogRepositoryImpl(
     }
 
     override fun readLogs(userId: UserId): List<ScheduleLog> {
-        val entities = scheduleLogJpaRepository.findAllByUserId(userId.id)
+        val entities = scheduleLogJpaRepository.findAllByUserId(userId.id, SortType.LATEST.toSort())
         return entities.map { it.toLog() }
     }
 }

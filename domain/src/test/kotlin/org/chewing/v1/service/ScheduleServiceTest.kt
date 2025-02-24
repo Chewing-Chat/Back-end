@@ -11,7 +11,6 @@ import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.implementation.schedule.ScheduleAppender
 import org.chewing.v1.implementation.schedule.ScheduleEnricher
 import org.chewing.v1.implementation.schedule.ScheduleFilter
-import org.chewing.v1.implementation.schedule.ScheduleGenerator
 import org.chewing.v1.implementation.schedule.ScheduleReader
 import org.chewing.v1.implementation.schedule.ScheduleRemover
 import org.chewing.v1.implementation.schedule.ScheduleUpdater
@@ -37,7 +36,6 @@ class ScheduleServiceTest {
         ScheduleAppender(scheduleRepository, scheduleParticipantRepository, scheduleLogRepository)
     private val scheduleReader = ScheduleReader(scheduleRepository, scheduleParticipantRepository, scheduleLogRepository)
     private val scheduleRemover = ScheduleRemover(scheduleRepository, scheduleParticipantRepository)
-    private val scheduleGenerator = ScheduleGenerator()
     private val scheduleEnricher = ScheduleEnricher()
     private val scheduleValidator = ScheduleValidator(scheduleParticipantRepository)
     private val scheduleFilter = ScheduleFilter()
@@ -46,7 +44,6 @@ class ScheduleServiceTest {
         scheduleAppender,
         scheduleRemover,
         scheduleReader,
-        scheduleGenerator,
         scheduleEnricher,
         scheduleValidator,
         scheduleUpdater,

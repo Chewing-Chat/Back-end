@@ -4,7 +4,6 @@ import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.friend.FriendShipId
 import org.chewing.v1.jparepository.friend.FriendShipJpaRepository
 import org.chewing.v1.model.friend.FriendShipStatus
-import org.chewing.v1.model.friend.FriendSortCriteria
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.friend.FriendShipRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
@@ -138,7 +137,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
         jpaDataGenerator.friendShipEntityData(userId, friendId2, FriendShipStatus.BLOCK)
 
-        val friendShips = friendShipRepositoryImpl.readsSorted(userId, FriendSortCriteria.NAME)
+        val friendShips = friendShipRepositoryImpl.reads(userId)
 
         assert(friendShips.isNotEmpty())
         assert(friendShips.size == 2)

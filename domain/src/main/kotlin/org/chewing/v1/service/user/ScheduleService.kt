@@ -3,7 +3,6 @@ package org.chewing.v1.service.user
 import org.chewing.v1.implementation.schedule.ScheduleAppender
 import org.chewing.v1.implementation.schedule.ScheduleEnricher
 import org.chewing.v1.implementation.schedule.ScheduleFilter
-import org.chewing.v1.implementation.schedule.ScheduleGenerator
 import org.chewing.v1.implementation.schedule.ScheduleReader
 import org.chewing.v1.implementation.schedule.ScheduleRemover
 import org.chewing.v1.implementation.schedule.ScheduleUpdater
@@ -17,7 +16,6 @@ class ScheduleService(
     private val scheduleAppender: ScheduleAppender,
     private val scheduleRemover: ScheduleRemover,
     private val scheduleReader: ScheduleReader,
-    private val scheduleGenerator: ScheduleGenerator,
     private val scheduleEnricher: ScheduleEnricher,
     private val scheduleValidator: ScheduleValidator,
     private val scheduleUpdater: ScheduleUpdater,
@@ -89,10 +87,5 @@ class ScheduleService(
 
     fun fetchLogs(userId: UserId): List<ScheduleLog> {
         return scheduleReader.readLogs(userId)
-    }
-
-    fun createAiSchedule(userId: UserId, scheduleStringInfo: String): ScheduleId {
-        val (scheduleContent, scheduleTime) = scheduleGenerator.generateScheduleFromString(scheduleStringInfo)
-        return scheduleAppender.appendInfo(scheduleTime, scheduleContent)
     }
 }

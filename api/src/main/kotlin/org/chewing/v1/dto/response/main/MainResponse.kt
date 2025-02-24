@@ -81,9 +81,7 @@ data class MainResponse(
                 groupChatRooms = groupChats.map { (chatRoom, chatLogs) ->
                     GroupMainChatRoomResponse.of(chatRoom, chatLogs, userId)
                 },
-                oneDayFeeds = oneDayFeeds.sortedByDescending {
-                    it.feed.uploadAt
-                }.map { ThumbnailFeedResponse.of(it) },
+                oneDayFeeds = oneDayFeeds.map { ThumbnailFeedResponse.of(it) },
             )
         }
     }

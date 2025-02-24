@@ -5,5 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 internal interface AnnouncementJpaRepository : JpaRepository<AnnouncementJpaEntity, String> {
     fun findByAnnouncementId(announcementId: String): AnnouncementJpaEntity?
-    fun findByOrderByCreatedAt(): List<AnnouncementJpaEntity>
 }

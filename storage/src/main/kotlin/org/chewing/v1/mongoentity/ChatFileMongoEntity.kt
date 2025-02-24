@@ -16,16 +16,16 @@ internal class ChatFileMongoEntity(
     messageId: String,
     chatRoomId: String,
     senderId: String,
-    seqNumber: Int,
-    sendTime: LocalDateTime,
+    sequence: Int,
+    createAt: LocalDateTime,
     val medias: List<Media>,
 ) : ChatMessageMongoEntity(
     messageId = messageId,
     chatRoomId = chatRoomId,
     senderId = senderId,
     type = ChatLogType.FILE,
-    seqNumber = seqNumber,
-    sendTime = sendTime,
+    sequence = sequence,
+    createAt = createAt,
 ) {
     companion object {
         fun from(
@@ -47,8 +47,8 @@ internal class ChatFileMongoEntity(
             messageId = messageId,
             chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
-            timestamp = sendTime,
-            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), seqNumber),
+            timestamp = this@ChatFileMongoEntity.createAt,
+            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatFileMongoEntity.sequence),
             medias = medias,
             type = type,
         )

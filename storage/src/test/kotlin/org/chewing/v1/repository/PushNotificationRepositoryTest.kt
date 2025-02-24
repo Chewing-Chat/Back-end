@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 
-class PushNotificationTest : JpaContextTest() {
+class PushNotificationRepositoryTest : JpaContextTest() {
     @Autowired
     private lateinit var pushNotificationJpaRepository: PushNotificationJpaRepository
 

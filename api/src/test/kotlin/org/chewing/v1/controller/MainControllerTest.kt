@@ -100,9 +100,7 @@ class MainControllerTest : RestDocsTest() {
             createFeed(feedId, FeedType.FILE),
             createFeed(feedId, FeedType.TEXT_SKY),
             createFeed(feedId, FeedType.TEXT_BLUE),
-        ).sortedByDescending {
-            it.feed.uploadAt
-        }
+        )
         every { userService.getUser(any(), any()) } returns user
         every { friendFacade.getFriends(any()) } returns friends
         every { directChatFacade.processUnreadDirectChatLog(any()) } returns directChat

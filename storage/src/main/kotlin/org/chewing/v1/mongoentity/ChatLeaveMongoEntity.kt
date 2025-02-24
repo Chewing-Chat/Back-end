@@ -15,15 +15,15 @@ internal class ChatLeaveMongoEntity(
     messageId: String,
     chatRoomId: String,
     senderId: String,
-    seqNumber: Int,
-    sendTime: LocalDateTime,
+    sequence: Int,
+    createAt: LocalDateTime,
 ) : ChatMessageMongoEntity(
     messageId = messageId,
     chatRoomId = chatRoomId,
     type = ChatLogType.LEAVE,
     senderId = senderId,
-    seqNumber = seqNumber,
-    sendTime = sendTime,
+    sequence = sequence,
+    createAt = createAt,
 ) {
 
     companion object {
@@ -34,8 +34,8 @@ internal class ChatLeaveMongoEntity(
                 messageId = chatLeaveMessage.messageId,
                 chatRoomId = chatLeaveMessage.chatRoomId.id,
                 senderId = chatLeaveMessage.senderId.id,
-                seqNumber = chatLeaveMessage.number.sequenceNumber,
-                sendTime = chatLeaveMessage.timestamp,
+                sequence = chatLeaveMessage.number.sequenceNumber,
+                createAt = chatLeaveMessage.timestamp,
             )
         }
     }
@@ -45,8 +45,8 @@ internal class ChatLeaveMongoEntity(
             messageId = messageId,
             chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
-            timestamp = sendTime,
-            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), seqNumber),
+            timestamp = this@ChatLeaveMongoEntity.createAt,
+            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatLeaveMongoEntity.sequence),
             type = type,
         )
     }
