@@ -70,7 +70,7 @@ class FriendShipService(
     }
 
     fun changeFriendShipStatus(userId: UserId, friendId: UserId, friendName: String) {
-        friendShipUpdater.updateStatus(userId, friendId, friendName, FriendShipStatus.FRIEND)
+        friendShipUpdater.allowedFriend(userId, friendId, friendName)
     }
 
     fun removeFriendShip(userId: UserId, friendId: UserId) {

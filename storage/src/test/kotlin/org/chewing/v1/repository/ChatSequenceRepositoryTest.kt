@@ -27,6 +27,7 @@ class ChatSequenceRepositoryTest : MongoContextTest() {
         val result = chatSequenceRepositoryImpl.readSequence(chatRoomId)
         assert(result != null)
         assert(result!!.sequenceNumber == 1)
+        assert(result.chatRoomId == chatRoomId)
     }
 
     @Test

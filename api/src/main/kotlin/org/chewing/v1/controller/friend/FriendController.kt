@@ -70,7 +70,7 @@ class FriendController(
         @CurrentUser userId: UserId,
         @RequestBody request: FriendRequest.UpdateStatus,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
-        friendFacade.changeFriendStatus(userId, request.toFriendId(), request.toFriendName())
+        friendFacade.allowedFriend(userId, request.toFriendId(), request.toFriendName())
         return ResponseHelper.successOnly()
     }
 }

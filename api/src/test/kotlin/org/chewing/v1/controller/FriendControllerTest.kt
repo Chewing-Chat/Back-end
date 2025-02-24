@@ -477,7 +477,7 @@ class FriendControllerTest : RestDocsTest() {
             friendName = "testName",
         )
 
-        every { friendFacade.changeFriendStatus(any(), any(), any()) } just Runs
+        every { friendFacade.allowedFriend(any(), any(), any()) } just Runs
 
         given()
             .setupAuthenticatedJsonRequest()

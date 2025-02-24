@@ -2,6 +2,9 @@ package org.chewing.v1.repository.support
 
 import org.chewing.v1.jpaentity.announcement.AnnouncementJpaEntity
 import org.chewing.v1.jpaentity.auth.LoggedInJpaEntity
+import org.chewing.v1.jpaentity.chat.DirectChatRoomJpaEntity
+import org.chewing.v1.jpaentity.chat.GroupChatRoomJpaEntity
+import org.chewing.v1.jpaentity.chat.GroupChatRoomMemberJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedDetailJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedVisibilityEntity
@@ -15,6 +18,9 @@ import org.chewing.v1.jpaentity.user.PushNotificationJpaEntity
 import org.chewing.v1.jpaentity.user.UserJpaEntity
 import org.chewing.v1.jparepository.announcement.AnnouncementJpaRepository
 import org.chewing.v1.jparepository.auth.LoggedInJpaRepository
+import org.chewing.v1.jparepository.chat.DirectChatRoomJpaRepository
+import org.chewing.v1.jparepository.chat.GroupChatRoomJpaRepository
+import org.chewing.v1.jparepository.chat.GroupChatRoomMemberJpaRepository
 import org.chewing.v1.jparepository.feed.FeedDetailJpaRepository
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
 import org.chewing.v1.jparepository.feed.FeedVisibilityJpaRepository
@@ -28,6 +34,9 @@ import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.DirectChatRoomInfo
+import org.chewing.v1.model.chat.room.GroupChatRoomInfo
 import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
@@ -84,6 +93,15 @@ class JpaDataGenerator {
 
     @Autowired
     private lateinit var scheduleLogJpaRepository: ScheduleLogJpaRepository
+
+    @Autowired
+    private lateinit var directChatRoomJpaRepository: DirectChatRoomJpaRepository
+
+    @Autowired
+    private lateinit var groupChatRoomJpaRepository: GroupChatRoomJpaRepository
+
+    @Autowired
+    private lateinit var groupChatRoomMemberJpaRepository: GroupChatRoomMemberJpaRepository
 
     fun scheduleLogEntityData(scheduleId: ScheduleId, userId: UserId, action: ScheduleAction): ScheduleLog {
         val entity = ScheduleLogJpaEntity.generate(userId, scheduleId, action)
@@ -182,5 +200,21 @@ class JpaDataGenerator {
         val friendName = UserProvider.buildFriendName()
         val entity = FriendShipJpaEntity.generate(userId, friendId, friendName, status)
         friendShipJpaRepository.save(entity)
+    }
+
+    fun directChatRoomEntityData(userId: UserId, friendId: UserId): DirectChatRoomInfo {
+        val entity = DirectChatRoomJpaEntity.generate(userId, friendId)
+        directChatRoomJpaRepository.save(entity)
+        return entity.toChatRoom(userId)
+    }
+
+    fun groupChatRoomEntityData(groupName: String): GroupChatRoomInfo {
+        val entity = GroupChatRoomJpaEntity.generate(groupName)
+        groupChatRoomJpaRepository.save(entity)
+        return entity.toChatRoom()
+    }
+
+    fun groupChatRoomMemberEntityData(roomId: ChatRoomId, userId: UserId) {
+        groupChatRoomMemberJpaRepository.save(GroupChatRoomMemberJpaEntity.generate(roomId, userId))
     }
 }

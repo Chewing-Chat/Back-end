@@ -21,10 +21,6 @@ ncp:
     accessKey: ${NCP_STORAGE_ACCESS_KEY}
     secretKey: ${NCP_STORAGE_SECRET_KEY}
     bucketName: ${NCP_BUCKET_NAME}
-  tts:
-    accessKey: ${NCP_TTS_ACCESS_KEY}
-    secretKey: ${NCP_TTS_SECRET_KEY}
-    url: ${NCP_TTS_API_URL}
 
 
 ---
@@ -37,7 +33,3 @@ ncp:
     accessKey: ${NCP_STORAGE_ACCESS_KEY}
     secretKey: ${NCP_STORAGE_SECRET_KEY}
     bucketName: ${NCP_BUCKET_NAME}
-  tts:
-    accessKey: ${NCP_TTS_ACCESS_KEY}
-    secretKey: ${NCP_TTS_SECRET_KEY}
-    url: ${NCP_TTS_API_URL}

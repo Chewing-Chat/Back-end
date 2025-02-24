@@ -78,9 +78,9 @@ internal class FriendShipRepositoryImpl(
             userId
         }.orElse(null)
 
-    override fun updateStatus(userId: UserId, friendId: UserId, friendName: String, status: FriendShipStatus): UserId? =
+    override fun allowedFriend(userId: UserId, friendId: UserId, friendName: String): UserId? =
         friendShipJpaRepository.findById(FriendShipId.of(userId, friendId)).map {
-            it.updateStatus(status)
+            it.allowedFriend()
             friendShipJpaRepository.save(it)
             userId
         }.orElse(null)
