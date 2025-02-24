@@ -11,7 +11,7 @@ import org.chewing.v1.RestDocsUtils.responseErrorFields
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory
-import org.chewing.v1.schedule.ScheduleController
+import org.chewing.v1.controller.schedule.ScheduleController
 import org.chewing.v1.dto.request.user.ScheduleRequest
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode

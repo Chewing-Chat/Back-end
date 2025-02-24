@@ -52,8 +52,6 @@ enum class ErrorCode(
     FEED_IS_OWNED("FEED_5", "피드 작성자입니다."),
     FEED_IS_NOT_VISIBLE("FEED_6", "피드를 볼 수 없습니다."),
 
-    EMOTICON_NOT_FOUND("EMOTICON_1", "이모티콘을 찾을 수 없음."),
-
     CHATROOM_NOT_FOUND("CHATROOM_1", "채팅방을 찾을 수 없음."),
     CHATROOM_CREATE_FAILED("CHATROOM_2", "채팅방 생성을 실패하였습니다."),
     CHATROOM_NOT_SELF("CHATROOM_5", "자신과 채팅 할 수 없습니다."),

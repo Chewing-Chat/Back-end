@@ -65,9 +65,6 @@ subprojects {
 
         //env
         implementation("me.paulschwarz:spring-dotenv:4.0.0")
-
-        //openvidu
-        implementation("io.openvidu:openvidu-java-client:2.30.0")
     }
 
     tasks {

@@ -9,13 +9,13 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class ChatRoomSequenceMongoEntity(
     @Id
     val chatRoomId: String,
-    var seqNumber: Int,
+    var sequence: Int,
 ) {
     companion object {
         fun generate(chatRoomId: ChatRoomId): ChatRoomSequenceMongoEntity {
             return ChatRoomSequenceMongoEntity(
                 chatRoomId = chatRoomId.id,
-                seqNumber = 0,
+                sequence = 0,
             )
         }
     }
@@ -23,7 +23,7 @@ data class ChatRoomSequenceMongoEntity(
     fun toChatRoomSequence(): ChatRoomSequence {
         return ChatRoomSequence.of(
             chatRoomId = ChatRoomId.of(chatRoomId),
-            sequenceNumber = seqNumber,
+            sequenceNumber = sequence,
         )
     }
 }

@@ -1,4 +1,4 @@
-package org.chewing.v1.implementation.user.user
+package org.chewing.v1.implementation.user
 
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException

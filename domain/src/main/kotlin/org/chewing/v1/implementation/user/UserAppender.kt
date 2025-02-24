@@ -1,4 +1,4 @@
-package org.chewing.v1.implementation.user.user
+package org.chewing.v1.implementation.user
 
 import org.chewing.v1.model.contact.Contact
 import org.chewing.v1.model.auth.PushToken

@@ -2,8 +2,6 @@ package org.chewing.v1.repository.support
 
 import org.chewing.v1.jpaentity.announcement.AnnouncementJpaEntity
 import org.chewing.v1.jpaentity.auth.LoggedInJpaEntity
-import org.chewing.v1.jpaentity.emoticon.EmoticonJpaEntity
-import org.chewing.v1.jpaentity.emoticon.EmoticonPackJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedDetailJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedVisibilityEntity
@@ -14,12 +12,9 @@ import org.chewing.v1.jpaentity.schedule.ScheduleLogJpaEntity
 import org.chewing.v1.jpaentity.schedule.ScheduleParticipantJpaEntity
 import org.chewing.v1.jpaentity.user.*
 import org.chewing.v1.jpaentity.user.PushNotificationJpaEntity
-import org.chewing.v1.jpaentity.user.UserEmoticonJpaEntity
 import org.chewing.v1.jpaentity.user.UserJpaEntity
 import org.chewing.v1.jparepository.announcement.AnnouncementJpaRepository
 import org.chewing.v1.jparepository.auth.LoggedInJpaRepository
-import org.chewing.v1.jparepository.emoticon.EmoticonJpaRepository
-import org.chewing.v1.jparepository.emoticon.EmoticonPackJpaRepository
 import org.chewing.v1.jparepository.feed.FeedDetailJpaRepository
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
 import org.chewing.v1.jparepository.feed.FeedVisibilityJpaRepository
@@ -33,8 +28,6 @@ import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
-import org.chewing.v1.model.emoticon.EmoticonInfo
-import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
@@ -52,11 +45,9 @@ import org.chewing.v1.model.schedule.ScheduleTime
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserInfo
-import org.chewing.v1.model.user.UserEmoticonPackInfo
 import org.chewing.v1.model.user.UserId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
 
 @Component
 class JpaDataGenerator {
@@ -84,15 +75,6 @@ class JpaDataGenerator {
 
     @Autowired
     private lateinit var friendShipJpaRepository: FriendShipJpaRepository
-
-    @Autowired
-    private lateinit var userEmoticonJpaRepository: UserEmoticonJpaRepository
-
-    @Autowired
-    private lateinit var emoticonPackJpaRepository: EmoticonPackJpaRepository
-
-    @Autowired
-    private lateinit var emoticonJpaRepository: EmoticonJpaRepository
 
     @Autowired
     private lateinit var feedVisibilityJpaRepository: FeedVisibilityJpaRepository
@@ -200,31 +182,5 @@ class JpaDataGenerator {
         val friendName = UserProvider.buildFriendName()
         val entity = FriendShipJpaEntity.generate(userId, friendId, friendName, status)
         friendShipJpaRepository.save(entity)
-    }
-
-    fun userEmoticonEntityData(userId: UserId, emoticonPackId: String): UserEmoticonPackInfo {
-        val emoticon = UserEmoticonJpaEntity(UserEmoticonId.of(userId, emoticonPackId), LocalDateTime.now())
-        userEmoticonJpaRepository.save(emoticon)
-        return emoticon.toUserEmoticon()
-    }
-
-    fun emoticonPackEntityData(): EmoticonPackInfo {
-        val emoticonPack = EmoticonPackJpaEntity.of("emoticonPackImageUrl", "emoticonPackName")
-        emoticonPackJpaRepository.save(emoticonPack)
-        return emoticonPack.toEmoticonPack()
-    }
-
-    fun emoticonEntityData(emoticonPackId: String): EmoticonInfo {
-        val emoticon = EmoticonJpaEntity.of("emoticonImageUrl", "emoticonName", emoticonPackId)
-        emoticonJpaRepository.save(emoticon)
-        return emoticon.toEmoticon()
-    }
-
-    fun emoticonEntityDataList(emoticonPackId: String): List<EmoticonInfo> {
-        val emoticonList = (1..10).map {
-            EmoticonJpaEntity.of("emoticonImageUrl $it", "emoticonName $it", emoticonPackId)
-        }
-        emoticonJpaRepository.saveAll(emoticonList)
-        return emoticonList.map { it.toEmoticon() }
     }
 }

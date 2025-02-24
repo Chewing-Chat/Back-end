@@ -11,8 +11,6 @@ import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.contact.LocalPhoneNumber
 import org.chewing.v1.model.contact.PhoneNumber
-import org.chewing.v1.model.emoticon.EmoticonInfo
-import org.chewing.v1.model.emoticon.EmoticonPackInfo
 import org.chewing.v1.model.feed.Feed
 import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedDetailId
@@ -331,18 +329,6 @@ object TestDataFactory {
         targetMessageId = "target",
         chatRoomType = ChatRoomType.DIRECT,
     )
-
-    fun createEmoticonInfo(emoticonId: String, emoticonPackId: String): EmoticonInfo =
-        EmoticonInfo.of(emoticonId, "name", "url", emoticonPackId)
-
-    fun createEmoticonPackInfo(
-        emoticonPackId: String,
-    ): EmoticonPackInfo = EmoticonPackInfo.of(emoticonPackId, "name", "url")
-
-    fun createUserEmoticonPackInfo(
-        emoticonPackId: String,
-        userId: UserId,
-    ): UserEmoticonPackInfo = UserEmoticonPackInfo.of(userId, emoticonPackId, LocalDateTime.now())
 
     fun createFeed(
         feedId: FeedId,

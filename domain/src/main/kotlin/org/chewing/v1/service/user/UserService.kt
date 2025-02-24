@@ -2,7 +2,11 @@ package org.chewing.v1.service.user
 
 import org.chewing.v1.implementation.contact.ContactFormatter
 import org.chewing.v1.implementation.media.FileHandler
-import org.chewing.v1.implementation.user.user.*
+import org.chewing.v1.implementation.user.UserAppender
+import org.chewing.v1.implementation.user.UserReader
+import org.chewing.v1.implementation.user.UserRemover
+import org.chewing.v1.implementation.user.UserUpdater
+import org.chewing.v1.implementation.user.UserValidator
 import org.chewing.v1.model.auth.CredentialTarget
 import org.chewing.v1.model.auth.PushToken
 import org.chewing.v1.model.contact.LocalPhoneNumber

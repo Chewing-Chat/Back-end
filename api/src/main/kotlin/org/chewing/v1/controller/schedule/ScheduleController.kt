@@ -1,4 +1,4 @@
-package org.chewing.v1.schedule
+package org.chewing.v1.controller.schedule
 
 import org.chewing.v1.dto.request.user.ScheduleRequest
 import org.chewing.v1.dto.response.schedule.ScheduleIdResponse

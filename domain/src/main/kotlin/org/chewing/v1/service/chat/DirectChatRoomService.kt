@@ -132,8 +132,4 @@ class DirectChatRoomService(
     fun increaseDirectChatRoomSequence(chatRoomId: ChatRoomId): ChatRoomSequence {
         return chatSequenceHandler.handleRoomIncreaseSequence(chatRoomId)
     }
-
-    fun getDirectChatRoomSequence(chatRoomId: ChatRoomId): ChatRoomSequence {
-        return chatSequenceFinder.findCurrentRoomSequence(chatRoomId)
-    }
 }

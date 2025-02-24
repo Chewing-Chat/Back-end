@@ -29,7 +29,7 @@ class ChatRoomMemberSequenceRepositoryImpl(
         )
 
         val update = Update()
-            .set("readSeqNumber", sequenceNumber)
+            .set("readSequence", sequenceNumber)
             .setOnInsert("chatRoomId", chatRoomId.id)
             .setOnInsert("memberId", userId.id)
 
@@ -58,12 +58,12 @@ class ChatRoomMemberSequenceRepositoryImpl(
         )
 
         val options = FindAndModifyOptions.options()
-            .upsert(true)
+            .upsert(false)
             .returnNew(true)
 
         val update = Update()
-            .set("joinSeqNumber", chatLogSequence.sequenceNumber)
-            .set("readSeqNumber", chatLogSequence.sequenceNumber)
+            .set("joinSequence", chatLogSequence.sequenceNumber)
+            .set("readSequence", chatLogSequence.sequenceNumber)
             .setOnInsert("chatRoomId", chatRoomId.id)
             .setOnInsert("memberId", userId.id)
 

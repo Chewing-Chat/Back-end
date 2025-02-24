@@ -4,7 +4,7 @@ import org.chewing.v1.implementation.friend.friendship.FriendShipReader
 import org.chewing.v1.implementation.notification.NotificationGenerator
 import org.chewing.v1.implementation.notification.NotificationSender
 import org.chewing.v1.implementation.session.SessionProvider
-import org.chewing.v1.implementation.user.user.UserReader
+import org.chewing.v1.implementation.user.UserReader
 import org.chewing.v1.model.chat.message.ChatMessage
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
