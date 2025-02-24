@@ -34,7 +34,7 @@ internal class ChatLeaveMongoEntity(
                 messageId = chatLeaveMessage.messageId,
                 chatRoomId = chatLeaveMessage.chatRoomId.id,
                 senderId = chatLeaveMessage.senderId.id,
-                sequence = chatLeaveMessage.number.sequenceNumber,
+                sequence = chatLeaveMessage.roomSequence.sequenceNumber,
                 createAt = chatLeaveMessage.timestamp,
             )
         }
@@ -46,7 +46,7 @@ internal class ChatLeaveMongoEntity(
             chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
             timestamp = this@ChatLeaveMongoEntity.createAt,
-            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatLeaveMongoEntity.sequence),
+            roomSequence = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatLeaveMongoEntity.sequence),
             type = type,
         )
     }

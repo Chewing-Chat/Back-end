@@ -67,7 +67,7 @@ sealed class ChatLogResponse {
                     parentMessageText = chatLog.parentMessageText,
                     parentMessageType = chatLog.parentMessageType.toString().lowercase(),
                     timestamp = formattedTime,
-                    seqNumber = chatLog.number.sequenceNumber,
+                    seqNumber = chatLog.roomSequence.sequenceNumber,
                     text = chatLog.text,
                 )
 
@@ -76,7 +76,7 @@ sealed class ChatLogResponse {
                     type = chatLog.type.name.lowercase(),
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
-                    seqNumber = chatLog.number.sequenceNumber,
+                    seqNumber = chatLog.roomSequence.sequenceNumber,
                 )
 
                 is ChatInviteLog -> Invite(
@@ -84,7 +84,7 @@ sealed class ChatLogResponse {
                     type = chatLog.type.name.lowercase(),
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
-                    seqNumber = chatLog.number.sequenceNumber,
+                    seqNumber = chatLog.roomSequence.sequenceNumber,
                     targetUserIds = chatLog.targetUserIds.map { it.id },
                 )
 
@@ -93,7 +93,7 @@ sealed class ChatLogResponse {
                     type = chatLog.type.name.lowercase(),
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
-                    seqNumber = chatLog.number.sequenceNumber,
+                    seqNumber = chatLog.roomSequence.sequenceNumber,
                     files = chatLog.medias.map { MediaResponse.from(it) },
                 )
 
@@ -102,7 +102,7 @@ sealed class ChatLogResponse {
                     type = chatLog.type.name.lowercase(),
                     senderId = chatLog.senderId.id,
                     timestamp = formattedTime,
-                    seqNumber = chatLog.number.sequenceNumber,
+                    seqNumber = chatLog.roomSequence.sequenceNumber,
                     text = chatLog.text,
                 )
             }

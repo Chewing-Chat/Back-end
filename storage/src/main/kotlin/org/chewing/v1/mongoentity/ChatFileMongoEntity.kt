@@ -35,7 +35,7 @@ internal class ChatFileMongoEntity(
                 chatFileMessage.messageId,
                 chatFileMessage.chatRoomId.id,
                 chatFileMessage.senderId.id,
-                chatFileMessage.number.sequenceNumber,
+                chatFileMessage.roomSequence.sequenceNumber,
                 chatFileMessage.timestamp,
                 chatFileMessage.medias,
             )
@@ -48,7 +48,7 @@ internal class ChatFileMongoEntity(
             chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
             timestamp = this@ChatFileMongoEntity.createAt,
-            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatFileMongoEntity.sequence),
+            roomSequence = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatFileMongoEntity.sequence),
             medias = medias,
             type = type,
         )

@@ -10,7 +10,7 @@ class ChatInviteLog private constructor(
     override val chatRoomId: ChatRoomId,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    override val number: ChatRoomSequence,
+    override val roomSequence: ChatRoomSequence,
     override val type: ChatLogType,
     val targetUserIds: List<UserId>,
 ) : ChatLog() {
@@ -21,7 +21,7 @@ class ChatInviteLog private constructor(
             chatRoomId: ChatRoomId,
             senderId: UserId,
             timestamp: LocalDateTime,
-            number: ChatRoomSequence,
+            roomSequence: ChatRoomSequence,
             targetUserIds: List<UserId>,
             type: ChatLogType,
         ): ChatInviteLog {
@@ -30,7 +30,7 @@ class ChatInviteLog private constructor(
                 chatRoomId = chatRoomId,
                 senderId = senderId,
                 timestamp = timestamp,
-                number = number,
+                roomSequence = roomSequence,
                 targetUserIds = targetUserIds,
                 type = type,
             )

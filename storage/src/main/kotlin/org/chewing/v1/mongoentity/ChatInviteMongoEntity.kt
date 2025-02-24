@@ -34,7 +34,7 @@ internal class ChatInviteMongoEntity(
                 messageId = chatInviteMessage.messageId,
                 chatRoomId = chatInviteMessage.chatRoomId.id,
                 senderId = chatInviteMessage.senderId.id,
-                sequence = chatInviteMessage.number.sequenceNumber,
+                sequence = chatInviteMessage.roomSequence.sequenceNumber,
                 createAt = chatInviteMessage.timestamp,
                 targetUserIds = chatInviteMessage.targetUserIds.map { it.id },
             )
@@ -47,7 +47,7 @@ internal class ChatInviteMongoEntity(
             chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
             timestamp = this@ChatInviteMongoEntity.createAt,
-            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatInviteMongoEntity.sequence),
+            roomSequence = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatInviteMongoEntity.sequence),
             targetUserIds = targetUserIds.map { UserId.of(it) },
             type = type,
         )

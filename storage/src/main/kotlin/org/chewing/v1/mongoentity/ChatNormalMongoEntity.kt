@@ -34,7 +34,7 @@ internal class ChatNormalMongoEntity(
                 messageId = chatNormalMessage.messageId,
                 chatRoomId = chatNormalMessage.chatRoomId.id,
                 senderId = chatNormalMessage.senderId.id,
-                sequence = chatNormalMessage.number.sequenceNumber,
+                sequence = chatNormalMessage.roomSequence.sequenceNumber,
                 createAt = chatNormalMessage.timestamp,
                 message = chatNormalMessage.text,
             )
@@ -47,7 +47,7 @@ internal class ChatNormalMongoEntity(
             chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
             timestamp = this@ChatNormalMongoEntity.createAt,
-            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatNormalMongoEntity.sequence),
+            roomSequence = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatNormalMongoEntity.sequence),
             text = message,
             type = type,
         )

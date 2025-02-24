@@ -44,7 +44,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
         assert(chatLog.text == chatMessage.text)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequenceNumber == chatMessage.roomSequence.sequenceNumber)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -62,7 +62,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.messageId == messageId)
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequenceNumber == chatMessage.roomSequence.sequenceNumber)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -80,7 +80,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.messageId == messageId)
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequenceNumber == chatMessage.roomSequence.sequenceNumber)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -98,7 +98,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.messageId == messageId)
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequenceNumber == chatMessage.roomSequence.sequenceNumber)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -119,7 +119,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.messageId == messageId)
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequenceNumber == chatMessage.roomSequence.sequenceNumber)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -128,7 +128,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.type == ChatLogType.REPLY)
         assert(chatLog.parentMessageId == parentMessageId)
         assert(chatLog.parentMessageText == parentLog.text)
-        assert(chatLog.parentSeqNumber == parentLog.number.sequenceNumber)
+        assert(chatLog.parentSeqNumber == parentLog.roomSequence.sequenceNumber)
         assert(chatLog.parentMessageType == parentLog.type)
     }
 
@@ -154,7 +154,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
         val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 5, 0)
         assert(chatLogs.size == messages.size)
         chatLogs.forEachIndexed { index, chatLog ->
-            chatLog.number.sequenceNumber == index.plus(1)
+            chatLog.roomSequence.sequenceNumber == index.plus(1)
         }
     }
 
@@ -248,7 +248,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.chatRoomId == chatMessage.chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
         assert(chatLog.text == chatMessage.text)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequenceNumber == chatMessage.roomSequence.sequenceNumber)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),

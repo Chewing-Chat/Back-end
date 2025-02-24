@@ -10,7 +10,7 @@ class ChatNormalLog private constructor(
     override val chatRoomId: ChatRoomId,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    override val number: ChatRoomSequence,
+    override val roomSequence: ChatRoomSequence,
     override val type: ChatLogType,
     val text: String,
 ) : ChatLog() {
@@ -21,7 +21,7 @@ class ChatNormalLog private constructor(
             chatRoomId: ChatRoomId,
             senderId: UserId,
             text: String,
-            number: ChatRoomSequence,
+            roomSequence: ChatRoomSequence,
             timestamp: LocalDateTime,
             type: ChatLogType,
         ): ChatNormalLog {
@@ -30,7 +30,7 @@ class ChatNormalLog private constructor(
                 chatRoomId = chatRoomId,
                 senderId = senderId,
                 text = text,
-                number = number,
+                roomSequence = roomSequence,
                 timestamp = timestamp,
                 type = type,
             )

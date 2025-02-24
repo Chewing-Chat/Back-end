@@ -10,7 +10,7 @@ class ChatLeaveLog private constructor(
     override val chatRoomId: ChatRoomId,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    override val number: ChatRoomSequence,
+    override val roomSequence: ChatRoomSequence,
     override val type: ChatLogType,
 ) : ChatLog() {
 
@@ -20,7 +20,7 @@ class ChatLeaveLog private constructor(
             chatRoomId: ChatRoomId,
             senderId: UserId,
             timestamp: LocalDateTime,
-            number: ChatRoomSequence,
+            roomSequence: ChatRoomSequence,
             type: ChatLogType,
         ): ChatLeaveLog {
             return ChatLeaveLog(
@@ -28,7 +28,7 @@ class ChatLeaveLog private constructor(
                 chatRoomId = chatRoomId,
                 senderId = senderId,
                 timestamp = timestamp,
-                number = number,
+                roomSequence = roomSequence,
                 type = type,
             )
         }

@@ -15,11 +15,4 @@ class ChatRoomSequence private constructor(
             )
         }
     }
-
-    fun nextSequence(): ChatRoomSequence {
-        return ChatRoomSequence(
-            sequenceNumber = sequenceNumber + 1,
-            chatRoomId = chatRoomId,
-        )
-    }
 }

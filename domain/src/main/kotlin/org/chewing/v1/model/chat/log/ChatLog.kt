@@ -11,5 +11,5 @@ sealed class ChatLog {
     abstract val chatRoomId: ChatRoomId
     abstract val senderId: UserId
     abstract val timestamp: LocalDateTime
-    abstract val number: ChatRoomSequence
+    abstract val roomSequence: ChatRoomSequence
 }

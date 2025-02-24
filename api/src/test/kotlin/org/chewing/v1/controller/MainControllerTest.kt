@@ -147,7 +147,7 @@ class MainControllerTest : RestDocsTest() {
                         body("$path.type", equalTo((log.type.name.lowercase())))
                         body("$path.senderId", equalTo(log.senderId.id))
                         body("$path.timestamp", equalTo(formattedTime))
-                        body("$path.seqNumber", equalTo(log.number.sequenceNumber))
+                        body("$path.seqNumber", equalTo(log.roomSequence.sequenceNumber))
                         // (2) 타입별 검증
                         when (log) {
                             is ChatReplyLog -> {
