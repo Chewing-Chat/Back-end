@@ -183,7 +183,7 @@ class GroupChatFacade(
     fun processUnreadGroupChatLog(userId: UserId): List<Pair<GroupChatRoom, List<ChatLog>>> {
         val groupChatRooms = groupChatRoomService.getUnreadGroupChatRooms(userId)
         val unReadGroupTargets = groupChatRooms.map {
-            UnReadTarget.of(it.roomInfo.chatRoomId, it.roomSequence.sequenceNumber, it.ownSequence.readSequenceNumber)
+            UnReadTarget.of(it.roomInfo.chatRoomId, it.roomSequence.sequence, it.ownSequence.readSequenceNumber)
         }
         val chatLogsByRoomId = chatLogService.getUnreadChatLogs(unReadGroupTargets)
             .groupBy { it.chatRoomId }

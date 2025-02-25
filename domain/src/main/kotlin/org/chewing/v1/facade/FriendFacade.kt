@@ -31,19 +31,19 @@ class FriendFacade(
         return friends
     }
 
-    fun updateFriendStatus(userId: UserId, friendId: UserId, friendName: String) {
+    fun allowedFriend(userId: UserId, friendId: UserId, friendName: String) {
         friendShipService.checkAccessibleFriendShip(userId, friendId)
         friendShipService.changeFriendShipStatus(userId, friendId, friendName)
     }
 
     fun getFriends(userId: UserId): List<Friend> {
-        val friendShips = friendShipService.getFavoriteFriendShips(userId)
+        val friendShips = friendShipService.getFriendShips(userId)
         val friendIds = friendShips.map { it.friendId }
-        val usersWithFeeds = userService.getUsers(friendIds)
+        val users = userService.getUsers(friendIds)
 
         return friendShips
             .mapNotNull { friendShip ->
-                val user = usersWithFeeds.find { it.info.userId == friendShip.friendId }
+                val user = users.find { it.info.userId == friendShip.friendId }
                 user?.let { user ->
                     val friend = Friend.of(user, friendShip)
                     friend

@@ -2,10 +2,12 @@ package org.chewing.v1.repository
 
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
+import org.chewing.v1.model.feed.FeedStatus
 import org.chewing.v1.model.feed.FeedType
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.feed.FeedRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
+import org.chewing.v1.util.SortType
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
@@ -38,13 +40,14 @@ internal class FeedRepositoryTest : JpaContextTest() {
     }
 
     @Test
-    fun `피드목록을 조회해야 한다`() {
+    fun `피드목록을 최신순으로 조회해야 한다`() {
         val userId = generateUserId()
         val feedInfoList = jpaDataGenerator.feedEntityDataList(userId)
         val result = feedRepositoryImpl.reads(userId)
+        val sortedResult = result.sortedByDescending { it.uploadAt }
         assert(result.isNotEmpty())
         assert(result.size == feedInfoList.size)
-        assert(result.map { it.uploadAt } == result.map { it.uploadAt }.sorted())
+        assert(result.map { it.uploadAt } == sortedResult.map { it.uploadAt })
     }
 
     @Test
@@ -52,16 +55,16 @@ internal class FeedRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val feedInfoList = jpaDataGenerator.feedEntityDataList(userId)
         feedRepositoryImpl.removes(feedInfoList.map { it.feedId })
-        val result = feedJpaRepository.findAllById(feedInfoList.map { it.feedId.id })
+        val result = feedJpaRepository.findAllByUserIdAndStatus(userId.id, FeedStatus.ACTIVE, SortType.LATEST.toSort())
         assert(result.isEmpty())
     }
 
     @Test
     fun `소유자의 피드를 삭제해야 한다`() {
         val userId = generateUserId()
-        val feedInfoList = jpaDataGenerator.feedEntityDataList(userId)
+        jpaDataGenerator.feedEntityDataList(userId)
         feedRepositoryImpl.removesOwned(userId)
-        val result = feedJpaRepository.findAllById(feedInfoList.map { it.feedId.id })
+        val result = feedJpaRepository.findAllByUserIdAndStatus(userId.id, FeedStatus.ACTIVE, SortType.LATEST.toSort())
         assert(result.isEmpty())
     }
 
@@ -79,6 +82,17 @@ internal class FeedRepositoryTest : JpaContextTest() {
         val feedInfoList = jpaDataGenerator.feedEntityDataList(userId)
         val result = feedRepositoryImpl.isOwners(feedInfoList.map { it.feedId }, generateUserId())
         assert(!result)
+    }
+
+    @Test
+    fun `지난 1일 동안 생성된 피드만 최신순으로 조회해야 한다`() {
+        val userId = generateUserId()
+        val recentFeed = jpaDataGenerator.feedEntityData(userId)
+        val targetUserIds = listOf(userId)
+
+        val result = feedRepositoryImpl.readsOneDay(targetUserIds)
+
+        assert(result.map { it.feedId }.contains(recentFeed.feedId))
     }
 
     private fun generateUserId() = UserId.of(UUID.randomUUID().toString())

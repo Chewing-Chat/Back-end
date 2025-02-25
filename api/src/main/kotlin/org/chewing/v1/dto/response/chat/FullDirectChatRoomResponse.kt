@@ -18,7 +18,7 @@ data class FullDirectChatRoomResponse(
                 chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                 readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                 joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
-                chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
+                chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                 latestChatLog = ChatLogResponse.from(chatLog),
                 chatRoomOwnStatus = chatRoom.roomInfo.status.name.lowercase(),
                 friendId = chatRoom.roomInfo.friendId.id,

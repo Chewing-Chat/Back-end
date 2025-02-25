@@ -11,7 +11,7 @@ class ChatDeleteMessage private constructor(
     override val chatRoomId: ChatRoomId,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    val number: ChatRoomSequence,
+    val roomSequence: ChatRoomSequence,
     override val type: MessageType = MessageType.DELETE,
     override val chatRoomType: ChatRoomType,
 ) : ChatMessage() {
@@ -22,7 +22,7 @@ class ChatDeleteMessage private constructor(
             chatRoomId: ChatRoomId,
             senderId: UserId,
             timestamp: LocalDateTime,
-            number: ChatRoomSequence,
+            roomSequence: ChatRoomSequence,
             chatRoomType: ChatRoomType,
         ): ChatDeleteMessage {
             return ChatDeleteMessage(
@@ -30,7 +30,7 @@ class ChatDeleteMessage private constructor(
                 chatRoomId = chatRoomId,
                 senderId = senderId,
                 timestamp = timestamp,
-                number = number,
+                roomSequence = roomSequence,
                 chatRoomType = chatRoomType,
             )
         }

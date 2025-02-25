@@ -76,9 +76,7 @@ class FeedControllerTest : RestDocsTest() {
             createFeed(feedId, FeedType.FILE),
             createFeed(feedId, FeedType.TEXT_SKY),
             createFeed(feedId, FeedType.TEXT_BLUE),
-        ).sortedByDescending {
-            it.feed.uploadAt
-        }
+        )
         every { feedService.getFeeds(UserId.of(userId), UserId.of(userId)) } returns feeds
 
         given()
@@ -139,9 +137,7 @@ class FeedControllerTest : RestDocsTest() {
             createFeed(feedId, FeedType.FILE),
             createFeed(feedId, FeedType.TEXT_SKY),
             createFeed(feedId, FeedType.TEXT_BLUE),
-        ).sortedByDescending {
-            it.feed.uploadAt
-        }
+        )
         every { friendFeedFacade.getFriendFeeds(UserId.of(userId), UserId.of(friendId)) } returns feeds
 
         given()

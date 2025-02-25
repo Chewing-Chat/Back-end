@@ -16,7 +16,7 @@ data class DirectChatRoomResponse(
         ): DirectChatRoomResponse {
             return DirectChatRoomResponse(
                 chatRoomId = directChatRoom.roomInfo.chatRoomId.id,
-                chatRoomSequenceNumber = directChatRoom.roomSequence.sequenceNumber,
+                chatRoomSequenceNumber = directChatRoom.roomSequence.sequence,
                 chatRoomOwnStatus = directChatRoom.roomInfo.status.name.lowercase(),
                 friendId = directChatRoom.roomInfo.friendId.id,
                 readSequenceNumber = directChatRoom.ownSequence.readSequenceNumber,

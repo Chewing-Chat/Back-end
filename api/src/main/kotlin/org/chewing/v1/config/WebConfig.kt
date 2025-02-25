@@ -1,6 +1,5 @@
 package org.chewing.v1.config
 
-import org.chewing.v1.util.converter.StringToChatRoomSortCriteriaConverter
 import org.chewing.v1.util.converter.StringToFeedTypeConverter
 import org.chewing.v1.util.converter.StringToFileCategoryConverter
 import org.chewing.v1.util.converter.StringToFriendSortCriteriaConverter
@@ -14,7 +13,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 class WebConfig : WebMvcConfigurer {
     override fun addFormatters(registry: FormatterRegistry) {
-        registry.addConverter(StringToChatRoomSortCriteriaConverter())
         registry.addConverter(StringToFileCategoryConverter())
         registry.addConverter(StringToFriendSortCriteriaConverter())
         registry.addConverter(StringToFeedTypeConverter())

@@ -37,8 +37,8 @@ internal class FriendShipJpaEntity(
         this.name = name
     }
 
-    fun updateStatus(status: FriendShipStatus) {
-        this.status = status
+    fun allowedFriend() {
+        this.status = FriendShipStatus.FRIEND
     }
 
     fun toFriendShip(): FriendShip {

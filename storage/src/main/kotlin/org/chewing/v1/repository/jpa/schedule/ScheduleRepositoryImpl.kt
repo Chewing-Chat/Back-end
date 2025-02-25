@@ -46,8 +46,8 @@ internal class ScheduleRepositoryImpl(
     override fun reads(scheduleIds: List<ScheduleId>, type: ScheduleType, status: ScheduleStatus): List<ScheduleInfo> {
         val startDateTime = LocalDateTime.of(type.year, type.month, 1, 0, 0)
         val endDateTime = startDateTime
-            .with(TemporalAdjusters.firstDayOfNextMonth()) // 다음 달의 첫 날로 설정
-            .minusSeconds(1) // 1초 전으로 설정
+            .with(TemporalAdjusters.firstDayOfNextMonth())
+            .minusSeconds(1)
         return scheduleJpaRepository.findSchedules(scheduleIds.map { it.id }, startDateTime, endDateTime, status)
             .map { it.toScheduleInfo() }
     }

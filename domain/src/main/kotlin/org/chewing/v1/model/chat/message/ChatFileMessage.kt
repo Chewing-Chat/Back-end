@@ -12,7 +12,7 @@ class ChatFileMessage private constructor(
     override val chatRoomId: ChatRoomId,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    val number: ChatRoomSequence,
+    val roomSequence: ChatRoomSequence,
     override val type: MessageType = MessageType.FILE,
     val medias: List<Media>,
     override val chatRoomType: ChatRoomType,
@@ -25,7 +25,7 @@ class ChatFileMessage private constructor(
             senderId: UserId,
             medias: List<Media>,
             timestamp: LocalDateTime,
-            number: ChatRoomSequence,
+            roomSequence: ChatRoomSequence,
             chatRoomType: ChatRoomType,
         ): ChatFileMessage {
             return ChatFileMessage(
@@ -34,7 +34,7 @@ class ChatFileMessage private constructor(
                 senderId = senderId,
                 medias = medias,
                 timestamp = timestamp,
-                number = number,
+                roomSequence = roomSequence,
                 chatRoomType = chatRoomType,
             )
         }

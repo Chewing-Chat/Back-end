@@ -37,7 +37,7 @@ class ChatRoomController(
 ) {
 
     @GetMapping("/list")
-    fun getDirectChatLog(
+    fun getChatRoomList(
         @CurrentUser userId: UserId,
     ): SuccessResponseEntity<ChatRoomListResponse> {
         val directChatRooms = directChatFacade.processGetDirectChatRooms(userId)

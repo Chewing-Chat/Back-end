@@ -19,10 +19,6 @@ class ChatSequenceFinder(
         return chatRoomSequenceRepository.readSequence(chatRoomId) ?: ChatRoomSequence.of(chatRoomId, 0)
     }
 
-    fun findNextRoomSequence(chatRoomId: ChatRoomId): ChatRoomSequence {
-        return chatRoomSequenceRepository.readSequence(chatRoomId)?.nextSequence() ?: ChatRoomSequence.of(chatRoomId, 1)
-    }
-
     fun findCurrentMemberSequences(chatRoomIds: List<ChatRoomId>, userId: UserId): List<ChatRoomMemberSequence> {
         return chatRoomMemberSequenceRepository.readsSequences(chatRoomIds, userId)
     }

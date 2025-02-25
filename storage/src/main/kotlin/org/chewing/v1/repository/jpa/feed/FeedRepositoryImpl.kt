@@ -5,9 +5,11 @@ import org.chewing.v1.jpaentity.feed.FeedJpaEntity
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
+import org.chewing.v1.model.feed.FeedStatus
 import org.chewing.v1.model.feed.FeedType
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.feed.FeedRepository
+import org.chewing.v1.util.SortType
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
@@ -16,18 +18,25 @@ internal class FeedRepositoryImpl(
     private val feedJpaRepository: FeedJpaRepository,
 ) : FeedRepository {
     override fun read(feedId: FeedId): FeedInfo? =
-        feedJpaRepository.findById(feedId.id).map { it.toFeedInfo() }.orElse(null)
+        feedJpaRepository.findByFeedIdAndStatus(feedId.id, FeedStatus.ACTIVE)
+            ?.toFeedInfo()
 
     override fun reads(userId: UserId): List<FeedInfo> =
-        feedJpaRepository.findAllByUserIdOrderByCreatedAtAsc(userId.id).map { it.toFeedInfo() }
+        feedJpaRepository.findAllByUserIdAndStatus(userId.id, FeedStatus.ACTIVE, SortType.LATEST.toSort())
+            .map { it.toFeedInfo() }
 
+    @Transactional
     override fun removes(feedIds: List<FeedId>) {
-        feedJpaRepository.deleteAllById(feedIds.map { it.id })
+        val feeds = feedJpaRepository.findByFeedIdIn(feedIds.map { it.id })
+        feeds.map { it.delete() }
+        feedJpaRepository.saveAll(feeds)
     }
 
     @Transactional
     override fun removesOwned(userId: UserId) {
-        feedJpaRepository.deleteAllByUserId(userId.id)
+        val feeds = feedJpaRepository.findAllByUserId(userId.id)
+        feeds.map { it.delete() }
+        feedJpaRepository.saveAll(feeds)
     }
 
     override fun append(userId: UserId, content: String, type: FeedType) =
@@ -40,9 +49,10 @@ internal class FeedRepositoryImpl(
     override fun readsOneDay(targetUserIds: List<UserId>): List<FeedInfo> {
         val now = LocalDateTime.now()
         val startDate = now.minusDays(1)
-        return feedJpaRepository.findAllByUserIdInAndCreatedAtAfterOrderByCreatedAtAsc(
+        return feedJpaRepository.findAllByUserIdInAndCreatedAtAfter(
             targetUserIds.map { it.id },
             startDate,
+            SortType.LATEST.toSort(),
         )
             .map { it.toFeedInfo() }
     }

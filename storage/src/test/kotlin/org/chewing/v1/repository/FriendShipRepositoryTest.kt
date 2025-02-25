@@ -4,7 +4,6 @@ import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jpaentity.friend.FriendShipId
 import org.chewing.v1.jparepository.friend.FriendShipJpaRepository
 import org.chewing.v1.model.friend.FriendShipStatus
-import org.chewing.v1.model.friend.FriendSortCriteria
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.friend.FriendShipRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
@@ -138,10 +137,39 @@ class FriendShipRepositoryTest : JpaContextTest() {
         jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
         jpaDataGenerator.friendShipEntityData(userId, friendId2, FriendShipStatus.BLOCK)
 
-        val friendShips = friendShipRepositoryImpl.readsSorted(userId, FriendSortCriteria.NAME)
+        val friendShips = friendShipRepositoryImpl.reads(userId)
 
         assert(friendShips.isNotEmpty())
         assert(friendShips.size == 2)
+    }
+
+    @Test
+    fun `즐겨찾기인 친구들을 검색한다`() {
+        val userId = generateUserId()
+        val friendId = generateUserId()
+        val friendId2 = generateUserId()
+
+        jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
+        jpaDataGenerator.friendShipEntityData(userId, friendId2, FriendShipStatus.FRIEND)
+        friendShipRepositoryImpl.updateFavorite(userId, friendId, true)
+
+        val friendShips = friendShipRepositoryImpl.readsFavorite(userId)
+
+        assert(friendShips.isNotEmpty())
+        assert(friendShips.size == 1)
+    }
+
+    @Test
+    fun `친구 관계를 허용한다`() {
+        val userId = generateUserId()
+        val friendId = generateUserId()
+
+        jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.BLOCK)
+        friendShipRepositoryImpl.allowedFriend(userId, friendId, UserProvider.buildFriendName())
+
+        val entity = friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
+
+        assert(entity.get().toFriendShip().status == FriendShipStatus.FRIEND)
     }
 
     private fun generateUserId() = UserId.of(UUID.randomUUID().toString())

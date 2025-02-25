@@ -8,11 +8,9 @@ spring:
     import:
       - db.yml
       - jwt.yml
-      - openai.yml
       - fcm.yml
       - ncp.yml
       - media.yml
-      - openvidu.yml
       - optional:file:../.env[.properties]
       - optional:file:./.env[.properties]
 

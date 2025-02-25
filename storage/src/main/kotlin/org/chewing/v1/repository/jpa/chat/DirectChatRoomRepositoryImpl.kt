@@ -17,7 +17,8 @@ internal class DirectChatRoomRepositoryImpl(
         chatRoomId: ChatRoomId,
         userId: UserId,
     ): DirectChatRoomInfo? {
-        return directChatRoomJpaRepository.findById(chatRoomId.id).orElse(null).toChatRoom(userId)
+        val entity = directChatRoomJpaRepository.findById(chatRoomId.id).orElse(null)
+        return entity?.toChatRoom(userId)
     }
 
     override fun append(

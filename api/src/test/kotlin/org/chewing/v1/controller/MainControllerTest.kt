@@ -100,9 +100,7 @@ class MainControllerTest : RestDocsTest() {
             createFeed(feedId, FeedType.FILE),
             createFeed(feedId, FeedType.TEXT_SKY),
             createFeed(feedId, FeedType.TEXT_BLUE),
-        ).sortedByDescending {
-            it.feed.uploadAt
-        }
+        )
         every { userService.getUser(any(), any()) } returns user
         every { friendFacade.getFriends(any()) } returns friends
         every { directChatFacade.processUnreadDirectChatLog(any()) } returns directChat
@@ -149,7 +147,7 @@ class MainControllerTest : RestDocsTest() {
                         body("$path.type", equalTo((log.type.name.lowercase())))
                         body("$path.senderId", equalTo(log.senderId.id))
                         body("$path.timestamp", equalTo(formattedTime))
-                        body("$path.seqNumber", equalTo(log.number.sequenceNumber))
+                        body("$path.seqNumber", equalTo(log.roomSequence.sequence))
                         // (2) 타입별 검증
                         when (log) {
                             is ChatReplyLog -> {

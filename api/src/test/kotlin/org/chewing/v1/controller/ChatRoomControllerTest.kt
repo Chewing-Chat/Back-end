@@ -92,7 +92,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                 directChatRooms.forEachIndexed { index, (chatRoom, chatLog) ->
                     val chatRoomJsonPath = "data.directChatRooms[$index]"
                     val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
-                    body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequenceNumber))
+                    body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequence))
                     body("$chatRoomJsonPath.readSequenceNumber", equalTo(chatRoom.ownSequence.readSequenceNumber))
                     body("$chatRoomJsonPath.joinSequenceNumber", equalTo(chatRoom.ownSequence.joinSequenceNumber))
                     body("$chatRoomJsonPath.chatRoomId", equalTo(chatRoom.roomInfo.chatRoomId.id))
@@ -103,7 +103,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                         "$chatLogJsonPath.timestamp",
                         equalTo(chatLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
                     )
-                    body("$chatLogJsonPath.seqNumber", equalTo(chatLog.number.sequenceNumber))
+                    body("$chatLogJsonPath.seqNumber", equalTo(chatLog.roomSequence.sequence))
                     body("$chatLogJsonPath.text", equalTo(chatLog.text))
                     body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoom.roomInfo.status.name.lowercase()))
                     body("$chatRoomJsonPath.friendId", equalTo(chatRoom.roomInfo.friendId.id))
@@ -116,7 +116,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                     val friendIds = chatRoom.memberInfos
                         .filter { it.memberId != userId }
                         .map { it.memberId.id }
-                    body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequenceNumber))
+                    body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequence))
                     body("$chatRoomJsonPath.readSequenceNumber", equalTo(chatRoom.ownSequence.readSequenceNumber))
                     body("$chatRoomJsonPath.joinSequenceNumber", equalTo(chatRoom.ownSequence.joinSequenceNumber))
                     body("$chatRoomJsonPath.chatRoomId", equalTo(chatRoom.roomInfo.chatRoomId.id))
@@ -128,7 +128,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                         "$chatLogJsonPath.timestamp",
                         equalTo(chatLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
                     )
-                    body("$chatLogJsonPath.seqNumber", equalTo(chatLog.number.sequenceNumber))
+                    body("$chatLogJsonPath.seqNumber", equalTo(chatLog.roomSequence.sequence))
                     body("$chatLogJsonPath.text", equalTo(chatLog.text))
                     body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoomMemberStatus.status.name.lowercase()))
 
@@ -204,7 +204,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                 directChatRooms.forEachIndexed { index, (chatRoom, chatLog) ->
                     val chatRoomJsonPath = "data.directChatRooms[$index]"
                     val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
-                    body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequenceNumber))
+                    body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequence))
                     body("$chatRoomJsonPath.readSequenceNumber", equalTo(chatRoom.ownSequence.readSequenceNumber))
                     body("$chatRoomJsonPath.joinSequenceNumber", equalTo(chatRoom.ownSequence.joinSequenceNumber))
                     body("$chatRoomJsonPath.chatRoomId", equalTo(chatRoom.roomInfo.chatRoomId.id))
@@ -215,7 +215,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                         "$chatLogJsonPath.timestamp",
                         equalTo(chatLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
                     )
-                    body("$chatLogJsonPath.seqNumber", equalTo(chatLog.number.sequenceNumber))
+                    body("$chatLogJsonPath.seqNumber", equalTo(chatLog.roomSequence.sequence))
                     body("$chatLogJsonPath.text", equalTo(chatLog.text))
                     body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoom.roomInfo.status.name.lowercase()))
                     body("$chatRoomJsonPath.friendId", equalTo(chatRoom.roomInfo.friendId.id))
@@ -228,7 +228,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                     val friendIds = chatRoom.memberInfos
                         .filter { it.memberId != userId }
                         .map { it.memberId.id }
-                    body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequenceNumber))
+                    body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequence))
                     body("$chatRoomJsonPath.readSequenceNumber", equalTo(chatRoom.ownSequence.readSequenceNumber))
                     body("$chatRoomJsonPath.joinSequenceNumber", equalTo(chatRoom.ownSequence.joinSequenceNumber))
                     body("$chatRoomJsonPath.chatRoomId", equalTo(chatRoom.roomInfo.chatRoomId.id))
@@ -240,7 +240,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                         "$chatLogJsonPath.timestamp",
                         equalTo(chatLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
                     )
-                    body("$chatLogJsonPath.seqNumber", equalTo(chatLog.number.sequenceNumber))
+                    body("$chatLogJsonPath.seqNumber", equalTo(chatLog.roomSequence.sequence))
                     body("$chatLogJsonPath.text", equalTo(chatLog.text))
                     body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoomMemberStatus.status.name.lowercase()))
 
@@ -309,7 +309,7 @@ class ChatRoomControllerTest : RestDocsTest() {
             .apply {
                 val chatRoomJsonPath = "data"
                 body("$chatRoomJsonPath.chatRoomId", equalTo(directChatRoom.roomInfo.chatRoomId.id))
-                body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(directChatRoom.roomSequence.sequenceNumber))
+                body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(directChatRoom.roomSequence.sequence))
                 body("$chatRoomJsonPath.readSequenceNumber", equalTo(directChatRoom.ownSequence.readSequenceNumber))
                 body("$chatRoomJsonPath.joinSequenceNumber", equalTo(directChatRoom.ownSequence.joinSequenceNumber))
                 body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(directChatRoom.roomInfo.status.name.lowercase()))
@@ -367,7 +367,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                 val chatRoomJsonPath = "data"
                 val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
                 body("$chatRoomJsonPath.chatRoomId", equalTo(directChatRoom.roomInfo.chatRoomId.id))
-                body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(directChatRoom.roomSequence.sequenceNumber))
+                body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(directChatRoom.roomSequence.sequence))
                 body("$chatRoomJsonPath.readSequenceNumber", equalTo(directChatRoom.ownSequence.readSequenceNumber))
                 body("$chatRoomJsonPath.joinSequenceNumber", equalTo(directChatRoom.ownSequence.joinSequenceNumber))
                 body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(directChatRoom.roomInfo.status.name.lowercase()))
@@ -376,7 +376,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                 body("$chatLogJsonPath.type", equalTo(chatNormalLog.type.name.lowercase()))
                 body("$chatLogJsonPath.senderId", equalTo(chatNormalLog.senderId.id))
                 body("$chatLogJsonPath.timestamp", equalTo(chatNormalLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
-                body("$chatLogJsonPath.seqNumber", equalTo(chatNormalLog.number.sequenceNumber))
+                body("$chatLogJsonPath.seqNumber", equalTo(chatNormalLog.roomSequence.sequence))
                 body("$chatLogJsonPath.text", equalTo(chatNormalLog.text))
             }
             .apply(
@@ -445,7 +445,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                 val chatRoomJsonPath = "data"
                 val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
                 body("$chatRoomJsonPath.chatRoomId", equalTo(directChatRoom.roomInfo.chatRoomId.id))
-                body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(directChatRoom.roomSequence.sequenceNumber))
+                body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(directChatRoom.roomSequence.sequence))
                 body("$chatRoomJsonPath.readSequenceNumber", equalTo(directChatRoom.ownSequence.readSequenceNumber))
                 body("$chatRoomJsonPath.joinSequenceNumber", equalTo(directChatRoom.ownSequence.joinSequenceNumber))
                 body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(directChatRoom.roomInfo.status.name.lowercase()))
@@ -454,7 +454,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                 body("$chatLogJsonPath.type", equalTo(chatFileLog.type.name.lowercase()))
                 body("$chatLogJsonPath.senderId", equalTo(chatFileLog.senderId.id))
                 body("$chatLogJsonPath.timestamp", equalTo(chatFileLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
-                body("$chatLogJsonPath.seqNumber", equalTo(chatFileLog.number.sequenceNumber))
+                body("$chatLogJsonPath.seqNumber", equalTo(chatFileLog.roomSequence.sequence))
                 chatFileLog.medias.forEachIndexed {
                         mediaIndex, media ->
                     val mediaPrefix = "$chatLogJsonPath.files[$mediaIndex]"
@@ -622,7 +622,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                 val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
                 body("$chatRoomJsonPath.chatRoomId", equalTo(groupChatRoom.roomInfo.chatRoomId.id))
                 body("$chatRoomJsonPath.chatRoomName", equalTo(groupChatRoom.roomInfo.name))
-                body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(groupChatRoom.roomSequence.sequenceNumber))
+                body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(groupChatRoom.roomSequence.sequence))
                 body("$chatRoomJsonPath.readSequenceNumber", equalTo(groupChatRoom.ownSequence.readSequenceNumber))
                 body("$chatRoomJsonPath.joinSequenceNumber", equalTo(groupChatRoom.ownSequence.joinSequenceNumber))
                 body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoomMemberStatus.status.name.lowercase()))
@@ -636,7 +636,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                     "$chatLogJsonPath.timestamp",
                     equalTo(chatInviteLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
                 )
-                body("$chatLogJsonPath.seqNumber", equalTo(chatInviteLog.number.sequenceNumber))
+                body("$chatLogJsonPath.seqNumber", equalTo(chatInviteLog.roomSequence.sequence))
                 chatInviteLog.targetUserIds.forEachIndexed { userIdIndex, userId ->
                     val userIdPrefix = "$chatLogJsonPath.targetUserIds[$userIdIndex]"
                     body(userIdPrefix, equalTo(userId.id))

@@ -98,9 +98,9 @@ class FeedServiceTest {
         val feedId2 = TestDataFactory.createSecondFeedId()
         val feedIds = listOf(feedId1, feedId2)
         val feedDetailId = TestDataFactory.createFeedDetailId()
-        val feedDetailId2 = TestDataFactory.createSecondFeedDetailId()
-        val feedDetailId3 = TestDataFactory.createThirdFeedDetailId()
-        val feedDetailId4 = TestDataFactory.createFourthFeedDetailId()
+        val feedDetailId2 = TestDataFactory.createFeedDetailId()
+        val feedDetailId3 = TestDataFactory.createFeedDetailId()
+        val feedDetailId4 = TestDataFactory.createFeedDetailId()
         val feedDetailsByFeedId = mapOf(
             feedId1 to listOf(
                 TestDataFactory.createFeedDetail(feedId1, feedDetailId, 0),
@@ -143,7 +143,7 @@ class FeedServiceTest {
         val feedId = TestDataFactory.createFeedId()
         val feedIds = listOf(feedId)
         val feedDetailId = TestDataFactory.createFeedDetailId()
-        val feedDetailId2 = TestDataFactory.createSecondFeedDetailId()
+        val feedDetailId2 = TestDataFactory.createFeedDetailId()
         val visibleFeedIds = listOf(feedId)
         val feedDetailsByFeedId = mapOf(
             feedId to listOf(
@@ -182,7 +182,7 @@ class FeedServiceTest {
 
         every { feedRepository.isOwners(feedIds, userId) } returns true
         every { feedRepository.removes(feedIds) } just Runs
-        every { feedDetailRepository.removes(feedIds) } returns listOf()
+        every { feedDetailRepository.removes(feedIds) } just Runs
         every { fileHandler.handleOldFiles(any()) } just Runs
         every { feedVisibilityRepository.removes(feedIds) } just Runs
 

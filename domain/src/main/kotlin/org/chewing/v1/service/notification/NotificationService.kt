@@ -4,7 +4,7 @@ import org.chewing.v1.implementation.friend.friendship.FriendShipReader
 import org.chewing.v1.implementation.notification.NotificationGenerator
 import org.chewing.v1.implementation.notification.NotificationSender
 import org.chewing.v1.implementation.session.SessionProvider
-import org.chewing.v1.implementation.user.user.UserReader
+import org.chewing.v1.implementation.user.UserReader
 import org.chewing.v1.model.chat.message.ChatMessage
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
@@ -19,19 +19,7 @@ class NotificationService(
 ) {
     fun handleMessagesNotification(chatMessage: ChatMessage, targetUserIds: List<UserId>, userId: UserId) {
         targetUserIds.forEach { memberId ->
-            // 온라인 상태 확인
-            if (!sessionProvider.isOnline(memberId)) {
-                // 오프라인 유저에게 푸시 알림 전송
-                if (memberId != userId) {
-                    val friendShip = friendShipReader.read(memberId, userId)
-                    val pushTokens = userReader.readsPushToken(memberId)
-                    val notificationList =
-                        notificationGenerator.generateMessageNotification(friendShip, pushTokens, chatMessage)
-                    notificationSender.sendPushNotification(notificationList)
-                }
-            } else {
-                notificationSender.sendChatNotification(chatMessage, memberId)
-            }
+            handleMessageNotification(chatMessage, memberId, userId)
         }
     }
 

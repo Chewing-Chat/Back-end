@@ -22,14 +22,14 @@ class ChatGenerator {
     fun generateReadMessage(
         chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatRoomSequence,
+        roomSequence: ChatRoomSequence,
         chatRoomType: ChatRoomType,
     ): ChatReadMessage {
         return ChatReadMessage.of(
             chatRoomId = chatRoomId,
             senderId = userId,
             timestamp = LocalDateTime.now(),
-            number = number,
+            number = roomSequence,
             chatRoomType = chatRoomType,
         )
     }
@@ -37,7 +37,7 @@ class ChatGenerator {
     fun generateDeleteMessage(
         chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatRoomSequence,
+        roomSequence: ChatRoomSequence,
         messageId: String,
         chatRoomType: ChatRoomType,
     ): ChatDeleteMessage {
@@ -46,7 +46,7 @@ class ChatGenerator {
             chatRoomId = chatRoomId,
             senderId = userId,
             timestamp = LocalDateTime.now(),
-            number = number,
+            roomSequence = roomSequence,
             chatRoomType = chatRoomType,
         )
     }
@@ -54,7 +54,7 @@ class ChatGenerator {
     fun generateNormalMessage(
         chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatRoomSequence,
+        roomSequence: ChatRoomSequence,
         text: String,
         chatRoomType: ChatRoomType,
     ): ChatNormalMessage {
@@ -63,7 +63,7 @@ class ChatGenerator {
             chatRoomId = chatRoomId,
             senderId = userId,
             timestamp = LocalDateTime.now(),
-            number = number,
+            roomSequence = roomSequence,
             text = text,
             chatRoomType = chatRoomType,
         )
@@ -86,7 +86,7 @@ class ChatGenerator {
     fun generateInviteMessage(
         chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatRoomSequence,
+        roomSequence: ChatRoomSequence,
         targetUserIds: List<UserId>,
         chatRoomType: ChatRoomType,
     ): ChatInviteMessage {
@@ -95,7 +95,7 @@ class ChatGenerator {
             chatRoomId = chatRoomId,
             senderId = userId,
             timestamp = LocalDateTime.now(),
-            number = number,
+            roomSequence = roomSequence,
             targetUserIds = targetUserIds,
             chatRoomType = chatRoomType,
         )
@@ -104,7 +104,7 @@ class ChatGenerator {
     fun generateLeaveMessage(
         chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatRoomSequence,
+        roomSequence: ChatRoomSequence,
         chatRoomType: ChatRoomType,
     ): ChatLeaveMessage {
         return ChatLeaveMessage.of(
@@ -112,7 +112,7 @@ class ChatGenerator {
             chatRoomId = chatRoomId,
             senderId = userId,
             timestamp = LocalDateTime.now(),
-            number = number,
+            number = roomSequence,
             chatRoomType = chatRoomType,
         )
     }
@@ -120,7 +120,7 @@ class ChatGenerator {
     fun generateFileMessage(
         chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatRoomSequence,
+        roomSequence: ChatRoomSequence,
         medias: List<Media>,
         chatRoomType: ChatRoomType,
     ): ChatFileMessage {
@@ -129,7 +129,7 @@ class ChatGenerator {
             chatRoomId = chatRoomId,
             senderId = userId,
             timestamp = LocalDateTime.now(),
-            number = number,
+            roomSequence = roomSequence,
             medias = medias,
             chatRoomType = chatRoomType,
         )
@@ -138,7 +138,7 @@ class ChatGenerator {
     fun generateReplyMessage(
         chatRoomId: ChatRoomId,
         userId: UserId,
-        number: ChatRoomSequence,
+        roomSequence: ChatRoomSequence,
         text: String,
         parentLog: ChatLog,
         chatRoomType: ChatRoomType,
@@ -155,11 +155,11 @@ class ChatGenerator {
             chatRoomId = chatRoomId,
             senderId = userId,
             timestamp = LocalDateTime.now(),
-            number = number,
+            roomSequence = roomSequence,
             text = text,
             parentMessageId = parentMessageId,
             parentMessageText = parentMessageText,
-            parentSeqNumber = parentLog.number.sequenceNumber,
+            parentSeqNumber = parentLog.roomSequence.sequence,
             parentMessageType = parentLog.type,
             type = MessageType.REPLY,
             chatRoomType = chatRoomType,

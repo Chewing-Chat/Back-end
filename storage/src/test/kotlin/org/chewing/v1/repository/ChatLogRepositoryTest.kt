@@ -37,14 +37,14 @@ class ChatLogRepositoryTest : MongoContextTest() {
     fun `일반 채팅 로그 읽기 - 존재함`() {
         val messageId = generateMessageId()
         val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildNormalMessage(messageId, chatRoomId)
+        val chatMessage = ChatMessageProvider.buildNormalMessage(messageId, chatRoomId, 1)
         mongoDataGenerator.chatLogEntityData(chatMessage)
         val chatLog = chatLogRepositoryImpl.readChatMessage(messageId) as ChatNormalLog
         assert(chatLog.messageId == messageId)
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
         assert(chatLog.text == chatMessage.text)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequence == chatMessage.roomSequence.sequence)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -56,13 +56,13 @@ class ChatLogRepositoryTest : MongoContextTest() {
     fun `채팅방 나감 채팅 로그 읽기 - 존재함`() {
         val messageId = generateMessageId()
         val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildLeaveMessage(messageId, chatRoomId)
+        val chatMessage = ChatMessageProvider.buildLeaveMessage(messageId, chatRoomId, 1)
         mongoDataGenerator.chatLogEntityData(chatMessage)
         val chatLog = chatLogRepositoryImpl.readChatMessage(messageId) as ChatLeaveLog
         assert(chatLog.messageId == messageId)
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequence == chatMessage.roomSequence.sequence)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -74,13 +74,13 @@ class ChatLogRepositoryTest : MongoContextTest() {
     fun `채팅방 초대 채팅 로그 읽기 - 존재함`() {
         val messageId = generateMessageId()
         val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildInviteMessage(messageId, chatRoomId)
+        val chatMessage = ChatMessageProvider.buildInviteMessage(messageId, chatRoomId, 1)
         mongoDataGenerator.chatLogEntityData(chatMessage)
         val chatLog = chatLogRepositoryImpl.readChatMessage(messageId) as ChatInviteLog
         assert(chatLog.messageId == messageId)
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequence == chatMessage.roomSequence.sequence)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -92,13 +92,13 @@ class ChatLogRepositoryTest : MongoContextTest() {
     fun `파일 채팅 로그 읽기 - 존재함`() {
         val messageId = generateMessageId()
         val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildFileMessage(messageId, chatRoomId)
+        val chatMessage = ChatMessageProvider.buildFileMessage(messageId, chatRoomId, 1)
         mongoDataGenerator.chatLogEntityData(chatMessage)
         val chatLog = chatLogRepositoryImpl.readChatMessage(messageId) as ChatFileLog
         assert(chatLog.messageId == messageId)
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequence == chatMessage.roomSequence.sequence)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -112,14 +112,14 @@ class ChatLogRepositoryTest : MongoContextTest() {
         val messageId = generateMessageId()
         val chatRoomId = generateChatRoomId()
         val parentMessageId = generateMessageId()
-        val parentLog = ChatMessageProvider.buildNormalLog(parentMessageId, chatRoomId)
-        val chatMessage = ChatMessageProvider.buildReplyMessage(messageId, chatRoomId, parentLog)
+        val parentLog = ChatMessageProvider.buildNormalLog(parentMessageId, chatRoomId, 1)
+        val chatMessage = ChatMessageProvider.buildReplyMessage(messageId, chatRoomId, parentLog, 2)
         mongoDataGenerator.chatLogEntityData(chatMessage)
         val chatLog = chatLogRepositoryImpl.readChatMessage(messageId) as ChatReplyLog
         assert(chatLog.messageId == messageId)
         assert(chatLog.chatRoomId == chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequence == chatMessage.roomSequence.sequence)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -128,57 +128,63 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLog.type == ChatLogType.REPLY)
         assert(chatLog.parentMessageId == parentMessageId)
         assert(chatLog.parentMessageText == parentLog.text)
-        assert(chatLog.parentSeqNumber == parentLog.number.sequenceNumber)
+        assert(chatLog.parentSeqNumber == parentLog.roomSequence.sequence)
         assert(chatLog.parentMessageType == parentLog.type)
     }
 
     @Test
     fun `채팅로그 리스트 읽기`() {
         val chatRoomId = generateChatRoomId()
-        val chatNormalMessage = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId)
-        val chatLeaveMessage = ChatMessageProvider.buildLeaveMessage(generateMessageId(), chatRoomId)
-        val chatInviteMessage = ChatMessageProvider.buildInviteMessage(generateMessageId(), chatRoomId)
-        val chatFileMessage = ChatMessageProvider.buildFileMessage(generateMessageId(), chatRoomId)
+        val chatNormalMessage = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 5)
+        val chatLeaveMessage = ChatMessageProvider.buildLeaveMessage(generateMessageId(), chatRoomId, 4)
+        val chatInviteMessage = ChatMessageProvider.buildInviteMessage(generateMessageId(), chatRoomId, 3)
+        val chatFileMessage = ChatMessageProvider.buildFileMessage(generateMessageId(), chatRoomId, 2)
         val chatReplyMessage = ChatMessageProvider.buildReplyMessage(
             generateMessageId(),
             chatRoomId,
-            ChatMessageProvider.buildNormalLog(generateMessageId(), chatRoomId),
+            ChatMessageProvider.buildNormalLog(generateMessageId(), chatRoomId, 5),
+            1,
         )
+        val messages = listOf(chatNormalMessage, chatLeaveMessage, chatInviteMessage, chatFileMessage, chatReplyMessage)
         mongoDataGenerator.chatLogEntityData(chatNormalMessage)
         mongoDataGenerator.chatLogEntityData(chatLeaveMessage)
         mongoDataGenerator.chatLogEntityData(chatInviteMessage)
         mongoDataGenerator.chatLogEntityData(chatFileMessage)
         mongoDataGenerator.chatLogEntityData(chatReplyMessage)
-        val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 1, 0)
-        assert(chatLogs.size == 5)
+        val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 5, 0)
+        assert(chatLogs.size == messages.size)
+        chatLogs.forEachIndexed { index, chatLog ->
+            chatLog.roomSequence.sequence == index.plus(1)
+        }
     }
 
     @Test
     fun `채팅로그 리스트 읽기 - 0개`() {
         val chatRoomId = generateChatRoomId()
-        val chatNormalMessage = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId)
-        val chatLeaveMessage = ChatMessageProvider.buildLeaveMessage(generateMessageId(), chatRoomId)
-        val chatInviteMessage = ChatMessageProvider.buildInviteMessage(generateMessageId(), chatRoomId)
-        val chatFileMessage = ChatMessageProvider.buildFileMessage(generateMessageId(), chatRoomId)
+        val chatNormalMessage = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 5)
+        val chatLeaveMessage = ChatMessageProvider.buildLeaveMessage(generateMessageId(), chatRoomId, 4)
+        val chatInviteMessage = ChatMessageProvider.buildInviteMessage(generateMessageId(), chatRoomId, 3)
+        val chatFileMessage = ChatMessageProvider.buildFileMessage(generateMessageId(), chatRoomId, 2)
         val chatReplyMessage = ChatMessageProvider.buildReplyMessage(
             generateMessageId(),
             chatRoomId,
-            ChatMessageProvider.buildNormalLog(generateMessageId(), chatRoomId),
+            ChatMessageProvider.buildNormalLog(generateMessageId(), chatRoomId, 1),
+            6,
         )
         mongoDataGenerator.chatLogEntityData(chatNormalMessage)
         mongoDataGenerator.chatLogEntityData(chatLeaveMessage)
         mongoDataGenerator.chatLogEntityData(chatInviteMessage)
         mongoDataGenerator.chatLogEntityData(chatFileMessage)
         mongoDataGenerator.chatLogEntityData(chatReplyMessage)
-        val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 1, 1)
-        assert(chatLogs.size == 0)
+        val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 7, 6)
+        assert(chatLogs.isEmpty())
     }
 
     @Test
     fun `일반 채팅로그 삭제`() {
         val messageId = generateMessageId()
         val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildNormalMessage(messageId, chatRoomId)
+        val chatMessage = ChatMessageProvider.buildNormalMessage(messageId, chatRoomId, 1)
         mongoDataGenerator.chatLogEntityData(chatMessage)
         chatLogRepositoryImpl.removeLog(messageId)
         val chatLog = chatLogRepositoryImpl.readChatMessage(messageId)
@@ -189,7 +195,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
     fun `채팅방 나감 채팅로그 삭제`() {
         val messageId = generateMessageId()
         val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildLeaveMessage(messageId, chatRoomId)
+        val chatMessage = ChatMessageProvider.buildLeaveMessage(messageId, chatRoomId, 1)
         mongoDataGenerator.chatLogEntityData(chatMessage)
         chatLogRepositoryImpl.removeLog(messageId)
         val chatLog = chatLogRepositoryImpl.readChatMessage(messageId)
@@ -200,7 +206,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
     fun `채팅방 초대 채팅로그 삭제`() {
         val messageId = generateMessageId()
         val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildInviteMessage(messageId, chatRoomId)
+        val chatMessage = ChatMessageProvider.buildInviteMessage(messageId, chatRoomId, 1)
         mongoDataGenerator.chatLogEntityData(chatMessage)
         chatLogRepositoryImpl.removeLog(messageId)
         val chatLog = chatLogRepositoryImpl.readChatMessage(messageId)
@@ -211,7 +217,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
     fun `파일 채팅로그 삭제`() {
         val messageId = generateMessageId()
         val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildFileMessage(messageId, chatRoomId)
+        val chatMessage = ChatMessageProvider.buildFileMessage(messageId, chatRoomId, 1)
         mongoDataGenerator.chatLogEntityData(chatMessage)
         chatLogRepositoryImpl.removeLog(messageId)
         val chatLog = chatLogRepositoryImpl.readChatMessage(messageId)
@@ -223,8 +229,8 @@ class ChatLogRepositoryTest : MongoContextTest() {
         val messageId = generateMessageId()
         val chatRoomId = generateChatRoomId()
         val parentMessageId = generateMessageId()
-        val parentLog = ChatMessageProvider.buildNormalLog(parentMessageId, chatRoomId)
-        val chatMessage = ChatMessageProvider.buildReplyMessage(messageId, chatRoomId, parentLog)
+        val parentLog = ChatMessageProvider.buildNormalLog(parentMessageId, chatRoomId, 1)
+        val chatMessage = ChatMessageProvider.buildReplyMessage(messageId, chatRoomId, parentLog, 2)
         mongoDataGenerator.chatLogEntityData(chatMessage)
         chatLogRepositoryImpl.removeLog(messageId)
         val chatLog = chatLogRepositoryImpl.readChatMessage(messageId)
@@ -235,14 +241,14 @@ class ChatLogRepositoryTest : MongoContextTest() {
     fun `채팅로그 추가`() {
         val messageId = generateMessageId()
         val chatRoomId = generateChatRoomId()
-        val chatMessage = ChatMessageProvider.buildNormalMessage(messageId, chatRoomId)
+        val chatMessage = ChatMessageProvider.buildNormalMessage(messageId, chatRoomId, 1)
         chatLogRepositoryImpl.appendChatLog(chatMessage)
         val chatLog = chatLogRepositoryImpl.readChatMessage(messageId) as ChatNormalLog
         assert(chatLog.messageId == chatMessage.messageId)
         assert(chatLog.chatRoomId == chatMessage.chatRoomId)
         assert(chatLog.senderId == chatMessage.senderId)
         assert(chatLog.text == chatMessage.text)
-        assert(chatLog.number.sequenceNumber == chatMessage.number.sequenceNumber)
+        assert(chatLog.roomSequence.sequence == chatMessage.roomSequence.sequence)
         assert(
             chatLog.timestamp.truncatedTo(ChronoUnit.MILLIS)
                 .equals(chatMessage.timestamp.truncatedTo(ChronoUnit.MILLIS)),
@@ -252,9 +258,9 @@ class ChatLogRepositoryTest : MongoContextTest() {
 
     @Test
     fun `마지막 메시지 조회`() {
-        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId())
-        val chatMessage2 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId())
-        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId())
+        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId(), 1)
+        val chatMessage2 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId(), 1)
+        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId(), 1)
         mongoDataGenerator.chatLogEntityData(chatMessage1)
         mongoDataGenerator.chatLogEntityData(chatMessage2)
         mongoDataGenerator.chatLogEntityData(chatMessage3)

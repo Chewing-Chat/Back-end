@@ -11,7 +11,7 @@ class ChatFileLog private constructor(
     override val chatRoomId: ChatRoomId,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    override val number: ChatRoomSequence,
+    override val roomSequence: ChatRoomSequence,
     override val type: ChatLogType,
     val medias: List<Media>,
 ) : ChatLog() {
@@ -22,7 +22,7 @@ class ChatFileLog private constructor(
             senderId: UserId,
             medias: List<Media>,
             timestamp: LocalDateTime,
-            number: ChatRoomSequence,
+            roomSequence: ChatRoomSequence,
             type: ChatLogType,
         ): ChatFileLog {
             return ChatFileLog(
@@ -31,7 +31,7 @@ class ChatFileLog private constructor(
                 senderId = senderId,
                 medias = medias,
                 timestamp = timestamp,
-                number = number,
+                roomSequence = roomSequence,
                 type = type,
             )
         }

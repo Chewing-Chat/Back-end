@@ -11,9 +11,9 @@ internal interface DirectChatRoomJpaRepository : JpaRepository<DirectChatRoomJpa
 
     @Query(
         """
-    SELECT d FROM DirectChatRoomJpaEntity d WHERE d.userAId = :userId
-    UNION ALL
-    SELECT d FROM DirectChatRoomJpaEntity d WHERE d.userBId = :userId
+    SELECT d FROM DirectChatRoomJpaEntity d
+    WHERE (d.userAId = :userId AND d.userAStatus <> 'DELETED')
+       OR (d.userBId = :userId AND d.userBStatus <> 'DELETED')
     """,
     )
     fun findByUserId(@Param("userId") userId: String): List<DirectChatRoomJpaEntity>

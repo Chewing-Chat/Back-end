@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component
 class ChatReader(
     private val chatLogRepository: ChatLogRepository,
 ) {
-    fun readChatLog(chatRoomId: ChatRoomId, sequence: Int, joinSequence: Int): List<ChatLog> {
-        return chatLogRepository.readChatMessages(chatRoomId, sequence, joinSequence)
+    fun readChatLog(chatRoomId: ChatRoomId, targetSequence: Int, joinSequence: Int): List<ChatLog> {
+        return chatLogRepository.readChatMessages(chatRoomId, targetSequence, joinSequence)
     }
 
     fun readChatMessage(messageId: String): ChatLog {
         return chatLogRepository.readChatMessage(messageId) ?: throw NotFoundException(ErrorCode.CHATLOG_NOT_FOUND)
     }
 
-    fun readLatestMessages(numbers: List<ChatRoomId>): List<ChatLog> {
-        return chatLogRepository.readLatestMessages(numbers)
+    fun readLatestMessages(chatRoomIds: List<ChatRoomId>): List<ChatLog> {
+        return chatLogRepository.readLatestMessages(chatRoomIds)
     }
 
     fun readsUnreadChatLogs(targets: List<UnReadTarget>): List<ChatLog> {

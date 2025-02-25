@@ -120,7 +120,7 @@ sealed class ChatMessageDto {
                     parentSeqNumber = chatMessage.parentSeqNumber,
                     parentMessageText = chatMessage.parentMessageText,
                     timestamp = chatMessage.timestamp.format(dateTimeFormatter),
-                    seqNumber = chatMessage.number.sequenceNumber,
+                    seqNumber = chatMessage.roomSequence.sequence,
                     text = chatMessage.text,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
 
@@ -132,7 +132,7 @@ sealed class ChatMessageDto {
                     chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
-                    seqNumber = chatMessage.number.sequenceNumber,
+                    seqNumber = chatMessage.roomSequence.sequence,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
 
@@ -142,7 +142,7 @@ sealed class ChatMessageDto {
                     chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
-                    seqNumber = chatMessage.number.sequenceNumber,
+                    seqNumber = chatMessage.roomSequence.sequence,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
 
@@ -152,7 +152,7 @@ sealed class ChatMessageDto {
                     chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
-                    seqNumber = chatMessage.number.sequenceNumber,
+                    seqNumber = chatMessage.roomSequence.sequence,
                     files = chatMessage.medias.map { MediaDto.from(it) },
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
@@ -163,7 +163,7 @@ sealed class ChatMessageDto {
                     chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
-                    seqNumber = chatMessage.number.sequenceNumber,
+                    seqNumber = chatMessage.roomSequence.sequence,
                     text = chatMessage.text,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
@@ -173,7 +173,7 @@ sealed class ChatMessageDto {
                     chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
-                    seqNumber = chatMessage.number.sequenceNumber,
+                    seqNumber = chatMessage.roomSequence.sequence,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
 
@@ -183,7 +183,7 @@ sealed class ChatMessageDto {
                     chatRoomId = chatMessage.chatRoomId.id,
                     senderId = chatMessage.senderId.id,
                     timestamp = formattedTime,
-                    seqNumber = chatMessage.number.sequenceNumber,
+                    seqNumber = chatMessage.roomSequence.sequence,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
                 )
 

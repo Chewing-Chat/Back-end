@@ -44,8 +44,7 @@ class FeedService(
 
     fun removes(userId: UserId, feedIds: List<FeedId>) {
         feedValidator.isFeedsOwner(feedIds, userId)
-        val oldMedias = feedRemover.removes(feedIds)
-        fileHandler.handleOldFiles(oldMedias)
+        feedRemover.removes(feedIds)
     }
 
     fun makeFile(

@@ -1,6 +1,7 @@
 package org.chewing.v1.service.chat
 
 import org.chewing.v1.implementation.chat.grouproom.GroupChatRoomAppender
+import org.chewing.v1.implementation.chat.grouproom.GroupChatRoomEnricher
 import org.chewing.v1.implementation.chat.grouproom.GroupChatRoomReader
 import org.chewing.v1.implementation.chat.grouproom.GroupChatRoomRemover
 import org.chewing.v1.implementation.chat.grouproom.GroupChatRoomUpdater
@@ -24,14 +25,15 @@ class GroupChatRoomService(
     private val groupChatRoomValidator: GroupChatRoomValidator,
     private val chatSequenceFinder: ChatSequenceFinder,
     private val chatSequenceHandler: ChatSequenceHandler,
+    private val groupChatRoomEnricher: GroupChatRoomEnricher,
 ) {
     fun produceGroupChatRoom(userId: UserId, friendIds: List<UserId>, groupName: String): ChatRoomId {
-        val memberIds = friendIds + userId
-        val newChatRoomInfo = groupChatRoomAppender.appendRoom(groupName)
-        groupChatRoomAppender.appendMembers(newChatRoomInfo.chatRoomId, memberIds)
-        chatSequenceHandler.handleCreateRoomSequence(newChatRoomInfo.chatRoomId)
-        chatSequenceHandler.handleCreateMemberSequences(newChatRoomInfo.chatRoomId, memberIds)
-        return newChatRoomInfo.chatRoomId
+        val memberIds = groupChatRoomEnricher.enrichMember(userId, friendIds)
+        val chatRoomId = groupChatRoomAppender.appendRoom(groupName)
+        groupChatRoomAppender.appendMembers(chatRoomId, memberIds)
+        chatSequenceHandler.handleCreateRoomSequence(chatRoomId)
+        chatSequenceHandler.handleCreateMemberSequences(chatRoomId, memberIds)
+        return chatRoomId
     }
 
     fun deleteGroupChatRoom(userId: UserId, chatRoomId: ChatRoomId) {
@@ -63,58 +65,20 @@ class GroupChatRoomService(
         val chatRoomMembers = groupChatRoomReader.readsRoomMemberInfos(chatRoomIds)
         val chatRoomSequences = chatSequenceFinder.findCurrentRoomSequences(chatRoomIds)
         val memberSequences = chatSequenceFinder.findCurrentMemberSequences(chatRoomIds, userId)
-
-        return chatRooms.mapNotNull { chatRoom ->
-            val chatRoomSequence = chatRoomSequences.find { it.chatRoomId == chatRoom.chatRoomId }
-            val memberSequence = memberSequences.find { it.chatRoomId == chatRoom.chatRoomId }
-            val members = chatRoomMembers.filter { it.chatRoomId == chatRoom.chatRoomId }
-            if (chatRoomSequence != null && memberSequence != null) {
-                GroupChatRoom.of(chatRoom, members, chatRoomSequence, memberSequence)
-            } else {
-                null
-            }
-        }
+        return groupChatRoomEnricher.enrich(chatRooms, chatRoomSequences, memberSequences, chatRoomMembers)
     }
 
     fun searchGroupChatRooms(userId: UserId, friendIds: List<UserId>): List<GroupChatRoom> {
-        val userParticipatedRooms = groupChatRoomReader.readRoomUserInfos(userId)
-        val chatRoomIds = userParticipatedRooms.map { it.chatRoomId }
-        val chatRooms = groupChatRoomReader.readRoomInfos(chatRoomIds)
-        val chatRoomMembers = groupChatRoomReader.readsRoomMemberInfos(chatRoomIds)
-        val chatRoomSequences = chatSequenceFinder.findCurrentRoomSequences(chatRoomIds)
-        val memberSequences = chatSequenceFinder.findCurrentMemberSequences(chatRoomIds, userId)
-
-        return chatRooms.mapNotNull { chatRoom ->
-            val chatRoomSequence = chatRoomSequences.find { it.chatRoomId == chatRoom.chatRoomId }
-            val memberSequence = memberSequences.find { it.chatRoomId == chatRoom.chatRoomId }
-            val members = chatRoomMembers.filter { it.chatRoomId == chatRoom.chatRoomId }
-
-            // 친구 ID가 하나라도 포함되어 있으면 검색되도록 수정
-            if (chatRoomSequence != null && memberSequence != null && members.any { friendIds.contains(it.memberId) }) {
-                GroupChatRoom.of(chatRoom, members, chatRoomSequence, memberSequence)
-            } else {
-                null
-            }
+        val groupChatRooms = getGroupChatRooms(userId)
+        return groupChatRooms.filter { chatRoom ->
+            chatRoom.memberInfos.any { it.chatRoomId == chatRoom.roomInfo.chatRoomId && it.memberId in friendIds }
         }
     }
 
     fun getUnreadGroupChatRooms(userId: UserId): List<GroupChatRoom> {
-        val userParticipatedRooms = groupChatRoomReader.readRoomUserInfos(userId)
-        val chatRoomIds = userParticipatedRooms.map { it.chatRoomId }
-        val chatRooms = groupChatRoomReader.readRoomInfos(chatRoomIds)
-        val chatRoomMembers = groupChatRoomReader.readsRoomMemberInfos(chatRoomIds)
-        val chatRoomSequences = chatSequenceFinder.findCurrentRoomSequences(chatRoomIds)
-        val memberSequences = chatSequenceFinder.findCurrentMemberSequences(chatRoomIds, userId)
-
-        return chatRooms.mapNotNull { chatRoom ->
-            val chatRoomSequence = chatRoomSequences.find { it.chatRoomId == chatRoom.chatRoomId }
-            val memberSequence = memberSequences.find { it.chatRoomId == chatRoom.chatRoomId }
-            val members = chatRoomMembers.filter { it.chatRoomId == chatRoom.chatRoomId }
-            if (chatRoomSequence != null && memberSequence != null && memberSequence.readSequenceNumber < chatRoomSequence.sequenceNumber) {
-                GroupChatRoom.of(chatRoom, members, chatRoomSequence, memberSequence)
-            } else {
-                null
-            }
+        val groupChatRooms = getGroupChatRooms(userId)
+        return groupChatRooms.filter { chatRoom ->
+            chatRoom.ownSequence.readSequenceNumber < chatRoom.roomSequence.sequence
         }
     }
 

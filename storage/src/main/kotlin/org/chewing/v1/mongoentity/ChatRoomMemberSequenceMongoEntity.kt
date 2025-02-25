@@ -11,14 +11,14 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class ChatRoomMemberSequenceMongoEntity(
     val chatRoomId: String,
     val memberId: String,
-    var readSeqNumber: Int,
-    var joinSeqNumber: Int,
+    var readSequence: Int,
+    var joinSequence: Int,
 ) {
     fun toChatRoomMemberSequence(): ChatRoomMemberSequence {
         return ChatRoomMemberSequence.of(
             chatRoomId = ChatRoomId.of(chatRoomId),
-            readSequenceNumber = readSeqNumber,
-            joinSequenceNumber = joinSeqNumber,
+            readSequenceNumber = readSequence,
+            joinSequenceNumber = joinSequence,
         )
     }
 
@@ -30,8 +30,8 @@ data class ChatRoomMemberSequenceMongoEntity(
             return ChatRoomMemberSequenceMongoEntity(
                 chatRoomId = chatRoomId.id,
                 memberId = memberId.id,
-                readSeqNumber = 0,
-                joinSeqNumber = 0,
+                readSequence = 0,
+                joinSequence = 0,
             )
         }
     }

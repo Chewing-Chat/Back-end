@@ -32,4 +32,8 @@ internal class GroupChatRoomJpaEntity(
             name = name,
         )
     }
+
+    fun toChatRoomId(): ChatRoomId {
+        return ChatRoomId.of(chatRoomId)
+    }
 }

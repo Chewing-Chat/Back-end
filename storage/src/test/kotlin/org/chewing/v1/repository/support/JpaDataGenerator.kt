@@ -2,8 +2,9 @@ package org.chewing.v1.repository.support
 
 import org.chewing.v1.jpaentity.announcement.AnnouncementJpaEntity
 import org.chewing.v1.jpaentity.auth.LoggedInJpaEntity
-import org.chewing.v1.jpaentity.emoticon.EmoticonJpaEntity
-import org.chewing.v1.jpaentity.emoticon.EmoticonPackJpaEntity
+import org.chewing.v1.jpaentity.chat.DirectChatRoomJpaEntity
+import org.chewing.v1.jpaentity.chat.GroupChatRoomJpaEntity
+import org.chewing.v1.jpaentity.chat.GroupChatRoomMemberJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedDetailJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedJpaEntity
 import org.chewing.v1.jpaentity.feed.FeedVisibilityEntity
@@ -14,12 +15,12 @@ import org.chewing.v1.jpaentity.schedule.ScheduleLogJpaEntity
 import org.chewing.v1.jpaentity.schedule.ScheduleParticipantJpaEntity
 import org.chewing.v1.jpaentity.user.*
 import org.chewing.v1.jpaentity.user.PushNotificationJpaEntity
-import org.chewing.v1.jpaentity.user.UserEmoticonJpaEntity
 import org.chewing.v1.jpaentity.user.UserJpaEntity
 import org.chewing.v1.jparepository.announcement.AnnouncementJpaRepository
 import org.chewing.v1.jparepository.auth.LoggedInJpaRepository
-import org.chewing.v1.jparepository.emoticon.EmoticonJpaRepository
-import org.chewing.v1.jparepository.emoticon.EmoticonPackJpaRepository
+import org.chewing.v1.jparepository.chat.DirectChatRoomJpaRepository
+import org.chewing.v1.jparepository.chat.GroupChatRoomJpaRepository
+import org.chewing.v1.jparepository.chat.GroupChatRoomMemberJpaRepository
 import org.chewing.v1.jparepository.feed.FeedDetailJpaRepository
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
 import org.chewing.v1.jparepository.feed.FeedVisibilityJpaRepository
@@ -33,8 +34,9 @@ import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.contact.PhoneNumber
 import org.chewing.v1.model.auth.PushToken
-import org.chewing.v1.model.emoticon.EmoticonInfo
-import org.chewing.v1.model.emoticon.EmoticonPackInfo
+import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.DirectChatRoomInfo
+import org.chewing.v1.model.chat.room.GroupChatRoomInfo
 import org.chewing.v1.model.feed.FeedDetail
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.feed.FeedInfo
@@ -52,11 +54,9 @@ import org.chewing.v1.model.schedule.ScheduleTime
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserInfo
-import org.chewing.v1.model.user.UserEmoticonPackInfo
 import org.chewing.v1.model.user.UserId
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
 
 @Component
 class JpaDataGenerator {
@@ -86,15 +86,6 @@ class JpaDataGenerator {
     private lateinit var friendShipJpaRepository: FriendShipJpaRepository
 
     @Autowired
-    private lateinit var userEmoticonJpaRepository: UserEmoticonJpaRepository
-
-    @Autowired
-    private lateinit var emoticonPackJpaRepository: EmoticonPackJpaRepository
-
-    @Autowired
-    private lateinit var emoticonJpaRepository: EmoticonJpaRepository
-
-    @Autowired
     private lateinit var feedVisibilityJpaRepository: FeedVisibilityJpaRepository
 
     @Autowired
@@ -102,6 +93,15 @@ class JpaDataGenerator {
 
     @Autowired
     private lateinit var scheduleLogJpaRepository: ScheduleLogJpaRepository
+
+    @Autowired
+    private lateinit var directChatRoomJpaRepository: DirectChatRoomJpaRepository
+
+    @Autowired
+    private lateinit var groupChatRoomJpaRepository: GroupChatRoomJpaRepository
+
+    @Autowired
+    private lateinit var groupChatRoomMemberJpaRepository: GroupChatRoomMemberJpaRepository
 
     fun scheduleLogEntityData(scheduleId: ScheduleId, userId: UserId, action: ScheduleAction): ScheduleLog {
         val entity = ScheduleLogJpaEntity.generate(userId, scheduleId, action)
@@ -202,29 +202,19 @@ class JpaDataGenerator {
         friendShipJpaRepository.save(entity)
     }
 
-    fun userEmoticonEntityData(userId: UserId, emoticonPackId: String): UserEmoticonPackInfo {
-        val emoticon = UserEmoticonJpaEntity(UserEmoticonId.of(userId, emoticonPackId), LocalDateTime.now())
-        userEmoticonJpaRepository.save(emoticon)
-        return emoticon.toUserEmoticon()
+    fun directChatRoomEntityData(userId: UserId, friendId: UserId): DirectChatRoomInfo {
+        val entity = DirectChatRoomJpaEntity.generate(userId, friendId)
+        directChatRoomJpaRepository.save(entity)
+        return entity.toChatRoom(userId)
     }
 
-    fun emoticonPackEntityData(): EmoticonPackInfo {
-        val emoticonPack = EmoticonPackJpaEntity.of("emoticonPackImageUrl", "emoticonPackName")
-        emoticonPackJpaRepository.save(emoticonPack)
-        return emoticonPack.toEmoticonPack()
+    fun groupChatRoomEntityData(groupName: String): GroupChatRoomInfo {
+        val entity = GroupChatRoomJpaEntity.generate(groupName)
+        groupChatRoomJpaRepository.save(entity)
+        return entity.toChatRoom()
     }
 
-    fun emoticonEntityData(emoticonPackId: String): EmoticonInfo {
-        val emoticon = EmoticonJpaEntity.of("emoticonImageUrl", "emoticonName", emoticonPackId)
-        emoticonJpaRepository.save(emoticon)
-        return emoticon.toEmoticon()
-    }
-
-    fun emoticonEntityDataList(emoticonPackId: String): List<EmoticonInfo> {
-        val emoticonList = (1..10).map {
-            EmoticonJpaEntity.of("emoticonImageUrl $it", "emoticonName $it", emoticonPackId)
-        }
-        emoticonJpaRepository.saveAll(emoticonList)
-        return emoticonList.map { it.toEmoticon() }
+    fun groupChatRoomMemberEntityData(roomId: ChatRoomId, userId: UserId) {
+        groupChatRoomMemberJpaRepository.save(GroupChatRoomMemberJpaEntity.generate(roomId, userId))
     }
 }

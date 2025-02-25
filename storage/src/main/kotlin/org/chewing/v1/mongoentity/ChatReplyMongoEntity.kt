@@ -15,8 +15,8 @@ internal class ChatReplyMongoEntity(
     messageId: String,
     chatRoomId: String,
     senderId: String,
-    seqNumber: Int,
-    sendTime: LocalDateTime,
+    sequence: Int,
+    createAt: LocalDateTime,
     private val message: String,
     private val parentMessageId: String,
     private val parentSeqNumber: Int,
@@ -27,8 +27,8 @@ internal class ChatReplyMongoEntity(
     chatRoomId = chatRoomId,
     type = ChatLogType.REPLY,
     senderId = senderId,
-    seqNumber = seqNumber,
-    sendTime = sendTime,
+    sequence = sequence,
+    createAt = createAt,
 ) {
     companion object {
         fun from(
@@ -38,8 +38,8 @@ internal class ChatReplyMongoEntity(
                 messageId = chatReplyMessage.messageId,
                 chatRoomId = chatReplyMessage.chatRoomId.id,
                 senderId = chatReplyMessage.senderId.id,
-                seqNumber = chatReplyMessage.number.sequenceNumber,
-                sendTime = chatReplyMessage.timestamp,
+                sequence = chatReplyMessage.roomSequence.sequence,
+                createAt = chatReplyMessage.timestamp,
                 message = chatReplyMessage.text,
                 parentMessageId = chatReplyMessage.parentMessageId,
                 parentSeqNumber = chatReplyMessage.parentSeqNumber,
@@ -58,9 +58,9 @@ internal class ChatReplyMongoEntity(
             parentSeqNumber = parentSeqNumber,
             parentMessageText = parentMessageText,
             text = message,
-            timestamp = sendTime,
+            timestamp = this@ChatReplyMongoEntity.createAt,
             type = type,
-            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), seqNumber),
+            roomSequence = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatReplyMongoEntity.sequence),
             parentMessageType = parentMessageType,
         )
     }

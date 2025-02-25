@@ -10,11 +10,12 @@ import java.time.LocalDateTime
 internal interface ScheduleJpaRepository : JpaRepository<ScheduleJpaEntity, String> {
     @Query(
         """
-        SELECT s
-        FROM ScheduleJpaEntity s
-        WHERE s.scheduleId IN :scheduleIds
-          AND s.dateTime BETWEEN :start AND :end
-          And s.status = :status
+    SELECT s
+    FROM ScheduleJpaEntity s
+    WHERE s.scheduleId IN :scheduleIds
+      AND s.dateTime BETWEEN :start AND :end
+      AND s.status = :status
+    ORDER BY s.dateTime DESC
     """,
     )
     fun findSchedules(

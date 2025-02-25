@@ -113,7 +113,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
 
     private fun connectStompSession(): StompSession {
         val headers = WebSocketHttpHeaders().apply {
-            set("Authorization", "Bearer $token")
+            setSecWebSocketProtocol("Bearer $token")
         }
         val url = "ws://localhost:$port/ws-stomp"
 
@@ -262,7 +262,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
                     assertThat(dto.chatRoomId).isEqualTo(testChatRoomId4.id)
                     assertThat(dto.senderId).isEqualTo(deleteMessage.senderId.id)
                     assertThat(dto.chatRoomType).isEqualTo(ChatRoomType.GROUP.name.lowercase())
-                    assertThat(dto.seqNumber).isEqualTo(deleteMessage.number.sequenceNumber)
+                    assertThat(dto.seqNumber).isEqualTo(deleteMessage.roomSequence.sequence)
                     assertThat(dto.timestamp).isEqualTo(deleteMessage.timestamp.format(dateFormat))
                     assertThat(dto.type).isEqualTo(MessageType.DELETE.name.lowercase())
                 }
@@ -271,7 +271,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
                     assertThat(dto.chatRoomId).isEqualTo(testChatRoomId3.id)
                     assertThat(dto.senderId).isEqualTo(fileMessage.senderId.id)
                     assertThat(dto.chatRoomType).isEqualTo(ChatRoomType.GROUP.name.lowercase())
-                    assertThat(dto.seqNumber).isEqualTo(fileMessage.number.sequenceNumber)
+                    assertThat(dto.seqNumber).isEqualTo(fileMessage.roomSequence.sequence)
                     assertThat(dto.timestamp).isEqualTo(fileMessage.timestamp.format(dateFormat))
                     assertThat(dto.type).isEqualTo(MessageType.FILE.name.lowercase())
                     dto.files.forEachIndexed { index, mediaDto ->
@@ -285,7 +285,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
                     assertThat(dto.chatRoomId).isEqualTo(testChatRoomId2.id)
                     assertThat(dto.senderId).isEqualTo(inviteMessage.senderId.id)
                     assertThat(dto.chatRoomType).isEqualTo(ChatRoomType.GROUP.name.lowercase())
-                    assertThat(dto.seqNumber).isEqualTo(inviteMessage.number.sequenceNumber)
+                    assertThat(dto.seqNumber).isEqualTo(inviteMessage.roomSequence.sequence)
                     assertThat(dto.timestamp).isEqualTo(inviteMessage.timestamp.format(dateFormat))
                     assertThat(dto.type).isEqualTo(MessageType.INVITE.name.lowercase())
                 }
@@ -294,7 +294,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
                     assertThat(dto.chatRoomId).isEqualTo(testChatRoomId7.id)
                     assertThat(dto.senderId).isEqualTo(leaveMessage.senderId.id)
                     assertThat(dto.chatRoomType).isEqualTo(ChatRoomType.GROUP.name.lowercase())
-                    assertThat(dto.seqNumber).isEqualTo(leaveMessage.number.sequenceNumber)
+                    assertThat(dto.seqNumber).isEqualTo(leaveMessage.roomSequence.sequence)
                     assertThat(dto.timestamp).isEqualTo(leaveMessage.timestamp.format(dateFormat))
                     assertThat(dto.type).isEqualTo(MessageType.LEAVE.name.lowercase())
                 }
@@ -303,7 +303,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
                     assertThat(dto.chatRoomId).isEqualTo(testChatRoomId1.id)
                     assertThat(dto.senderId).isEqualTo(normalMessage.senderId.id)
                     assertThat(dto.chatRoomType).isEqualTo(ChatRoomType.GROUP.name.lowercase())
-                    assertThat(dto.seqNumber).isEqualTo(normalMessage.number.sequenceNumber)
+                    assertThat(dto.seqNumber).isEqualTo(normalMessage.roomSequence.sequence)
                     assertThat(dto.timestamp).isEqualTo(normalMessage.timestamp.format(dateFormat))
                     assertThat(dto.type).isEqualTo(MessageType.NORMAL.name.lowercase())
                 }
@@ -312,7 +312,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
                     assertThat(dto.chatRoomId).isEqualTo(testChatRoomId5.id)
                     assertThat(dto.senderId).isEqualTo(replyMessage.senderId.id)
                     assertThat(dto.chatRoomType).isEqualTo(ChatRoomType.GROUP.name.lowercase())
-                    assertThat(dto.seqNumber).isEqualTo(replyMessage.number.sequenceNumber)
+                    assertThat(dto.seqNumber).isEqualTo(replyMessage.roomSequence.sequence)
                     assertThat(dto.parentMessageId).isEqualTo(replyMessage.parentMessageId)
                     assertThat(dto.parentSeqNumber).isEqualTo(replyMessage.parentSeqNumber)
                     assertThat(dto.parentMessageText).isEqualTo(replyMessage.parentMessageText)

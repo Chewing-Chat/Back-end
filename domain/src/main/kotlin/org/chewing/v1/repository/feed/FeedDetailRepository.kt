@@ -7,7 +7,7 @@ import org.chewing.v1.model.media.Media
 interface FeedDetailRepository {
     fun read(feedId: FeedId): List<FeedDetail>
     fun readsFirstIndex(feedIds: List<FeedId>): List<FeedDetail>
-    fun removes(feedIds: List<FeedId>): List<Media>
+    fun removes(feedIds: List<FeedId>)
     fun append(medias: List<Media>, feedId: FeedId)
     fun reads(feedIds: List<FeedId>): List<FeedDetail>
 }

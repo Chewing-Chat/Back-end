@@ -49,7 +49,9 @@ class AnnouncementRepositoryTest : JpaContextTest() {
 
         assert(result.isNotEmpty())
         val createdAtList = result.map { it.uploadAt }
-        assert(createdAtList == createdAtList.sorted())
+        val sortedList = createdAtList.sortedByDescending { it }
+
+        assert(createdAtList == sortedList)
     }
 
     private fun generateAnnouncementId(): AnnouncementId = AnnouncementId.of(UUID.randomUUID().toString())

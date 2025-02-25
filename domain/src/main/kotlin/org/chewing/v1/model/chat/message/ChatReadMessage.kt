@@ -11,7 +11,7 @@ class ChatReadMessage private constructor(
     override val type: MessageType = MessageType.READ,
     override val senderId: UserId,
     override val timestamp: LocalDateTime,
-    val number: ChatRoomSequence,
+    val roomSequence: ChatRoomSequence,
     override val chatRoomType: ChatRoomType,
 ) : ChatMessage() {
     companion object {
@@ -26,7 +26,7 @@ class ChatReadMessage private constructor(
                 chatRoomId = chatRoomId,
                 senderId = senderId,
                 timestamp = timestamp,
-                number = number,
+                roomSequence = number,
                 chatRoomType = chatRoomType,
             )
         }

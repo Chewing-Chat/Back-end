@@ -65,7 +65,7 @@ class DirectChatFacade(
         val unReadDirectTargets = directChatRooms.map { chatRoom ->
             UnReadTarget.of(
                 chatRoom.roomInfo.chatRoomId,
-                chatRoom.roomSequence.sequenceNumber,
+                chatRoom.roomSequence.sequence,
                 chatRoom.ownSequence.readSequenceNumber,
             )
         }

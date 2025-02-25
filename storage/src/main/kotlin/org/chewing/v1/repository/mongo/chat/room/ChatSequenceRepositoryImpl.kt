@@ -15,10 +15,11 @@ import org.springframework.stereotype.Repository
 internal class ChatSequenceRepositoryImpl(
     private val mongoTemplate: MongoTemplate,
 ) : ChatRoomSequenceRepository {
+
     override fun readSequence(chatRoomId: ChatRoomId): ChatRoomSequence? {
         val sequenceEntity = mongoTemplate.findById(chatRoomId.id, ChatRoomSequenceMongoEntity::class.java)
         return sequenceEntity?.let {
-            ChatRoomSequence.of(chatRoomId, it.seqNumber)
+            ChatRoomSequence.of(chatRoomId, it.sequence)
         }
     }
 
@@ -27,22 +28,22 @@ internal class ChatSequenceRepositoryImpl(
 
         val entities = mongoTemplate.find(query, ChatRoomSequenceMongoEntity::class.java)
         return entities.map { entity ->
-            ChatRoomSequence.of(ChatRoomId.of(entity.chatRoomId), entity.seqNumber)
+            ChatRoomSequence.of(ChatRoomId.of(entity.chatRoomId), entity.sequence)
         }
     }
 
     override fun updateIncreaseSequence(chatRoomId: ChatRoomId): ChatRoomSequence {
-        val query = Query(Criteria.where("_id").`is`(chatRoomId))
-        val update = Update().inc("seqNumber", 1)
+        val query = Query(Criteria.where("_id").`is`(chatRoomId.id))
+        val update = Update().inc("sequence", 1)
         val options = FindAndModifyOptions.options().returnNew(true).upsert(true)
         val sequenceEntity =
             mongoTemplate.findAndModify(query, update, options, ChatRoomSequenceMongoEntity::class.java)
-        val sequenceNumber = sequenceEntity?.seqNumber ?: 1
+        val sequenceNumber = sequenceEntity?.sequence ?: 1
         return ChatRoomSequence.of(chatRoomId, sequenceNumber)
     }
 
-    override fun appendSequence(chatRoomId: ChatRoomId): ChatRoomSequence {
+    override fun appendSequence(chatRoomId: ChatRoomId) {
         val entity = ChatRoomSequenceMongoEntity.generate(chatRoomId)
-        return mongoTemplate.save(entity).toChatRoomSequence()
+        mongoTemplate.save(entity).toChatRoomSequence()
     }
 }

@@ -6,7 +6,7 @@ import org.chewing.v1.model.chat.room.GroupChatRoomMemberInfo
 import org.chewing.v1.model.user.UserId
 
 interface GroupChatRoomMemberRepository {
-    fun append(chatRoomId: ChatRoomId, userId: UserId): GroupChatRoomMemberInfo
+    fun append(chatRoomId: ChatRoomId, userId: UserId)
     fun read(chatRoomId: ChatRoomId): List<GroupChatRoomMemberInfo>
     fun readUsers(userId: UserId): List<GroupChatRoomMemberInfo>
     fun remove(chatRoomId: ChatRoomId, userId: UserId)

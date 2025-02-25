@@ -7,6 +7,7 @@ import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.jpa.schedule.ScheduleLogRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
+import org.chewing.v1.util.SortType
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
@@ -26,7 +27,7 @@ class ScheduleLogRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val scheduleId = generateScheduleId()
         scheduleLogRepositoryImpl.appendLog(scheduleId, userId, ScheduleAction.CREATED)
-        assert(scheduleLogJpaRepository.findAllByUserId(userId.id).isNotEmpty())
+        assert(scheduleLogJpaRepository.findAllByUserId(userId.id, SortType.LATEST.toSort()).isNotEmpty())
     }
 
     @Test

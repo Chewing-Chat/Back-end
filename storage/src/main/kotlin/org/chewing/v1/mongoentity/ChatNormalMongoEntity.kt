@@ -15,16 +15,16 @@ internal class ChatNormalMongoEntity(
     messageId: String,
     chatRoomId: String,
     senderId: String,
-    seqNumber: Int,
-    sendTime: LocalDateTime,
+    sequence: Int,
+    createAt: LocalDateTime,
     private val message: String,
 ) : ChatMessageMongoEntity(
     messageId = messageId,
     chatRoomId = chatRoomId,
     type = ChatLogType.NORMAL,
     senderId = senderId,
-    seqNumber = seqNumber,
-    sendTime = sendTime,
+    sequence = sequence,
+    createAt = createAt,
 ) {
     companion object {
         fun from(
@@ -34,8 +34,8 @@ internal class ChatNormalMongoEntity(
                 messageId = chatNormalMessage.messageId,
                 chatRoomId = chatNormalMessage.chatRoomId.id,
                 senderId = chatNormalMessage.senderId.id,
-                seqNumber = chatNormalMessage.number.sequenceNumber,
-                sendTime = chatNormalMessage.timestamp,
+                sequence = chatNormalMessage.roomSequence.sequence,
+                createAt = chatNormalMessage.timestamp,
                 message = chatNormalMessage.text,
             )
         }
@@ -46,8 +46,8 @@ internal class ChatNormalMongoEntity(
             messageId = messageId,
             chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
-            timestamp = sendTime,
-            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), seqNumber),
+            timestamp = this@ChatNormalMongoEntity.createAt,
+            roomSequence = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatNormalMongoEntity.sequence),
             text = message,
             type = type,
         )

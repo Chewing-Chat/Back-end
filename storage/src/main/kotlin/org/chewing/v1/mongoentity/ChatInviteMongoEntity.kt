@@ -15,16 +15,16 @@ internal class ChatInviteMongoEntity(
     messageId: String,
     chatRoomId: String,
     senderId: String,
-    seqNumber: Int,
-    sendTime: LocalDateTime,
+    sequence: Int,
+    createAt: LocalDateTime,
     val targetUserIds: List<String>,
 ) : ChatMessageMongoEntity(
     messageId = messageId,
     chatRoomId = chatRoomId,
     type = ChatLogType.INVITE,
     senderId = senderId,
-    seqNumber = seqNumber,
-    sendTime = sendTime,
+    sequence = sequence,
+    createAt = createAt,
 ) {
     companion object {
         fun from(
@@ -34,8 +34,8 @@ internal class ChatInviteMongoEntity(
                 messageId = chatInviteMessage.messageId,
                 chatRoomId = chatInviteMessage.chatRoomId.id,
                 senderId = chatInviteMessage.senderId.id,
-                seqNumber = chatInviteMessage.number.sequenceNumber,
-                sendTime = chatInviteMessage.timestamp,
+                sequence = chatInviteMessage.roomSequence.sequence,
+                createAt = chatInviteMessage.timestamp,
                 targetUserIds = chatInviteMessage.targetUserIds.map { it.id },
             )
         }
@@ -46,8 +46,8 @@ internal class ChatInviteMongoEntity(
             messageId = messageId,
             chatRoomId = ChatRoomId.of(chatRoomId),
             senderId = UserId.of(senderId),
-            timestamp = sendTime,
-            number = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), seqNumber),
+            timestamp = this@ChatInviteMongoEntity.createAt,
+            roomSequence = ChatRoomSequence.of(ChatRoomId.of(chatRoomId), this@ChatInviteMongoEntity.sequence),
             targetUserIds = targetUserIds.map { UserId.of(it) },
             type = type,
         )

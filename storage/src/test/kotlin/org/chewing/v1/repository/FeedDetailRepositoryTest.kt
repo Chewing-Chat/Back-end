@@ -3,9 +3,11 @@ package org.chewing.v1.repository
 import org.chewing.v1.config.JpaContextTest
 import org.chewing.v1.jparepository.feed.FeedDetailJpaRepository
 import org.chewing.v1.model.feed.FeedId
+import org.chewing.v1.model.feed.FeedStatus
 import org.chewing.v1.repository.jpa.feed.FeedDetailRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.chewing.v1.repository.support.MediaProvider
+import org.chewing.v1.util.SortType
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
@@ -25,7 +27,7 @@ class FeedDetailRepositoryTest : JpaContextTest() {
         val feedId = generateFeedId()
         val medias = MediaProvider.buildFeedContents()
         feedDetailRepositoryImpl.append(medias, feedId)
-        val result = feedDetailJpaRepository.findAllByFeedIdOrderByFeedIndex(feedId.id)
+        val result = feedDetailJpaRepository.findAllByFeedIdAndStatus(feedId.id, FeedStatus.ACTIVE, SortType.SMALLEST.toSort())
         assert(result.isNotEmpty())
         assert(result.size == medias.size)
     }
@@ -59,13 +61,11 @@ class FeedDetailRepositoryTest : JpaContextTest() {
     @Test
     fun `피드 상세를 삭제해야 한다`() {
         val feedIds = generateFeedIdList()
-        val feedDetails = feedIds.map { feedId ->
+        feedIds.map { feedId ->
             jpaDataGenerator.feedDetailEntityDataAsc(feedId)
         }.flatten()
-        val result = feedDetailRepositoryImpl.removes(feedIds)
-        assert(result.isNotEmpty())
-        assert(result.size == feedDetails.size)
-        val result2 = feedDetailJpaRepository.findAllByFeedIdIn(feedIds.map { it.id })
+        feedDetailRepositoryImpl.removes(feedIds)
+        val result2 = feedDetailJpaRepository.findAllByFeedIdInAndStatus(feedIds.map { it.id }, FeedStatus.ACTIVE, SortType.SMALLEST.toSort())
         assert(result2.isEmpty())
     }
 

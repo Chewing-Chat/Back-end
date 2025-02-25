@@ -8,7 +8,6 @@ import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.implementation.friend.friendship.*
 import org.chewing.v1.model.friend.FriendShipStatus
-import org.chewing.v1.model.friend.FriendSortCriteria
 import org.chewing.v1.repository.friend.FriendShipRepository
 import org.chewing.v1.service.friend.FriendShipService
 import org.junit.jupiter.api.Test
@@ -36,13 +35,12 @@ class FriendShipServiceTest {
     fun `접근 가능한 친구 조회`() {
         val userId = TestDataFactory.createUserId()
         val friendId = TestDataFactory.createFriendId()
-        val sort = FriendSortCriteria.NAME
         val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
 
-        every { friendShipRepository.readsSorted(userId, sort) } returns listOf(friendShip)
+        every { friendShipRepository.reads(userId) } returns listOf(friendShip)
 
         val result = assertDoesNotThrow {
-            friendShipService.getFriendShips(userId, sort)
+            friendShipService.getFriendShips(userId)
         }
         assert(result.size == 1)
     }
