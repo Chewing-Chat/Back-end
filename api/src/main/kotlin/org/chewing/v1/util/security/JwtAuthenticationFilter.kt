@@ -10,10 +10,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 
 @Component
 class JwtAuthenticationFilter(
     private val jwtTokenUtil: JwtTokenUtil,
+    private val handlerMapping: RequestMappingHandlerMapping,
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -21,6 +23,11 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
+        val handler = handlerMapping.getHandler(request)
+        if (handler == null) {
+            response.sendError(HttpServletResponse.SC_GONE)
+            return
+        }
         // 필터링 제외 대상은 바로 다음 필터로 전달
         if (shouldNotFilter(request)) {
             filterChain.doFilter(request, response)
