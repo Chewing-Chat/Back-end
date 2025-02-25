@@ -11,7 +11,7 @@ class DirectChatRoomEnricher {
     fun enrich(
         infos: List<DirectChatRoomInfo>,
         chatRoomSequences: List<ChatRoomSequence>,
-        memberSequences: List<ChatRoomMemberSequence>
+        memberSequences: List<ChatRoomMemberSequence>,
     ): List<DirectChatRoom> {
         val chatRoomSequenceMap = chatRoomSequences.associateBy { it.chatRoomId }
         val memberSequenceMap = memberSequences.associateBy { it.chatRoomId }
@@ -30,7 +30,7 @@ class DirectChatRoomEnricher {
     fun enrichUnRead(
         infos: List<DirectChatRoomInfo>,
         chatRoomSequences: List<ChatRoomSequence>,
-        memberSequences: List<ChatRoomMemberSequence>
+        memberSequences: List<ChatRoomMemberSequence>,
     ): List<DirectChatRoom> {
         val chatRoomSequenceMap = chatRoomSequences.associateBy { it.chatRoomId }
         val memberSequenceMap = memberSequences.associateBy { it.chatRoomId }

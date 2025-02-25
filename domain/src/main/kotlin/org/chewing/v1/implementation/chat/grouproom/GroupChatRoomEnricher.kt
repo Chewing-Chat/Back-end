@@ -33,7 +33,7 @@ class GroupChatRoomEnricher {
 
     fun enrichMember(
         userId: UserId,
-        friendIds: List<UserId>
+        friendIds: List<UserId>,
     ): List<UserId> {
         return friendIds + userId
     }

@@ -25,7 +25,7 @@ class GroupChatRoomService(
     private val groupChatRoomValidator: GroupChatRoomValidator,
     private val chatSequenceFinder: ChatSequenceFinder,
     private val chatSequenceHandler: ChatSequenceHandler,
-    private val groupChatRoomEnricher: GroupChatRoomEnricher
+    private val groupChatRoomEnricher: GroupChatRoomEnricher,
 ) {
     fun produceGroupChatRoom(userId: UserId, friendIds: List<UserId>, groupName: String): ChatRoomId {
         val memberIds = groupChatRoomEnricher.enrichMember(userId, friendIds)
@@ -66,7 +66,6 @@ class GroupChatRoomService(
         val chatRoomSequences = chatSequenceFinder.findCurrentRoomSequences(chatRoomIds)
         val memberSequences = chatSequenceFinder.findCurrentMemberSequences(chatRoomIds, userId)
         return groupChatRoomEnricher.enrich(chatRooms, chatRoomSequences, memberSequences, chatRoomMembers)
-
     }
 
     fun searchGroupChatRooms(userId: UserId, friendIds: List<UserId>): List<GroupChatRoom> {
@@ -75,7 +74,6 @@ class GroupChatRoomService(
             chatRoom.memberInfos.any { it.chatRoomId == chatRoom.roomInfo.chatRoomId && it.memberId in friendIds }
         }
     }
-
 
     fun getUnreadGroupChatRooms(userId: UserId): List<GroupChatRoom> {
         val groupChatRooms = getGroupChatRooms(userId)

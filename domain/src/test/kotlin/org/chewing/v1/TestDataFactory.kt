@@ -77,13 +77,12 @@ object TestDataFactory {
 
     fun createGroupChatRoomUserInfos(
         chatRoomIds: List<ChatRoomId>,
-        userId: UserId
+        userId: UserId,
     ): List<GroupChatRoomMemberInfo> {
         return chatRoomIds.map {
-            GroupChatRoomMemberInfo.of(it,userId, ChatRoomMemberStatus.NORMAL)
+            GroupChatRoomMemberInfo.of(it, userId, ChatRoomMemberStatus.NORMAL)
         }
     }
-
 
     fun createChatRoomSequences(chatRoomIds: List<ChatRoomId>): List<ChatRoomSequence> {
         return chatRoomIds.map {
@@ -105,7 +104,7 @@ object TestDataFactory {
 
     fun createGroupChatRoomMembersInfos(
         chatRoomIds: List<ChatRoomId>,
-        memberIds: List<UserId>
+        memberIds: List<UserId>,
     ): List<GroupChatRoomMemberInfo> {
         return chatRoomIds.flatMap { chatRoomId ->
             memberIds.map { userId ->
@@ -115,7 +114,7 @@ object TestDataFactory {
     }
     fun createGroupChatRoomMemberInfos(
         chatRoomId: ChatRoomId,
-        memberIds: List<UserId>
+        memberIds: List<UserId>,
     ): List<GroupChatRoomMemberInfo> {
         return memberIds.map { userId ->
             GroupChatRoomMemberInfo.of(chatRoomId, userId, ChatRoomMemberStatus.NORMAL)
@@ -149,7 +148,6 @@ object TestDataFactory {
     }
 
     fun createLocalPhoneNumber(): LocalPhoneNumber = LocalPhoneNumber.of("01012345678", "82")
-
 
     fun createEncryptedUser(userId: UserId, password: String): UserInfo = UserInfo.of(
         userId,

@@ -48,11 +48,11 @@ class GroupChatRoomServiceTest {
         groupChatRoomValidator,
         chatSequenceFinder,
         chatSequenceHandler,
-        groupChatRoomEnricher
+        groupChatRoomEnricher,
     )
 
     @Test
-    fun `그룹 채팅방 제공`(){
+    fun `그룹 채팅방 제공`() {
         val userId = TestDataFactory.createUserId()
         val friendIds = TestDataFactory.createFriendIds()
         val chatRoomId = TestDataFactory.createChatRoomId()
@@ -72,7 +72,7 @@ class GroupChatRoomServiceTest {
     }
 
     @Test
-    fun `그룹 채팅방 삭제`(){
+    fun `그룹 채팅방 삭제`() {
         val userId = TestDataFactory.createUserId()
         val chatRoomId = TestDataFactory.createChatRoomId()
 
@@ -87,7 +87,7 @@ class GroupChatRoomServiceTest {
     }
 
     @Test
-    fun `그룹 채팅방 초대`(){
+    fun `그룹 채팅방 초대`() {
         val userId = TestDataFactory.createUserId()
         val chatRoomId = TestDataFactory.createChatRoomId()
         val friendId = TestDataFactory.createUserId()
@@ -106,7 +106,7 @@ class GroupChatRoomServiceTest {
     }
 
     @Test
-    fun `그룹 채팅방 참여자 상태 변경`(){
+    fun `그룹 채팅방 참여자 상태 변경`() {
         val userId = TestDataFactory.createUserId()
         val chatRoomId = TestDataFactory.createChatRoomId()
         val status = ChatRoomMemberStatus.FAVORITE
@@ -122,7 +122,7 @@ class GroupChatRoomServiceTest {
     }
 
     @Test
-    fun `그룹 채팅방 참여자 확인`(){
+    fun `그룹 채팅방 참여자 확인`() {
         val userId = TestDataFactory.createUserId()
         val chatRoomId = TestDataFactory.createChatRoomId()
 
@@ -133,14 +133,14 @@ class GroupChatRoomServiceTest {
     }
 
     @Test
-    fun `유저가 포함된 그룹 채팅방 목록 가져오기`(){
+    fun `유저가 포함된 그룹 채팅방 목록 가져오기`() {
         val userId = TestDataFactory.createUserId()
         val friendIds = TestDataFactory.createFriendIds()
         val memberIds = (friendIds + userId)
         val chatRoomIds = TestDataFactory.createChatRoomIds()
         val chatRooms = TestDataFactory.createGroupChatRoomInfos(chatRoomIds)
         val chatRoomUsersInfos = TestDataFactory.createGroupChatRoomUserInfos(chatRoomIds, userId)
-        val chatRoomMemberInfos = TestDataFactory.createGroupChatRoomMembersInfos(chatRoomIds,memberIds)
+        val chatRoomMemberInfos = TestDataFactory.createGroupChatRoomMembersInfos(chatRoomIds, memberIds)
         val chatRoomSequences = TestDataFactory.createChatRoomSequences(chatRoomIds)
         val userSequences = TestDataFactory.createChatRoomMemberSequences(chatRoomIds)
 
@@ -169,14 +169,14 @@ class GroupChatRoomServiceTest {
     }
 
     @Test
-    fun `친구 아이디 리스트를 통해 조회`(){
+    fun `친구 아이디 리스트를 통해 조회`() {
         val userId = TestDataFactory.createUserId()
         val friendIds = TestDataFactory.createFriendIds()
         val memberIds = (friendIds + userId)
         val chatRoomIds = TestDataFactory.createChatRoomIds()
         val chatRooms = TestDataFactory.createGroupChatRoomInfos(chatRoomIds)
         val chatRoomUsersInfos = TestDataFactory.createGroupChatRoomUserInfos(chatRoomIds, userId)
-        val chatRoomMemberInfos = TestDataFactory.createGroupChatRoomMembersInfos(chatRoomIds,memberIds)
+        val chatRoomMemberInfos = TestDataFactory.createGroupChatRoomMembersInfos(chatRoomIds, memberIds)
         val chatRoomSequences = TestDataFactory.createChatRoomSequences(chatRoomIds)
         val userSequences = TestDataFactory.createChatRoomMemberSequences(chatRoomIds)
 
@@ -226,7 +226,6 @@ class GroupChatRoomServiceTest {
         assert(result.isEmpty())
     }
 
-
     @Test
     fun `유저가 참여한 방 중 친구가 포함된 방이 없을 때 빈 리스트 반환`() {
         val userId = TestDataFactory.createUserId()
@@ -272,7 +271,7 @@ class GroupChatRoomServiceTest {
     }
 
     @Test
-    fun `읽지 않은 채팅방이 있을 경우 반환`(){
+    fun `읽지 않은 채팅방이 있을 경우 반환`() {
         val userId = TestDataFactory.createUserId()
         val chatRoomIds = TestDataFactory.createChatRoomIds()
         val chatRooms = TestDataFactory.createGroupChatRoomInfos(chatRoomIds)
@@ -306,7 +305,7 @@ class GroupChatRoomServiceTest {
     }
 
     @Test
-    fun `읽지 않은 채팅방이 없을 경우 빈 리스트 반환`(){
+    fun `읽지 않은 채팅방이 없을 경우 빈 리스트 반환`() {
         val userId = TestDataFactory.createUserId()
         val chatRoomIds = TestDataFactory.createChatRoomIds()
         val chatRooms = TestDataFactory.createGroupChatRoomInfos(chatRoomIds)
@@ -327,7 +326,7 @@ class GroupChatRoomServiceTest {
     }
 
     @Test
-    fun `그룹 채팅방 조회`(){
+    fun `그룹 채팅방 조회`() {
         val userId = TestDataFactory.createUserId()
         val friendIds = TestDataFactory.createFriendIds()
         val memberIds = (friendIds + userId)
@@ -352,7 +351,7 @@ class GroupChatRoomServiceTest {
     }
 
     @Test
-    fun `그룹 채팅방 읽음 처리`(){
+    fun `그룹 채팅방 읽음 처리`() {
         val userId = TestDataFactory.createUserId()
         val chatRoomId = TestDataFactory.createChatRoomId()
         val sequenceNumber = 1
@@ -366,7 +365,7 @@ class GroupChatRoomServiceTest {
     }
 
     @Test
-    fun `그룹 채팅방 시퀀스 증가`(){
+    fun `그룹 채팅방 시퀀스 증가`() {
         val chatRoomId = TestDataFactory.createChatRoomId()
         val chatRoomSequence = TestDataFactory.createChatRoomSequence(chatRoomId)
 
@@ -376,5 +375,4 @@ class GroupChatRoomServiceTest {
 
         assert(result == chatRoomSequence)
     }
-
 }

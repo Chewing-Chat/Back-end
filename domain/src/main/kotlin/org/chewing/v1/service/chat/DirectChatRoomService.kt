@@ -25,7 +25,7 @@ class DirectChatRoomService(
     private val directChatRoomAppender: DirectChatRoomAppender,
     private val chatSequenceFinder: ChatSequenceFinder,
     private val chatSequenceHandler: ChatSequenceHandler,
-    private val directChatRoomEnricher: DirectChatRoomEnricher
+    private val directChatRoomEnricher: DirectChatRoomEnricher,
 ) {
     //채팅방 0부터 시작
     //채팅방 삭제 -> soft delete
