@@ -99,4 +99,13 @@ class SpringSecurityTest2 : IntegrationTest() {
         )
             .andExpect(status().isOk)
     }
+
+    @Test
+    @DisplayName("존재하지 않는 경로로 요청 - 410 에러 발생")
+    fun notFound() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/api/not/found")
+                .contentType(MediaType.APPLICATION_JSON),
+        ).andExpect(status().isGone)
+    }
 }

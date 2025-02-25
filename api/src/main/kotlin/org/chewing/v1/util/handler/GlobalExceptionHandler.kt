@@ -1,7 +1,6 @@
 package org.chewing.v1.util.handler
 
 import mu.KotlinLogging
-import org.chewing.v1.error.AuthorizationException
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
@@ -10,6 +9,7 @@ import org.chewing.v1.util.aliases.ErrorResponseEntity
 import org.chewing.v1.util.helper.ResponseHelper
 import org.springframework.http.HttpStatus
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.security.authentication.InsufficientAuthenticationException
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -34,17 +34,19 @@ class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgumentException(e: IllegalArgumentException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
 
-    @ExceptionHandler(AuthorizationException::class)
-    protected fun handleAuthorizationException(e: AuthorizationException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.UNAUTHORIZED)
-
     @ExceptionHandler(HttpMessageNotReadableException::class)
-    protected fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
+    fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler(NotFoundException::class)
-    protected fun handleNotFoundException(e: NotFoundException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.NOT_FOUND)
+    fun handleNotFoundException(e: NotFoundException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.NOT_FOUND)
 
     @ExceptionHandler(ConflictException::class)
-    protected fun handleConflictException(e: ConflictException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.CONFLICT)
+    fun handleConflictException(e: ConflictException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.CONFLICT)
+
+    @ExceptionHandler(InsufficientAuthenticationException::class)
+    fun handleInsufficientAuthenticationException(): ErrorResponseEntity {
+        return handleException(InsufficientAuthenticationException("Unauthorized"), ErrorCode.NOT_AUTHORIZED, HttpStatus.UNAUTHORIZED)
+    }
 
     // Optional: 처리되지 않은 예외를 위한 핸들러 추가
     @ExceptionHandler(Exception::class)
