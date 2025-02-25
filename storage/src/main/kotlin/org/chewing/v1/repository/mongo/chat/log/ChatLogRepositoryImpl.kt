@@ -46,8 +46,12 @@ internal class ChatLogRepositoryImpl(
     }
 
     override fun readLatestMessages(chatRoomIds: List<ChatRoomId>): List<ChatLog> {
+        if (chatRoomIds.isEmpty()) {
+            return emptyList()
+        }
+        val conditions = chatRoomIds.map { mapOf("chatRoomId" to it.id) }
         return chatLogMongoRepository.findByRoomIdAndSeqNumbers(
-            chatRoomIds.map { mapOf("chatRoomId" to it.id) },
+            conditions,
             SortType.OLDEST.toSort(),
         ).map { it.toChatLog() }
     }
@@ -62,6 +66,9 @@ internal class ChatLogRepositoryImpl(
     override fun readUnreadChatLogs(
         targets: List<UnReadTarget>,
     ): List<ChatLog> {
+        if (targets.isEmpty()) {
+            return emptyList()
+        }
         val conditions = targets.map { target ->
             mapOf(
                 "chatRoomId" to target.chatRoomId.id,

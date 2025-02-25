@@ -81,6 +81,10 @@ class ChatRoomMemberSequenceRepositoryImpl(
         chatRoomIds: List<ChatRoomId>,
         userId: UserId,
     ): List<ChatRoomMemberSequence> {
+        if (chatRoomIds.isEmpty()) {
+            return emptyList()
+        }
+
         val roomIdList = chatRoomIds.map { it.id }
 
         // 조건: chatRoomId in (roomIdList) AND memberId == userId
