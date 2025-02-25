@@ -26,7 +26,7 @@ class ChatSequenceRepositoryTest : MongoContextTest() {
         mongoDataGenerator.insertSeqNumber(chatRoomId.id, 1)
         val result = chatSequenceRepositoryImpl.readSequence(chatRoomId)
         assert(result != null)
-        assert(result!!.sequenceNumber == 1)
+        assert(result!!.sequence == 1)
         assert(result.chatRoomId == chatRoomId)
     }
 
@@ -51,7 +51,7 @@ class ChatSequenceRepositoryTest : MongoContextTest() {
     fun `채팅방 시퀀스 번호 증가 - 없다면 채팅방 아이디로 증가 성공`() {
         val chatRoomId = generateChatRoomId()
         val result = chatSequenceRepositoryImpl.updateIncreaseSequence(chatRoomId)
-        assert(result.sequenceNumber == 1)
+        assert(result.sequence == 1)
     }
 
     @Test
@@ -59,14 +59,15 @@ class ChatSequenceRepositoryTest : MongoContextTest() {
         val chatRoomId = generateChatRoomId()
         mongoDataGenerator.insertSeqNumber(chatRoomId.id, 1)
         val result = chatSequenceRepositoryImpl.updateIncreaseSequence(chatRoomId)
-        assert(result.sequenceNumber == 2)
+        assert(result.sequence == 2)
     }
 
     @Test
     fun `채팅방 시퀀스 번호 추가 - 채팅방 아이디로 추가 성공`() {
         val chatRoomId = generateChatRoomId()
-        val result = chatSequenceRepositoryImpl.appendSequence(chatRoomId)
-        assert(result.sequenceNumber == 0)
+        chatSequenceRepositoryImpl.appendSequence(chatRoomId)
+        val result = chatSequenceRepositoryImpl.readSequence(chatRoomId)
+        assert(result!!.sequence == 0)
     }
     private fun generateChatRoomId() = ChatRoomId.of(UUID.randomUUID().toString())
 }

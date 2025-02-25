@@ -159,7 +159,7 @@ class ChatGenerator {
             text = text,
             parentMessageId = parentMessageId,
             parentMessageText = parentMessageText,
-            parentSeqNumber = parentLog.roomSequence.sequenceNumber,
+            parentSeqNumber = parentLog.roomSequence.sequence,
             parentMessageType = parentLog.type,
             type = MessageType.REPLY,
             chatRoomType = chatRoomType,

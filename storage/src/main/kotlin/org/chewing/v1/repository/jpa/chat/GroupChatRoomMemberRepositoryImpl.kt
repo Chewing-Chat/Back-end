@@ -17,10 +17,10 @@ internal class GroupChatRoomMemberRepositoryImpl(
     override fun append(
         chatRoomId: ChatRoomId,
         userId: UserId,
-    ): GroupChatRoomMemberInfo {
+    ) {
         val chatRoomMemberId = ChatRoomMemberId.of(chatRoomId, userId)
 
-        return groupChatRoomMemberJpaRepository.findById(chatRoomMemberId)
+        groupChatRoomMemberJpaRepository.findById(chatRoomMemberId)
             .map {
                 if (it.userStatus == ChatRoomMemberStatus.DELETED) {
                     it.updateStatus(ChatRoomMemberStatus.NORMAL)
@@ -35,14 +35,20 @@ internal class GroupChatRoomMemberRepositoryImpl(
     }
 
     override fun read(chatRoomId: ChatRoomId): List<GroupChatRoomMemberInfo> {
-        return groupChatRoomMemberJpaRepository.findByIdChatRoomIdAndUserStatusNot(chatRoomId.id, ChatRoomMemberStatus.DELETED)
+        return groupChatRoomMemberJpaRepository.findByIdChatRoomIdAndUserStatusNot(
+            chatRoomId.id,
+            ChatRoomMemberStatus.DELETED,
+        )
             .asSequence()
             .map { it.toChatRoomMember() }
             .toList()
     }
 
     override fun readUsers(userId: UserId): List<GroupChatRoomMemberInfo> {
-        return groupChatRoomMemberJpaRepository.findAllByIdUserIdAndUserStatusNot(userId.id, ChatRoomMemberStatus.DELETED)
+        return groupChatRoomMemberJpaRepository.findAllByIdUserIdAndUserStatusNot(
+            userId.id,
+            ChatRoomMemberStatus.DELETED,
+        )
             .asSequence()
             .map { it.toChatRoomMember() }
             .toList()
@@ -74,11 +80,17 @@ internal class GroupChatRoomMemberRepositoryImpl(
         chatRoomId: ChatRoomId,
         userId: UserId,
     ): Boolean {
-        return groupChatRoomMemberJpaRepository.existsByIdAndUserStatusNot(ChatRoomMemberId.of(chatRoomId, userId), ChatRoomMemberStatus.DELETED)
+        return groupChatRoomMemberJpaRepository.existsByIdAndUserStatusNot(
+            ChatRoomMemberId.of(chatRoomId, userId),
+            ChatRoomMemberStatus.DELETED,
+        )
     }
 
     override fun readsInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomMemberInfo> {
-        return groupChatRoomMemberJpaRepository.findAllByIdChatRoomIdInAndUserStatusNot(chatRoomIds.map { it.id }, ChatRoomMemberStatus.DELETED)
+        return groupChatRoomMemberJpaRepository.findAllByIdChatRoomIdInAndUserStatusNot(
+            chatRoomIds.map { it.id },
+            ChatRoomMemberStatus.DELETED,
+        )
             .asSequence()
             .map { it.toChatRoomMember() }
             .toList()

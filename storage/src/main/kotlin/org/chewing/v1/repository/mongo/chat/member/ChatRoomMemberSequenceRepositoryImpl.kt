@@ -62,8 +62,8 @@ class ChatRoomMemberSequenceRepositoryImpl(
             .returnNew(true)
 
         val update = Update()
-            .set("joinSequence", chatLogSequence.sequenceNumber)
-            .set("readSequence", chatLogSequence.sequenceNumber)
+            .set("joinSequence", chatLogSequence.sequence)
+            .set("readSequence", chatLogSequence.sequence)
             .setOnInsert("chatRoomId", chatRoomId.id)
             .setOnInsert("memberId", userId.id)
 

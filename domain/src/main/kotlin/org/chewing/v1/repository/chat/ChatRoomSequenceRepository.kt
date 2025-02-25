@@ -9,5 +9,5 @@ interface ChatRoomSequenceRepository {
     fun readSequence(chatRoomId: ChatRoomId): ChatRoomSequence?
     fun readsSequences(chatRoomIds: List<ChatRoomId>): List<ChatRoomSequence>
     fun updateIncreaseSequence(chatRoomId: ChatRoomId): ChatRoomSequence
-    fun appendSequence(chatRoomId: ChatRoomId): ChatRoomSequence
+    fun appendSequence(chatRoomId: ChatRoomId)
 }

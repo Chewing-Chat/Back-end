@@ -58,7 +58,7 @@ object ChatMessageProvider {
         timestamp = LocalDateTime.now(),
         parentMessageId = normalLog.messageId,
         parentMessageText = normalLog.text,
-        parentSeqNumber = normalLog.roomSequence.sequenceNumber,
+        parentSeqNumber = normalLog.roomSequence.sequence,
         type = MessageType.REPLY,
         parentMessageType = normalLog.type,
         chatRoomType = ChatRoomType.DIRECT,

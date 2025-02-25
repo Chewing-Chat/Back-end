@@ -34,7 +34,7 @@ internal class ChatNormalMongoEntity(
                 messageId = chatNormalMessage.messageId,
                 chatRoomId = chatNormalMessage.chatRoomId.id,
                 senderId = chatNormalMessage.senderId.id,
-                sequence = chatNormalMessage.roomSequence.sequenceNumber,
+                sequence = chatNormalMessage.roomSequence.sequence,
                 createAt = chatNormalMessage.timestamp,
                 message = chatNormalMessage.text,
             )

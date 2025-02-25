@@ -23,7 +23,7 @@ class GroupChatRoomRepositoryTest : JpaContextTest() {
     fun `그룹 채팅방 생성`() {
         val groupName = "group"
         val result = groupChatRoomRepositoryImpl.append(groupName)
-        val room = groupChatRoomJpaRepository.findById(result.chatRoomId.id)
+        val room = groupChatRoomJpaRepository.findById(result.id)
         assert(room.isPresent)
         val roomInfo = room.get().toChatRoom()
         assert(roomInfo.name == groupName)

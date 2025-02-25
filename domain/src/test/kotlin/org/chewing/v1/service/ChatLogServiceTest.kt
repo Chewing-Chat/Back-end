@@ -73,7 +73,7 @@ class ChatLogServiceTest {
         }
         assert(result.type == MessageType.FILE)
         assert(result.roomSequence.chatRoomId == chatRoomId)
-        assert(result.roomSequence.sequenceNumber == chatRoomNumber.sequenceNumber)
+        assert(result.roomSequence.sequence == chatRoomNumber.sequence)
         assert(result.chatRoomType == chatRoomType)
     }
 
@@ -90,7 +90,7 @@ class ChatLogServiceTest {
         assert(result.senderId == userId)
         assert(result.type == MessageType.READ)
         assert(result.roomSequence.chatRoomId == chatRoomId)
-        assert(result.roomSequence.sequenceNumber == chatRoomNumber.sequenceNumber)
+        assert(result.roomSequence.sequence == chatRoomNumber.sequence)
         assert(result.chatRoomType == chatRoomType)
     }
 
@@ -112,7 +112,7 @@ class ChatLogServiceTest {
         assert(result.targetMessageId == messageId)
         assert(result.type == MessageType.DELETE)
         assert(result.roomSequence.chatRoomId == chatRoomId)
-        assert(result.roomSequence.sequenceNumber == parentLog.roomSequence.sequenceNumber)
+        assert(result.roomSequence.sequence == parentLog.roomSequence.sequence)
         assert(result.chatRoomType == chatRoomType)
     }
 
@@ -135,7 +135,7 @@ class ChatLogServiceTest {
         assert(result.targetMessageId == messageId)
         assert(result.type == MessageType.DELETE)
         assert(result.roomSequence.chatRoomId == chatRoomId)
-        assert(result.roomSequence.sequenceNumber == parentLog.roomSequence.sequenceNumber)
+        assert(result.roomSequence.sequence == parentLog.roomSequence.sequence)
         assert(result.chatRoomType == chatRoomType)
     }
 
@@ -158,7 +158,7 @@ class ChatLogServiceTest {
         assert(result.targetMessageId == messageId)
         assert(result.type == MessageType.DELETE)
         assert(result.roomSequence.chatRoomId == chatRoomId)
-        assert(result.roomSequence.sequenceNumber == parentLog.roomSequence.sequenceNumber)
+        assert(result.roomSequence.sequence == parentLog.roomSequence.sequence)
         assert(result.chatRoomType == chatRoomType)
     }
 
@@ -183,9 +183,9 @@ class ChatLogServiceTest {
         assert(result.text == text)
         assert(result.type == MessageType.REPLY)
         assert(result.roomSequence.chatRoomId == chatRoomId)
-        assert(result.roomSequence.sequenceNumber == chatNumber.sequenceNumber)
+        assert(result.roomSequence.sequence == chatNumber.sequence)
         assert(result.parentMessageId == parentMessageId)
-        assert(result.parentSeqNumber == parentChatLog.roomSequence.sequenceNumber)
+        assert(result.parentSeqNumber == parentChatLog.roomSequence.sequence)
         assert(result.parentMessageType == parentChatLog.type)
         assert(result.parentMessageText == parentChatLog.text)
         assert(result.parentMessageId == parentChatLog.messageId)
@@ -213,9 +213,9 @@ class ChatLogServiceTest {
         assert(result.text == text)
         assert(result.type == MessageType.REPLY)
         assert(result.roomSequence.chatRoomId == chatRoomId)
-        assert(result.roomSequence.sequenceNumber == seqNumber.sequenceNumber)
+        assert(result.roomSequence.sequence == seqNumber.sequence)
         assert(result.parentMessageId == parentMessageId)
-        assert(result.parentSeqNumber == parentChatNumber.sequenceNumber)
+        assert(result.parentSeqNumber == parentChatNumber.sequence)
         assert(result.parentMessageType == parentChatLog.type)
         assert(result.parentMessageText == parentChatLog.medias[0].url)
         assert(result.parentMessageId == parentChatLog.messageId)
@@ -239,7 +239,7 @@ class ChatLogServiceTest {
         assert(result.text == text)
         assert(result.type == MessageType.NORMAL)
         assert(result.roomSequence.chatRoomId == chatRoomId)
-        assert(result.roomSequence.sequenceNumber == seqNumber.sequenceNumber)
+        assert(result.roomSequence.sequence == seqNumber.sequence)
         assert(result.chatRoomType == chatRoomType)
     }
 
@@ -257,7 +257,7 @@ class ChatLogServiceTest {
         assert(result.senderId == userId)
         assert(result.type == MessageType.LEAVE)
         assert(result.roomSequence.chatRoomId == chatRoomId)
-        assert(result.roomSequence.sequenceNumber == seqNumber.sequenceNumber)
+        assert(result.roomSequence.sequence == seqNumber.sequence)
         assert(result.chatRoomType == ChatRoomType.DIRECT)
     }
 
@@ -276,7 +276,7 @@ class ChatLogServiceTest {
         assert(result.senderId == userId)
         assert(result.type == MessageType.INVITE)
         assert(result.roomSequence.chatRoomId == chatRoomId)
-        assert(result.roomSequence.sequenceNumber == seqNumber.sequenceNumber)
+        assert(result.roomSequence.sequence == seqNumber.sequence)
         assert(result.chatRoomType == ChatRoomType.DIRECT)
         assert(result.targetUserIds.size == 2)
         result.targetUserIds.forEachIndexed { index, targetUserId ->
@@ -299,7 +299,7 @@ class ChatLogServiceTest {
         assert(result.senderId == userId)
         assert(result.type == MessageType.INVITE)
         assert(result.roomSequence.chatRoomId == chatRoomId)
-        assert(result.roomSequence.sequenceNumber == seqNumber.sequenceNumber)
+        assert(result.roomSequence.sequence == seqNumber.sequence)
         assert(result.chatRoomType == ChatRoomType.DIRECT)
         assert(result.targetUserIds.size == 1)
         assert(result.targetUserIds[0] == friendId)

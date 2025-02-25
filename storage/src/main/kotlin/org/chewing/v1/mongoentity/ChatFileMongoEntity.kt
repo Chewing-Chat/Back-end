@@ -35,7 +35,7 @@ internal class ChatFileMongoEntity(
                 chatFileMessage.messageId,
                 chatFileMessage.chatRoomId.id,
                 chatFileMessage.senderId.id,
-                chatFileMessage.roomSequence.sequenceNumber,
+                chatFileMessage.roomSequence.sequence,
                 chatFileMessage.timestamp,
                 chatFileMessage.medias,
             )

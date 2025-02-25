@@ -23,7 +23,7 @@ data class ChatRoomSequenceMongoEntity(
     fun toChatRoomSequence(): ChatRoomSequence {
         return ChatRoomSequence.of(
             chatRoomId = ChatRoomId.of(chatRoomId),
-            sequenceNumber = sequence,
+            sequence = sequence,
         )
     }
 }

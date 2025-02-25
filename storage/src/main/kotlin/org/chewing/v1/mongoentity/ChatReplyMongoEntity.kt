@@ -38,7 +38,7 @@ internal class ChatReplyMongoEntity(
                 messageId = chatReplyMessage.messageId,
                 chatRoomId = chatReplyMessage.chatRoomId.id,
                 senderId = chatReplyMessage.senderId.id,
-                sequence = chatReplyMessage.roomSequence.sequenceNumber,
+                sequence = chatReplyMessage.roomSequence.sequence,
                 createAt = chatReplyMessage.timestamp,
                 message = chatReplyMessage.text,
                 parentMessageId = chatReplyMessage.parentMessageId,

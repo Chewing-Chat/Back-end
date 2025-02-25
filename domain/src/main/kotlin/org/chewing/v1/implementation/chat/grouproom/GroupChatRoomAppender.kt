@@ -13,17 +13,17 @@ class GroupChatRoomAppender(
     private val groupChatRoomRepository: GroupChatRoomRepository,
     private val groupChatRoomMemberRepository: GroupChatRoomMemberRepository,
 ) {
-    fun appendRoom(groupName: String): GroupChatRoomInfo {
+    fun appendRoom(groupName: String): ChatRoomId {
         return groupChatRoomRepository.append(groupName)
     }
 
-    fun appendMembers(chatRoomId: ChatRoomId, userIds: List<UserId>): List<GroupChatRoomMemberInfo> {
-        return userIds.map { userId ->
+    fun appendMembers(chatRoomId: ChatRoomId, userIds: List<UserId>) {
+        userIds.map { userId ->
             groupChatRoomMemberRepository.append(chatRoomId, userId)
         }
     }
 
-    fun appendMember(chatRoomId: ChatRoomId, userId: UserId): GroupChatRoomMemberInfo {
+    fun appendMember(chatRoomId: ChatRoomId, userId: UserId) {
         return groupChatRoomMemberRepository.append(chatRoomId, userId)
     }
 }

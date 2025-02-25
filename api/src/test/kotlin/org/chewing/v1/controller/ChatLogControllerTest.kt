@@ -88,7 +88,7 @@ class ChatLogControllerTest : RestDocsTest() {
                             body("$prefix.type", equalTo(chatFileLog.type.name.lowercase()))
                             body("$prefix.senderId", equalTo(chatFileLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatFileLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
-                            body("$prefix.seqNumber", equalTo(chatFileLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatFileLog.roomSequence.sequence))
                             chatFileLog.medias.forEachIndexed {
                                     mediaIndex, media ->
                                 val mediaPrefix = "$prefix.files[$mediaIndex]"
@@ -102,7 +102,7 @@ class ChatLogControllerTest : RestDocsTest() {
                             body("$prefix.type", equalTo(chatNormalLog.type.name.lowercase()))
                             body("$prefix.senderId", equalTo(chatNormalLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatNormalLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
-                            body("$prefix.seqNumber", equalTo(chatNormalLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatNormalLog.roomSequence.sequence))
                             body("$prefix.text", equalTo(chatNormalLog.text))
                         }
                         is ChatReplyLog -> {
@@ -110,7 +110,7 @@ class ChatLogControllerTest : RestDocsTest() {
                             body("$prefix.type", equalTo(chatReplyLog.type.name.lowercase()))
                             body("$prefix.senderId", equalTo(chatReplyLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatReplyLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
-                            body("$prefix.seqNumber", equalTo(chatReplyLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatReplyLog.roomSequence.sequence))
                             body("$prefix.parentMessageId", equalTo(chatReplyLog.parentMessageId))
                             body("$prefix.parentSeqNumber", equalTo(chatReplyLog.parentSeqNumber))
                             body("$prefix.parentMessageText", equalTo(chatReplyLog.parentMessageText))
@@ -215,7 +215,7 @@ class ChatLogControllerTest : RestDocsTest() {
                                 "$prefix.timestamp",
                                 equalTo(chatFileLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
                             )
-                            body("$prefix.seqNumber", equalTo(chatFileLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatFileLog.roomSequence.sequence))
                             chatFileLog.medias.forEachIndexed { mediaIndex, media ->
                                 val mediaPrefix = "$prefix.files[$mediaIndex]"
                                 body("$mediaPrefix.fileType", equalTo(media.type.value()))
@@ -232,7 +232,7 @@ class ChatLogControllerTest : RestDocsTest() {
                                 "$prefix.timestamp",
                                 equalTo(chatNormalLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
                             )
-                            body("$prefix.seqNumber", equalTo(chatNormalLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatNormalLog.roomSequence.sequence))
                             body("$prefix.text", equalTo(chatNormalLog.text))
                         }
 
@@ -244,7 +244,7 @@ class ChatLogControllerTest : RestDocsTest() {
                                 "$prefix.timestamp",
                                 equalTo(chatReplyLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
                             )
-                            body("$prefix.seqNumber", equalTo(chatReplyLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatReplyLog.roomSequence.sequence))
                             body("$prefix.parentMessageId", equalTo(chatReplyLog.parentMessageId))
                             body("$prefix.parentSeqNumber", equalTo(chatReplyLog.parentSeqNumber))
                             body("$prefix.parentMessageText", equalTo(chatReplyLog.parentMessageText))
@@ -263,7 +263,7 @@ class ChatLogControllerTest : RestDocsTest() {
                                 "$prefix.timestamp",
                                 equalTo(chatInviteLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
                             )
-                            body("$prefix.seqNumber", equalTo(chatInviteLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatInviteLog.roomSequence.sequence))
                             chatInviteLog.targetUserIds.forEachIndexed { userIdIndex, userId ->
                                 val userIdPrefix = "$prefix.targetUserIds[$userIdIndex]"
                                 body(userIdPrefix, equalTo(userId.id))
@@ -278,7 +278,7 @@ class ChatLogControllerTest : RestDocsTest() {
                                 "$prefix.timestamp",
                                 equalTo(chatLeaveLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
                             )
-                            body("$prefix.seqNumber", equalTo(chatLeaveLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatLeaveLog.roomSequence.sequence))
                         }
                     }
                 }
@@ -375,7 +375,7 @@ class ChatLogControllerTest : RestDocsTest() {
                             body("$prefix.type", equalTo(chatFileLog.type.name.lowercase()))
                             body("$prefix.senderId", equalTo(chatFileLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatFileLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
-                            body("$prefix.seqNumber", equalTo(chatFileLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatFileLog.roomSequence.sequence))
                             chatFileLog.medias.forEachIndexed {
                                     mediaIndex, media ->
                                 val mediaPrefix = "$prefix.files[$mediaIndex]"
@@ -389,7 +389,7 @@ class ChatLogControllerTest : RestDocsTest() {
                             body("$prefix.type", equalTo(chatNormalLog.type.name.lowercase()))
                             body("$prefix.senderId", equalTo(chatNormalLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatNormalLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
-                            body("$prefix.seqNumber", equalTo(chatNormalLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatNormalLog.roomSequence.sequence))
                             body("$prefix.text", equalTo(chatNormalLog.text))
                         }
                         is ChatReplyLog -> {
@@ -397,7 +397,7 @@ class ChatLogControllerTest : RestDocsTest() {
                             body("$prefix.type", equalTo(chatReplyLog.type.name.lowercase()))
                             body("$prefix.senderId", equalTo(chatReplyLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatReplyLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
-                            body("$prefix.seqNumber", equalTo(chatReplyLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatReplyLog.roomSequence.sequence))
                             body("$prefix.parentMessageId", equalTo(chatReplyLog.parentMessageId))
                             body("$prefix.parentSeqNumber", equalTo(chatReplyLog.parentSeqNumber))
                             body("$prefix.parentMessageText", equalTo(chatReplyLog.parentMessageText))
@@ -495,7 +495,7 @@ class ChatLogControllerTest : RestDocsTest() {
                             body("$prefix.type", equalTo(chatFileLog.type.name.lowercase()))
                             body("$prefix.senderId", equalTo(chatFileLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatFileLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
-                            body("$prefix.seqNumber", equalTo(chatFileLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatFileLog.roomSequence.sequence))
                             chatFileLog.medias.forEachIndexed {
                                     mediaIndex, media ->
                                 val mediaPrefix = "$prefix.files[$mediaIndex]"
@@ -509,7 +509,7 @@ class ChatLogControllerTest : RestDocsTest() {
                             body("$prefix.type", equalTo(chatNormalLog.type.name.lowercase()))
                             body("$prefix.senderId", equalTo(chatNormalLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatNormalLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
-                            body("$prefix.seqNumber", equalTo(chatNormalLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatNormalLog.roomSequence.sequence))
                             body("$prefix.text", equalTo(chatNormalLog.text))
                         }
                         is ChatReplyLog -> {
@@ -517,7 +517,7 @@ class ChatLogControllerTest : RestDocsTest() {
                             body("$prefix.type", equalTo(chatReplyLog.type.name.lowercase()))
                             body("$prefix.senderId", equalTo(chatReplyLog.senderId.id))
                             body("$prefix.timestamp", equalTo(chatReplyLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))))
-                            body("$prefix.seqNumber", equalTo(chatReplyLog.roomSequence.sequenceNumber))
+                            body("$prefix.seqNumber", equalTo(chatReplyLog.roomSequence.sequence))
                             body("$prefix.parentMessageId", equalTo(chatReplyLog.parentMessageId))
                             body("$prefix.parentSeqNumber", equalTo(chatReplyLog.parentSeqNumber))
                             body("$prefix.parentMessageText", equalTo(chatReplyLog.parentMessageText))

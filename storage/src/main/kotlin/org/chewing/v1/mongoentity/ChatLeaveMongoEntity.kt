@@ -34,7 +34,7 @@ internal class ChatLeaveMongoEntity(
                 messageId = chatLeaveMessage.messageId,
                 chatRoomId = chatLeaveMessage.chatRoomId.id,
                 senderId = chatLeaveMessage.senderId.id,
-                sequence = chatLeaveMessage.roomSequence.sequenceNumber,
+                sequence = chatLeaveMessage.roomSequence.sequence,
                 createAt = chatLeaveMessage.timestamp,
             )
         }

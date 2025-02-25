@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository
 internal class GroupChatRoomRepositoryImpl(
     private val groupChatRoomJpaRepository: GroupChatRoomJpaRepository,
 ) : GroupChatRoomRepository {
-    override fun append(groupName: String): GroupChatRoomInfo {
-        return groupChatRoomJpaRepository.save(GroupChatRoomJpaEntity.generate(groupName)).toChatRoom()
+    override fun append(groupName: String): ChatRoomId {
+        return groupChatRoomJpaRepository.save(GroupChatRoomJpaEntity.generate(groupName)).toChatRoomId()
     }
 
     override fun readRoomInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomInfo> {

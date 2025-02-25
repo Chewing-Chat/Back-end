@@ -34,7 +34,7 @@ data class FullGroupChatRoomResponse(
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
-                    chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
+                    chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                     chatRoomName = chatRoom.roomInfo.name,
 
                 )
@@ -46,7 +46,7 @@ data class FullGroupChatRoomResponse(
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
-                    chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
+                    chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                     chatRoomName = chatRoom.roomInfo.name,
 
                 )
@@ -57,7 +57,7 @@ data class FullGroupChatRoomResponse(
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
-                    chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
+                    chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                     chatRoomName = chatRoom.roomInfo.name,
 
                 )
@@ -68,7 +68,7 @@ data class FullGroupChatRoomResponse(
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
-                    chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
+                    chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                     chatRoomName = chatRoom.roomInfo.name,
 
                 )
@@ -79,7 +79,7 @@ data class FullGroupChatRoomResponse(
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
                     friendIds = friendIds,
-                    chatRoomSequenceNumber = chatRoom.roomSequence.sequenceNumber,
+                    chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                     chatRoomName = chatRoom.roomInfo.name,
 
                 )
