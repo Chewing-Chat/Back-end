@@ -6,6 +6,7 @@ import io.mockk.every
 import io.mockk.just
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.config.IntegrationTest
+import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.chewing.v1.util.security.JwtTokenUtil
 import org.chewing.v1.util.security.JwtAuthenticationEntryPoint
 import org.junit.jupiter.api.DisplayName
@@ -31,6 +32,9 @@ class SpringSecurityTest2 : IntegrationTest() {
 
     @Autowired
     private lateinit var jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
+
+    @Autowired
+    private lateinit var globalExceptionHandler: GlobalExceptionHandler
 
     @Test
     @DisplayName("휴대폰 인증번호 전송 - 인증 없이 통과해야함")
@@ -101,11 +105,11 @@ class SpringSecurityTest2 : IntegrationTest() {
     }
 
     @Test
-    @DisplayName("존재하지 않는 경로로 요청 - 410 에러 발생")
+    @DisplayName("존재하지 않는 경로로 요청 - 200 에러 발생")
     fun notFound() {
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/not/found")
                 .contentType(MediaType.APPLICATION_JSON),
-        ).andExpect(status().isGone)
+        ).andExpect(status().isBadRequest)
     }
 }

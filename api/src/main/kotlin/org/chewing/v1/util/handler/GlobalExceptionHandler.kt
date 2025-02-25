@@ -1,6 +1,7 @@
 package org.chewing.v1.util.handler
 
 import mu.KotlinLogging
+import org.chewing.v1.error.AuthorizationException
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
@@ -34,17 +35,20 @@ class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgumentException(e: IllegalArgumentException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
 
+    @ExceptionHandler(AuthorizationException::class)
+    protected fun handleAuthorizationException(e: AuthorizationException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.UNAUTHORIZED)
+
     @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
+    protected fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler(NotFoundException::class)
-    fun handleNotFoundException(e: NotFoundException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.NOT_FOUND)
+    protected fun handleNotFoundException(e: NotFoundException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.NOT_FOUND)
 
     @ExceptionHandler(ConflictException::class)
-    fun handleConflictException(e: ConflictException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.CONFLICT)
+    protected fun handleConflictException(e: ConflictException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.CONFLICT)
 
     @ExceptionHandler(InsufficientAuthenticationException::class)
-    fun handleInsufficientAuthenticationException(): ErrorResponseEntity {
+    protected fun handleInsufficientAuthenticationException(): ErrorResponseEntity {
         return handleException(InsufficientAuthenticationException("Unauthorized"), ErrorCode.NOT_AUTHORIZED, HttpStatus.UNAUTHORIZED)
     }
 
