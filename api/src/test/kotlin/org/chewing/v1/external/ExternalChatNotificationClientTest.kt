@@ -113,7 +113,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
 
     private fun connectStompSession(): StompSession {
         val headers = WebSocketHttpHeaders().apply {
-            set("Authorization", "Bearer $token")
+            setSecWebSocketProtocol("Bearer $token")
         }
         val url = "ws://localhost:$port/ws-stomp"
 
