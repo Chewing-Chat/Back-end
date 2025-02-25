@@ -25,7 +25,7 @@ class AuthService(
         val phoneNumber = contactFormatter.formatContact(localPhoneNumber)
         val verificationCode = authGenerator.generateVerificationCode()
         authAppender.appendVerification(phoneNumber, verificationCode)
-        authSender.sendVerificationCode(phoneNumber, verificationCode)
+        authSender.sendVerificationCode(localPhoneNumber, verificationCode)
     }
 
     fun verify(

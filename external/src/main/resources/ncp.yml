@@ -7,10 +7,11 @@ ncp:
     accessKey: test-access-key
     secretKey: test-secret-key
     bucketName: test-bucket-name
-  tts:
-    url: test-tts-url
+  sms:
+    phoneNumber : test-sms-from
     accessKey: test-access-key
-    secretKey: test-secret-key
+    secretKey: test-secret
+    serviceId: test-service-id
 ---
 spring.config.activate.on-profile: local
 
@@ -21,7 +22,11 @@ ncp:
     accessKey: ${NCP_STORAGE_ACCESS_KEY}
     secretKey: ${NCP_STORAGE_SECRET_KEY}
     bucketName: ${NCP_BUCKET_NAME}
-
+  sms:
+    phoneNumber: ${NCP_SMS_PHONE_NUMBER}
+    accessKey: ${NCP_SMS_ACCESS_KEY}
+    secretKey: ${NCP_SMS_SECRET_KEY}
+    serviceId: ${NCP_SMS_SERVICE_ID}
 
 ---
 spring.config.activate.on-profile: live
@@ -33,3 +38,8 @@ ncp:
     accessKey: ${NCP_STORAGE_ACCESS_KEY}
     secretKey: ${NCP_STORAGE_SECRET_KEY}
     bucketName: ${NCP_BUCKET_NAME}
+  sms:
+    phoneNumber: ${NCP_SMS_PHONE_NUMBER}
+    accessKey: ${NCP_SMS_ACCESS_KEY}
+    secretKey: ${NCP_SMS_SECRET_KEY}
+    serviceId: ${NCP_SMS_SERVICE_ID}
