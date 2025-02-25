@@ -29,7 +29,7 @@ class SpringSecurityTest : IntegrationTest() {
     @Test
     fun `토큰 없이 들어온다면 에러 발생`() {
         mockMvc.perform(
-            get("/api/private")
+            post("/api/private")
                 .contentType(MediaType.APPLICATION_JSON),
         )
             .andExpect(status().isUnauthorized)
@@ -38,7 +38,7 @@ class SpringSecurityTest : IntegrationTest() {
     @Test
     fun `토큰이 유효하지 않은 토큰이라면 에러 방생`() {
         mockMvc.perform(
-            get("/api/private")
+            post("/api/private")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer invalid_token")
                 .contentType(MediaType.APPLICATION_JSON),
         )

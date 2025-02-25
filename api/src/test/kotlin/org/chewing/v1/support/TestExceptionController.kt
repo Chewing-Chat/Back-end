@@ -16,4 +16,12 @@ class TestExceptionController(
         testExceptionService.testException()
         return ResponseEntity.ok().build()
     }
+
+    @GetMapping("")
+    fun handleTestGetRequest(
+        @RequestParam("test") test: String,
+    ): ResponseEntity<Any> {
+        testExceptionService.testException()
+        return ResponseEntity.ok().build()
+    }
 }
