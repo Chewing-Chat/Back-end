@@ -43,6 +43,18 @@ class FriendRequest {
         }
     }
 
+    data class Check(
+        val countryCode: String,
+        val phoneNumber: String,
+    ) {
+        fun toLocalPhoneNumber(): LocalPhoneNumber {
+            return LocalPhoneNumber.of(
+                number = phoneNumber,
+                countryCode = countryCode,
+            )
+        }
+    }
+
     data class UpdateStatus(
         val friendId: String,
         val friendName: String,

@@ -50,7 +50,7 @@ class FriendControllerTest : RestDocsTest() {
         friendShipService = mockk()
         exceptionHandler = GlobalExceptionHandler()
         userArgumentResolver = UserArgumentResolver()
-        friendController = FriendController(friendFacade, friendShipService, userService)
+        friendController = FriendController(friendFacade, friendShipService)
         mockMvc = mockController(friendController, exceptionHandler, userArgumentResolver)
         val userId = UserId.of("testUserId")
         val authentication = UsernamePasswordAuthenticationToken(userId, null)
