@@ -112,12 +112,14 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
     }
 
     private fun connectStompSession(): StompSession {
-        val headers = WebSocketHttpHeaders().apply {
-            setSecWebSocketProtocol("Bearer $token")
+        val httpHeaders = WebSocketHttpHeaders()
+        val stompHeaders = StompHeaders().apply {
+            add("Authorization", "Bearer $token")
         }
+
         val url = "ws://localhost:$port/ws-stomp"
 
-        val futureSession = stompClient.connectAsync(url, headers, object : StompSessionHandlerAdapter() {})
+        val futureSession = stompClient.connectAsync(url, httpHeaders, stompHeaders, object : StompSessionHandlerAdapter() {})
         return futureSession.get(1, TimeUnit.MINUTES)
     }
 
