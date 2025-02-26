@@ -12,6 +12,7 @@ import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.messaging.converter.MappingJackson2MessageConverter
+import org.springframework.messaging.simp.stomp.StompHeaders
 import org.springframework.messaging.simp.stomp.StompSession
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter
 import org.springframework.test.context.ActiveProfiles
@@ -47,8 +48,9 @@ class ChatControllerTest : IntegrationTest() {
     }
 
     private fun connectStompSession(): StompSession {
-        val headers = WebSocketHttpHeaders().apply {
-            setSecWebSocketProtocol("Bearer $token")
+        val httpHeaders = WebSocketHttpHeaders()
+        val stompHeaders = StompHeaders().apply {
+            add("Authorization", "Bearer $token")
         }
         val url = "ws://localhost:$port/ws-stomp"
 
@@ -59,7 +61,8 @@ class ChatControllerTest : IntegrationTest() {
             try {
                 val futureSession = stompClient.connectAsync(
                     url,
-                    headers,
+                    httpHeaders,
+                    stompHeaders,
                     object : StompSessionHandlerAdapter() {},
                 )
                 return futureSession.get(2, TimeUnit.MINUTES)
