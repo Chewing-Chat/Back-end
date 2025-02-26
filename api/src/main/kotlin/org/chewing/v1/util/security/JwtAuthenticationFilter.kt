@@ -16,7 +16,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 @Component
 class JwtAuthenticationFilter(
     private val jwtTokenUtil: JwtTokenUtil,
-    private val handlerMapping: RequestMappingHandlerMapping,
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -26,18 +25,6 @@ class JwtAuthenticationFilter(
     ) {
         // 필터링 제외 대상은 바로 다음 필터로 전달
         if (shouldNotFilter(request)) {
-            filterChain.doFilter(request, response)
-            return
-        }
-        try {
-            val handler = handlerMapping.getHandler(request)
-            if (handler == null) {
-                request.setAttribute("Exception", HttpRequestMethodNotSupportedException("URL Not Allowed"))
-                filterChain.doFilter(request, response)
-                return
-            }
-        } catch (e: HttpRequestMethodNotSupportedException) {
-            request.setAttribute("Exception", e)
             filterChain.doFilter(request, response)
             return
         }
@@ -60,9 +47,17 @@ class JwtAuthenticationFilter(
     @Throws(ServletException::class)
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
         val path = request.requestURI
-        // 특정 경로를 무시하도록 설정
-        return path.startsWith("/api/auth/create/send") || path.startsWith("/api/auth/create/verify") || path.startsWith("/api/auth/refresh") || path.startsWith("/api/auth/logout") ||
-            path.startsWith("/api/auth/login") || path.startsWith("/docs") || path.startsWith("/ws-stomp")
+        return path.startsWith("/api/auth/create/send") ||
+                path.startsWith("/api/auth/create/verify") ||
+                path.startsWith("/api/auth/refresh") ||
+                path.startsWith("/api/auth/reset/send") ||
+                path.startsWith("/api/auth/reset/verify") ||
+                path.startsWith("/api/auth/login") ||
+                path.startsWith("/api/auth/logout") ||
+                path.startsWith("/api/hello") ||
+                path.startsWith("/docs")
+//                path.startsWith("/api/announcement/list") ||
+//                path.matches(Regex("/api/announcement/\\d+")) // ✅ 숫자로 된 ID 처리
     }
 
     private fun resolveToken(request: HttpServletRequest): String {
@@ -74,3 +69,5 @@ class JwtAuthenticationFilter(
         }
     }
 }
+
+
