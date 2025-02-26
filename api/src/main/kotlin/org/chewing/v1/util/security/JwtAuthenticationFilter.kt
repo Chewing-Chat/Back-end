@@ -60,9 +60,14 @@ class JwtAuthenticationFilter(
     @Throws(ServletException::class)
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
         val path = request.requestURI
-        // 특정 경로를 무시하도록 설정
-        return path.startsWith("/api/auth/create/send") || path.startsWith("/api/auth/create/verify") || path.startsWith("/api/auth/refresh") || path.startsWith("/api/auth/logout") ||
-            path.startsWith("/api/auth/login") || path.startsWith("/docs") || path.startsWith("/ws-stomp")
+        return path.startsWith("/api/auth/create/send") ||
+            path.startsWith("/api/auth/create/verify") ||
+            path.startsWith("/api/auth/refresh") ||
+            path.startsWith("/api/auth/reset/send") ||
+            path.startsWith("/api/auth/reset/verify") ||
+            path.startsWith("/api/auth/login") ||
+            path.startsWith("/api/auth/logout") || path.startsWith("/ws-stomp") ||
+            path.startsWith("/docs")
     }
 
     private fun resolveToken(request: HttpServletRequest): String {

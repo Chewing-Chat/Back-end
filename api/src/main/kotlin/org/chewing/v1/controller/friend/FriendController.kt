@@ -17,6 +17,16 @@ class FriendController(
     private val friendFacade: FriendFacade,
     private val friendShipService: FriendShipService,
 ) {
+
+    @PostMapping("/check")
+    fun checkRegisteredFriends(
+        @CurrentUser userId: UserId,
+        @RequestBody request: List<FriendRequest.Check>,
+    ): SuccessResponseEntity<FriendListResponse> {
+        val friends = friendFacade.findFriends(userId, request.map { it.toLocalPhoneNumber() })
+        return ResponseHelper.success(FriendListResponse.of(friends))
+    }
+
     @PostMapping("/list")
     fun createFriends(
         @CurrentUser userId: UserId,

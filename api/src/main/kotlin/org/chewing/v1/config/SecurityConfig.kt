@@ -28,13 +28,13 @@ class SecurityConfig(
                     .requestMatchers(
                         "/api/auth/create/send",
                         "/api/auth/create/verify",
+                        "/api/auth/reset/send",
                         "/api/auth/refresh",
-                        "/api/auth/logout",
                         "/api/auth/login",
+                        "/api/auth/logout",
+                        "/api/auth/reset/verify",
                         "/ws-stomp/**",
-                        "/bot/chat",
-                        "/api/tts",
-                        "/api/openvidu/**",
+                        "/api/hello",
                         "/docs/**",
                     ).permitAll()
                     .anyRequest().authenticated()

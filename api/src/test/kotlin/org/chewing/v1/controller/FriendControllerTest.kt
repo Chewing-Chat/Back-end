@@ -19,6 +19,7 @@ import org.chewing.v1.facade.FriendFacade
 import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.friend.FriendShipService
+import org.chewing.v1.service.user.UserService
 import org.chewing.v1.util.handler.GlobalExceptionHandler
 import org.chewing.v1.util.security.UserArgumentResolver
 import org.hamcrest.CoreMatchers.equalTo
@@ -41,6 +42,7 @@ class FriendControllerTest : RestDocsTest() {
     private lateinit var friendController: FriendController
     private lateinit var exceptionHandler: GlobalExceptionHandler
     private lateinit var userArgumentResolver: UserArgumentResolver
+    private lateinit var userService: UserService
 
     @BeforeEach
     fun setUp() {

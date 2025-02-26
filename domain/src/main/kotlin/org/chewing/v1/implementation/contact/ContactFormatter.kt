@@ -14,12 +14,21 @@ class ContactFormatter(
 ) {
     fun formatContact(localPhoneNumber: LocalPhoneNumber): PhoneNumber {
         try {
-            val internationalNumber = "+${localPhoneNumber.countryCode}${localPhoneNumber.number}"
-            val parsedNumber = phoneUtil.parse(internationalNumber, null)
+            var cleanedNumber = localPhoneNumber.number
+
+            if (cleanedNumber.startsWith("+")) {
+            } else if (cleanedNumber.startsWith("0")) {
+                cleanedNumber = "+${localPhoneNumber.countryCode}${cleanedNumber.removePrefix("0")}"
+            } else {
+                cleanedNumber = "+${localPhoneNumber.countryCode}$cleanedNumber"
+            }
+
+            val parsedNumber = phoneUtil.parse(cleanedNumber, null)
             if (!phoneUtil.isValidNumber(parsedNumber)) {
                 throw ConflictException(ErrorCode.INVALID_PHONE_NUMBER)
             }
             val formattedPhoneNumber = phoneUtil.format(parsedNumber, PhoneNumberUtil.PhoneNumberFormat.E164)
+
             return PhoneNumber.of(formattedPhoneNumber)
         } catch (e: NumberParseException) {
             throw ConflictException(ErrorCode.INVALID_PHONE_NUMBER)

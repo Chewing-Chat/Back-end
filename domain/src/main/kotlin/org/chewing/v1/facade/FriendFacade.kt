@@ -1,6 +1,7 @@
 package org.chewing.v1.facade
 
 import org.chewing.v1.implementation.friend.friend.FriendAggregator
+import org.chewing.v1.model.contact.LocalPhoneNumber
 import org.chewing.v1.model.friend.Friend
 import org.chewing.v1.model.friend.FriendShipProfile
 import org.chewing.v1.model.user.AccessStatus
@@ -27,6 +28,13 @@ class FriendFacade(
         val user = userService.getUser(userId, AccessStatus.ACCESS)
         val friendShips = friendShipService.createFriendShips(userId, user, targetUsers, friendShipProfiles)
 
+        val friends = friendAggregator.aggregates(targetUsers, friendShips)
+        return friends
+    }
+
+    fun findFriends(userId: UserId, localPhoneNumbers: List<LocalPhoneNumber>): List<Friend> {
+        val targetUsers = userService.getUsersByContacts(localPhoneNumbers, AccessStatus.ACCESS)
+        val friendShips = friendShipService.getFriendShips(userId)
         val friends = friendAggregator.aggregates(targetUsers, friendShips)
         return friends
     }

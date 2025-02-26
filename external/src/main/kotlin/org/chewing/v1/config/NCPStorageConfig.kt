@@ -29,12 +29,6 @@ class NCPStorageConfig(
     fun ncpStorageClient(): S3AsyncClient {
         val credentials = AwsBasicCredentials.create(accessKey, secretKey)
 
-        println("Initializing S3AsyncClient")
-        println("AccessKey: $accessKey")
-        println("SecretKey: $secretKey")
-        println("Region: $region")
-        println("Endpoint: $endPoint")
-
         return S3AsyncClient.builder()
             .credentialsProvider(StaticCredentialsProvider.create(credentials))
             .region(Region.of(region))
