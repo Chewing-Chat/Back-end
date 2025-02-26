@@ -94,6 +94,7 @@ class FeedControllerTest : RestDocsTest() {
                     when (feed.feed.type) {
                         FeedType.FILE -> {
                             body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
+                            body("data.feeds[$index].count", equalTo(feed.feedDetails.size))
                         }
                         FeedType.TEXT_BLUE -> {
                             body("data.feeds[$index].content", equalTo(feed.feed.content))
@@ -119,7 +120,7 @@ class FeedControllerTest : RestDocsTest() {
                         // FILE 타입에 대한 설명
                         fieldWithPath("data.feeds[].thumbnailFileUrl").optional().description("썸네일 파일 URL (파일 타입일 경우)"),
                         fieldWithPath("data.feeds[].fileType").optional().description("미디어 타입(image/png, image/jpeg, image/jpg, image/png) (파일 타입일 경우)"),
-
+                        fieldWithPath("data.feeds[].count").optional().description("파일 개수 (파일 타입일 경우)"),
                         // TEXT 타입에 대한 설명
                         fieldWithPath("data.feeds[].content").optional().description("텍스트 피드 내용 (TEXT_BLUE, TEXT_SKY 타입일 경우)"),
                     ),
@@ -155,6 +156,7 @@ class FeedControllerTest : RestDocsTest() {
                     when (feed.feed.type) {
                         FeedType.FILE -> {
                             body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
+                            body("data.feeds[$index].count", equalTo(feed.feedDetails.size))
                         }
                         FeedType.TEXT_BLUE -> {
                             body("data.feeds[$index].content", equalTo(feed.feed.content))
@@ -183,6 +185,7 @@ class FeedControllerTest : RestDocsTest() {
                         // FILE 타입에 대한 설명
                         fieldWithPath("data.feeds[].thumbnailFileUrl").optional().description("썸네일 파일 URL (파일 타입일 경우)"),
                         fieldWithPath("data.feeds[].fileType").optional().description("미디어 타입(image/png, image/jpeg, image/jpg, image/png) (파일 타입일 경우)"),
+                        fieldWithPath("data.feeds[].count").optional().description("파일 개수 (파일 타입일 경우)"),
 
                         // TEXT 타입에 대한 설명
                         fieldWithPath("data.feeds[].content").optional().description("텍스트 피드 내용 (TEXT_BLUE, TEXT_SKY 타입일 경우)"),

@@ -16,7 +16,7 @@ enum class SortType {
         override fun toSort(): Sort = Sort.by(Sort.Order.desc("favorite"), Sort.Order.desc("name"))
     },
     SMALLEST {
-        override fun toSort(): Sort = Sort.by(Sort.Direction.ASC, "index")
+        override fun toSort(): Sort = Sort.by(Sort.Direction.ASC, "sequence")
     },
     LARGEST {
         override fun toSort(): Sort = Sort.by(Sort.Direction.DESC, "index")

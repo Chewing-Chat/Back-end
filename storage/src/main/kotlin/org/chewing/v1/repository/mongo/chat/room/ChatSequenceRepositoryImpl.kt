@@ -24,6 +24,10 @@ internal class ChatSequenceRepositoryImpl(
     }
 
     override fun readsSequences(chatRoomIds: List<ChatRoomId>): List<ChatRoomSequence> {
+        if (chatRoomIds.isEmpty()) {
+            return emptyList()
+        }
+
         val query = Query(Criteria.where("_id").`in`(chatRoomIds.map { it.id }))
 
         val entities = mongoTemplate.find(query, ChatRoomSequenceMongoEntity::class.java)

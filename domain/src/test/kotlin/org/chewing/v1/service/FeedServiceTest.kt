@@ -115,7 +115,7 @@ class FeedServiceTest {
         val allFeedDetails = feedDetailsByFeedId.values.flatten()
 
         every { feedRepository.reads(userId) } returns feeds
-        every { feedDetailRepository.readsFirstIndex(feedIds) } returns allFeedDetails
+        every { feedDetailRepository.readsDetails(feedIds) } returns allFeedDetails
         every { feedVisibilityRepository.readVisibleFeedIds(userId, feedIds) } returns feedIds
 
         // when
@@ -156,7 +156,7 @@ class FeedServiceTest {
 
         every { feedRepository.reads(friendId) } returns feeds
         every { feedVisibilityRepository.readVisibleFeedIds(userId, feedIds) } returns visibleFeedIds
-        every { feedDetailRepository.readsFirstIndex(visibleFeedIds) } returns visibleFeedDetails
+        every { feedDetailRepository.readsDetails(visibleFeedIds) } returns visibleFeedDetails
 
         // when
         val result = feedService.getFeeds(userId, friendId)

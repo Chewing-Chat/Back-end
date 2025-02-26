@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 internal interface FeedDetailJpaRepository : JpaRepository<FeedDetailJpaEntity, String> {
     fun findAllByFeedIdAndStatus(feedId: String, status: FeedStatus, sort: Sort): List<FeedDetailJpaEntity>
     fun findAllByFeedIdInAndStatus(feedIds: List<String>, status: FeedStatus, sort: Sort): List<FeedDetailJpaEntity>
-    fun findByFeedIdInAndStatusAndIndex(
+    fun findByFeedIdInAndStatus(
         feedId: List<String>,
         status: FeedStatus,
-        feedIndex: Int,
+        sort: Sort,
     ): List<FeedDetailJpaEntity>
 }

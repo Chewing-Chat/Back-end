@@ -31,14 +31,14 @@ class FeedService(
     fun getFeeds(userId: UserId, targetUserId: UserId): List<Feed> {
         val feeds = feedReader.readInfos(targetUserId)
         val visibleFeedIds = feedReader.readVisibleFeedIds(userId, feeds.map { it.feedId })
-        val feedsDetails = feedReader.readsThumbnail(visibleFeedIds)
+        val feedsDetails = feedReader.readsDetails(visibleFeedIds)
         return feedEnricher.enriches(feeds, visibleFeedIds, feedsDetails)
     }
 
     fun getOneDayFeeds(userId: UserId, targetUserIds: List<UserId>): List<Feed> {
         val feeds = feedReader.readsOneDayInfos(targetUserIds)
         val visibleFeedIds = feedReader.readVisibleFeedIds(userId, feeds.map { it.feedId })
-        val feedsDetails = feedReader.readsThumbnail(visibleFeedIds)
+        val feedsDetails = feedReader.readsDetails(visibleFeedIds)
         return feedEnricher.enriches(feeds, visibleFeedIds, feedsDetails)
     }
 

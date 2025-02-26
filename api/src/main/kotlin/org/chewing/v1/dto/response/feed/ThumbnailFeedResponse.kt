@@ -20,6 +20,7 @@ sealed class ThumbnailFeedResponse(
                     fileType = feed.feedDetails.first().media.type.value(),
                     uploadAt = formattedUploadTime,
                     feedType = feed.feed.type.name.lowercase(),
+                    count = feed.feedDetails.size,
                 )
 
                 FeedType.TEXT_BLUE -> TextFeedResponse(
@@ -45,6 +46,7 @@ sealed class ThumbnailFeedResponse(
         val thumbnailFileUrl: String,
         val fileType: String,
         override val uploadAt: String,
+        val count: Int,
     ) : ThumbnailFeedResponse(feedId, feedType, uploadAt)
 
     data class TextFeedResponse(
