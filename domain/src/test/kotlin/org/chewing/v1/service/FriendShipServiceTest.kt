@@ -45,6 +45,22 @@ class FriendShipServiceTest {
         assert(result.size == 1)
     }
 
+//    @Test
+//    fun `친구 목록 추가`(){
+//        val userId = TestDataFactory.createUserId()
+//        val friendId = TestDataFactory.createFriendId()
+//        val friendName = TestDataFactory.createUserName()
+//        val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
+//        val friendShipProfiles = listOf(FriendShipProfile.of(LocalPhoneNumber.of("123","345"), friendName))
+//
+//        every { friendShipRepository.appendIfNotExist(userId, friendId, any(), any()) } just Runs
+//        every { friendShipRepository.appendIfNotExist(friendId, userId, any(), any()) } just Runs
+//
+//        assertDoesNotThrow {
+//            friendShipService.createFriendShips(userId, user,friendId, ,friendShipProfiles)
+//        }
+//    }
+
 //
 //    @Test
 //    fun `친구 추가 실패 - 자기 자신을 추가 할 수 없음`() {
