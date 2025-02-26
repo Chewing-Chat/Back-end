@@ -75,6 +75,7 @@ internal class ChatLogRepositoryImpl(
                 "sequence" to mapOf("\$gt" to target.readSequence, "\$lte" to target.chatRoomSequence),
             )
         }
+        println("📢 Debug: conditions = $conditions")
 
         return chatLogMongoRepository
             .findByChatRoomIdAndSeqNumberInRange(conditions)
