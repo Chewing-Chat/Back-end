@@ -55,8 +55,8 @@ class UserService(
     ): List<User> {
         val phoneNumbers = localPhoneNumbers.map { contactFormatter.formatContact(it) }
         val userInfos = userReader.readsByContacts(phoneNumbers, accessStatus)
-        return userInfos.mapIndexed { index, userInfo ->
-            User.of(userInfo, localPhoneNumbers[index])
+        return userInfos.map {
+            User.of(it, contactFormatter.extractCountryCodeAndLocalNumber(it.phoneNumber))
         }
     }
 

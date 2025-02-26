@@ -147,7 +147,10 @@ object TestDataFactory {
         )
     }
 
-    fun createLocalPhoneNumber(): LocalPhoneNumber = LocalPhoneNumber.of("01012345678", "82")
+    fun createLocalPhoneNumber(): LocalPhoneNumber = LocalPhoneNumber.of(
+        number = "01012345678",
+        countryCode = "82",
+    )
 
     fun createEncryptedUser(userId: UserId, password: String): UserInfo = UserInfo.of(
         userId,
