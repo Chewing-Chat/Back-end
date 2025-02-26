@@ -13,17 +13,22 @@ import java.util.*
     name = "feed_detail",
     schema = "chewing",
     indexes = [
-        Index(name = "feed_detail_idx_feed_id_status_index", columnList = "feedId, status, index"),
+        Index(name = "feed_detail_idx_feed_id_status", columnList = "feedId, status"),
     ],
 )
 internal class FeedDetailJpaEntity(
     @Id
     private val feedDetailId: String = UUID.randomUUID().toString(),
-    private val index: Int,
+
+    private val sequence: Int,
+
     private val fileUrl: String,
+
     @Enumerated(EnumType.STRING)
     private val fileType: MediaType,
+
     private val feedId: String,
+
     @Enumerated(EnumType.STRING)
     private var status: FeedStatus,
 ) {
@@ -31,7 +36,7 @@ internal class FeedDetailJpaEntity(
         fun generate(medias: List<Media>, feedId: FeedId): List<FeedDetailJpaEntity> {
             return medias.map { media ->
                 FeedDetailJpaEntity(
-                    index = media.index,
+                    sequence = media.index,
                     fileUrl = media.url,
                     fileType = media.type,
                     feedId = feedId.id,
@@ -44,7 +49,7 @@ internal class FeedDetailJpaEntity(
     fun toFeedDetail(): FeedDetail {
         return FeedDetail.of(
             feedDetailId = FeedDetailId.of(feedDetailId),
-            media = Media.of(FileCategory.FEED, fileUrl, index, fileType),
+            media = Media.of(FileCategory.FEED, fileUrl, sequence, fileType),
             feedId = FeedId.of(feedId),
         )
     }

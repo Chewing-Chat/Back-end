@@ -29,5 +29,5 @@ class FeedReader(
 
     fun readDetails(feedId: FeedId): List<FeedDetail> = feedDetailRepository.read(feedId)
 
-    fun readsThumbnail(feedIds: List<FeedId>): List<FeedDetail> = feedDetailRepository.readsFirstIndex(feedIds)
+    fun readsDetails(feedIds: List<FeedId>): List<FeedDetail> = feedDetailRepository.readsDetails(feedIds)
 }

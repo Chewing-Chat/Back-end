@@ -45,17 +45,14 @@ class FeedDetailRepositoryTest : JpaContextTest() {
     }
 
     @Test
-    fun `피드 상세를 Index 기준으로 첫번째만 조회해야 한다`() {
+    fun `피드 상세를 피드 리스트 ID들로 조회해야 한다`() {
         val feedIds = generateFeedIdList()
-        feedIds.forEach { feedId ->
+        val feedDetails = feedIds.flatMap { feedId ->
             jpaDataGenerator.feedDetailEntityDataAsc(feedId)
         }
-        val result = feedDetailRepositoryImpl.readsFirstIndex(feedIds)
+        val result = feedDetailRepositoryImpl.readsDetails(feedIds)
         assert(result.isNotEmpty())
-        assert(result.size == feedIds.size)
-        result.forEach { feedDetail ->
-            assert(feedDetail.media.index == 0)
-        }
+        assert(result.size == feedDetails.size)
     }
 
     @Test

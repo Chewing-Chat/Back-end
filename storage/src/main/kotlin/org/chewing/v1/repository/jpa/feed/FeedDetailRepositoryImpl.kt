@@ -18,8 +18,12 @@ internal class FeedDetailRepositoryImpl(
     override fun read(feedId: FeedId): List<FeedDetail> =
         feedDetailJpaRepository.findAllByFeedIdAndStatus(feedId.id, FeedStatus.ACTIVE, SortType.SMALLEST.toSort()).map { it.toFeedDetail() }
 
-    override fun readsFirstIndex(feedIds: List<FeedId>): List<FeedDetail> {
-        val feedDetails = feedDetailJpaRepository.findByFeedIdInAndStatusAndIndex(feedIds.map { it.id }, FeedStatus.ACTIVE, 0)
+    override fun readsDetails(feedIds: List<FeedId>): List<FeedDetail> {
+        val feedDetails = feedDetailJpaRepository.findByFeedIdInAndStatus(
+            feedIds.map { it.id },
+            FeedStatus.ACTIVE,
+            SortType.SMALLEST.toSort(),
+        )
         return feedDetails.map { it.toFeedDetail() }
     }
 
