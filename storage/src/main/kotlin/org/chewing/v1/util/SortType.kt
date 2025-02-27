@@ -19,7 +19,7 @@ enum class SortType {
         override fun toSort(): Sort = Sort.by(Sort.Direction.ASC, "sequence")
     },
     LARGEST {
-        override fun toSort(): Sort = Sort.by(Sort.Direction.DESC, "index")
+        override fun toSort(): Sort = Sort.by(Sort.Direction.DESC, "sequence")
     },
     SEQUENCE_ASC {
         override fun toSort(): Sort = Sort.by(Sort.Direction.ASC, "sequence")
