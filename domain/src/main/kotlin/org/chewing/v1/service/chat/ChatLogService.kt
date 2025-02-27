@@ -140,8 +140,12 @@ class ChatLogService(
         return chatMessage
     }
 
-    fun getLatestChat(chatRoomIds: List<ChatRoomId>): List<ChatLog> {
+    fun getsLatestChatLog(chatRoomIds: List<ChatRoomId>): List<ChatLog> {
         return chatReader.readLatestMessages(chatRoomIds)
+    }
+
+    fun getLatestChatLog(chatRoomId: ChatRoomId): ChatLog {
+        return chatReader.readLatestMessage(chatRoomId)
     }
 
     fun getUnreadChatLogs(targets: List<UnReadTarget>): List<ChatLog> {

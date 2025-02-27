@@ -44,7 +44,7 @@ class GroupChatFacade(
     fun processGroupChatRooms(userId: UserId): List<Pair<GroupChatRoom, ChatLog>> {
         val chatRooms = groupChatRoomService.getGroupChatRooms(userId)
         val chatRoomIds = getChatRoomIds(chatRooms)
-        val chatMessages = chatLogService.getLatestChat(chatRoomIds)
+        val chatMessages = chatLogService.getsLatestChatLog(chatRoomIds)
             .associateBy { it.chatRoomId }
 
         return chatRooms.mapNotNull { chatRoom ->
@@ -57,7 +57,7 @@ class GroupChatFacade(
     fun searchGroupChatRooms(userId: UserId, friendIds: List<UserId>): List<Pair<GroupChatRoom, ChatLog>> {
         val chatRooms = groupChatRoomService.searchGroupChatRooms(userId, friendIds)
         val chatRoomIds = getChatRoomIds(chatRooms)
-        val chatMessages = chatLogService.getLatestChat(chatRoomIds)
+        val chatMessages = chatLogService.getsLatestChatLog(chatRoomIds)
             .associateBy { it.chatRoomId }
 
         return chatRooms.mapNotNull { chatRoom ->
@@ -163,6 +163,12 @@ class GroupChatFacade(
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
             notificationService.handleMessageNotification(errorMessage, userId, userId)
         }
+    }
+
+    fun processGetGroupChatRoom(userId: UserId, chatRoomId: ChatRoomId): Pair<GroupChatRoom, ChatLog> {
+        val groupChatRoom = groupChatRoomService.getGroupChatRoom(userId, chatRoomId)
+        val chatLogs = chatLogService.getLatestChatLog(chatRoomId)
+        return groupChatRoom to chatLogs
     }
 
     fun searchChatLog(userId: UserId, chatRoomId: ChatRoomId, keyword: String): List<ChatLog> {

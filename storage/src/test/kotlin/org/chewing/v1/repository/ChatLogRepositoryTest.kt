@@ -257,21 +257,40 @@ class ChatLogRepositoryTest : MongoContextTest() {
     }
 
     @Test
-    fun `마지막 메시지 조회`() {
-        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId(), 1)
-        val chatMessage2 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId(), 1)
-        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId(), 1)
+    fun `채팅방 리스트의 마지막 메시지 조회`() {
+        val chatRoomId = generateChatRoomId()
+        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 3)
+        val chatMessage2 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 2)
+        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 1)
         mongoDataGenerator.chatLogEntityData(chatMessage1)
         mongoDataGenerator.chatLogEntityData(chatMessage2)
         mongoDataGenerator.chatLogEntityData(chatMessage3)
         val chatLog = chatLogRepositoryImpl.readLatestMessages(
             listOf(
-                chatMessage1.chatRoomId,
-                chatMessage2.chatRoomId,
-                chatMessage3.chatRoomId,
+                chatRoomId,
             ),
         )
-        assert(chatLog.size == 3)
+        assert(chatLog.size == 1)
+
+        // 마지막 메시지는 시퀀스가 1인 메시지여야 함
+        assert(chatLog[0].roomSequence.sequence == 3)
+    }
+
+    @Test
+    fun `마지막 메시지 조회`() {
+        val chatRoomId = generateChatRoomId()
+        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 3)
+        val chatMessage2 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 2)
+        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 1)
+        mongoDataGenerator.chatLogEntityData(chatMessage1)
+        mongoDataGenerator.chatLogEntityData(chatMessage2)
+        mongoDataGenerator.chatLogEntityData(chatMessage3)
+        val chatLog = chatLogRepositoryImpl.readLatestChatMessage(
+            chatRoomId,
+        )
+
+        // 마지막 메시지는 시퀀스가 1인 메시지여야 함
+        assert(chatLog!!.roomSequence.sequence == 3)
     }
 
     @Test
@@ -382,6 +401,32 @@ class ChatLogRepositoryTest : MongoContextTest() {
         // 결과 검증: 메시지 1만 반환되어야 함
         assert(chatLogs.size == 1)
         assert(chatLogs.first().messageId == messageId1)
+    }
+
+    @Test
+    fun `최신 채팅 로그 단건 조회`() {
+        // 테스트용 채팅방 생성
+        val chatRoomId = generateChatRoomId()
+        // 서로 다른 시퀀스 번호를 가진 메시지 세 개 생성
+        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 1)
+        val chatMessage2 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 2)
+        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 3)
+
+        // 메시지들을 데이터베이스에 저장
+        mongoDataGenerator.chatLogEntityData(chatMessage1)
+        mongoDataGenerator.chatLogEntityData(chatMessage2)
+        mongoDataGenerator.chatLogEntityData(chatMessage3)
+
+        // 최신 메시지 단건 조회 메서드 호출
+        val latestChatLog = chatLogRepositoryImpl.readLatestChatMessage(chatRoomId)
+
+        // 검증: 최신 메시지가 chatMessage3여야 함
+        assert(latestChatLog != null)
+        assert(latestChatLog?.messageId == chatMessage3.messageId)
+        assert(latestChatLog?.roomSequence?.sequence == chatMessage3.roomSequence.sequence)
+        // 추가 검증: 채팅방 ID 및 송신자 등도 확인할 수 있음
+        assert(latestChatLog?.chatRoomId == chatRoomId)
+        assert(latestChatLog?.senderId == chatMessage3.senderId)
     }
 
     private fun generateChatRoomId(): ChatRoomId = ChatRoomId.of(UUID.randomUUID().toString())

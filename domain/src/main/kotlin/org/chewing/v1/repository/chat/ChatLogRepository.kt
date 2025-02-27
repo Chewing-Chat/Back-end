@@ -14,4 +14,5 @@ interface ChatLogRepository {
     fun readLatestMessages(chatRoomIds: List<ChatRoomId>): List<ChatLog>
     fun readChatKeyWordMessages(chatRoomId: ChatRoomId, keyword: String): List<ChatLog>
     fun readUnreadChatLogs(targets: List<UnReadTarget>): List<ChatLog>
+    fun readLatestChatMessage(chatRoomId: ChatRoomId): ChatLog?
 }
