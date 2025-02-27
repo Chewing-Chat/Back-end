@@ -16,6 +16,10 @@ class ChatReader(
         return chatLogRepository.readChatMessages(chatRoomId, targetSequence, joinSequence)
     }
 
+    fun readLatestChatLogs(chatRoomId: ChatRoomId, joinSequence: Int): List<ChatLog> {
+        return chatLogRepository.readLatestChatMessages(chatRoomId, joinSequence)
+    }
+
     fun readChatMessage(messageId: String): ChatLog {
         return chatLogRepository.readChatMessage(messageId) ?: throw NotFoundException(ErrorCode.CHATLOG_NOT_FOUND)
     }
