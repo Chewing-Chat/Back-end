@@ -38,4 +38,10 @@ class FriendShipValidator() {
         validateDeleted(friendShip)
         validateNormal(friendShip)
     }
+
+    fun validateAllowedFriend(friendShip: FriendShip) {
+        validateBlock(friendShip)
+        validateBlocked(friendShip)
+        validateDeleted(friendShip)
+    }
 }

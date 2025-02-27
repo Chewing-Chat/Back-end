@@ -97,4 +97,9 @@ class FriendShipService(
         val friendShip = friendShipReader.read(userId, friendId)
         friendShipValidator.validateInteractionAllowed(friendShip)
     }
+
+    fun checkAllowedFriendShip(userId: UserId, friendId: UserId) {
+        val friendShip = friendShipReader.read(userId, friendId)
+        friendShipValidator.validateAllowedFriend(friendShip)
+    }
 }
