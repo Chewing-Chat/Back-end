@@ -40,6 +40,8 @@ class DirectChatRoomService(
 
     fun restoreDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId) {
         directChatRoomUpdater.updateMemberStatus(userId, chatRoomId, ChatRoomMemberStatus.NORMAL)
+        val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(chatRoomId)
+        chatSequenceHandler.handleJoinMemberSequence(chatRoomId, userId, chatRoomSequence)
     }
 
     // 채팅방 제공
@@ -65,6 +67,8 @@ class DirectChatRoomService(
         } else {
             if (existingChatRoom.status == ChatRoomMemberStatus.DELETED) {
                 directChatRoomUpdater.updateMemberStatus(userId, existingChatRoom.chatRoomId, ChatRoomMemberStatus.NORMAL)
+                val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(existingChatRoom.chatRoomId)
+                chatSequenceHandler.handleJoinMemberSequence(existingChatRoom.chatRoomId, userId, chatRoomSequence)
             }
             return existingChatRoom.chatRoomId
         }
