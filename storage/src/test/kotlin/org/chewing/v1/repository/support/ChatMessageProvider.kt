@@ -20,6 +20,15 @@ object ChatMessageProvider {
         chatRoomType = ChatRoomType.DIRECT,
     )
 
+    fun buildNormalMessageWithText(messageId: String, chatRoomId: ChatRoomId, sequence: Int, text: String): ChatNormalMessage = ChatNormalMessage.of(
+        messageId = messageId,
+        chatRoomId = chatRoomId,
+        senderId = UserId.of("sender"),
+        text = text,
+        roomSequence = ChatRoomSequence.of(chatRoomId, sequence),
+        timestamp = LocalDateTime.now(),
+        chatRoomType = ChatRoomType.DIRECT,
+    )
     fun buildLeaveMessage(messageId: String, chatRoomId: ChatRoomId, sequence: Int): ChatLeaveMessage = ChatLeaveMessage.of(
         messageId = messageId,
         chatRoomId = chatRoomId,
