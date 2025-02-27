@@ -145,7 +145,7 @@ class ChatLogRepositoryTest : MongoContextTest() {
             mongoDataGenerator.chatLogEntityData(message)
         }
 
-        val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 100, 51)
+        val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 100, 0)
 
         // 100개의 메시지가 조회되어야 합니다.
         assert(chatLogs.size == 50)

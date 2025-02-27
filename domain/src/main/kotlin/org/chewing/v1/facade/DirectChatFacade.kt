@@ -109,7 +109,7 @@ class DirectChatFacade(
         val chatRoomId = directChatRoomService.createDirectChatRoom(userId, friendId)
         val directChatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
         if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
-            directChatRoomService.restoreDirectChatRoom(userId, chatRoomId)
+            directChatRoomService.restoreDirectChatRoom(directChatRoom.roomInfo.friendId, chatRoomId)
         }
         val chatSequence = directChatRoomService.increaseDirectChatRoomSequence(chatRoomId)
         val chatMessage = chatLogService.chatNormalMessage(
@@ -131,7 +131,7 @@ class DirectChatFacade(
 
         val directChatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
         if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
-            directChatRoomService.restoreDirectChatRoom(userId, chatRoomId)
+            directChatRoomService.restoreDirectChatRoom(directChatRoom.roomInfo.friendId, chatRoomId)
         }
 
         val chatSequence = directChatRoomService.increaseDirectChatRoomSequence(chatRoomId)
@@ -145,7 +145,7 @@ class DirectChatFacade(
     fun processDirectChatFiles(fileDataList: List<FileData>, userId: UserId, chatRoomId: ChatRoomId) {
         val directChatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
         if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
-            directChatRoomService.restoreDirectChatRoom(userId, chatRoomId)
+            directChatRoomService.restoreDirectChatRoom(directChatRoom.roomInfo.friendId, chatRoomId)
         }
         val medias = chatLogService.uploadFiles(fileDataList, userId)
         val chatSequence = directChatRoomService.increaseDirectChatRoomSequence(chatRoomId)
@@ -200,7 +200,7 @@ class DirectChatFacade(
                 ChatRoomType.DIRECT,
             )
             if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
-                directChatRoomService.restoreDirectChatRoom(userId, chatRoomId)
+                directChatRoomService.restoreDirectChatRoom(directChatRoom.roomInfo.friendId, chatRoomId)
             }
             notificationService.handleMessageNotification(chatMessage, userId, userId)
             notificationService.handleMessageNotification(chatMessage, directChatRoom.roomInfo.friendId, userId)
@@ -213,13 +213,13 @@ class DirectChatFacade(
     fun processDirectChatCommon(chatRoomId: ChatRoomId, userId: UserId, text: String) {
         try {
             val directChatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
+            if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
+                directChatRoomService.restoreDirectChatRoom(directChatRoom.roomInfo.friendId, chatRoomId)
+            }
             val chatSequence = directChatRoomService.increaseDirectChatRoomSequence(chatRoomId)
             val chatMessage =
                 chatLogService.chatNormalMessage(chatRoomId, userId, text, chatSequence, ChatRoomType.DIRECT)
             notificationService.handleMessageNotification(chatMessage, userId, userId)
-            if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
-                directChatRoomService.restoreDirectChatRoom(userId, chatRoomId)
-            }
             notificationService.handleMessageNotification(chatMessage, userId, userId)
             notificationService.handleMessageNotification(chatMessage, directChatRoom.roomInfo.friendId, userId)
         } catch (e: NotFoundException) {
