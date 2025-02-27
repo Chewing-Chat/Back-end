@@ -155,10 +155,10 @@ class UserServiceTest {
 
         val users = listOf(TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS))
 
-        every { userRepository.reads(listOf(userId)) } returns users
+        every { userRepository.reads(listOf(userId), AccessStatus.ACCESS) } returns users
 
         val result = assertDoesNotThrow {
-            userService.getUsers(listOf(userId))
+            userService.getUsers(listOf(userId), AccessStatus.ACCESS)
         }
 
         users.forEachIndexed { index, userInfo ->

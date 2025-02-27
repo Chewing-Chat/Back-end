@@ -166,7 +166,7 @@ class UserRepositoryTest : JpaContextTest() {
         val user = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
         val user2 = jpaDataGenerator.userEntityData(phoneNumber, userName, AccessStatus.ACCESS)
 
-        val result = userRepositoryImpl.reads(listOf(user.userId, user2.userId))
+        val result = userRepositoryImpl.reads(listOf(user.userId, user2.userId), AccessStatus.ACCESS)
 
         assert(result.size == 2)
     }
