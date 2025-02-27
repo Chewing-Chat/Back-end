@@ -28,6 +28,11 @@ class ChatReader(
         return chatLogRepository.readLatestMessages(chatRoomIds)
     }
 
+    fun readLatestMessage(chatRoomId: ChatRoomId): ChatLog {
+        return chatLogRepository.readLatestChatMessage(chatRoomId)
+            ?: throw NotFoundException(ErrorCode.CHATLOG_NOT_FOUND)
+    }
+
     fun readsUnreadChatLogs(targets: List<UnReadTarget>): List<ChatLog> {
         return chatLogRepository.readUnreadChatLogs(targets)
     }

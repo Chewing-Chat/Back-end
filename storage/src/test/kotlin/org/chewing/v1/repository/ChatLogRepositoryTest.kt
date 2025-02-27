@@ -384,6 +384,32 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(chatLogs.first().messageId == messageId1)
     }
 
+    @Test
+    fun `최신 채팅 로그 단건 조회`() {
+        // 테스트용 채팅방 생성
+        val chatRoomId = generateChatRoomId()
+        // 서로 다른 시퀀스 번호를 가진 메시지 세 개 생성
+        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 1)
+        val chatMessage2 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 2)
+        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 3)
+
+        // 메시지들을 데이터베이스에 저장
+        mongoDataGenerator.chatLogEntityData(chatMessage1)
+        mongoDataGenerator.chatLogEntityData(chatMessage2)
+        mongoDataGenerator.chatLogEntityData(chatMessage3)
+
+        // 최신 메시지 단건 조회 메서드 호출
+        val latestChatLog = chatLogRepositoryImpl.readLatestChatMessage(chatRoomId)
+
+        // 검증: 최신 메시지가 chatMessage3여야 함
+        assert(latestChatLog != null)
+        assert(latestChatLog?.messageId == chatMessage3.messageId)
+        assert(latestChatLog?.roomSequence?.sequence == chatMessage3.roomSequence.sequence)
+        // 추가 검증: 채팅방 ID 및 송신자 등도 확인할 수 있음
+        assert(latestChatLog?.chatRoomId == chatRoomId)
+        assert(latestChatLog?.senderId == chatMessage3.senderId)
+    }
+
     private fun generateChatRoomId(): ChatRoomId = ChatRoomId.of(UUID.randomUUID().toString())
 
     private fun generateMessageId(): String = UUID.randomUUID().toString()

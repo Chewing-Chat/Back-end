@@ -28,4 +28,6 @@ internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEnti
     fun findByChatRoomIdAndSequenceInRange(
         conditions: List<Map<String, Any>>,
     ): List<ChatMessageMongoEntity>
+
+    fun findFirstByChatRoomIdOrderBySequenceDesc(chatRoomId: String): ChatMessageMongoEntity?
 }

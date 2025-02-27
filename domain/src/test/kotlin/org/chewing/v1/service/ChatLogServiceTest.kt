@@ -314,7 +314,7 @@ class ChatLogServiceTest {
 
         every { chatLogRepository.readLatestMessages(any()) } returns listOf(chatNormalLog)
 
-        val result = chatLogService.getLatestChat(listOf(chatRoomId))
+        val result = chatLogService.getsLatestChatLog(listOf(chatRoomId))
 
         assert(result.size == 1)
 

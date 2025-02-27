@@ -93,4 +93,9 @@ internal class ChatLogRepositoryImpl(
             .findByChatRoomIdAndSequenceInRange(conditions)
             .map { it.toChatLog() }
     }
+
+    override fun readLatestChatMessage(chatRoomId: ChatRoomId): ChatLog? {
+        val latestEntity = chatLogMongoRepository.findFirstByChatRoomIdOrderBySequenceDesc(chatRoomId.id)
+        return latestEntity?.toChatLog()
+    }
 }

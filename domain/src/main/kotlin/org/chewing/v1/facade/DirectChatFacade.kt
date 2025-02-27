@@ -43,7 +43,7 @@ class DirectChatFacade(
     fun processGetDirectChatRooms(userId: UserId): List<Pair<DirectChatRoom, ChatLog>> {
         val chatRooms = directChatRoomService.getDirectChatRooms(userId)
         val chatRoomIds = chatRooms.map { it.roomInfo.chatRoomId }
-        val chatMessages = chatLogService.getLatestChat(chatRoomIds)
+        val chatMessages = chatLogService.getsLatestChatLog(chatRoomIds)
             .associateBy { it.chatRoomId }
 
         return chatRooms.mapNotNull { chatRoom ->
@@ -56,7 +56,7 @@ class DirectChatFacade(
     fun searchDirectChatRooms(userId: UserId, friendIds: List<UserId>): List<Pair<DirectChatRoom, ChatLog>> {
         val chatRooms = directChatRoomService.searchDirectChatRooms(userId, friendIds)
         val chatRoomIds = chatRooms.map { it.roomInfo.chatRoomId }
-        val chatMessages = chatLogService.getLatestChat(chatRoomIds)
+        val chatMessages = chatLogService.getsLatestChatLog(chatRoomIds)
             .associateBy { it.chatRoomId }
 
         return chatRooms.mapNotNull { chatRoom ->
@@ -93,9 +93,15 @@ class DirectChatFacade(
             .sortedByDescending { it.timestamp }
     }
 
-    fun processGetDirectChatRoom(userId: UserId, friendId: UserId): DirectChatRoom {
+    fun processGetRelationDirectChatRoom(userId: UserId, friendId: UserId): DirectChatRoom {
         friendShipService.checkAccessibleFriendShip(userId, friendId)
         return directChatRoomService.getDirectChatRoom(userId, friendId)
+    }
+
+    fun processGetDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId): Pair<DirectChatRoom, ChatLog> {
+        val chatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
+        val chatLog = chatLogService.getLatestChatLog(chatRoomId)
+        return Pair(chatRoom, chatLog)
     }
 
     fun processCreateDirectChatRoomCommonChat(userId: UserId, friendId: UserId, message: String): Pair<DirectChatRoom, ChatLog> {

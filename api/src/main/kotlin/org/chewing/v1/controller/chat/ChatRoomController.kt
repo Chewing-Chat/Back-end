@@ -7,6 +7,7 @@ import org.chewing.v1.dto.response.chat.FullDirectChatRoomResponse
 import org.chewing.v1.dto.response.chat.FullGroupChatRoomResponse
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
+import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.SuccessOnlyResponse
 import org.chewing.v1.service.chat.DirectChatRoomService
@@ -55,12 +56,12 @@ class ChatRoomController(
         return ResponseHelper.success(ChatRoomListResponse.from(directChatRooms, groupChatRooms, userId))
     }
 
-    @GetMapping("/direct/{friendId}")
-    fun getDirectChatRoom(
+    @GetMapping("/direct/relation/{friendId}")
+    fun getFriendDirectChatRoom(
         @CurrentUser userId: UserId,
         @PathVariable friendId: String,
     ): SuccessResponseEntity<DirectChatRoomResponse> {
-        val directChatRoom = directChatFacade.processGetDirectChatRoom(userId, UserId.of(friendId))
+        val directChatRoom = directChatFacade.processGetRelationDirectChatRoom(userId, UserId.of(friendId))
         return ResponseHelper.success(DirectChatRoomResponse.of(directChatRoom))
     }
 
@@ -136,5 +137,23 @@ class ChatRoomController(
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         groupChatFacade.processGroupChatLeave(request.toChatRoomId(), userId)
         return ResponseHelper.successOnly()
+    }
+
+    @GetMapping("/group/{chatRoomId}")
+    fun getGroupChatRoom(
+        @CurrentUser userId: UserId,
+        @PathVariable chatRoomId: String,
+    ): SuccessResponseEntity<FullGroupChatRoomResponse> {
+        val (chatRoom, chatLogs) = groupChatFacade.processGetGroupChatRoom(userId, ChatRoomId.of(chatRoomId))
+        return ResponseHelper.success(FullGroupChatRoomResponse.of(chatRoom, chatLogs, userId))
+    }
+
+    @GetMapping("/direct/{chatRoomId}")
+    fun getDirectChatRoom(
+        @CurrentUser userId: UserId,
+        @PathVariable chatRoomId: String,
+    ): SuccessResponseEntity<FullDirectChatRoomResponse> {
+        val (chatRoom, chatLogs) = directChatFacade.processGetDirectChatRoom(userId, ChatRoomId.of(chatRoomId))
+        return ResponseHelper.success(FullDirectChatRoomResponse.of(chatRoom, chatLogs))
     }
 }

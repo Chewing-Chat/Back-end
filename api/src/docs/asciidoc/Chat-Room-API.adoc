@@ -12,19 +12,19 @@ include::{snippets}/chat-room-controller-test/get-chat-rooms/http-response.adoc[
 === 응답 필드 설명(Response Fields)
 include::{snippets}/chat-room-controller-test/get-chat-rooms/response-fields.adoc[]
 
-== 2. 개인 채팅방 가져오기(채팅하기 클릭시)
+== 2. 개인 채팅방 가져오기(채팅하기 클릭시 친구 관계를 통해)
 
 === 요청(Request)
-include::{snippets}/chat-room-controller-test/get-direct-chat-room/http-request.adoc[]
+include::{snippets}/chat-room-controller-test/get-direct-relation-chat-room/http-request.adoc[]
 
 === 경로 파라미터 설명(Path Parameters)
-include::{snippets}/chat-room-controller-test/get-direct-chat-room/path-parameters.adoc[]
+include::{snippets}/chat-room-controller-test/get-direct-relation-chat-room/path-parameters.adoc[]
 
 === 응답(Response)
-include::{snippets}/chat-room-controller-test/get-direct-chat-room/http-response.adoc[]
+include::{snippets}/chat-room-controller-test/get-direct-relation-chat-room/http-response.adoc[]
 
 === 응답 필드 설명(Response Fields)
-include::{snippets}/chat-room-controller-test/get-direct-chat-room/response-fields.adoc[]
+include::{snippets}/chat-room-controller-test/get-direct-relation-chat-room/response-fields.adoc[]
 
 == 3. 그룹 채팅방 생성하기
 
@@ -154,3 +154,31 @@ include::{snippets}/chat-room-controller-test/search-chat-room/http-response.ado
 
 === 응답 필드 설명(Response Fields)
 include::{snippets}/chat-room-controller-test/search-chat-room/response-fields.adoc[]
+
+== 12. 개인 채팅방 정보 가져오기(채팅방 아이디로 가져오기)
+
+=== 요청(Request)
+include::{snippets}/chat-room-controller-test/get-direct-chat-room/http-request.adoc[]
+
+=== 경로 파라미터 설명(Path Parameters)
+include::{snippets}/chat-room-controller-test/get-direct-chat-room/path-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/chat-room-controller-test/get-direct-chat-room/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/chat-room-controller-test/get-direct-chat-room/response-fields.adoc[]
+
+== 13. 그룹 채팅방 정보 가져오기(채팅방 아이디로 가져오기)
+
+=== 요청(Request)
+include::{snippets}/chat-room-controller-test/get-group-chat-room/http-request.adoc[]
+
+=== 경로 파라미터 설명(Path Parameters)
+include::{snippets}/chat-room-controller-test/get-group-chat-room/path-parameters.adoc[]
+
+=== 응답(Response)
+include::{snippets}/chat-room-controller-test/get-group-chat-room/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/chat-room-controller-test/get-group-chat-room/response-fields.adoc[]

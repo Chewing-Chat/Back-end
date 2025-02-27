@@ -293,15 +293,15 @@ class ChatRoomControllerTest : RestDocsTest() {
     }
 
     @Test
-    fun getDirectChatRoom() {
+    fun getDirectRelationChatRoom() {
         val chatRoomId = ChatRoomId.of("testChatRoomId")
         val friendId = UserId.of("testFriendId")
         val directChatRoom = TestDataFactory.createDirectChatRoom(chatRoomId)
-        every { directChatFacade.processGetDirectChatRoom(any(), any()) } returns directChatRoom
+        every { directChatFacade.processGetRelationDirectChatRoom(any(), any()) } returns directChatRoom
 
         given()
             .setupAuthenticatedMultipartRequest()
-            .get("/api/chatRoom/direct/{friendId}", friendId.id)
+            .get("/api/chatRoom/direct/relation/{friendId}", friendId.id)
             .then()
             .statusCode(HttpStatus.OK.value())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -729,6 +729,147 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("chatRoomId").description("채팅방 ID"),
                     ),
                     responseSuccessFields(),
+                ),
+            )
+    }
+
+    @Test
+    fun getGroupChatRoom() {
+        // 테스트용 그룹 채팅방 ID 생성
+        val chatRoomId = ChatRoomId.of("testGroupRoomId")
+        // 테스트용 사용자 ID (SecurityContextHolder에 이미 설정되어 있음)
+        val userId = UserId.of("testUserId")
+        // 그룹 채팅방 및 최신 채팅 로그 생성 (TestDataFactory 이용)
+        val groupChatRoom = TestDataFactory.createGroupChatRoom(chatRoomId)
+        val chatLog = TestDataFactory.createNormalLog(chatRoomId)
+
+        // groupChatFacade.processGetGroupChatRoom이 호출되면 위의 그룹 채팅방과 단일 로그를 반환하도록 모킹
+        every { groupChatFacade.processGetGroupChatRoom(any(), any()) } returns Pair(groupChatRoom, chatLog)
+
+        // GET 요청 실행 및 검증
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .get("/api/chatRoom/group/{chatRoomId}", chatRoomId.id)
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body("status", equalTo(200))
+            .apply {
+                val chatRoomMemberStatus = groupChatRoom.memberInfos
+                    .find { it.memberId == userId }!!
+                val chatRoomJsonPath = "data"
+                val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
+                val friendIds = groupChatRoom.memberInfos
+                    .filter { it.memberId != userId }
+                    .map { it.memberId.id }
+                body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(groupChatRoom.roomSequence.sequence))
+                body("$chatRoomJsonPath.readSequenceNumber", equalTo(groupChatRoom.ownSequence.readSequenceNumber))
+                body("$chatRoomJsonPath.joinSequenceNumber", equalTo(groupChatRoom.ownSequence.joinSequenceNumber))
+                body("$chatRoomJsonPath.chatRoomId", equalTo(groupChatRoom.roomInfo.chatRoomId.id))
+                body("$chatRoomJsonPath.chatRoomName", equalTo(groupChatRoom.roomInfo.name))
+                body("$chatLogJsonPath.messageId", equalTo(chatLog.messageId))
+                body("$chatLogJsonPath.type", equalTo(chatLog.type.name.lowercase()))
+                body("$chatLogJsonPath.senderId", equalTo(chatLog.senderId.id))
+                body(
+                    "$chatLogJsonPath.timestamp",
+                    equalTo(chatLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
+                )
+                body("$chatLogJsonPath.seqNumber", equalTo(chatLog.roomSequence.sequence))
+                body("$chatLogJsonPath.text", equalTo(chatLog.text))
+                body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoomMemberStatus.status.name.lowercase()))
+
+                friendIds.forEachIndexed { friendIndex, friendId ->
+                    body("$chatRoomJsonPath.friendIds[$friendIndex]", equalTo(friendId))
+                }
+            }
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestAccessTokenFields(),
+                    pathParameters(
+                        parameterWithName("chatRoomId").description("그룹 채팅방 ID"),
+                    ),
+                    responseFields(
+                        fieldWithPath("status").description("응답 상태 코드"),
+                        fieldWithPath("data.chatRoomId").description("채팅방 ID"),
+                        fieldWithPath("data.chatRoomName").description("채팅방 이름"),
+                        fieldWithPath("data.chatRoomSequenceNumber").description("채팅방 시퀀스 번호"),
+                        fieldWithPath("data.readSequenceNumber").description("읽은 시퀀스 번호"),
+                        fieldWithPath("data.joinSequenceNumber").description("참여한 시퀀스 번호"),
+                        fieldWithPath("data.latestChatLog.messageId").description("최신 채팅 로그 ID"),
+                        fieldWithPath("data.latestChatLog.type").description("최신 채팅 로그 타입"),
+                        fieldWithPath("data.latestChatLog.senderId").description("메시지 발신자 ID"),
+                        fieldWithPath("data.latestChatLog.timestamp").description("메시지 전송 시간"),
+                        fieldWithPath("data.latestChatLog.seqNumber").description("메시지 시퀀스 번호"),
+                        fieldWithPath("data.latestChatLog.text").description("메시지 내용")
+                            .optional(),
+                        fieldWithPath("data.chatRoomOwnStatus").description("채팅방 나의 현재 상태(NORMAL, FAVORITE)"),
+                        fieldWithPath("data.friendIds").description("친구 ID 목록(본인제외)"),
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    fun getDirectChatRoom() {
+        val chatRoomId = ChatRoomId.of("testChatRoomId")
+        val userId = UserId.of("testUserId")
+        val directChatRoom = TestDataFactory.createDirectChatRoom(chatRoomId)
+        val chatLog = TestDataFactory.createNormalLog(chatRoomId)
+        every { directChatFacade.processGetDirectChatRoom(any(), any()) } returns Pair(directChatRoom, chatLog)
+
+        given()
+            .setupAuthenticatedMultipartRequest()
+            .get("/api/chatRoom/direct/{chatRoomId}", chatRoomId.id)
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body("status", equalTo(200))
+            .apply {
+                val chatRoomJsonPath = "data"
+                val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
+                body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(directChatRoom.roomSequence.sequence))
+                body("$chatRoomJsonPath.readSequenceNumber", equalTo(directChatRoom.ownSequence.readSequenceNumber))
+                body("$chatRoomJsonPath.joinSequenceNumber", equalTo(directChatRoom.ownSequence.joinSequenceNumber))
+                body("$chatRoomJsonPath.chatRoomId", equalTo(directChatRoom.roomInfo.chatRoomId.id))
+                body("$chatLogJsonPath.messageId", equalTo(chatLog.messageId))
+                body("$chatLogJsonPath.type", equalTo(chatLog.type.name.lowercase()))
+                body("$chatLogJsonPath.senderId", equalTo(chatLog.senderId.id))
+                body(
+                    "$chatLogJsonPath.timestamp",
+                    equalTo(chatLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
+                )
+                body("$chatLogJsonPath.seqNumber", equalTo(chatLog.roomSequence.sequence))
+                body("$chatLogJsonPath.text", equalTo(chatLog.text))
+                body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(directChatRoom.roomInfo.status.name.lowercase()))
+                body("$chatRoomJsonPath.friendId", equalTo(directChatRoom.roomInfo.friendId.id))
+            }
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestAccessTokenFields(),
+                    pathParameters(
+                        parameterWithName("chatRoomId").description("채팅방 ID"),
+                    ),
+                    responseFields(
+                        fieldWithPath("status").description("응답 상태 코드"),
+                        fieldWithPath("data.chatRoomId").description("채팅방 ID"),
+                        fieldWithPath("data.chatRoomSequenceNumber").description("채팅방 시퀀스 번호"),
+                        fieldWithPath("data.readSequenceNumber").description("읽은 시퀘스 번호"),
+                        fieldWithPath("data.joinSequenceNumber").description("참여한 시퀀스 번호"),
+                        fieldWithPath("data.latestChatLog.messageId").description("채팅 메시지 ID"),
+                        fieldWithPath("data.latestChatLog.type").description("채팅 메시지 타입(Normal)"),
+                        fieldWithPath("data.latestChatLog.senderId").description("보낸 사람 ID"),
+                        fieldWithPath("data.latestChatLog.timestamp").description("보낸 시간"),
+                        fieldWithPath("data.latestChatLog.seqNumber").description("메시지 시퀀스 번호"),
+                        fieldWithPath("data.latestChatLog.text").description("메시지 내용"),
+                        fieldWithPath("data.chatRoomOwnStatus").description("채팅방 멤버 상태"),
+                        fieldWithPath("data.friendId").description("친구 ID"),
+                    ),
                 ),
             )
     }
