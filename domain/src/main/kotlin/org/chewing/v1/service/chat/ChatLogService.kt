@@ -155,6 +155,10 @@ class ChatLogService(
     fun getChatLogs(chatRoomId: ChatRoomId, targetSequence: Int, joinSequence: Int): List<ChatLog> {
         return chatReader.readChatLog(chatRoomId, targetSequence, joinSequence)
     }
+
+    fun getLatestChatLogs(chatRoomId: ChatRoomId, joinSequence: Int): List<ChatLog> {
+        return chatReader.readLatestChatLogs(chatRoomId, joinSequence)
+    }
     fun getChatLog(messageId: String): ChatLog {
         return chatReader.readChatMessage(messageId)
     }

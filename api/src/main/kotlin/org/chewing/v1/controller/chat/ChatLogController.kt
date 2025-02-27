@@ -31,6 +31,15 @@ class ChatLogController(
         return ResponseHelper.success(ChatLogsResponse.from(chatLog))
     }
 
+    @GetMapping("/direct/log/latest")
+    fun getLatestDirectChatLog(
+        @CurrentUser userId: UserId,
+        @PathVariable chatRoomId: String,
+    ): SuccessResponseEntity<ChatLogsResponse> {
+        val chatLog = directChatFacade.processDirectLatestChatLogs(userId, ChatRoomId.of(chatRoomId))
+        return ResponseHelper.success(ChatLogsResponse.from(chatLog))
+    }
+
     @GetMapping("/direct/log/search")
     fun getDirectChatRoom(
         @CurrentUser userId: UserId,
@@ -48,6 +57,15 @@ class ChatLogController(
         @RequestParam sequenceNumber: Int,
     ): SuccessResponseEntity<ChatLogsResponse> {
         val chatLog = groupChatFacade.processGroupChatLogs(userId, ChatRoomId.of(chatRoomId), sequenceNumber)
+        return ResponseHelper.success(ChatLogsResponse.from(chatLog))
+    }
+
+    @GetMapping("/group/log/latest")
+    fun getLatestGroupChatLog(
+        @CurrentUser userId: UserId,
+        @PathVariable chatRoomId: String,
+    ): SuccessResponseEntity<ChatLogsResponse> {
+        val chatLog = groupChatFacade.processGroupLatestChatLogs(userId, ChatRoomId.of(chatRoomId))
         return ResponseHelper.success(ChatLogsResponse.from(chatLog))
     }
 

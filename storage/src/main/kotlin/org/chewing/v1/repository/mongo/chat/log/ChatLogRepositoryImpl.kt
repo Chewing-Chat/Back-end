@@ -31,6 +31,19 @@ internal class ChatLogRepositoryImpl(
             .map { it.toChatLog() }
     }
 
+    override fun readLatestChatMessages(chatRoomId: ChatRoomId, joinSequence: Int): List<ChatLog> {
+        val criteria = Criteria
+            .where("chatRoomId").`is`(chatRoomId.id)
+            .and("sequence").gt(joinSequence)
+
+        val query = Query(criteria)
+            .with(SortType.SEQUENCE_ASC.toSort())
+            .limit(50)
+
+        return mongoTemplate.find(query, ChatMessageMongoEntity::class.java)
+            .map { it.toChatLog() }
+    }
+
     override fun removeLog(messageId: String) {
         chatLogMongoRepository.updateMessageTypeToDelete(messageId)
     }
