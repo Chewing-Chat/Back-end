@@ -26,6 +26,6 @@ internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEnti
 
     @Query("{ \$or: ?0 }")
     fun findByChatRoomIdAndSequenceInRange(
-        conditions: List<Map<String, Any>>
+        conditions: List<Map<String, Any>>,
     ): List<ChatMessageMongoEntity>
 }

@@ -361,7 +361,28 @@ class ChatLogRepositoryTest : MongoContextTest() {
         assert(unreadLogs.first().chatRoomId.id == chatRoomId1.id)
     }
 
+    @Test
+    fun `키워드로 채팅 로그 읽기 - 해당 메시지 반환`() {
+        val chatRoomId = generateChatRoomId()
+        val keyword = "hello"
 
+        // 메시지 1: 텍스트에 키워드 "hello" 포함
+        val messageId1 = generateMessageId()
+        val chatMessage1 = ChatMessageProvider.buildNormalMessageWithText(messageId1, chatRoomId, 1, "hello world")
+        mongoDataGenerator.chatLogEntityData(chatMessage1)
+
+        // 메시지 2: 텍스트에 키워드 미포함
+        val messageId2 = generateMessageId()
+        val chatMessage2 = ChatMessageProvider.buildNormalMessageWithText(messageId2, chatRoomId, 2, "goodbye world")
+        mongoDataGenerator.chatLogEntityData(chatMessage2)
+
+        // readChatKeyWordMessages 메서드를 호출하여 키워드에 해당하는 메시지를 조회
+        val chatLogs = chatLogRepositoryImpl.readChatKeyWordMessages(chatRoomId, keyword)
+
+        // 결과 검증: 메시지 1만 반환되어야 함
+        assert(chatLogs.size == 1)
+        assert(chatLogs.first().messageId == messageId1)
+    }
 
     private fun generateChatRoomId(): ChatRoomId = ChatRoomId.of(UUID.randomUUID().toString())
 

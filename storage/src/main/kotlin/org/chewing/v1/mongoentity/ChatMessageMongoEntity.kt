@@ -19,11 +19,9 @@ import java.time.LocalDateTime
         def = "{'chatRoomId': 1, 'sequence': -1}",
     ),
 
-    // 메시지 타입과 내용 검색 최적화 (Partial Index)
     CompoundIndex(
-        name = "chatRoom_message_partial_idx",
-        def = "{'chatRoomId': 1, 'type': 1, 'message': 1}",
-        partialFilter = "{ 'type': { \$in: ['NORMAL', 'REPLY'] } }",
+        name = "chat_message_idx",
+        def = "{ 'message': 'text' }",
     ),
 )
 internal sealed class ChatMessageMongoEntity(
