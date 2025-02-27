@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.repository.Update
 internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEntity, String> {
 
     @Query("{ \$or: ?0 }")
-    fun findByRoomIdAndSeqNumbers(conditions: List<Map<String, Any>>, sort: Sort): List<ChatMessageMongoEntity>
+    fun findByRoomIdAndSequences(conditions: List<Map<String, Any>>, sort: Sort): List<ChatMessageMongoEntity>
 
     @Modifying
     @Query("{ '_id': ?0 }")
@@ -20,16 +20,12 @@ internal interface ChatLogMongoRepository : MongoRepository<ChatMessageMongoEnti
 
     @Query(
         value = "{ 'chatRoomId': ?1, 'type': { \$in: ['NORMAL', 'REPLY'] }, \$text: { \$search: ?0 } }",
-        sort = "{ 'seqNumber': -1 }",
+        sort = "{ 'sequence': -1 }",
     )
     fun searchByKeywords(keywords: String, chatRoomId: String): List<ChatMessageMongoEntity>
 
-    @Query(
-        "{ \$or: [ " +
-            " { 'chatRoomId': ?0, 'seqNumber': { \$gt: ?1, \$lte: ?2 } } " +
-            "] }",
-    )
-    fun findByChatRoomIdAndSeqNumberInRange(
-        conditions: List<Map<String, Any>>,
+    @Query("{ \$or: ?0 }")
+    fun findByChatRoomIdAndSequenceInRange(
+        conditions: List<Map<String, Any>>
     ): List<ChatMessageMongoEntity>
 }

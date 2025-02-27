@@ -50,7 +50,7 @@ internal class ChatLogRepositoryImpl(
             return emptyList()
         }
         val conditions = chatRoomIds.map { mapOf("chatRoomId" to it.id) }
-        return chatLogMongoRepository.findByRoomIdAndSeqNumbers(
+        return chatLogMongoRepository.findByRoomIdAndSequences(
             conditions,
             SortType.OLDEST.toSort(),
         ).map { it.toChatLog() }
@@ -77,7 +77,7 @@ internal class ChatLogRepositoryImpl(
         }
 
         return chatLogMongoRepository
-            .findByChatRoomIdAndSeqNumberInRange(conditions)
+            .findByChatRoomIdAndSequenceInRange(conditions)
             .map { it.toChatLog() }
     }
 }
