@@ -61,13 +61,14 @@ class DirectChatRoomService(
             val newChatRoom = directChatRoomAppender.appendRoom(userId, friendId)
             chatSequenceHandler.handleCreateRoomSequence(newChatRoom.chatRoomId)
             chatSequenceHandler.handleCreateMemberSequences(newChatRoom.chatRoomId, listOf(userId, friendId))
+            return newChatRoom.chatRoomId
         }
-        if (existingChatRoom!!.status == ChatRoomMemberStatus.DELETED) {
-            directChatRoomUpdater.updateMemberStatus(userId, existingChatRoom.chatRoomId, ChatRoomMemberStatus.NORMAL)
+        else{
+            if(existingChatRoom.status == ChatRoomMemberStatus.DELETED){
+                directChatRoomUpdater.updateMemberStatus(userId, existingChatRoom.chatRoomId, ChatRoomMemberStatus.NORMAL)
+            }
             return existingChatRoom.chatRoomId
         }
-
-        return existingChatRoom.chatRoomId
     }
 
     fun validateIsParticipant(userId: UserId, chatRoomId: ChatRoomId) {
