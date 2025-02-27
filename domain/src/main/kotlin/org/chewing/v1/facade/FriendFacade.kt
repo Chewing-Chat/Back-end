@@ -40,7 +40,7 @@ class FriendFacade(
     }
 
     fun allowedFriend(userId: UserId, friendId: UserId, friendName: String) {
-        friendShipService.checkAccessibleFriendShip(userId, friendId)
+        friendShipService.checkAllowedFriendShip(userId, friendId)
         friendShipService.changeFriendShipStatus(userId, friendId, friendName)
     }
 
