@@ -5,10 +5,12 @@ import org.chewing.v1.model.chat.log.UnReadTarget
 import org.chewing.v1.model.chat.message.ChatMessage
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.mongoentity.ChatMessageMongoEntity
+import org.chewing.v1.mongoentity.LatestChatMessageWrapper
 import org.chewing.v1.mongorepository.ChatLogMongoRepository
 import org.chewing.v1.repository.chat.ChatLogRepository
 import org.chewing.v1.util.SortType
 import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.aggregation.Aggregation
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Repository
@@ -24,7 +26,7 @@ internal class ChatLogRepositoryImpl(
             .and("sequence").lte(sequence).gt(joinSequence)
 
         val query = Query(criteria)
-            .with(SortType.SEQUENCE_ASC.toSort())
+            .with(SortType.SMALLEST.toSort())
             .limit(50)
 
         return mongoTemplate.find(query, ChatMessageMongoEntity::class.java)
@@ -37,7 +39,7 @@ internal class ChatLogRepositoryImpl(
             .and("sequence").gt(joinSequence)
 
         val query = Query(criteria)
-            .with(SortType.SEQUENCE_ASC.toSort())
+            .with(SortType.SMALLEST.toSort())
             .limit(50)
 
         return mongoTemplate.find(query, ChatMessageMongoEntity::class.java)
@@ -62,11 +64,25 @@ internal class ChatLogRepositoryImpl(
         if (chatRoomIds.isEmpty()) {
             return emptyList()
         }
-        val conditions = chatRoomIds.map { mapOf("chatRoomId" to it.id) }
-        return chatLogMongoRepository.findByRoomIdAndSequences(
-            conditions,
-            SortType.OLDEST.toSort(),
-        ).map { it.toChatLog() }
+        val chatRoomIdStrings = chatRoomIds.map { it.id }
+
+        // Aggregation 파이프라인:
+        // 1. match: 입력된 채팅방 ID들에 해당하는 메시지 필터링
+        // 2. sort: sequence를 오름차순 정렬 (가장 작은 값이 첫 번째)
+        // 3. group: 각 채팅방별로 그룹화하고, 정렬된 첫 번째 메시지를 latestMessage로 선택
+        val aggregation = Aggregation.newAggregation(
+            Aggregation.match(Criteria.where("chatRoomId").`in`(chatRoomIdStrings)),
+            Aggregation.sort(SortType.LARGEST.toSort()),
+            Aggregation.group("chatRoomId").first(Aggregation.ROOT).`as`("latestMessage"),
+        )
+
+        val results = mongoTemplate.aggregate(
+            aggregation,
+            ChatMessageMongoEntity::class.java,
+            LatestChatMessageWrapper::class.java,
+        )
+
+        return results.mappedResults.map { it.latestMessage.toChatLog() }
     }
 
     override fun readChatKeyWordMessages(
@@ -95,7 +111,9 @@ internal class ChatLogRepositoryImpl(
     }
 
     override fun readLatestChatMessage(chatRoomId: ChatRoomId): ChatLog? {
-        val latestEntity = chatLogMongoRepository.findFirstByChatRoomIdOrderBySequenceDesc(chatRoomId.id)
-        return latestEntity?.toChatLog()
+        val query = Query(Criteria.where("chatRoomId").`is`(chatRoomId.id))
+            .with(SortType.LARGEST.toSort())
+            .limit(1)
+        return mongoTemplate.findOne(query, ChatMessageMongoEntity::class.java)?.toChatLog()
     }
 }

@@ -257,21 +257,40 @@ class ChatLogRepositoryTest : MongoContextTest() {
     }
 
     @Test
-    fun `마지막 메시지 조회`() {
-        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId(), 1)
-        val chatMessage2 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId(), 1)
-        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), generateChatRoomId(), 1)
+    fun `채팅방 리스트의 마지막 메시지 조회`() {
+        val chatRoomId = generateChatRoomId()
+        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 3)
+        val chatMessage2 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 2)
+        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 1)
         mongoDataGenerator.chatLogEntityData(chatMessage1)
         mongoDataGenerator.chatLogEntityData(chatMessage2)
         mongoDataGenerator.chatLogEntityData(chatMessage3)
         val chatLog = chatLogRepositoryImpl.readLatestMessages(
             listOf(
-                chatMessage1.chatRoomId,
-                chatMessage2.chatRoomId,
-                chatMessage3.chatRoomId,
+                chatRoomId,
             ),
         )
-        assert(chatLog.size == 3)
+        assert(chatLog.size == 1)
+
+        // 마지막 메시지는 시퀀스가 1인 메시지여야 함
+        assert(chatLog[0].roomSequence.sequence == 3)
+    }
+
+    @Test
+    fun `마지막 메시지 조회`() {
+        val chatRoomId = generateChatRoomId()
+        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 3)
+        val chatMessage2 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 2)
+        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 1)
+        mongoDataGenerator.chatLogEntityData(chatMessage1)
+        mongoDataGenerator.chatLogEntityData(chatMessage2)
+        mongoDataGenerator.chatLogEntityData(chatMessage3)
+        val chatLog = chatLogRepositoryImpl.readLatestChatMessage(
+            chatRoomId,
+        )
+
+        // 마지막 메시지는 시퀀스가 1인 메시지여야 함
+        assert(chatLog!!.roomSequence.sequence == 3)
     }
 
     @Test
