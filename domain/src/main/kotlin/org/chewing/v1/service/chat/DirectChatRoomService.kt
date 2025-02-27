@@ -62,9 +62,8 @@ class DirectChatRoomService(
             chatSequenceHandler.handleCreateRoomSequence(newChatRoom.chatRoomId)
             chatSequenceHandler.handleCreateMemberSequences(newChatRoom.chatRoomId, listOf(userId, friendId))
             return newChatRoom.chatRoomId
-        }
-        else{
-            if(existingChatRoom.status == ChatRoomMemberStatus.DELETED){
+        } else {
+            if (existingChatRoom.status == ChatRoomMemberStatus.DELETED) {
                 directChatRoomUpdater.updateMemberStatus(userId, existingChatRoom.chatRoomId, ChatRoomMemberStatus.NORMAL)
             }
             return existingChatRoom.chatRoomId
