@@ -15,4 +15,5 @@ internal interface UserJpaRepository : JpaRepository<UserJpaEntity, String> {
         phoneNumbers: List<String>,
         status: AccessStatus,
     ): List<UserJpaEntity>
+    fun findAllByUserIdInAndStatus(userIds: List<String>, status: AccessStatus): List<UserJpaEntity>
 }

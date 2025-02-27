@@ -20,8 +20,8 @@ internal class UserRepositoryImpl(
         return userEntity.map { it.toUser() }.orElse(null)
     }
 
-    override fun reads(userIds: List<UserId>): List<UserInfo> {
-        val userEntities = userJpaRepository.findAllById(userIds.map { it.id })
+    override fun reads(userIds: List<UserId>, status: AccessStatus): List<UserInfo> {
+        val userEntities = userJpaRepository.findAllByUserIdInAndStatus(userIds.map { it.id }, status)
         return userEntities.map { it.toUser() }
     }
 

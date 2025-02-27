@@ -28,8 +28,8 @@ class UserReader(
         return userRepository.readsByContacts(contacts, accessStatus)
     }
 
-    fun reads(userIds: List<UserId>): List<UserInfo> {
-        return userRepository.reads(userIds)
+    fun reads(userIds: List<UserId>, status: AccessStatus): List<UserInfo> {
+        return userRepository.reads(userIds, status)
     }
 
     fun readsPushToken(userId: UserId): List<PushToken> {

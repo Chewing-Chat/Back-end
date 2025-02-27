@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface UserRepository {
     fun read(userId: UserId, status: AccessStatus): UserInfo?
-    fun reads(userIds: List<UserId>): List<UserInfo>
+    fun reads(userIds: List<UserId>, status: AccessStatus): List<UserInfo>
     fun remove(userId: UserId): UserInfo?
     fun updateMedia(userId: UserId, media: Media): Media?
     fun append(contact: Contact, userName: String): UserInfo

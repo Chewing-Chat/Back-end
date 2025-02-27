@@ -26,8 +26,8 @@ class UserService(
     private val contactFormatter: ContactFormatter,
 ) {
 
-    fun getUsers(userIds: List<UserId>): List<User> {
-        val userInfos = userReader.reads(userIds)
+    fun getUsers(userIds: List<UserId>, status: AccessStatus): List<User> {
+        val userInfos = userReader.reads(userIds, status)
         return userInfos.map {
             val phoneNumber = contactFormatter.extractCountryCodeAndLocalNumber(it.phoneNumber)
             User.of(it, phoneNumber)

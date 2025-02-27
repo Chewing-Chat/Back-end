@@ -47,7 +47,7 @@ class FriendFacade(
     fun getFriends(userId: UserId): List<Friend> {
         val friendShips = friendShipService.getFriendShips(userId)
         val friendIds = friendShips.map { it.friendId }
-        val users = userService.getUsers(friendIds)
+        val users = userService.getUsers(friendIds, AccessStatus.ACCESS)
 
         return friendShips
             .mapNotNull { friendShip ->
