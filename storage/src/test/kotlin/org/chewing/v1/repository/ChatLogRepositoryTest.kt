@@ -133,28 +133,27 @@ class ChatLogRepositoryTest : MongoContextTest() {
     }
 
     @Test
-    fun `채팅로그 리스트 읽기`() {
+    fun `채팅로그 리스트 읽기 (100개 테스트)`() {
         val chatRoomId = generateChatRoomId()
-        val chatNormalMessage = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 5)
-        val chatLeaveMessage = ChatMessageProvider.buildLeaveMessage(generateMessageId(), chatRoomId, 4)
-        val chatInviteMessage = ChatMessageProvider.buildInviteMessage(generateMessageId(), chatRoomId, 3)
-        val chatFileMessage = ChatMessageProvider.buildFileMessage(generateMessageId(), chatRoomId, 2)
-        val chatReplyMessage = ChatMessageProvider.buildReplyMessage(
-            generateMessageId(),
-            chatRoomId,
-            ChatMessageProvider.buildNormalLog(generateMessageId(), chatRoomId, 5),
-            1,
-        )
-        val messages = listOf(chatNormalMessage, chatLeaveMessage, chatInviteMessage, chatFileMessage, chatReplyMessage)
-        mongoDataGenerator.chatLogEntityData(chatNormalMessage)
-        mongoDataGenerator.chatLogEntityData(chatLeaveMessage)
-        mongoDataGenerator.chatLogEntityData(chatInviteMessage)
-        mongoDataGenerator.chatLogEntityData(chatFileMessage)
-        mongoDataGenerator.chatLogEntityData(chatReplyMessage)
-        val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 5, 0)
-        assert(chatLogs.size == messages.size)
+        // 1부터 100까지의 sequence를 가진 100개의 일반 메시지 생성
+        val messages = (1..100).map { seq ->
+            ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, seq)
+        }
+
+        // 각 메시지를 DB에 저장
+        messages.forEach { message ->
+            mongoDataGenerator.chatLogEntityData(message)
+        }
+
+        val chatLogs = chatLogRepositoryImpl.readChatMessages(chatRoomId, 100, 0)
+
+        // 100개의 메시지가 조회되어야 합니다.
+        assert(chatLogs.size == 50)
+
+        // 조회된 메시지의 순서가 1부터 100까지 올바르게 정렬되어 있는지 검증합니다.
         chatLogs.forEachIndexed { index, chatLog ->
-            chatLog.roomSequence.sequence == index.plus(1)
+            // index는 0부터 시작하므로, 실제 sequence는 index+1
+            assert(chatLog.roomSequence.sequence == 100 - index)
         }
     }
 
@@ -259,9 +258,9 @@ class ChatLogRepositoryTest : MongoContextTest() {
     @Test
     fun `채팅방 리스트의 마지막 메시지 조회`() {
         val chatRoomId = generateChatRoomId()
-        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 3)
+        val chatMessage1 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 1)
         val chatMessage2 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 2)
-        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 1)
+        val chatMessage3 = ChatMessageProvider.buildNormalMessage(generateMessageId(), chatRoomId, 3)
         mongoDataGenerator.chatLogEntityData(chatMessage1)
         mongoDataGenerator.chatLogEntityData(chatMessage2)
         mongoDataGenerator.chatLogEntityData(chatMessage3)

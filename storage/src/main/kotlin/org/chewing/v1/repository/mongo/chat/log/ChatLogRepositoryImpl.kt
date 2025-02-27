@@ -26,7 +26,7 @@ internal class ChatLogRepositoryImpl(
             .and("sequence").lte(sequence).gt(joinSequence)
 
         val query = Query(criteria)
-            .with(SortType.SMALLEST.toSort())
+            .with(SortType.LARGEST.toSort())
             .limit(50)
 
         return mongoTemplate.find(query, ChatMessageMongoEntity::class.java)
@@ -39,7 +39,7 @@ internal class ChatLogRepositoryImpl(
             .and("sequence").gt(joinSequence)
 
         val query = Query(criteria)
-            .with(SortType.SMALLEST.toSort())
+            .with(SortType.LARGEST.toSort())
             .limit(50)
 
         return mongoTemplate.find(query, ChatMessageMongoEntity::class.java)
