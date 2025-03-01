@@ -119,6 +119,9 @@ class DirectChatFacade(
             chatSequence,
             ChatRoomType.DIRECT,
         )
+
+        directChatRoomService.readDirectChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
+
         notificationService.handleMessageNotification(chatMessage, friendId, userId)
         val chatLog = chatLogService.getChatLog(chatMessage.messageId)
         return Pair(directChatRoom, chatLog)
@@ -137,8 +140,12 @@ class DirectChatFacade(
         val chatSequence = directChatRoomService.increaseDirectChatRoomSequence(chatRoomId)
         val chatMessage = chatLogService.mediasMessage(chatRoomId, userId, chatSequence, medias, ChatRoomType.DIRECT)
 
+        directChatRoomService.readDirectChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
+
         notificationService.handleMessageNotification(chatMessage, friendId, userId)
         val chatLog = chatLogService.getChatLog(chatMessage.messageId)
+
+
         return Pair(directChatRoom, chatLog)
     }
 
@@ -151,6 +158,7 @@ class DirectChatFacade(
         val chatSequence = directChatRoomService.increaseDirectChatRoomSequence(chatRoomId)
         val chatMessage = chatLogService.mediasMessage(chatRoomId, userId, chatSequence, medias, ChatRoomType.DIRECT)
 
+        directChatRoomService.readDirectChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
         notificationService.handleMessageNotification(chatMessage, userId, userId)
         notificationService.handleMessageNotification(chatMessage, directChatRoom.roomInfo.friendId, userId)
     }
@@ -202,6 +210,8 @@ class DirectChatFacade(
             if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
                 directChatRoomService.restoreDirectChatRoom(directChatRoom.roomInfo.friendId, chatRoomId)
             }
+
+            directChatRoomService.readDirectChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
             notificationService.handleMessageNotification(chatMessage, userId, userId)
             notificationService.handleMessageNotification(chatMessage, directChatRoom.roomInfo.friendId, userId)
         } catch (e: NotFoundException) {
@@ -219,6 +229,8 @@ class DirectChatFacade(
             val chatSequence = directChatRoomService.increaseDirectChatRoomSequence(chatRoomId)
             val chatMessage =
                 chatLogService.chatNormalMessage(chatRoomId, userId, text, chatSequence, ChatRoomType.DIRECT)
+
+            directChatRoomService.readDirectChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
             notificationService.handleMessageNotification(chatMessage, userId, userId)
             notificationService.handleMessageNotification(chatMessage, userId, userId)
             notificationService.handleMessageNotification(chatMessage, directChatRoom.roomInfo.friendId, userId)

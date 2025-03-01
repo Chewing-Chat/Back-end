@@ -74,6 +74,8 @@ class GroupChatFacade(
 
         val targetMemberIds = getMemberIds(userId, chatRoomId)
 
+        groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
+
         notificationService.handleMessagesNotification(chatMessage, targetMemberIds, userId)
     }
 
@@ -117,6 +119,8 @@ class GroupChatFacade(
             val chatMessage =
                 chatLogService.replyMessage(chatRoomId, userId, parentMessageId, text, chatSequence, ChatRoomType.GROUP)
 
+            groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
+
             notificationService.handleMessagesNotification(chatMessage, targetMemberIds, userId)
         } catch (e: NotFoundException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
@@ -131,6 +135,8 @@ class GroupChatFacade(
             val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
             val chatMessage =
                 chatLogService.chatNormalMessage(chatRoomId, userId, text, chatSequence, ChatRoomType.GROUP)
+            
+            groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
 
             notificationService.handleMessagesNotification(chatMessage, targetMemberIds, userId)
         } catch (e: NotFoundException) {
@@ -146,6 +152,7 @@ class GroupChatFacade(
             groupChatRoomService.inviteGroupChatRoom(userId, chatRoomId, inviteUserId)
             val chatMessage =
                 chatLogService.inviteMessage(chatRoomId, userId, inviteUserId, chatSequence, ChatRoomType.GROUP)
+            groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
             notificationService.handleMessagesNotification(chatMessage, memberIds, userId)
         } catch (e: ConflictException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
@@ -158,6 +165,7 @@ class GroupChatFacade(
             groupChatRoomService.deleteGroupChatRoom(userId, chatRoomId)
             val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
             val chatMessage = chatLogService.leaveMessage(chatRoomId, userId, chatSequence, ChatRoomType.GROUP)
+            groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
             notificationService.handleMessageNotification(chatMessage, userId, userId)
         } catch (e: NotFoundException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
@@ -190,6 +198,8 @@ class GroupChatFacade(
                 chatSequence,
                 ChatRoomType.GROUP,
             )
+        groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
+
         val chatRoom = groupChatRoomService.getGroupChatRoom(userId, chatRoomId)
         val chatLog = chatLogService.getChatLog(chatMessage.messageId)
         notificationService.handleMessagesNotification(chatMessage, friendIds, userId)

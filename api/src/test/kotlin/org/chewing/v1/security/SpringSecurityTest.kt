@@ -28,6 +28,8 @@ class SpringSecurityTest : IntegrationTest() {
 
     @Test
     fun `토큰 없이 들어온다면 에러 발생`() {
+        val userId = UserId.of("cfc8c5fe-03c6-4d00-a95d-ef9b1af2058b")
+        val token = jwtTokenUtil.createAccessToken(userId)
         mockMvc.perform(
             post("/api/private")
                 .contentType(MediaType.APPLICATION_JSON),
