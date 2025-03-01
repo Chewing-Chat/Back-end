@@ -135,7 +135,7 @@ class GroupChatFacade(
             val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
             val chatMessage =
                 chatLogService.chatNormalMessage(chatRoomId, userId, text, chatSequence, ChatRoomType.GROUP)
-            
+
             groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
 
             notificationService.handleMessagesNotification(chatMessage, targetMemberIds, userId)

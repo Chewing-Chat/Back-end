@@ -145,7 +145,6 @@ class DirectChatFacade(
         notificationService.handleMessageNotification(chatMessage, friendId, userId)
         val chatLog = chatLogService.getChatLog(chatMessage.messageId)
 
-
         return Pair(directChatRoom, chatLog)
     }
 
