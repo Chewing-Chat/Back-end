@@ -32,7 +32,7 @@ class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
     fun handleHttpRequestMethodNotSupportedException(
-        e: HttpRequestMethodNotSupportedException
+        e: HttpRequestMethodNotSupportedException,
     ): ErrorResponseEntity {
         logger.warn("HTTP Method Not Supported Exception: ${e.method} is not supported for this endpoint. Supported methods: ${e.supportedHttpMethods}")
         return handleException(e, ErrorCode.PATH_WRONG, HttpStatus.BAD_REQUEST)
