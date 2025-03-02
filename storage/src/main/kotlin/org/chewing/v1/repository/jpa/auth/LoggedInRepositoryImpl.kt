@@ -28,5 +28,8 @@ internal class LoggedInRepositoryImpl(
         }
     }
 
-    override fun read(refreshToken: String, userId: UserId): RefreshToken? = loggedInJpaRepository.findByRefreshTokenAndUserId(refreshToken, userId.id).orElse(null).toRefreshToken()
+    override fun read(refreshToken: String, userId: UserId): RefreshToken? =
+        loggedInJpaRepository.findByRefreshTokenAndUserId(refreshToken, userId.id)
+            .map { entity -> entity.toRefreshToken() }
+            .orElse(null)
 }
