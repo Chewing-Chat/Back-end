@@ -1,5 +1,6 @@
 package org.chewing.v1.util.handler
 
+import jakarta.servlet.http.HttpServletRequest
 import mu.KotlinLogging
 import org.chewing.v1.error.AuthorizationException
 import org.chewing.v1.error.ConflictException
@@ -30,7 +31,12 @@ class GlobalExceptionHandler {
     fun handleMissingServletRequestParameterException(e: MissingServletRequestParameterException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
-    fun handleHttpRequestMethodNotSupportedException(e: HttpRequestMethodNotSupportedException): ErrorResponseEntity = handleException(e, ErrorCode.PATH_WRONG, HttpStatus.BAD_REQUEST)
+    fun handleHttpRequestMethodNotSupportedException(
+        e: HttpRequestMethodNotSupportedException
+    ): ErrorResponseEntity {
+        logger.warn("HTTP Method Not Supported Exception: ${e.method} is not supported for this endpoint. Supported methods: ${e.supportedHttpMethods}")
+        return handleException(e, ErrorCode.PATH_WRONG, HttpStatus.BAD_REQUEST)
+    }
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleIllegalArgumentException(e: IllegalArgumentException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
@@ -39,7 +45,13 @@ class GlobalExceptionHandler {
     protected fun handleAuthorizationException(e: AuthorizationException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.UNAUTHORIZED)
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
-    protected fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
+    protected fun handleHttpMessageNotReadableException(
+        e: HttpMessageNotReadableException,
+        request: HttpServletRequest,
+    ): ErrorResponseEntity {
+        logger.warn("HttpMessageNotReadableException 발생: method=${request.method}, url=${request.requestURI}, remoteAddr=${request.remoteAddr}, message=${e.message}")
+        return handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
+    }
 
     @ExceptionHandler(NotFoundException::class)
     protected fun handleNotFoundException(e: NotFoundException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.NOT_FOUND)

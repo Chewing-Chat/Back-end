@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import mu.KotlinLogging
 import org.chewing.v1.error.AuthorizationException
 import org.chewing.v1.error.ErrorCode
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -18,6 +19,8 @@ class JwtAuthenticationFilter(
     private val jwtTokenUtil: JwtTokenUtil,
     private val handlerMapping: RequestMappingHandlerMapping,
 ) : OncePerRequestFilter() {
+
+    private val logger = KotlinLogging.logger {}
 
     override fun doFilterInternal(
         request: HttpServletRequest,
