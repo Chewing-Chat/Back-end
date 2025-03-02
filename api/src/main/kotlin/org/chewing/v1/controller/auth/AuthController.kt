@@ -115,7 +115,8 @@ class AuthController(
     @GetMapping("/refresh")
     fun refreshJwtToken(@RequestHeader("Authorization") refreshToken: String): SuccessResponseEntity<TokenResponse> {
         val (newToken, userId) = jwtTokenUtil.refresh(refreshToken)
-        authService.updateLoginInfo(refreshToken, newToken.refreshToken, userId)
+        val oldToken = jwtTokenUtil.cleanedToken(refreshToken)
+        authService.updateLoginInfo(oldToken, newToken.refreshToken, userId)
         return ResponseHelper.success(TokenResponse.of(newToken))
     }
 }

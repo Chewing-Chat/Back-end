@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import mu.KotlinLogging
 import org.chewing.v1.error.AuthorizationException
 import org.chewing.v1.error.ErrorCode
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -19,6 +20,8 @@ class JwtAuthenticationFilter(
     private val handlerMapping: RequestMappingHandlerMapping,
 ) : OncePerRequestFilter() {
 
+    private val logger = KotlinLogging.logger {}
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -29,15 +32,10 @@ class JwtAuthenticationFilter(
             filterChain.doFilter(request, response)
             return
         }
-        try {
-            val handler = handlerMapping.getHandler(request)
-            if (handler == null) {
-                request.setAttribute("Exception", HttpRequestMethodNotSupportedException("URL Not Allowed"))
-                filterChain.doFilter(request, response)
-                return
-            }
-        } catch (e: HttpRequestMethodNotSupportedException) {
-            request.setAttribute("Exception", e)
+
+        val handler = handlerMapping.getHandler(request)
+        if (handler == null) {
+            request.setAttribute("Exception", HttpRequestMethodNotSupportedException("URL Not Allowed"))
             filterChain.doFilter(request, response)
             return
         }

@@ -70,5 +70,14 @@ class LoggedInRepositoryImplTest : JpaContextTest() {
         assert(result!!.token == refreshToken.token)
     }
 
+    @Test
+    fun `리프레시 토큰을 조회해야 한다 - 실패`() {
+        val userId = generateUserId()
+        val refreshToken = RefreshTokenProvider.buildNormal()
+
+        val result = loggedInRepositoryImpl.read(refreshToken.token, userId)
+        assert(result == null)
+    }
+
     private fun generateUserId() = UserId.of(UUID.randomUUID().toString())
 }

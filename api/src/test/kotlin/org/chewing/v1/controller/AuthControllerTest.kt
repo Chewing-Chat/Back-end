@@ -766,6 +766,7 @@ class AuthControllerTest : RestDocsTest() {
         val jwtToken = createJwtToken()
         val userId = createUserId()
         every { jwtTokenUtil.refresh(any()) } returns Pair(jwtToken, userId)
+        every { jwtTokenUtil.cleanedToken(any()) } returns jwtToken.refreshToken.token
         every { authService.updateLoginInfo(any(), jwtToken.refreshToken, userId) } just Runs
 
         given()
