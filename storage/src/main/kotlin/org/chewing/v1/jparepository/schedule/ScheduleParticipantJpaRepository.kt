@@ -11,5 +11,6 @@ internal interface ScheduleParticipantJpaRepository :
     fun findAllByIdUserIdAndStatus(userId: String, status: ScheduleParticipantStatus): List<ScheduleParticipantJpaEntity>
     fun findAllByIdUserId(userId: String): List<ScheduleParticipantJpaEntity>
     fun findAllByIdScheduleId(scheduleId: String): List<ScheduleParticipantJpaEntity>
+    fun findAllByIdScheduleIdAndStatus(scheduleId: String, status: ScheduleParticipantStatus): List<ScheduleParticipantJpaEntity>
     fun findAllByIdIn(ids: List<ScheduleParticipantId>): List<ScheduleParticipantJpaEntity>
 }

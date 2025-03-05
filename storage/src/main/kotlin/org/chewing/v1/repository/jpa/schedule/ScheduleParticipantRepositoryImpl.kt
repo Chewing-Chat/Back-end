@@ -53,9 +53,14 @@ internal class ScheduleParticipantRepositoryImpl(
         return entity?.toParticipant()
     }
 
-    override fun readParticipants(scheduleId: ScheduleId): List<ScheduleParticipant> {
+    override fun readAllParticipants(scheduleId: ScheduleId): List<ScheduleParticipant> {
         val entities = scheduleParticipantJpaRepository.findAllByIdScheduleId(scheduleId.id)
         return entities.map { it.toParticipant() }
+    }
+
+    override fun readParticipants(userId: UserId, status: ScheduleParticipantStatus): List<ScheduleId> {
+        val entities = scheduleParticipantJpaRepository.findAllByIdUserIdAndStatus(userId.id, status)
+        return entities.map { it.toParticipant().scheduleId }
     }
 
     override fun readParticipantScheduleIds(

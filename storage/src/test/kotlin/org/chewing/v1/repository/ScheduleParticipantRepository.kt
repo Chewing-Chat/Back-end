@@ -122,7 +122,7 @@ class ScheduleParticipantRepository : JpaContextTest() {
             status = ScheduleParticipantStatus.ACTIVE,
         )
 
-        val result = scheduleParticipantRepositoryImpl.readParticipants(scheduleId)
+        val result = scheduleParticipantRepositoryImpl.readAllParticipants(scheduleId)
         assert(result.size == 2)
     }
 

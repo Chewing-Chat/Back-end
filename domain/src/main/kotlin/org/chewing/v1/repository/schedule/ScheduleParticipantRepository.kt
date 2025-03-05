@@ -12,7 +12,8 @@ interface ScheduleParticipantRepository {
     fun appendOwner(scheduleId: ScheduleId, userId: UserId)
     fun readsParticipants(scheduleIds: List<ScheduleId>, status: ScheduleParticipantStatus): List<ScheduleParticipant>
     fun readParticipant(userId: UserId, scheduleId: ScheduleId): ScheduleParticipant?
-    fun readParticipants(scheduleId: ScheduleId): List<ScheduleParticipant>
+    fun readAllParticipants(scheduleId: ScheduleId): List<ScheduleParticipant>
+    fun readParticipants(scheduleId: ScheduleId, status: ScheduleParticipantStatus): List<ScheduleParticipant>
     fun readParticipantScheduleIds(userId: UserId, status: ScheduleParticipantStatus): List<ScheduleId>
     fun removeParticipated(userId: UserId): List<ScheduleId>
     fun removeAllParticipants(scheduleId: ScheduleId)
