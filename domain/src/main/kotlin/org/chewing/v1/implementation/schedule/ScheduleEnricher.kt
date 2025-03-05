@@ -18,10 +18,10 @@ class ScheduleEnricher {
         return scheduleInfos.map { scheduleInfo ->
             val participants = scheduleParticipants
                 .filter { it.scheduleId == scheduleInfo.scheduleId }
-                .filter { it.userId != userId }
             val isOwned = participants.any { it.userId == userId && it.role == ScheduleParticipantRole.OWNER }
             val isParticipant = participants.any { it.userId == userId && it.status == ScheduleParticipantStatus.ACTIVE }
-            Schedule.of(scheduleInfo, participants, isOwned, isParticipant)
+            val friendParticipants = participants.filter { it.userId != userId }
+            Schedule.of(scheduleInfo, friendParticipants, isOwned, isParticipant)
         }
     }
     fun enrichParticipant(
@@ -38,13 +38,11 @@ class ScheduleEnricher {
     fun enrich(
         userId: UserId,
         scheduleInfo: ScheduleInfo,
-        scheduleParticipants: List<ScheduleParticipant>,
+        participants: List<ScheduleParticipant>,
     ): Schedule {
-        val participants = scheduleParticipants
-            .filter { it.scheduleId == scheduleInfo.scheduleId }
-            .filter { it.userId != userId }
         val isOwned = participants.any { it.userId == userId && it.role == ScheduleParticipantRole.OWNER }
         val isParticipant = participants.any { it.userId == userId && it.status == ScheduleParticipantStatus.ACTIVE }
-        return Schedule.of(scheduleInfo, participants, isOwned, isParticipant)
+        val friendParticipants = participants.filter { it.userId != userId }
+        return Schedule.of(scheduleInfo, friendParticipants, isOwned, isParticipant)
     }
 }
