@@ -62,7 +62,7 @@ class ScheduleService(
 
     fun fetch(userId: UserId, scheduleId: ScheduleId): Schedule {
         val scheduleInfo = scheduleReader.readInfo(scheduleId, ScheduleStatus.ACTIVE)
-        val participants = scheduleReader.readParticipants(scheduleId)
+        val participants = scheduleReader.readParticipants(scheduleId, ScheduleParticipantStatus.ACTIVE)
         return scheduleEnricher.enrich(userId, scheduleInfo, participants)
     }
 
@@ -76,7 +76,7 @@ class ScheduleService(
     ) {
         scheduleValidator.isParticipate(userId, scheduleId)
         scheduleUpdater.updateInfo(scheduleId, scheduleTime, scheduleContent)
-        val existingParticipants = scheduleReader.readParticipants(scheduleId)
+        val existingParticipants = scheduleReader.readAllParticipants(scheduleId)
         val targetParticipant = scheduleEnricher.enrichParticipant(userId, friendIds, participated)
         val (appendTargetIds, updateTargetIds, removeTargetIds) = scheduleFilter.filterUpdateTarget(existingParticipants, targetParticipant)
         scheduleAppender.appendParticipants(scheduleId, appendTargetIds)

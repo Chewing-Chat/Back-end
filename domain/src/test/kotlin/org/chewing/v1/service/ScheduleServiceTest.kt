@@ -229,7 +229,7 @@ class ScheduleServiceTest {
 
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns owner
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
-        every { scheduleParticipantRepository.readParticipants(scheduleId) } returns listOf(owner)
+        every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns listOf(owner)
         every { scheduleParticipantRepository.removeParticipants(scheduleId, emptyList()) } just Runs
         every { scheduleParticipantRepository.updateParticipants(scheduleId, emptyList(), any()) } just Runs
         every { scheduleParticipantRepository.appendParticipants(scheduleId, friendIds) } just Runs
@@ -267,7 +267,7 @@ class ScheduleServiceTest {
 
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns userParticipant
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
-        every { scheduleParticipantRepository.readParticipants(scheduleId) } returns scheduleParticipants
+        every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns scheduleParticipants
         every { scheduleParticipantRepository.removeParticipants(scheduleId, emptyList()) } just Runs
         every { scheduleParticipantRepository.updateParticipants(scheduleId, friendIds, any()) } just Runs
         every { scheduleParticipantRepository.appendParticipants(scheduleId, emptyList()) } just Runs
@@ -305,7 +305,7 @@ class ScheduleServiceTest {
 
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns userParticipant
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
-        every { scheduleParticipantRepository.readParticipants(scheduleId) } returns scheduleParticipants
+        every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns scheduleParticipants
         every { scheduleParticipantRepository.removeParticipants(scheduleId, emptyList()) } just Runs
         every { scheduleParticipantRepository.updateParticipants(scheduleId, friendIds, any()) } just Runs
         every { scheduleParticipantRepository.appendParticipants(scheduleId, emptyList()) } just Runs
@@ -333,7 +333,7 @@ class ScheduleServiceTest {
 
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns userParticipant
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
-        every { scheduleParticipantRepository.readParticipants(scheduleId) } returns listOf()
+        every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns listOf()
         every { scheduleParticipantRepository.removeParticipants(scheduleId, emptyList()) } just Runs
         every { scheduleParticipantRepository.updateParticipants(scheduleId, emptyList(), any()) } just Runs
         every { scheduleParticipantRepository.appendParticipants(scheduleId, friendIds) } just Runs
@@ -369,7 +369,7 @@ class ScheduleServiceTest {
 
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns userParticipant
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
-        every { scheduleParticipantRepository.readParticipants(scheduleId) } returns friendParticipants
+        every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns friendParticipants
         every { scheduleParticipantRepository.removeParticipants(scheduleId, friendIds) } just Runs
         every { scheduleParticipantRepository.updateParticipants(scheduleId, emptyList(), any()) } just Runs
         every { scheduleParticipantRepository.appendParticipants(scheduleId, emptyList()) } just Runs
@@ -445,7 +445,7 @@ class ScheduleServiceTest {
         )
 
         every { scheduleRepository.read(scheduleId, ScheduleStatus.ACTIVE) } returns scheduleInfo
-        every { scheduleParticipantRepository.readParticipants(scheduleId) } returns participants
+        every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns participants
 
         val result = scheduleService.fetch(userId, scheduleId)
 
@@ -470,7 +470,7 @@ class ScheduleServiceTest {
         )
 
         every { scheduleRepository.read(scheduleId, ScheduleStatus.ACTIVE) } returns scheduleInfo
-        every { scheduleParticipantRepository.readParticipants(scheduleId) } returns participants
+        every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns participants
 
         val result = scheduleService.fetch(userId, scheduleId)
 

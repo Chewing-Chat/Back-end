@@ -33,8 +33,12 @@ class ScheduleReader(
         return scheduleRepository.read(scheduleId, status) ?: throw NotFoundException(ErrorCode.SCHEDULE_NOT_FOUND)
     }
 
-    fun readParticipants(scheduleId: ScheduleId): List<ScheduleParticipant> {
-        return scheduleParticipantRepository.readParticipants(scheduleId)
+    fun readAllParticipants(scheduleId: ScheduleId): List<ScheduleParticipant> {
+        return scheduleParticipantRepository.readAllParticipants(scheduleId)
+    }
+
+    fun readParticipants(scheduleId: ScheduleId, status: ScheduleParticipantStatus): List<ScheduleParticipant> {
+        return scheduleParticipantRepository.readParticipants(scheduleId, status)
     }
 
     fun readParticipantScheduleIds(userId: UserId, status: ScheduleParticipantStatus): List<ScheduleId> {
