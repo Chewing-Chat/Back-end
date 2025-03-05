@@ -28,7 +28,7 @@ class SpringSecurityTest : IntegrationTest() {
 
     @Test
     fun `토큰 없이 들어온다면 에러 발생`() {
-        val token = jwtTokenUtil.createAccessToken(UserId.of("77834354-dbf8-4377-9d9b-d8bd5f595935"))
+        val token = jwtTokenUtil.createAccessToken(UserId.of("6068e8bf-b80e-40f9-b722-349d66e65589"))
         val refresh = jwtTokenUtil.createRefreshToken(UserId.of("77834354-dbf8-4377-9d9b-d8bd5f595935"))
         mockMvc.perform(
             post("/api/private")

@@ -445,7 +445,7 @@ class ScheduleServiceTest {
         )
 
         every { scheduleRepository.read(scheduleId, ScheduleStatus.ACTIVE) } returns scheduleInfo
-        every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns participants
+        every { scheduleParticipantRepository.readParticipants(scheduleId, ScheduleParticipantStatus.ACTIVE) } returns participants
 
         val result = scheduleService.fetch(userId, scheduleId)
 
@@ -470,7 +470,7 @@ class ScheduleServiceTest {
         )
 
         every { scheduleRepository.read(scheduleId, ScheduleStatus.ACTIVE) } returns scheduleInfo
-        every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns participants
+        every { scheduleParticipantRepository.readParticipants(scheduleId, ScheduleParticipantStatus.ACTIVE) } returns participants
 
         val result = scheduleService.fetch(userId, scheduleId)
 
