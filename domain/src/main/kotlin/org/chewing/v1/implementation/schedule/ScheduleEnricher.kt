@@ -19,8 +19,8 @@ class ScheduleEnricher {
             val participants = scheduleParticipants
                 .filter { it.scheduleId == scheduleInfo.scheduleId }
                 .filter { it.userId != userId }
-            val isOwned = scheduleParticipants.any { it.userId == userId && it.role == ScheduleParticipantRole.OWNER }
-            val isParticipant = scheduleParticipants.any { it.userId == userId && it.status == ScheduleParticipantStatus.ACTIVE }
+            val isOwned = participants.any { it.userId == userId && it.role == ScheduleParticipantRole.OWNER }
+            val isParticipant = participants.any { it.userId == userId && it.status == ScheduleParticipantStatus.ACTIVE }
             Schedule.of(scheduleInfo, participants, isOwned, isParticipant)
         }
     }
@@ -43,8 +43,8 @@ class ScheduleEnricher {
         val participants = scheduleParticipants
             .filter { it.scheduleId == scheduleInfo.scheduleId }
             .filter { it.userId != userId }
-        val isOwned = scheduleParticipants.any { it.userId == userId && it.role == ScheduleParticipantRole.OWNER }
-        val isParticipant = scheduleParticipants.any { it.userId == userId && it.status == ScheduleParticipantStatus.ACTIVE }
+        val isOwned = participants.any { it.userId == userId && it.role == ScheduleParticipantRole.OWNER }
+        val isParticipant = participants.any { it.userId == userId && it.status == ScheduleParticipantStatus.ACTIVE }
         return Schedule.of(scheduleInfo, participants, isOwned, isParticipant)
     }
 }
