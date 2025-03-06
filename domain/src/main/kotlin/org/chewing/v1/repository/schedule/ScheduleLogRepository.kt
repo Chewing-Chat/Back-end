@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ScheduleLogRepository {
     fun appendLog(scheduleId: ScheduleId, userId: UserId, action: ScheduleAction)
-    fun readLogs(userId: UserId): List<ScheduleLog>
+    fun readsLogs(scheduleIds: List<ScheduleId>): List<ScheduleLog>
 }

@@ -15,6 +15,7 @@ import org.chewing.v1.implementation.schedule.ScheduleReader
 import org.chewing.v1.implementation.schedule.ScheduleRemover
 import org.chewing.v1.implementation.schedule.ScheduleUpdater
 import org.chewing.v1.implementation.schedule.ScheduleValidator
+import org.chewing.v1.model.schedule.ScheduleParticipantReadStatus
 import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
@@ -34,7 +35,8 @@ class ScheduleServiceTest {
 
     private val scheduleAppender =
         ScheduleAppender(scheduleRepository, scheduleParticipantRepository, scheduleLogRepository)
-    private val scheduleReader = ScheduleReader(scheduleRepository, scheduleParticipantRepository, scheduleLogRepository)
+    private val scheduleReader =
+        ScheduleReader(scheduleRepository, scheduleParticipantRepository, scheduleLogRepository)
     private val scheduleRemover = ScheduleRemover(scheduleRepository, scheduleParticipantRepository)
     private val scheduleEnricher = ScheduleEnricher()
     private val scheduleValidator = ScheduleValidator(scheduleParticipantRepository)
@@ -78,6 +80,7 @@ class ScheduleServiceTest {
             scheduleId = scheduleId,
             status = ScheduleParticipantStatus.ACTIVE,
             role = ScheduleParticipantRole.OWNER,
+            readStatus = ScheduleParticipantReadStatus.READ,
         )
 
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns scheduleParticipant
@@ -99,6 +102,7 @@ class ScheduleServiceTest {
             scheduleId = scheduleId,
             status = ScheduleParticipantStatus.DELETED,
             role = ScheduleParticipantRole.PARTICIPANT,
+            readStatus = ScheduleParticipantReadStatus.READ,
         )
 
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns scheduleParticipant
@@ -143,35 +147,47 @@ class ScheduleServiceTest {
         val friendId = TestDataFactory.createFriendId()
         val targetScheduleType = ScheduleType.of(2021, 1)
         val scheduleId = TestDataFactory.createScheduleId()
-        val scheduleIds = listOf(scheduleId)
         val scheduleInfos = listOf(
             TestDataFactory.createScheduleInfo(scheduleId = scheduleId, ScheduleStatus.ACTIVE),
         )
+
+        val scheduleParticipated = TestDataFactory.createScheduleParticipant(
+            userId,
+            scheduleId,
+            ScheduleParticipantStatus.ACTIVE,
+            ScheduleParticipantRole.OWNER,
+            readStatus = ScheduleParticipantReadStatus.UNREAD,
+        )
+
         val participants = listOf(
             TestDataFactory.createScheduleParticipant(
                 scheduleId = scheduleId,
                 userId = userId,
                 status = ScheduleParticipantStatus.ACTIVE,
                 role = ScheduleParticipantRole.OWNER,
+                readStatus = ScheduleParticipantReadStatus.READ,
             ),
             TestDataFactory.createScheduleParticipant(
                 scheduleId = scheduleId,
                 userId = friendId,
                 status = ScheduleParticipantStatus.ACTIVE,
                 role = ScheduleParticipantRole.PARTICIPANT,
+                readStatus = ScheduleParticipantReadStatus.READ,
             ),
         )
 
-        every { scheduleParticipantRepository.readParticipantScheduleIds(any(), any()) } returns scheduleIds
+        every { scheduleParticipantRepository.readParticipated(any(), any()) } returns listOf(scheduleParticipated)
         every { scheduleRepository.reads(any(), any(), any()) } returns scheduleInfos
         every { scheduleParticipantRepository.readsParticipants(any(), any()) } returns participants
 
-        val result = scheduleService.fetches(userId, targetScheduleType)
+        val (schedules, count) = scheduleService.fetches(userId, targetScheduleType)
 
-        assert(result.size == 1)
-        assert(result[0].participants.size == 1)
-        assert(result[0].isParticipant)
-        assert(result[0].isOwned)
+        assert(schedules.size == 1)
+        assert(schedules[0].participants.size == 1)
+        assert(schedules[0].isOwned)
+        assert(schedules[0].isParticipant)
+
+        assert(count == 1)
     }
 
     @Test
@@ -180,9 +196,15 @@ class ScheduleServiceTest {
         val friendId = TestDataFactory.createFriendId()
         val targetScheduleType = ScheduleType.of(2021, 1)
         val scheduleId = TestDataFactory.createScheduleId()
-        val scheduleIds = listOf(scheduleId)
         val scheduleInfos = listOf(
             TestDataFactory.createScheduleInfo(scheduleId = scheduleId, ScheduleStatus.ACTIVE),
+        )
+        val scheduleParticipated = TestDataFactory.createScheduleParticipant(
+            userId,
+            scheduleId,
+            ScheduleParticipantStatus.ACTIVE,
+            ScheduleParticipantRole.OWNER,
+            readStatus = ScheduleParticipantReadStatus.UNREAD,
         )
         val participants = listOf(
             TestDataFactory.createScheduleParticipant(
@@ -190,25 +212,28 @@ class ScheduleServiceTest {
                 userId = userId,
                 status = ScheduleParticipantStatus.DELETED,
                 role = ScheduleParticipantRole.PARTICIPANT,
+                readStatus = ScheduleParticipantReadStatus.READ,
             ),
             TestDataFactory.createScheduleParticipant(
                 scheduleId = scheduleId,
                 userId = friendId,
                 status = ScheduleParticipantStatus.ACTIVE,
                 role = ScheduleParticipantRole.OWNER,
+                readStatus = ScheduleParticipantReadStatus.READ,
             ),
         )
 
-        every { scheduleParticipantRepository.readParticipantScheduleIds(any(), any()) } returns scheduleIds
+        every { scheduleParticipantRepository.readParticipated(any(), any()) } returns listOf(scheduleParticipated)
         every { scheduleRepository.reads(any(), any(), any()) } returns scheduleInfos
         every { scheduleParticipantRepository.readsParticipants(any(), any()) } returns participants
 
-        val result = scheduleService.fetches(userId, targetScheduleType)
+        val (schedules, count) = scheduleService.fetches(userId, targetScheduleType)
 
-        assert(result.size == 1)
-        assert(result[0].participants.size == 1)
-        assert(result[0].isOwned == false)
-        assert(result[0].isParticipant == false)
+        assert(schedules.size == 1)
+        assert(schedules[0].participants.size == 1)
+        assert(schedules[0].isOwned == false)
+        assert(schedules[0].isParticipant == false)
+        assert(count == 1)
     }
 
     @Test
@@ -225,13 +250,14 @@ class ScheduleServiceTest {
             scheduleId = scheduleId,
             status = ScheduleParticipantStatus.ACTIVE,
             role = ScheduleParticipantRole.OWNER,
+            readStatus = ScheduleParticipantReadStatus.READ,
         )
 
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns owner
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
         every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns listOf(owner)
         every { scheduleParticipantRepository.removeParticipants(scheduleId, emptyList()) } just Runs
-        every { scheduleParticipantRepository.updateParticipants(scheduleId, emptyList(), any()) } just Runs
+        every { scheduleParticipantRepository.updateParticipantsStatus(scheduleId, emptyList(), any()) } just Runs
         every { scheduleParticipantRepository.appendParticipants(scheduleId, friendIds) } just Runs
         every { scheduleLogRepository.appendLog(scheduleId, userId, any()) } just Runs
 
@@ -253,6 +279,7 @@ class ScheduleServiceTest {
             scheduleId = scheduleId,
             status = ScheduleParticipantStatus.ACTIVE,
             role = ScheduleParticipantRole.OWNER,
+            readStatus = ScheduleParticipantReadStatus.READ,
         )
         val friendParticipants = listOf(
             TestDataFactory.createScheduleParticipant(
@@ -260,6 +287,7 @@ class ScheduleServiceTest {
                 scheduleId = scheduleId,
                 status = ScheduleParticipantStatus.DELETED,
                 role = ScheduleParticipantRole.PARTICIPANT,
+                readStatus = ScheduleParticipantReadStatus.READ,
             ),
         )
         // 참여자 목록에는 삭제된 참여자가 포함되어 있음
@@ -269,7 +297,7 @@ class ScheduleServiceTest {
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
         every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns scheduleParticipants
         every { scheduleParticipantRepository.removeParticipants(scheduleId, emptyList()) } just Runs
-        every { scheduleParticipantRepository.updateParticipants(scheduleId, friendIds, any()) } just Runs
+        every { scheduleParticipantRepository.updateParticipantsStatus(scheduleId, friendIds, any()) } just Runs
         every { scheduleParticipantRepository.appendParticipants(scheduleId, emptyList()) } just Runs
         every { scheduleLogRepository.appendLog(scheduleId, userId, any()) } just Runs
 
@@ -291,6 +319,7 @@ class ScheduleServiceTest {
             scheduleId = scheduleId,
             status = ScheduleParticipantStatus.DELETED,
             role = ScheduleParticipantRole.OWNER,
+            readStatus = ScheduleParticipantReadStatus.READ,
         )
         val friendParticipants = listOf(
             TestDataFactory.createScheduleParticipant(
@@ -298,6 +327,7 @@ class ScheduleServiceTest {
                 scheduleId = scheduleId,
                 status = ScheduleParticipantStatus.DELETED,
                 role = ScheduleParticipantRole.PARTICIPANT,
+                readStatus = ScheduleParticipantReadStatus.READ,
             ),
         )
         // 참여자 목록에는 삭제된 참여자가 포함되어 있음
@@ -307,7 +337,7 @@ class ScheduleServiceTest {
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
         every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns scheduleParticipants
         every { scheduleParticipantRepository.removeParticipants(scheduleId, emptyList()) } just Runs
-        every { scheduleParticipantRepository.updateParticipants(scheduleId, friendIds, any()) } just Runs
+        every { scheduleParticipantRepository.updateParticipantsStatus(scheduleId, friendIds, any()) } just Runs
         every { scheduleParticipantRepository.appendParticipants(scheduleId, emptyList()) } just Runs
         every { scheduleLogRepository.appendLog(scheduleId, userId, any()) } just Runs
 
@@ -329,13 +359,14 @@ class ScheduleServiceTest {
             scheduleId = scheduleId,
             status = ScheduleParticipantStatus.DELETED,
             role = ScheduleParticipantRole.OWNER,
+            readStatus = ScheduleParticipantReadStatus.READ,
         )
 
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns userParticipant
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
         every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns listOf()
         every { scheduleParticipantRepository.removeParticipants(scheduleId, emptyList()) } just Runs
-        every { scheduleParticipantRepository.updateParticipants(scheduleId, emptyList(), any()) } just Runs
+        every { scheduleParticipantRepository.updateParticipantsStatus(scheduleId, emptyList(), any()) } just Runs
         every { scheduleParticipantRepository.appendParticipants(scheduleId, friendIds) } just Runs
         every { scheduleLogRepository.appendLog(scheduleId, userId, any()) } just Runs
 
@@ -357,6 +388,7 @@ class ScheduleServiceTest {
             scheduleId = scheduleId,
             status = ScheduleParticipantStatus.DELETED,
             role = ScheduleParticipantRole.OWNER,
+            readStatus = ScheduleParticipantReadStatus.READ,
         )
         val friendParticipants = listOf(
             TestDataFactory.createScheduleParticipant(
@@ -364,6 +396,7 @@ class ScheduleServiceTest {
                 scheduleId = scheduleId,
                 status = ScheduleParticipantStatus.ACTIVE,
                 role = ScheduleParticipantRole.PARTICIPANT,
+                readStatus = ScheduleParticipantReadStatus.READ,
             ),
         )
 
@@ -371,7 +404,7 @@ class ScheduleServiceTest {
         every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } just Runs
         every { scheduleParticipantRepository.readAllParticipants(scheduleId) } returns friendParticipants
         every { scheduleParticipantRepository.removeParticipants(scheduleId, friendIds) } just Runs
-        every { scheduleParticipantRepository.updateParticipants(scheduleId, emptyList(), any()) } just Runs
+        every { scheduleParticipantRepository.updateParticipantsStatus(scheduleId, emptyList(), any()) } just Runs
         every { scheduleParticipantRepository.appendParticipants(scheduleId, emptyList()) } just Runs
         every { scheduleLogRepository.appendLog(scheduleId, userId, any()) } just Runs
 
@@ -407,6 +440,7 @@ class ScheduleServiceTest {
             scheduleId = scheduleId,
             status = ScheduleParticipantStatus.ACTIVE,
             role = ScheduleParticipantRole.OWNER,
+            readStatus = ScheduleParticipantReadStatus.READ,
         )
         every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns userParticipant
         every { scheduleParticipantRepository.removeParticipant(scheduleId, userId) } just Runs
@@ -441,11 +475,23 @@ class ScheduleServiceTest {
                 scheduleId = scheduleId,
                 status = ScheduleParticipantStatus.ACTIVE,
                 role = ScheduleParticipantRole.OWNER,
+                readStatus = ScheduleParticipantReadStatus.READ,
             ),
         )
 
         every { scheduleRepository.read(scheduleId, ScheduleStatus.ACTIVE) } returns scheduleInfo
-        every { scheduleParticipantRepository.readParticipants(scheduleId, ScheduleParticipantStatus.ACTIVE) } returns participants
+        every {
+            scheduleParticipantRepository.readParticipants(
+                scheduleId,
+                ScheduleParticipantStatus.ACTIVE,
+            )
+        } returns participants
+        every {
+            scheduleParticipantRepository.updateParticipantReadStatus(
+                userId, scheduleId,
+                ScheduleParticipantReadStatus.READ,
+            )
+        } just Runs
 
         val result = scheduleService.fetch(userId, scheduleId)
 
@@ -466,11 +512,23 @@ class ScheduleServiceTest {
                 scheduleId = scheduleId,
                 status = ScheduleParticipantStatus.DELETED,
                 role = ScheduleParticipantRole.PARTICIPANT,
+                readStatus = ScheduleParticipantReadStatus.READ,
             ),
         )
 
         every { scheduleRepository.read(scheduleId, ScheduleStatus.ACTIVE) } returns scheduleInfo
-        every { scheduleParticipantRepository.readParticipants(scheduleId, ScheduleParticipantStatus.ACTIVE) } returns participants
+        every {
+            scheduleParticipantRepository.readParticipants(
+                scheduleId,
+                ScheduleParticipantStatus.ACTIVE,
+            )
+        } returns participants
+        every {
+            scheduleParticipantRepository.updateParticipantReadStatus(
+                userId, scheduleId,
+                ScheduleParticipantReadStatus.READ,
+            )
+        } just Runs
 
         val result = scheduleService.fetch(userId, scheduleId)
 
@@ -498,8 +556,22 @@ class ScheduleServiceTest {
     fun `일정 로그 목록 가져오기`() {
         val userId = TestDataFactory.createUserId()
         val scheduleLog = TestDataFactory.createScheduleLog()
+        val scheduleParticipated = TestDataFactory.createScheduleParticipant(
+            userId,
+            scheduleLog.scheduleId,
+            ScheduleParticipantStatus.ACTIVE,
+            ScheduleParticipantRole.OWNER,
+            ScheduleParticipantReadStatus.READ,
+        )
+        val participants = listOf(scheduleParticipated)
 
-        every { scheduleLogRepository.readLogs(userId) } returns listOf(scheduleLog)
+        every {
+            scheduleParticipantRepository.readParticipated(
+                userId,
+                ScheduleParticipantStatus.ACTIVE,
+            )
+        } returns participants
+        every { scheduleLogRepository.readsLogs(participants.map { it.scheduleId }) } returns listOf(scheduleLog)
 
         val result = scheduleService.fetchLogs(userId)
 

@@ -27,19 +27,17 @@ class ScheduleLogRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         val scheduleId = generateScheduleId()
         scheduleLogRepositoryImpl.appendLog(scheduleId, userId, ScheduleAction.CREATED)
-        assert(scheduleLogJpaRepository.findAllByUserId(userId.id, SortType.LATEST.toSort()).isNotEmpty())
+        assert(scheduleLogJpaRepository.findAllByScheduleIdIn(listOf(scheduleId.id), SortType.LATEST.toSort()).isNotEmpty())
     }
 
     @Test
     fun `스케줄 로그 목록 읽기에 성공`() {
         val userId = generateUserId()
         val scheduleId = generateScheduleId()
-        val scheduleLog = jpaDataGenerator.scheduleLogEntityData(scheduleId, userId, ScheduleAction.CREATED)
-        val result = scheduleLogRepositoryImpl.readLogs(userId)
-        assert(result.size == 1)
-        assert(result[0].userId == scheduleLog.userId)
-        assert(result[0].scheduleId == scheduleLog.scheduleId)
-        assert(result[0].action == scheduleLog.action)
+        jpaDataGenerator.scheduleLogEntityData(scheduleId, userId, ScheduleAction.CREATED)
+        jpaDataGenerator.scheduleLogEntityData(scheduleId, userId, ScheduleAction.UPDATED)
+        val result = scheduleLogRepositoryImpl.readsLogs(listOf(scheduleId))
+        assert(result.size == 2)
     }
 
     private fun generateUserId() = UserId.of(UUID.randomUUID().toString())

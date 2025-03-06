@@ -16,6 +16,7 @@ import org.chewing.v1.dto.request.user.ScheduleRequest
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
+import org.chewing.v1.model.schedule.ScheduleParticipantReadStatus
 import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
@@ -64,10 +65,12 @@ class ScheduleControllerTest : RestDocsTest() {
             TestDataFactory.createScheduleParticipant(
                 ScheduleParticipantStatus.ACTIVE,
                 ScheduleParticipantRole.PARTICIPANT,
+                ScheduleParticipantReadStatus.READ,
             ),
             TestDataFactory.createScheduleParticipant(
                 ScheduleParticipantStatus.ACTIVE,
                 ScheduleParticipantRole.PARTICIPANT,
+                ScheduleParticipantReadStatus.READ,
             ),
         )
         val schedule = TestDataFactory.createSchedule(scheduleInfo, scheduleParticipants)
@@ -76,7 +79,7 @@ class ScheduleControllerTest : RestDocsTest() {
         val month = 1
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         // When
-        every { scheduleService.fetches(any(), any()) } returns schedules
+        every { scheduleService.fetches(any(), any()) } returns Pair(schedules, 2)
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -109,6 +112,7 @@ class ScheduleControllerTest : RestDocsTest() {
                         )
                     }
                 }
+                body("data.unReadCount", equalTo(2))
             }
             .apply(
                 document(
@@ -132,6 +136,7 @@ class ScheduleControllerTest : RestDocsTest() {
                         fieldWithPath("data.schedules[].participants[].friendRole").description("참여자 역할(participant/owner)"),
                         fieldWithPath("data.schedules[].isOwned").description("일정 소유자 여부(true/false) -> true 시 일정 삭제 칸 보임/ false 시 일정 취소 칸 안보임"),
                         fieldWithPath("data.schedules[].isParticipant").description("요청한 사람 참여 여부(true/false) -> 요청한 사람의 Id는 노출되지 않음 친구 ID 만 노출"),
+                        fieldWithPath("data.unReadCount").description("읽지 않은 일정 개수"),
                     ),
                 ),
             )
@@ -469,10 +474,12 @@ class ScheduleControllerTest : RestDocsTest() {
             TestDataFactory.createScheduleParticipant(
                 ScheduleParticipantStatus.ACTIVE,
                 ScheduleParticipantRole.PARTICIPANT,
+                ScheduleParticipantReadStatus.READ,
             ),
             TestDataFactory.createScheduleParticipant(
                 ScheduleParticipantStatus.ACTIVE,
                 ScheduleParticipantRole.PARTICIPANT,
+                ScheduleParticipantReadStatus.READ,
             ),
         )
 

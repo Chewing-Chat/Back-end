@@ -6,6 +6,7 @@ import org.chewing.v1.jpaentity.schedule.ScheduleParticipantJpaEntity
 import org.chewing.v1.jparepository.schedule.ScheduleParticipantJpaRepository
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleParticipant
+import org.chewing.v1.model.schedule.ScheduleParticipantReadStatus
 import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.user.UserId
@@ -67,12 +68,12 @@ internal class ScheduleParticipantRepositoryImpl(
         return entities.map { it.toParticipant() }
     }
 
-    override fun readParticipantScheduleIds(
+    override fun readParticipated(
         userId: UserId,
         status: ScheduleParticipantStatus,
-    ): List<ScheduleId> {
+    ): List<ScheduleParticipant> {
         val entities = scheduleParticipantJpaRepository.findAllByIdUserIdAndStatus(userId.id, status)
-        return entities.map { it.toParticipant().scheduleId }
+        return entities.map { it.toParticipant() }
     }
 
     @Transactional
@@ -111,7 +112,7 @@ internal class ScheduleParticipantRepositoryImpl(
     }
 
     @Transactional
-    override fun updateParticipants(
+    override fun updateParticipantsStatus(
         scheduleId: ScheduleId,
         userIds: List<UserId>,
         status: ScheduleParticipantStatus,
@@ -123,5 +124,16 @@ internal class ScheduleParticipantRepositoryImpl(
         entities.forEach {
             it.updateStatus(status)
         }
+    }
+
+    @Transactional
+    override fun updateParticipantReadStatus(
+        userId: UserId,
+        scheduleId: ScheduleId,
+        status: ScheduleParticipantReadStatus,
+    ) {
+        val scheduleParticipantId = ScheduleParticipantId(userId.id, scheduleId.id)
+        val entity = scheduleParticipantJpaRepository.findById(scheduleParticipantId).orElse(null)
+        entity!!.updateReadStatus(status)
     }
 }

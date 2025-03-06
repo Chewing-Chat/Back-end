@@ -143,7 +143,7 @@ class ScheduleParticipantRepository : JpaContextTest() {
         )
 
         val result =
-            scheduleParticipantRepositoryImpl.readParticipantScheduleIds(userId, ScheduleParticipantStatus.ACTIVE)
+            scheduleParticipantRepositoryImpl.readParticipated(userId, ScheduleParticipantStatus.ACTIVE)
         assert(result.size == 2)
     }
 
@@ -164,7 +164,7 @@ class ScheduleParticipantRepository : JpaContextTest() {
         )
 
         val result =
-            scheduleParticipantRepositoryImpl.readParticipantScheduleIds(userId, ScheduleParticipantStatus.ACTIVE)
+            scheduleParticipantRepositoryImpl.readParticipated(userId, ScheduleParticipantStatus.ACTIVE)
         assert(result.isEmpty())
     }
 
@@ -307,7 +307,7 @@ class ScheduleParticipantRepository : JpaContextTest() {
             status = ScheduleParticipantStatus.DELETED,
         )
 
-        scheduleParticipantRepositoryImpl.updateParticipants(scheduleId, listOf(userId), ScheduleParticipantStatus.ACTIVE)
+        scheduleParticipantRepositoryImpl.updateParticipantsStatus(scheduleId, listOf(userId), ScheduleParticipantStatus.ACTIVE)
         val result = scheduleParticipantJpaRepository.findById(
             ScheduleParticipantId.of(
                 scheduleId = scheduleId,
