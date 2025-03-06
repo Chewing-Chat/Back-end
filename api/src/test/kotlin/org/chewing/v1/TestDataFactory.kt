@@ -49,6 +49,7 @@ import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleLog
 import org.chewing.v1.model.schedule.ScheduleParticipant
+import org.chewing.v1.model.schedule.ScheduleParticipantReadStatus
 import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleStatus
@@ -221,12 +222,14 @@ object TestDataFactory {
     fun createScheduleParticipant(
         status: ScheduleParticipantStatus,
         role: ScheduleParticipantRole,
+        readStatus: ScheduleParticipantReadStatus,
     ): ScheduleParticipant {
         return ScheduleParticipant.of(
             UserId.of("testUserId"),
             ScheduleId.of("testScheduleId"),
             status,
             role,
+            readStatus,
         )
     }
 

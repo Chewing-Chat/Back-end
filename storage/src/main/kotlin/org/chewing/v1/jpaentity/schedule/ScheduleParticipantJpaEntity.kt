@@ -9,6 +9,7 @@ import org.chewing.v1.jpaentity.common.BaseEntity
 import org.chewing.v1.jpaentity.user.ScheduleParticipantId
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleParticipant
+import org.chewing.v1.model.schedule.ScheduleParticipantReadStatus
 import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.user.UserId
@@ -26,6 +27,8 @@ internal class ScheduleParticipantJpaEntity(
     private var status: ScheduleParticipantStatus,
     @Enumerated(EnumType.STRING)
     private var role: ScheduleParticipantRole,
+    @Enumerated(EnumType.STRING)
+    private var readStatus: ScheduleParticipantReadStatus,
 ) : BaseEntity() {
     companion object {
         fun generate(
@@ -36,6 +39,7 @@ internal class ScheduleParticipantJpaEntity(
             id = ScheduleParticipantId.Companion.of(userId, scheduleId),
             status = ScheduleParticipantStatus.ACTIVE,
             role = role,
+            readStatus = ScheduleParticipantReadStatus.UNREAD,
         )
     }
     fun toParticipant(): ScheduleParticipant = ScheduleParticipant.Companion.of(
@@ -43,8 +47,12 @@ internal class ScheduleParticipantJpaEntity(
         ScheduleId.Companion.of(id.scheduleId),
         status,
         role,
+        readStatus,
     )
     fun updateStatus(status: ScheduleParticipantStatus) {
         this.status = status
+    }
+    fun updateReadStatus(readStatus: ScheduleParticipantReadStatus) {
+        this.readStatus = readStatus
     }
 }

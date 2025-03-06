@@ -52,17 +52,19 @@ class ScheduleService(
         scheduleIds.forEach { scheduleAppender.appendLog(it, userId, ScheduleAction.CANCELED) }
     }
 
-    fun fetches(userId: UserId, type: ScheduleType): List<Schedule> {
-        val scheduleIds = scheduleReader.readParticipantScheduleIds(userId, ScheduleParticipantStatus.ACTIVE)
-        val scheduleInfos = scheduleReader.readInfos(scheduleIds, type, ScheduleStatus.ACTIVE)
+    fun fetches(userId: UserId, type: ScheduleType): Pair<List<Schedule>, Int> {
+        val participatedSchedules = scheduleReader.readParticipated(userId, ScheduleParticipantStatus.ACTIVE)
+        val scheduleInfos =
+            scheduleReader.readInfos(participatedSchedules.map { it.scheduleId }, type, ScheduleStatus.ACTIVE)
         val participants =
             scheduleReader.readsParticipants(scheduleInfos.map { it.scheduleId }, ScheduleParticipantStatus.ACTIVE)
-        return scheduleEnricher.enriches(userId, scheduleInfos, participants)
+        return scheduleEnricher.enriches(userId, scheduleInfos, participants, participatedSchedules)
     }
 
     fun fetch(userId: UserId, scheduleId: ScheduleId): Schedule {
         val scheduleInfo = scheduleReader.readInfo(scheduleId, ScheduleStatus.ACTIVE)
         val participants = scheduleReader.readParticipants(scheduleId, ScheduleParticipantStatus.ACTIVE)
+        scheduleUpdater.updateParticipantReadStatus(userId, scheduleId, ScheduleParticipantReadStatus.READ)
         return scheduleEnricher.enrich(userId, scheduleInfo, participants)
     }
 
@@ -78,7 +80,10 @@ class ScheduleService(
         scheduleUpdater.updateInfo(scheduleId, scheduleTime, scheduleContent)
         val existingParticipants = scheduleReader.readAllParticipants(scheduleId)
         val targetParticipant = scheduleEnricher.enrichParticipant(userId, friendIds, participated)
-        val (appendTargetIds, updateTargetIds, removeTargetIds) = scheduleFilter.filterUpdateTarget(existingParticipants, targetParticipant)
+        val (appendTargetIds, updateTargetIds, removeTargetIds) = scheduleFilter.filterUpdateTarget(
+            existingParticipants,
+            targetParticipant,
+        )
         scheduleAppender.appendParticipants(scheduleId, appendTargetIds)
         scheduleUpdater.updateParticipants(scheduleId, updateTargetIds, ScheduleParticipantStatus.ACTIVE)
         scheduleRemover.removeParticipants(scheduleId, removeTargetIds)
@@ -86,6 +91,7 @@ class ScheduleService(
     }
 
     fun fetchLogs(userId: UserId): List<ScheduleLog> {
-        return scheduleReader.readLogs(userId)
+        val participatedSchedules = scheduleReader.readParticipated(userId, ScheduleParticipantStatus.ACTIVE)
+        return scheduleReader.readsLogs(participatedSchedules.map { it.scheduleId })
     }
 }

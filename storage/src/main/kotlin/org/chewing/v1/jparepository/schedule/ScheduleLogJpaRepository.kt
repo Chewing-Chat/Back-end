@@ -6,5 +6,5 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.JpaRepository
 
 internal interface ScheduleLogJpaRepository : JpaRepository<ScheduleLogJpaEntity, ScheduleParticipantId> {
-    fun findAllByUserId(userId: String, sort: Sort): List<ScheduleLogJpaEntity>
+    fun findAllByScheduleIdIn(scheduleIds: List<String>, sort: Sort): List<ScheduleLogJpaEntity>
 }

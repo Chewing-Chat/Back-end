@@ -2,6 +2,7 @@ package org.chewing.v1.implementation.schedule
 
 import org.chewing.v1.model.schedule.ScheduleContent
 import org.chewing.v1.model.schedule.ScheduleId
+import org.chewing.v1.model.schedule.ScheduleParticipantReadStatus
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
 import org.chewing.v1.model.schedule.ScheduleTime
 import org.chewing.v1.model.user.UserId
@@ -18,6 +19,9 @@ class ScheduleUpdater(
         scheduleRepository.update(scheduleId, scheduleTime, scheduleContent)
     }
     fun updateParticipants(scheduleId: ScheduleId, userIds: List<UserId>, status: ScheduleParticipantStatus) {
-        scheduleParticipantRepository.updateParticipants(scheduleId, userIds, status)
+        scheduleParticipantRepository.updateParticipantsStatus(scheduleId, userIds, status)
+    }
+    fun updateParticipantReadStatus(userId: UserId, scheduleId: ScheduleId, readStatus: ScheduleParticipantReadStatus) {
+        scheduleParticipantRepository.updateParticipantReadStatus(userId, scheduleId, readStatus)
     }
 }

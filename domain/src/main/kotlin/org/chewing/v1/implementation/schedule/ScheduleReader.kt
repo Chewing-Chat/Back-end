@@ -41,11 +41,11 @@ class ScheduleReader(
         return scheduleParticipantRepository.readParticipants(scheduleId, status)
     }
 
-    fun readParticipantScheduleIds(userId: UserId, status: ScheduleParticipantStatus): List<ScheduleId> {
-        return scheduleParticipantRepository.readParticipantScheduleIds(userId, status)
+    fun readParticipated(userId: UserId, status: ScheduleParticipantStatus): List<ScheduleParticipant> {
+        return scheduleParticipantRepository.readParticipated(userId, status)
     }
 
-    fun readLogs(userId: UserId): List<ScheduleLog> {
-        return scheduleLogRepository.readLogs(userId)
+    fun readsLogs(scheduleIds: List<ScheduleId>): List<ScheduleLog> {
+        return scheduleLogRepository.readsLogs(scheduleIds)
     }
 }

@@ -6,13 +6,15 @@ import java.time.format.DateTimeFormatter
 
 data class ScheduleListResponse(
     val schedules: List<ScheduleResponse>,
+    val unReadCount: Int,
 ) {
     companion object {
-        fun of(schedules: List<Schedule>): ScheduleListResponse {
+        fun of(schedules: List<Schedule>, unReadCount: Int): ScheduleListResponse {
             return ScheduleListResponse(
                 schedules.map {
                     ScheduleResponse.of(it)
                 },
+                unReadCount,
             )
         }
     }

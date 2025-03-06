@@ -35,8 +35,8 @@ class ScheduleController(
         @RequestParam("month") month: Int,
     ): SuccessResponseEntity<ScheduleListResponse> {
         val type = ScheduleType.of(year, month)
-        val schedules = scheduleService.fetches(userId, type)
-        return ResponseHelper.success(ScheduleListResponse.of(schedules))
+        val (schedules, unReadCount) = scheduleService.fetches(userId, type)
+        return ResponseHelper.success(ScheduleListResponse.of(schedules, unReadCount))
     }
 
     @GetMapping("/{scheduleId}")
