@@ -316,7 +316,7 @@ object TestDataFactory {
         senderId = UserId.of("sender"),
         number = ChatRoomSequence.of(chatRoomId, 1),
         timestamp = LocalDateTime.now(),
-        chatRoomType = ChatRoomType.DIRECT,
+        chatRoomType = ChatRoomType.GROUP,
     )
 
     fun createInviteMessage(messageId: String, chatRoomId: ChatRoomId): ChatInviteMessage = ChatInviteMessage.of(
@@ -326,7 +326,7 @@ object TestDataFactory {
         roomSequence = ChatRoomSequence.of(chatRoomId, 1),
         targetUserIds = listOf(UserId.of("target")),
         timestamp = LocalDateTime.now(),
-        chatRoomType = ChatRoomType.DIRECT,
+        chatRoomType = ChatRoomType.GROUP,
     )
 
     fun createFileMessage(messageId: String, chatRoomId: ChatRoomId): ChatFileMessage = ChatFileMessage.of(

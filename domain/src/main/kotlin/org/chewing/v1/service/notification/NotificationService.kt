@@ -6,6 +6,7 @@ import org.chewing.v1.implementation.notification.NotificationSender
 import org.chewing.v1.implementation.session.SessionProvider
 import org.chewing.v1.implementation.user.UserReader
 import org.chewing.v1.model.chat.message.ChatMessage
+import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
 
@@ -29,9 +30,10 @@ class NotificationService(
             // 오프라인 유저에게 푸시 알림 전송
             if (targetUserId != userId) {
                 val friendShip = friendShipReader.read(targetUserId, userId)
+                val user = userReader.read(targetUserId, AccessStatus.ACCESS)
                 val pushTokens = userReader.readsPushToken(targetUserId)
                 val notificationList =
-                    notificationGenerator.generateMessageNotification(friendShip, pushTokens, chatMessage)
+                    notificationGenerator.generateMessageNotification(friendShip, pushTokens, chatMessage, user)
                 notificationSender.sendPushNotification(notificationList)
             }
         } else {
