@@ -28,7 +28,7 @@ class FriendShipService(
         targetUsers: List<User>,
         friendShipProfiles: List<FriendShipProfile>,
     ): List<FriendShip> {
-        val matchedFriends = friendShipFilter.filterTargetFriend(targetUsers, friendShipProfiles)
+        val matchedFriends = friendShipFilter.filterTargetFriend(userId, targetUsers, friendShipProfiles)
         return matchedFriends.map { (matchingUser, profile) ->
             friendShipAppender.appendIfNotExist(
                 matchingUser.info.userId,
