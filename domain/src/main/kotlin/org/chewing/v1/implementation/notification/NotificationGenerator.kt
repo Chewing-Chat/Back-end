@@ -6,7 +6,6 @@ import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.notification.Notification
 import org.chewing.v1.model.notification.NotificationType
-import org.chewing.v1.model.user.User
 import org.chewing.v1.model.user.UserInfo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -83,7 +82,7 @@ class NotificationGenerator {
             type = type,
             targetId = targetId,
             content = content,
-            profileImage = profileImage
+            profileImage = profileImage,
         )
     }
 }

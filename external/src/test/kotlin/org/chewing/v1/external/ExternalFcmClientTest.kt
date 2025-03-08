@@ -1,15 +1,5 @@
 package org.chewing.v1.external
 
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.mockk.mockk
-import okhttp3.mockwebserver.MockWebServer
-import org.chewing.v1.client.ExpoClient
-import org.chewing.v1.config.PushConfig
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.springframework.core.io.ClassPathResource
-
 class ExternalFcmClientTest {
 //    companion object {
 //        private lateinit var mockWebServer: MockWebServer

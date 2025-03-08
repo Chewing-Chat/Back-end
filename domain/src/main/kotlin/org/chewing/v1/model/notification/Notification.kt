@@ -26,7 +26,7 @@ class Notification private constructor(
                 type = type,
                 targetId = targetId,
                 content = content,
-                profileImage= profileImage
+                profileImage = profileImage,
             )
         }
     }

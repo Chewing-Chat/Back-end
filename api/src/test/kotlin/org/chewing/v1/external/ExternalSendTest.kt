@@ -1,16 +1,8 @@
 package org.chewing.v1.external
 
-import org.chewing.v1.TestDataFactory
-import org.chewing.v1.TestDataFactory.createUserId
 import org.chewing.v1.client.ExpoClient
 import org.chewing.v1.config.IntegrationTest
-import org.chewing.v1.dto.ExpoMessageDto
 import org.chewing.v1.implementation.notification.NotificationSender
-import org.chewing.v1.model.auth.PushToken
-import org.chewing.v1.model.friend.FriendShipStatus
-import org.chewing.v1.model.notification.Notification
-import org.chewing.v1.model.notification.NotificationType
-import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 
@@ -20,6 +12,7 @@ class ExternalSendTest : IntegrationTest() {
 
     @Autowired
     private lateinit var expoClient: ExpoClient
+
     @Autowired
     private lateinit var notificationSender: NotificationSender
 

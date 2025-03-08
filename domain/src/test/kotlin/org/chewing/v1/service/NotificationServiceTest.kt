@@ -159,7 +159,6 @@ class NotificationServiceTest {
         val notificationSlot = slot<List<Notification>>()
         val friendUser = TestDataFactory.createUserInfo(friendId, AccessStatus.ACCESS)
 
-
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { friendShipRepository.read(friendId, userId) } returns friendShip
@@ -190,7 +189,6 @@ class NotificationServiceTest {
         val chatMessage = TestDataFactory.createReplyMessage("messageId", chatRoomId, chatNormalMessage)
         val notificationSlot = slot<List<Notification>>()
         val friendUser = TestDataFactory.createUserInfo(friendId, AccessStatus.ACCESS)
-
 
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { pushNotificationRepository.reads(friendId) } returns listOf(pushToken)
@@ -228,7 +226,6 @@ class NotificationServiceTest {
         val notificationSlot = slot<List<Notification>>()
         val friendUser = TestDataFactory.createUserInfo(friendId, AccessStatus.ACCESS)
 
-
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { pushNotificationRepository.reads(friendId) } returns listOf(pushToken)
@@ -260,7 +257,6 @@ class NotificationServiceTest {
         val chatMessage = TestDataFactory.createInviteMessage("messageId", chatRoomId)
         val notificationSlot = slot<List<Notification>>()
         val friendUser = TestDataFactory.createUserInfo(friendId, AccessStatus.ACCESS)
-
 
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
@@ -298,7 +294,6 @@ class NotificationServiceTest {
         val chatMessage = TestDataFactory.createLeaveMessage("messageId", chatRoomId)
         val notificationSlot = slot<List<Notification>>()
         val friendUser = TestDataFactory.createUserInfo(friendId, AccessStatus.ACCESS)
-
 
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { pushNotificationRepository.reads(friendId) } returns listOf(pushToken)

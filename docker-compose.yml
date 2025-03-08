@@ -60,9 +60,15 @@ services:
       MYSQL_DATABASE: ${STORAGE_DATABASE_CORE_DB_NAME}
       TZ: Asia/Seoul
     ports:
-      - "3307:3306"
+      - "3306"
     volumes:
       - ./data/mysql-data:/var/lib/mysql
+    command: [
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci",
+      "--init-connect=SET NAMES utf8mb4",
+      "--skip-character-set-client-handshake"
+    ]
     networks:
       - chewing_network
 
@@ -70,7 +76,7 @@ services:
     image: mongo:latest
     restart: always
     ports:
-      - "27018:27017"
+      - "27017"
     environment:
       TZ: Asia/Seoul
       MONGO_INITDB_ROOT_USERNAME: ${STORAGE_DATABASE_MONGO_DB_USER}
