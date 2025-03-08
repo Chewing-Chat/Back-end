@@ -15,8 +15,8 @@ class NotificationSender(
     private val asyncJobExecutor: AsyncJobExecutor,
 ) {
     fun sendPushNotification(notificationList: List<Notification>) {
-        asyncJobExecutor.executeAsyncJobs(notificationList) { notification ->
-            externalPushNotificationClient.sendFcmNotification(notification)
+        asyncJobExecutor.executeAsyncJob(notificationList) {
+            externalPushNotificationClient.sendPushNotifications(notificationList)
         }
     }
     fun sendChatNotification(chatMessage: ChatMessage, userId: UserId) {

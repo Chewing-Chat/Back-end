@@ -1,11 +1,14 @@
 package org.chewing.v1.model.notification
 
 enum class NotificationType {
-    CHAT_NORMAL,
-    CHAT_FILE,
-    CHAT_LEAVE,
-    CHAT_REPLY,
-    CHAT_INVITE,
+    GROUP_CHAT_NORMAL,
+    GROUP_CHAT_FILE,
+    GROUP_CHAT_LEAVE,
+    GROUP_CHAT_REPLY,
+    GROUP_CHAT_INVITE,
+    DIRECT_CHAT_NORMAL,
+    DIRECT_CHAT_FILE,
+    DIRECT_CHAT_REPLY,
     ;
 
     fun toLowerCase(): String {

@@ -1,14 +1,34 @@
 package org.chewing.v1.external
 
+import org.chewing.v1.client.ExpoClient
 import org.chewing.v1.config.IntegrationTest
+import org.chewing.v1.implementation.notification.NotificationSender
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ActiveProfiles
 
 //
-@ActiveProfiles("local")
+@ActiveProfiles("test")
 class ExternalSendTest : IntegrationTest() {
 
-//    @Autowired
-//    private lateinit var fcmClient: FcmClient
+    @Autowired
+    private lateinit var expoClient: ExpoClient
+
+    @Autowired
+    private lateinit var notificationSender: NotificationSender
+
+//    @Test
+//    fun test() {
+//        val friendShip = TestDataFactory.createFriendShip("testUserId","testFriendId", FriendShipStatus.FRIEND)
+//        val notification = Notification.of(
+//            friendShip,
+//            PushToken.of("1","ExponentPushToken[cYC75QPxbHJpMrUQnXvFoe]", PushToken.Provider.IOS, "3"),
+//            NotificationType.DIRECT_CHAT_NORMAL,
+//            "testChatRoomId",
+//            "testContent",
+//            "https://kr.object.ncloudstorage.com/chewing-bucket/PROFILE/71af0d19-d155-4cc1-a73d-8d5e501b4722/073c40c3-366b-46e2-a9db-c80a3fba15f5/0.1741055336289.jpeg",
+//        )
+//        notificationSender.sendPushNotification(listOf(notification))
+//    }
 
     //
 //    @Test

@@ -1,59 +1,43 @@
 package org.chewing.v1.external
 
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.mockk.mockk
-import okhttp3.mockwebserver.MockWebServer
-import org.chewing.v1.client.FcmClient
-import org.chewing.v1.config.FcmConfig
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.springframework.core.io.ClassPathResource
-
 class ExternalFcmClientTest {
-    companion object {
-        private lateinit var mockWebServer: MockWebServer
-
-        @BeforeAll
-        @JvmStatic
-        fun setup() {
-            mockWebServer = MockWebServer()
-            mockWebServer.start()
-        }
-
-        @AfterAll
-        @JvmStatic
-        fun teardown() {
-            mockWebServer.shutdown()
-        }
-    }
-
-    private val mockServerUrl = mockWebServer.url("/").toString().removeSuffix("/")
-
-    private val mockResource: ClassPathResource = mockk()
-
-    private val mockAccessTokenValue = "mockAccessTokenValue"
-
-    private val objectMapper = jacksonObjectMapper().registerModule(
-        KotlinModule.Builder()
-            .build(),
-    )
-    private val fcmConfig = object : FcmConfig(
-        fcmApiUrl = mockServerUrl,
-        resource = mockResource,
-    ) {
-        override fun getAccessToken(): String {
-            return mockAccessTokenValue
-        }
-    }
-
-    private val fcmClient = FcmClient(
-        fcmConfig.fcmWebClient(),
-    )
-
-    private val externalPushNotificationClientImpl = ExternalPushNotificationClientImpl(
-        fcmClient,
-    )
+//    companion object {
+//        private lateinit var mockWebServer: MockWebServer
+//
+//        @BeforeAll
+//        @JvmStatic
+//        fun setup() {
+//            mockWebServer = MockWebServer()
+//            mockWebServer.start()
+//        }
+//
+//        @AfterAll
+//        @JvmStatic
+//        fun teardown() {
+//            mockWebServer.shutdown()
+//        }
+//    }
+//
+//    private val mockServerUrl = mockWebServer.url("/").toString().removeSuffix("/")
+//
+//    private val mockResource: ClassPathResource = mockk()
+//
+//    private val mockAccessTokenValue = "mockAccessTokenValue"
+//
+//    private val objectMapper = jacksonObjectMapper().registerModule(
+//        KotlinModule.Builder()
+//            .build(),
+//    )
+//    private val pushConfig = object : PushConfig(
+//    )
+//
+//    private val expoClient = ExpoClient(
+//        pushConfig.expoWebClient(),
+//    )
+//
+//    private val externalPushNotificationClientImpl = ExternalPushNotificationClientImpl(
+//        expoClient,
+//    )
 
 //    @Test
 //    fun `Fcm 테스트`() = runBlocking {

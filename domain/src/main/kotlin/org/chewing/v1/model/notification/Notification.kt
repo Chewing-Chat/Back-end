@@ -9,6 +9,7 @@ class Notification private constructor(
     val type: NotificationType,
     val targetId: String,
     val content: String,
+    val profileImage: String,
 ) {
     companion object {
         fun of(
@@ -17,6 +18,7 @@ class Notification private constructor(
             type: NotificationType,
             targetId: String,
             content: String,
+            profileImage: String,
         ): Notification {
             return Notification(
                 friendShip = friendShip,
@@ -24,6 +26,7 @@ class Notification private constructor(
                 type = type,
                 targetId = targetId,
                 content = content,
+                profileImage = profileImage,
             )
         }
     }
