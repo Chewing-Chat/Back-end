@@ -68,6 +68,10 @@ class ScheduleService(
         return scheduleEnricher.enrich(userId, scheduleInfo, participants)
     }
 
+    fun fetchParticipant(scheduleId: ScheduleId): List<ScheduleParticipant> {
+        return scheduleReader.readParticipants(scheduleId, ScheduleParticipantStatus.ACTIVE)
+    }
+
     fun update(
         userId: UserId,
         scheduleId: ScheduleId,

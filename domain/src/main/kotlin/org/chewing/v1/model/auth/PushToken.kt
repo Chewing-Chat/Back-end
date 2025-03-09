@@ -2,7 +2,7 @@ package org.chewing.v1.model.auth
 
 class PushToken private constructor(
     val pushTokenId: String,
-    val fcmToken: String,
+    val pushToken: String,
     val device: Device,
 ) {
     companion object {
@@ -14,7 +14,7 @@ class PushToken private constructor(
         ): PushToken {
             return PushToken(
                 pushTokenId = pushTokenId,
-                fcmToken = fcmToken,
+                pushToken = fcmToken,
                 device = Device.of(deviceId, provider),
             )
         }

@@ -12,7 +12,7 @@ data class ExpoMessageDto(
     companion object {
         fun from(notification: Notification): ExpoMessageDto =
             ExpoMessageDto(
-                to = notification.pushToken.fcmToken,
+                to = notification.pushToken.pushToken,
                 title = notification.friendShip.friendName,
                 body = notification.content,
                 data = mapOf(

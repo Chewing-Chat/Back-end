@@ -16,6 +16,7 @@ import org.chewing.v1.dto.request.user.ScheduleRequest
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
+import org.chewing.v1.facade.ScheduleFacade
 import org.chewing.v1.model.schedule.ScheduleParticipantReadStatus
 import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
@@ -46,12 +47,13 @@ class ScheduleControllerTest : RestDocsTest() {
     private lateinit var scheduleService: ScheduleService
     private lateinit var scheduleController: ScheduleController
     private lateinit var userArgumentResolver: UserArgumentResolver
+    private lateinit var scheduleFacade: ScheduleFacade
 
     @BeforeEach
     fun setUp() {
         scheduleService = mockk()
         userArgumentResolver = UserArgumentResolver()
-        scheduleController = ScheduleController(scheduleService)
+        scheduleController = ScheduleController(scheduleService, scheduleFacade)
         mockMvc = mockController(scheduleController, GlobalExceptionHandler(), userArgumentResolver)
         val userId = UserId.of("testUserId")
         val authentication = UsernamePasswordAuthenticationToken(userId, null)
@@ -149,7 +151,7 @@ class ScheduleControllerTest : RestDocsTest() {
             scheduleId = scheduleId,
         )
         // When
-        every { scheduleService.delete(any(), any()) } just runs
+        every { scheduleFacade.deleteSchedule(any(), any()) } just runs
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -178,7 +180,7 @@ class ScheduleControllerTest : RestDocsTest() {
             scheduleId = scheduleId,
         )
         // When
-        every { scheduleService.delete(any(), any()) } throws NotFoundException(ErrorCode.SCHEDULE_NOT_PARTICIPANT)
+        every { scheduleFacade.deleteSchedule(any(), any()) } throws NotFoundException(ErrorCode.SCHEDULE_NOT_PARTICIPANT)
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -211,7 +213,7 @@ class ScheduleControllerTest : RestDocsTest() {
             scheduleId = scheduleId,
         )
         // When
-        every { scheduleService.delete(any(), any()) } throws ConflictException(ErrorCode.SCHEDULE_NOT_OWNER)
+        every { scheduleFacade.deleteSchedule(any(), any()) } throws ConflictException(ErrorCode.SCHEDULE_NOT_OWNER)
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -248,7 +250,7 @@ class ScheduleControllerTest : RestDocsTest() {
             friendIds = listOf("testFriendId1", "testFriendId2"),
         )
         val scheduleId = TestDataFactory.createScheduleId()
-        every { scheduleService.create(any(), any(), any(), any()) } returns scheduleId
+        every { scheduleFacade.createSchedule(any(), any(), any(), any()) } returns scheduleId
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -290,7 +292,7 @@ class ScheduleControllerTest : RestDocsTest() {
             friendIds = listOf("testFriendId1", "testFriendId2"),
             participated = true,
         )
-        every { scheduleService.update(any(), any(), any(), any(), any(), any()) } just runs
+        every { scheduleFacade.updateSchedule(any(), any(), any(), any(), any(), any()) } just runs
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -332,7 +334,7 @@ class ScheduleControllerTest : RestDocsTest() {
             participated = true,
         )
         every {
-            scheduleService.update(
+            scheduleFacade.updateSchedule(
                 any(),
                 any(),
                 any(),
@@ -378,7 +380,7 @@ class ScheduleControllerTest : RestDocsTest() {
         val requestBody = ScheduleRequest.Cancel(
             scheduleId = "testScheduleId",
         )
-        every { scheduleService.cancel(any(), any()) } just runs
+        every { scheduleFacade.cancelSchedule(any(), any()) } just runs
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -405,7 +407,7 @@ class ScheduleControllerTest : RestDocsTest() {
         val requestBody = ScheduleRequest.Cancel(
             scheduleId = "testScheduleId",
         )
-        every { scheduleService.cancel(any(), any()) } throws NotFoundException(ErrorCode.SCHEDULE_NOT_PARTICIPANT)
+        every { scheduleFacade.cancelSchedule(any(), any()) } throws NotFoundException(ErrorCode.SCHEDULE_NOT_PARTICIPANT)
 
         given()
             .setupAuthenticatedJsonRequest()

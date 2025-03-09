@@ -230,6 +230,7 @@ class MainControllerTest : RestDocsTest() {
                     body("data.oneDayFeeds[$index].feedId", equalTo(feed.feed.feedId.id))
                     body("data.oneDayFeeds[$index].feedType", equalTo(feed.feed.type.name.lowercase()))
                     body("data.oneDayFeeds[$index].uploadAt", equalTo(formattedUploadTime))
+                    body("data.oneDayFeeds[$index].ownerId", equalTo(feed.feed.userId.id))
                     when (feed.feed.type) {
                         FeedType.FILE -> {
                             body("data.oneDayFeeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
@@ -347,6 +348,7 @@ class MainControllerTest : RestDocsTest() {
                         fieldWithPath("data.oneDayFeeds[].feedId").description("피드 아이디"),
                         fieldWithPath("data.oneDayFeeds[].uploadAt").description("피드 업로드 시간 - 형식 yyyy-MM-dd HH:mm:ss"),
                         fieldWithPath("data.oneDayFeeds[].feedType").description("피드 타입(TEXT_BLUE, TEXT_SKY, FILE)"),
+                        fieldWithPath("data.oneDayFeeds[].ownerId").description("피드 소유자 ID"),
 
                         // FILE 타입에 대한 설명
                         fieldWithPath("data.oneDayFeeds[].thumbnailFileUrl").optional().description("썸네일 파일 URL (파일 타입일 경우)"),

@@ -9,6 +9,10 @@ enum class NotificationType {
     DIRECT_CHAT_NORMAL,
     DIRECT_CHAT_FILE,
     DIRECT_CHAT_REPLY,
+    SCHEDULE_CREATE,
+    SCHEDULE_UPDATE,
+    SCHEDULE_DELETE,
+    SCHEDULE_CANCEL,
     ;
 
     fun toLowerCase(): String {
