@@ -52,6 +52,7 @@ class ScheduleControllerTest : RestDocsTest() {
     @BeforeEach
     fun setUp() {
         scheduleService = mockk()
+        scheduleFacade = mockk()
         userArgumentResolver = UserArgumentResolver()
         scheduleController = ScheduleController(scheduleService, scheduleFacade)
         mockMvc = mockController(scheduleController, GlobalExceptionHandler(), userArgumentResolver)
