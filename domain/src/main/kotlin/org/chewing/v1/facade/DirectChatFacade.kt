@@ -34,9 +34,10 @@ class DirectChatFacade(
     }
 
     fun processDirectLatestChatLogs(userId: UserId, chatRoomId: ChatRoomId): List<ChatLog> {
-        val joinSequence =
-            directChatRoomService.getDirectChatRoom(userId, chatRoomId).ownSequence.joinSequenceNumber
-        val chatLogs = chatLogService.getLatestChatLogs(chatRoomId, joinSequence)
+        val directChatRoom =
+            directChatRoomService.getDirectChatRoom(userId, chatRoomId)
+        val chatLogs = chatLogService.getLatestChatLogs(chatRoomId, directChatRoom.ownSequence.joinSequenceNumber)
+        directChatRoomService.readDirectChatRoom(userId, chatRoomId, directChatRoom.roomSequence.sequence)
         return chatLogs
     }
 
