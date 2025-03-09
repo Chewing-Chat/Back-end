@@ -19,7 +19,10 @@ internal class PushNotificationRepositoryImpl(
     }
 
     override fun append(device: PushToken.Device, appToken: String, userInfo: UserInfo) {
-        pushNotificationJpaRepository.save(PushNotificationJpaEntity.generate(appToken, device, userInfo))
+        val entity = pushNotificationJpaRepository.findByAppTokenAndUserId(appToken, userInfo.userId.id)
+        if (entity == null) {
+            pushNotificationJpaRepository.save(PushNotificationJpaEntity.generate(appToken, device, userInfo))
+        }
     }
     override fun reads(userId: UserId): List<PushToken> {
         val pushNotifications = pushNotificationJpaRepository.findAllByUserId(userId.id)

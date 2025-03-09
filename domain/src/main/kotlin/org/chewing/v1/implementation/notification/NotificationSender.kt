@@ -19,6 +19,7 @@ class NotificationSender(
             externalPushNotificationClient.sendPushNotifications(notificationList)
         }
     }
+
     fun sendChatNotification(chatMessage: ChatMessage, userId: UserId) {
         externalChatNotificationClient.sendMessage(chatMessage, userId)
     }

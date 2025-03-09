@@ -6,6 +6,8 @@ import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.notification.Notification
 import org.chewing.v1.model.notification.NotificationType
+import org.chewing.v1.model.schedule.ScheduleAction
+import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.user.UserInfo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -56,6 +58,30 @@ class NotificationGenerator {
                 logger.warn("지원하지 않는 메시지 타입입니다. message: $message")
                 return emptyList()
             }
+        }
+
+        return createNotifications(
+            friendShip = friendShip,
+            pushTokens = pushTokens,
+            type = type,
+            targetId = targetId.id,
+            content = content,
+            profileImage = user.image.url,
+        )
+    }
+
+    fun generateScheduleNotification(
+        friendShip: FriendShip,
+        pushTokens: List<PushToken>,
+        scheduleId: ScheduleId,
+        user: UserInfo,
+        scheduleAction: ScheduleAction,
+    ): List<Notification> {
+        val (type, targetId, content) = when (scheduleAction) {
+            ScheduleAction.CREATED -> Triple(NotificationType.SCHEDULE_CREATE, scheduleId, "${friendShip.friendName}님이 일정을 생성했습니다.")
+            ScheduleAction.CANCELED -> Triple(NotificationType.SCHEDULE_CANCEL, scheduleId, "${friendShip.friendName}님이 일정을 취소했습니다.")
+            ScheduleAction.DELETED -> Triple(NotificationType.SCHEDULE_DELETE, scheduleId, "${friendShip.friendName}님이 일정을 삭제했습니다.")
+            ScheduleAction.UPDATED -> Triple(NotificationType.SCHEDULE_UPDATE, scheduleId, "${friendShip.friendName}님이 일정을 변경했습니다.")
         }
 
         return createNotifications(

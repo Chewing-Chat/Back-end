@@ -8,6 +8,7 @@ sealed class ThumbnailFeedResponse(
     open val feedId: String,
     open val feedType: String,
     open val uploadAt: String,
+    open val ownerId: String,
 ) {
     companion object {
         fun of(feed: Feed): ThumbnailFeedResponse {
@@ -21,6 +22,7 @@ sealed class ThumbnailFeedResponse(
                     uploadAt = formattedUploadTime,
                     feedType = feed.feed.type.name.lowercase(),
                     count = feed.feedDetails.size,
+                    ownerId = feed.feed.userId.id,
                 )
 
                 FeedType.TEXT_BLUE -> TextFeedResponse(
@@ -28,6 +30,7 @@ sealed class ThumbnailFeedResponse(
                     content = feed.feed.content,
                     uploadAt = formattedUploadTime,
                     feedType = feed.feed.type.name.lowercase(),
+                    ownerId = feed.feed.userId.id,
                 )
 
                 FeedType.TEXT_SKY -> TextFeedResponse(
@@ -35,6 +38,7 @@ sealed class ThumbnailFeedResponse(
                     content = feed.feed.content,
                     uploadAt = formattedUploadTime,
                     feedType = feed.feed.type.name.lowercase(),
+                    ownerId = feed.feed.userId.id,
                 )
             }
         }
@@ -43,16 +47,18 @@ sealed class ThumbnailFeedResponse(
     data class ImageFeedResponse(
         override val feedId: String,
         override val feedType: String,
+        override val ownerId: String,
         val thumbnailFileUrl: String,
         val fileType: String,
         override val uploadAt: String,
         val count: Int,
-    ) : ThumbnailFeedResponse(feedId, feedType, uploadAt)
+    ) : ThumbnailFeedResponse(feedId, feedType, uploadAt, ownerId)
 
     data class TextFeedResponse(
         override val feedId: String,
         override val feedType: String,
+        override val ownerId: String,
         val content: String,
         override val uploadAt: String,
-    ) : ThumbnailFeedResponse(feedId, feedType, uploadAt)
+    ) : ThumbnailFeedResponse(feedId, feedType, uploadAt, ownerId)
 }

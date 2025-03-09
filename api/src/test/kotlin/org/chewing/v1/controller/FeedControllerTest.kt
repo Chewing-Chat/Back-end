@@ -91,6 +91,19 @@ class FeedControllerTest : RestDocsTest() {
                     body("data.feeds[$index].feedId", equalTo(feed.feed.feedId.id))
                     body("data.feeds[$index].feedType", equalTo(feed.feed.type.name.lowercase()))
                     body("data.feeds[$index].uploadAt", equalTo(formattedUploadTime))
+                    body("data.feeds[$index].ownerId", equalTo(feed.feed.userId.id))
+                    when (feed.feed.type) {
+                        FeedType.FILE -> {
+                            body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
+                            body("data.feeds[$index].count", equalTo(feed.feedDetails.size))
+                        }
+                        FeedType.TEXT_BLUE -> {
+                            body("data.feeds[$index].content", equalTo(feed.feed.content))
+                        }
+                        FeedType.TEXT_SKY -> {
+                            body("data.feeds[$index].content", equalTo(feed.feed.content))
+                        }
+                    }
                     when (feed.feed.type) {
                         FeedType.FILE -> {
                             body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
@@ -123,6 +136,7 @@ class FeedControllerTest : RestDocsTest() {
                         fieldWithPath("data.feeds[].count").optional().description("파일 개수 (파일 타입일 경우)"),
                         // TEXT 타입에 대한 설명
                         fieldWithPath("data.feeds[].content").optional().description("텍스트 피드 내용 (TEXT_BLUE, TEXT_SKY 타입일 경우)"),
+                        fieldWithPath("data.feeds[].ownerId").description("피드 소유자 ID"),
                     ),
                 ),
             )
@@ -153,6 +167,7 @@ class FeedControllerTest : RestDocsTest() {
                     body("data.feeds[$index].feedId", equalTo(feed.feed.feedId.id))
                     body("data.feeds[$index].feedType", equalTo(feed.feed.type.name.lowercase()))
                     body("data.feeds[$index].uploadAt", equalTo(formattedUploadTime))
+                    body("data.feeds[$index].ownerId", equalTo(feed.feed.userId.id))
                     when (feed.feed.type) {
                         FeedType.FILE -> {
                             body("data.feeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
@@ -189,6 +204,8 @@ class FeedControllerTest : RestDocsTest() {
 
                         // TEXT 타입에 대한 설명
                         fieldWithPath("data.feeds[].content").optional().description("텍스트 피드 내용 (TEXT_BLUE, TEXT_SKY 타입일 경우)"),
+
+                        fieldWithPath("data.feeds[].ownerId").description("피드 소유자 ID"),
                     ),
                 ),
             )

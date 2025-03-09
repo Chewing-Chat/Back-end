@@ -6,6 +6,8 @@ import org.chewing.v1.implementation.notification.NotificationSender
 import org.chewing.v1.implementation.session.SessionProvider
 import org.chewing.v1.implementation.user.UserReader
 import org.chewing.v1.model.chat.message.ChatMessage
+import org.chewing.v1.model.schedule.ScheduleAction
+import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Service
@@ -38,6 +40,25 @@ class NotificationService(
             }
         } else {
             notificationSender.sendChatNotification(chatMessage, targetUserId)
+        }
+    }
+
+    fun handleScheduleNotification(targetUserId: UserId, userId: UserId, targetScheduleId: ScheduleId, scheduleAction: ScheduleAction) {
+        if (!sessionProvider.isOnline(targetUserId)) {
+            if (targetUserId != userId) {
+                val friendShip = friendShipReader.read(targetUserId, userId)
+                val user = userReader.read(targetUserId, AccessStatus.ACCESS)
+                val pushTokens = userReader.readsPushToken(targetUserId)
+                val notificationList =
+                    notificationGenerator.generateScheduleNotification(friendShip, pushTokens, targetScheduleId, user, scheduleAction)
+                notificationSender.sendPushNotification(notificationList)
+            }
+        }
+    }
+
+    fun handleSchedulesNotification(targetUserIds: List<UserId>, userId: UserId, targetScheduleId: ScheduleId, scheduleAction: ScheduleAction) {
+        targetUserIds.forEach { memberId ->
+            handleScheduleNotification(memberId, userId, targetScheduleId, scheduleAction)
         }
     }
 }

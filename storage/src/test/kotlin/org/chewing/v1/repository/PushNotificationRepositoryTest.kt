@@ -32,6 +32,17 @@ class PushNotificationRepositoryTest : JpaContextTest() {
     }
 
     @Test
+    fun `푸시 알림을 위한 정보 저장에 실패 - 이미 존재한다면 저장 하지 않음`() {
+        val userId = generateUserId()
+        val user = UserProvider.buildNormal(userId)
+        val device = PushTokenProvider.buildDeviceNormal()
+        val appToken = PushTokenProvider.buildAppTokenNormal()
+        pushNotificationRepositoryImpl.append(device, appToken, user)
+        pushNotificationRepositoryImpl.append(device, appToken, user)
+        assert(pushNotificationJpaRepository.findAllByUserId(userId.id).size == 1)
+    }
+
+    @Test
     fun `푸시 알림을 위한 정보 삭제에 성공`() {
         val userId = generateUserId()
         val pushNotification = jpaDataGenerator.pushNotificationData(userId)
