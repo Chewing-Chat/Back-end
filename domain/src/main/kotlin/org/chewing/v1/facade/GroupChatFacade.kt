@@ -35,9 +35,10 @@ class GroupChatFacade(
     }
 
     fun processGroupLatestChatLogs(userId: UserId, chatRoomId: ChatRoomId): List<ChatLog> {
-        val joinSequence =
-            groupChatRoomService.getGroupChatRoom(userId, chatRoomId).ownSequence.joinSequenceNumber
-        val chatLogs = chatLogService.getLatestChatLogs(chatRoomId, joinSequence)
+        val groupChatRoom =
+            groupChatRoomService.getGroupChatRoom(userId, chatRoomId)
+        val chatLogs = chatLogService.getLatestChatLogs(chatRoomId, groupChatRoom.ownSequence.joinSequenceNumber)
+        groupChatRoomService.readGroupChatRoom(userId, chatRoomId, groupChatRoom.roomSequence.sequence)
         return chatLogs
     }
 
