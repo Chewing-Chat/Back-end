@@ -12,5 +12,5 @@ interface GroupChatRoomMemberRepository {
     fun remove(chatRoomId: ChatRoomId, userId: UserId)
     fun updateStatus(chatRoomId: ChatRoomId, userId: UserId, status: ChatRoomMemberStatus)
     fun checkParticipant(chatRoomId: ChatRoomId, userId: UserId): Boolean
-    fun readsInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomMemberInfo>
+    fun readsAllInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomMemberInfo>
 }

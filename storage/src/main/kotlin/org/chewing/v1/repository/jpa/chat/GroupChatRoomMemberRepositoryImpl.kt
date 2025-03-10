@@ -86,10 +86,9 @@ internal class GroupChatRoomMemberRepositoryImpl(
         )
     }
 
-    override fun readsInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomMemberInfo> {
-        return groupChatRoomMemberJpaRepository.findAllByIdChatRoomIdInAndUserStatusNot(
+    override fun readsAllInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomMemberInfo> {
+        return groupChatRoomMemberJpaRepository.findAllByIdChatRoomIdIn(
             chatRoomIds.map { it.id },
-            ChatRoomMemberStatus.DELETED,
         )
             .asSequence()
             .map { it.toChatRoomMember() }

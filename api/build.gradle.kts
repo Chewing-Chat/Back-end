@@ -1,6 +1,7 @@
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("net.coobird:thumbnailator:0.4.14")
     implementation(project(":common"))
     implementation(project(":domain"))
     runtimeOnly(project(":storage"))

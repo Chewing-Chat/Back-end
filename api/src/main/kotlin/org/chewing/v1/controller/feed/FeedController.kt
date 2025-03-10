@@ -61,7 +61,7 @@ class FeedController(
     }
 
     @PostMapping("/file")
-    fun creatFileFeed(
+    fun createFileFeed(
         @CurrentUser userId: UserId,
         @RequestPart("files") files: List<MultipartFile>,
         @RequestParam("content") content: String,
