@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 internal interface GroupChatRoomMemberJpaRepository : JpaRepository<GroupChatRoomMemberJpaEntity, ChatRoomMemberId> {
     fun findAllByIdUserIdAndUserStatusNot(userId: String, status: ChatRoomMemberStatus): List<GroupChatRoomMemberJpaEntity>
     fun findByIdChatRoomIdAndUserStatusNot(chatRoomId: String, status: ChatRoomMemberStatus): List<GroupChatRoomMemberJpaEntity>
-    fun findAllByIdChatRoomIdInAndUserStatusNot(chatRoomIds: List<String>, status: ChatRoomMemberStatus): List<GroupChatRoomMemberJpaEntity>
+    fun findAllByIdChatRoomIdIn(chatRoomIds: List<String>): List<GroupChatRoomMemberJpaEntity>
     fun existsByIdAndUserStatusNot(chatRoomMemberId: ChatRoomMemberId, status: ChatRoomMemberStatus): Boolean
 }

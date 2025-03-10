@@ -62,7 +62,7 @@ class GroupChatRoomService(
         val userParticipatedRooms = groupChatRoomReader.readRoomUserInfos(userId)
         val chatRoomIds = userParticipatedRooms.map { it.chatRoomId }
         val chatRooms = groupChatRoomReader.readRoomInfos(chatRoomIds)
-        val chatRoomMembers = groupChatRoomReader.readsRoomMemberInfos(chatRoomIds)
+        val chatRoomMembers = groupChatRoomReader.readsRoomAllMemberInfos(chatRoomIds)
         val chatRoomSequences = chatSequenceFinder.findCurrentRoomSequences(chatRoomIds)
         val memberSequences = chatSequenceFinder.findCurrentMemberSequences(chatRoomIds, userId)
         return groupChatRoomEnricher.enrich(chatRooms, chatRoomSequences, memberSequences, chatRoomMembers)

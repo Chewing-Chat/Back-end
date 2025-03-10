@@ -146,7 +146,7 @@ class GroupChatRoomServiceTest {
 
         every { groupChatRoomMemberRepository.readUsers(userId) } returns chatRoomUsersInfos
         every { groupChatRoomRepository.readRoomInfos(chatRoomIds) } returns chatRooms
-        every { groupChatRoomMemberRepository.readsInfos(chatRoomIds) } returns chatRoomMemberInfos
+        every { groupChatRoomMemberRepository.readsAllInfos(chatRoomIds) } returns chatRoomMemberInfos
         every { chatRoomSequenceRepository.readsSequences(chatRoomIds) } returns chatRoomSequences
         every { chatRoomMemberSequenceRepository.readsSequences(chatRoomIds, userId) } returns userSequences
 
@@ -182,7 +182,7 @@ class GroupChatRoomServiceTest {
 
         every { groupChatRoomMemberRepository.readUsers(userId) } returns chatRoomUsersInfos
         every { groupChatRoomRepository.readRoomInfos(chatRoomIds) } returns chatRooms
-        every { groupChatRoomMemberRepository.readsInfos(chatRoomIds) } returns chatRoomMemberInfos
+        every { groupChatRoomMemberRepository.readsAllInfos(chatRoomIds) } returns chatRoomMemberInfos
         every { chatRoomSequenceRepository.readsSequences(chatRoomIds) } returns chatRoomSequences
         every { chatRoomMemberSequenceRepository.readsSequences(chatRoomIds, userId) } returns userSequences
 
@@ -217,7 +217,7 @@ class GroupChatRoomServiceTest {
 
         every { groupChatRoomMemberRepository.readUsers(userId) } returns chatRoomUsersInfos
         every { groupChatRoomRepository.readRoomInfos(chatRoomIds) } returns chatRooms
-        every { groupChatRoomMemberRepository.readsInfos(chatRoomIds) } returns chatRoomMemberInfos
+        every { groupChatRoomMemberRepository.readsAllInfos(chatRoomIds) } returns chatRoomMemberInfos
         every { chatRoomSequenceRepository.readsSequences(chatRoomIds) } returns chatRoomSequences
         every { chatRoomMemberSequenceRepository.readsSequences(chatRoomIds, userId) } returns userSequences
 
@@ -239,7 +239,7 @@ class GroupChatRoomServiceTest {
 
         every { groupChatRoomMemberRepository.readUsers(userId) } returns chatRoomUsersInfos
         every { groupChatRoomRepository.readRoomInfos(chatRoomIds) } returns chatRooms
-        every { groupChatRoomMemberRepository.readsInfos(chatRoomIds) } returns chatRoomMemberInfos
+        every { groupChatRoomMemberRepository.readsAllInfos(chatRoomIds) } returns chatRoomMemberInfos
         every { chatRoomSequenceRepository.readsSequences(chatRoomIds) } returns chatRoomSequences
         every { chatRoomMemberSequenceRepository.readsSequences(chatRoomIds, userId) } returns userSequences
 
@@ -261,7 +261,7 @@ class GroupChatRoomServiceTest {
 
         every { groupChatRoomMemberRepository.readUsers(userId) } returns chatRoomUsersInfos
         every { groupChatRoomRepository.readRoomInfos(chatRoomIds) } returns chatRooms
-        every { groupChatRoomMemberRepository.readsInfos(chatRoomIds) } returns chatRoomMemberInfos
+        every { groupChatRoomMemberRepository.readsAllInfos(chatRoomIds) } returns chatRoomMemberInfos
         every { chatRoomSequenceRepository.readsSequences(chatRoomIds) } returns chatRoomSequences
         every { chatRoomMemberSequenceRepository.readsSequences(chatRoomIds, userId) } returns userSequences
 
@@ -282,7 +282,7 @@ class GroupChatRoomServiceTest {
 
         every { groupChatRoomMemberRepository.readUsers(userId) } returns chatRoomUsersInfos
         every { groupChatRoomRepository.readRoomInfos(chatRoomIds) } returns chatRooms
-        every { groupChatRoomMemberRepository.readsInfos(chatRoomIds) } returns chatRoomMemberInfos
+        every { groupChatRoomMemberRepository.readsAllInfos(chatRoomIds) } returns chatRoomMemberInfos
         every { chatRoomSequenceRepository.readsSequences(chatRoomIds) } returns chatRoomSequences
         every { chatRoomMemberSequenceRepository.readsSequences(chatRoomIds, userId) } returns userSequences
 
@@ -316,7 +316,7 @@ class GroupChatRoomServiceTest {
 
         every { groupChatRoomMemberRepository.readUsers(userId) } returns chatRoomUsersInfos
         every { groupChatRoomRepository.readRoomInfos(chatRoomIds) } returns chatRooms
-        every { groupChatRoomMemberRepository.readsInfos(chatRoomIds) } returns chatRoomMemberInfos
+        every { groupChatRoomMemberRepository.readsAllInfos(chatRoomIds) } returns chatRoomMemberInfos
         every { chatRoomSequenceRepository.readsSequences(chatRoomIds) } returns chatRoomSequences
         every { chatRoomMemberSequenceRepository.readsSequences(chatRoomIds, userId) } returns userSequences
 

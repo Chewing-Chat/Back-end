@@ -18,8 +18,8 @@ class GroupChatRoomReader(
     fun readRoomInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomInfo> {
         return groupChatRoomRepository.readRoomInfos(chatRoomIds)
     }
-    fun readsRoomMemberInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomMemberInfo> {
-        return groupChatRoomMemberRepository.readsInfos(chatRoomIds)
+    fun readsRoomAllMemberInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomMemberInfo> {
+        return groupChatRoomMemberRepository.readsAllInfos(chatRoomIds)
     }
 
     fun readRoomMemberInfos(chatRoomId: ChatRoomId): List<GroupChatRoomMemberInfo> {

@@ -125,7 +125,7 @@ class GroupChatRoomMemberRepositoryTest : JpaContextTest() {
         val userId = generateUserId()
         jpaDataGenerator.groupChatRoomMemberEntityData(chatRoomId1, userId)
         jpaDataGenerator.groupChatRoomMemberEntityData(chatRoomId2, userId)
-        val result = groupChatRoomMemberRepositoryImpl.readsInfos(listOf(chatRoomId1, chatRoomId2))
+        val result = groupChatRoomMemberRepositoryImpl.readsAllInfos(listOf(chatRoomId1, chatRoomId2))
         assert(result.size == 2)
     }
 

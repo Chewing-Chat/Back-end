@@ -5,8 +5,11 @@ enum class MediaType(val type: String) {
     IMAGE_JPEG("image/jpeg"),
     IMAGE_JPG("image/jpg"),
     IMAGE_PNG("image/png"),
-
+    IMAGE_HEIC("image/heic"),
+    IMAGE_WEBP("image/webp"),
     VIDEO_BASIC("video/mp4"),
+    TEXT_HTML("text/html"),
+    APPLICATION_PDF("application/pdf"),
     AUDIO_MP3("audio/mp3"),
     VIDEO_MP4("video/mp4"),
     ;
