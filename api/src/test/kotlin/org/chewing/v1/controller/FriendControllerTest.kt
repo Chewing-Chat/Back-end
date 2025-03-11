@@ -301,7 +301,7 @@ class FriendControllerTest : RestDocsTest() {
     }
 
     @Test
-    fun unblockFriend(){
+    fun unblockFriend() {
         val requestBody = FriendRequest.Unblock(
             friendId = "testFriendId",
         )

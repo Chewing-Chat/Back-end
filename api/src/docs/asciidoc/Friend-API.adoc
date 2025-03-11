@@ -145,3 +145,17 @@ include::{snippets}/friend-controller-test/change-friend-status/request-headers.
 
 === 응답(Response)
 include::{snippets}/friend-controller-test/change-friend-status/http-response.adoc[]
+
+== 7 친구 차단 해제 03/11 수정
+
+=== 요청(Request)
+include::{snippets}/friend-controller-test/unblock-friend/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/friend-controller-test/unblock-friend/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/friend-controller-test/unblock-friend/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/friend-controller-test/unblock-friend/response-fields.adoc[]
