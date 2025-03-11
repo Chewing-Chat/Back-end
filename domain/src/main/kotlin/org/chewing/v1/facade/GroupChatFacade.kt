@@ -100,7 +100,6 @@ class GroupChatFacade(
     fun processGroupChatDelete(chatRoomId: ChatRoomId, userId: UserId, messageId: String) {
         try {
             val targetMemberIds = getMemberIds(userId, chatRoomId)
-
             val chatMessage = chatLogService.deleteMessage(chatRoomId, userId, messageId, ChatRoomType.GROUP)
             notificationService.handleMessagesNotification(chatMessage, targetMemberIds, userId)
         } catch (e: NotFoundException) {

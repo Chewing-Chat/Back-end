@@ -113,9 +113,8 @@ class ChatRoomControllerTest : RestDocsTest() {
                         .find { it.memberId == userId }!!
                     val chatRoomJsonPath = "data.groupChatRooms[$index]"
                     val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
-                    val friendIds = chatRoom.memberInfos
+                    val friendInfos = chatRoom.memberInfos
                         .filter { it.memberId != userId }
-                        .map { it.memberId.id }
                     body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequence))
                     body("$chatRoomJsonPath.readSequenceNumber", equalTo(chatRoom.ownSequence.readSequenceNumber))
                     body("$chatRoomJsonPath.joinSequenceNumber", equalTo(chatRoom.ownSequence.joinSequenceNumber))
@@ -132,8 +131,9 @@ class ChatRoomControllerTest : RestDocsTest() {
                     body("$chatLogJsonPath.text", equalTo(chatLog.text))
                     body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoomMemberStatus.status.name.lowercase()))
 
-                    friendIds.forEachIndexed { friendIndex, friendId ->
-                        body("$chatRoomJsonPath.friendIds[$friendIndex]", equalTo(friendId))
+                    friendInfos.forEachIndexed { friendIndex, friendInfo ->
+                        body("$chatRoomJsonPath.friendInfos[$friendIndex].friendId", equalTo(friendInfo.memberId.id))
+                        body("$chatRoomJsonPath.friendInfos[$friendIndex].friendStatus", equalTo(friendInfo.status.name.lowercase()))
                     }
                 }
             }
@@ -171,7 +171,8 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("data.groupChatRooms[].latestChatLog.seqNumber").description("메시지 시퀀스 번호"),
                         fieldWithPath("data.groupChatRooms[].latestChatLog.text").description("메시지 내용"),
                         fieldWithPath("data.groupChatRooms[].chatRoomOwnStatus").description("채팅방 멤버 상태"),
-                        fieldWithPath("data.groupChatRooms[].friendIds").description("친구 ID 목록(본인제외)"),
+                        fieldWithPath("data.groupChatRooms[].friendInfos[].friendId").description("친구 ID(본인제외)"),
+                        fieldWithPath("data.groupChatRooms[].friendInfos[].friendStatus").description("친구 상태"),
                     ),
                 ),
             )
@@ -225,9 +226,8 @@ class ChatRoomControllerTest : RestDocsTest() {
                         .find { it.memberId == userId }!!
                     val chatRoomJsonPath = "data.groupChatRooms[$index]"
                     val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
-                    val friendIds = chatRoom.memberInfos
+                    val friendInfos = chatRoom.memberInfos
                         .filter { it.memberId != userId }
-                        .map { it.memberId.id }
                     body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequence))
                     body("$chatRoomJsonPath.readSequenceNumber", equalTo(chatRoom.ownSequence.readSequenceNumber))
                     body("$chatRoomJsonPath.joinSequenceNumber", equalTo(chatRoom.ownSequence.joinSequenceNumber))
@@ -244,8 +244,9 @@ class ChatRoomControllerTest : RestDocsTest() {
                     body("$chatLogJsonPath.text", equalTo(chatLog.text))
                     body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoomMemberStatus.status.name.lowercase()))
 
-                    friendIds.forEachIndexed { friendIndex, friendId ->
-                        body("$chatRoomJsonPath.friendIds[$friendIndex]", equalTo(friendId))
+                    friendInfos.forEachIndexed { friendIndex, friendInfo ->
+                        body("$chatRoomJsonPath.friendInfos[$friendIndex].friendId", equalTo(friendInfo.memberId.id))
+                        body("$chatRoomJsonPath.friendInfos[$friendIndex].friendStatus", equalTo(friendInfo.status.name.lowercase()))
                     }
                 }
             }
@@ -286,7 +287,8 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("data.groupChatRooms[].latestChatLog.seqNumber").description("메시지 시퀀스 번호"),
                         fieldWithPath("data.groupChatRooms[].latestChatLog.text").description("메시지 내용"),
                         fieldWithPath("data.groupChatRooms[].chatRoomOwnStatus").description("채팅방 멤버 상태"),
-                        fieldWithPath("data.groupChatRooms[].friendIds").description("친구 ID 목록(본인제외)"),
+                        fieldWithPath("data.groupChatRooms[].friendInfos[].friendId").description("친구 ID(본인제외)"),
+                        fieldWithPath("data.groupChatRooms[].friendInfos[].friendStatus").description("친구 상태"),
                     ),
                 ),
             )
@@ -613,9 +615,8 @@ class ChatRoomControllerTest : RestDocsTest() {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body("status", equalTo(201))
             .apply {
-                val friendIds = groupChatRoom.memberInfos
+                val friendInfos = groupChatRoom.memberInfos
                     .filter { it.memberId != userId }
-                    .map { it.memberId.id }
                 val chatRoomMemberStatus = groupChatRoom.memberInfos
                     .find { it.memberId == userId }!!
                 val chatRoomJsonPath = "data"
@@ -626,8 +627,9 @@ class ChatRoomControllerTest : RestDocsTest() {
                 body("$chatRoomJsonPath.readSequenceNumber", equalTo(groupChatRoom.ownSequence.readSequenceNumber))
                 body("$chatRoomJsonPath.joinSequenceNumber", equalTo(groupChatRoom.ownSequence.joinSequenceNumber))
                 body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoomMemberStatus.status.name.lowercase()))
-                friendIds.forEachIndexed { friendIndex, friendId ->
-                    body("$chatRoomJsonPath.friendIds[$friendIndex]", equalTo(friendId))
+                friendInfos.forEachIndexed { friendIndex, friendInfo ->
+                    body("$chatRoomJsonPath.friendInfos[$friendIndex].friendId", equalTo(friendInfo.memberId.id))
+                    body("$chatRoomJsonPath.friendInfos[$friendIndex].friendStatus", equalTo(friendInfo.status.name.lowercase()))
                 }
                 body("$chatLogJsonPath.messageId", equalTo(chatInviteLog.messageId))
                 body("$chatLogJsonPath.type", equalTo(chatInviteLog.type.name.lowercase()))
@@ -659,7 +661,6 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("data.readSequenceNumber").description("읽은 시퀘스 번호"),
                         fieldWithPath("data.joinSequenceNumber").description("참여한 시퀀스 번호"),
                         fieldWithPath("data.chatRoomOwnStatus").description("채팅방 멤버 상태"),
-                        fieldWithPath("data.friendIds").description("친구 ID 목록"),
                         fieldWithPath("data.chatRoomName").description("채팅방 이름"),
                         fieldWithPath("data.latestChatLog.messageId").description("채팅 메시지 ID"),
                         fieldWithPath("data.latestChatLog.type").description("채팅 메시지 타입(Invite)"),
@@ -667,6 +668,8 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("data.latestChatLog.timestamp").description("보낸 시간"),
                         fieldWithPath("data.latestChatLog.seqNumber").description("메시지 시퀀스 번호"),
                         fieldWithPath("data.latestChatLog.targetUserIds").description("초대된 사용자 ID 목록"),
+                        fieldWithPath("data.friendInfos[].friendId").description("친구 ID(본인제외)"),
+                        fieldWithPath("data.friendInfos[].friendStatus").description("친구 상태"),
                     ),
                 ),
             )
@@ -759,9 +762,8 @@ class ChatRoomControllerTest : RestDocsTest() {
                     .find { it.memberId == userId }!!
                 val chatRoomJsonPath = "data"
                 val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
-                val friendIds = groupChatRoom.memberInfos
+                val friendInfos = groupChatRoom.memberInfos
                     .filter { it.memberId != userId }
-                    .map { it.memberId.id }
                 body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(groupChatRoom.roomSequence.sequence))
                 body("$chatRoomJsonPath.readSequenceNumber", equalTo(groupChatRoom.ownSequence.readSequenceNumber))
                 body("$chatRoomJsonPath.joinSequenceNumber", equalTo(groupChatRoom.ownSequence.joinSequenceNumber))
@@ -778,8 +780,9 @@ class ChatRoomControllerTest : RestDocsTest() {
                 body("$chatLogJsonPath.text", equalTo(chatLog.text))
                 body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoomMemberStatus.status.name.lowercase()))
 
-                friendIds.forEachIndexed { friendIndex, friendId ->
-                    body("$chatRoomJsonPath.friendIds[$friendIndex]", equalTo(friendId))
+                friendInfos.forEachIndexed { friendIndex, friendInfo ->
+                    body("$chatRoomJsonPath.friendInfos[$friendIndex].friendId", equalTo(friendInfo.memberId.id))
+                    body("$chatRoomJsonPath.friendInfos[$friendIndex].friendStatus", equalTo(friendInfo.status.name.lowercase()))
                 }
             }
             .apply(
@@ -806,7 +809,8 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("data.latestChatLog.text").description("메시지 내용")
                             .optional(),
                         fieldWithPath("data.chatRoomOwnStatus").description("채팅방 나의 현재 상태(NORMAL, FAVORITE)"),
-                        fieldWithPath("data.friendIds").description("친구 ID 목록(본인제외)"),
+                        fieldWithPath("data.friendInfos[].friendId").description("친구 ID"),
+                        fieldWithPath("data.friendInfos[].friendStatus").description("친구 상태"),
                     ),
                 ),
             )

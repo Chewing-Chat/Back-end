@@ -6,6 +6,7 @@ import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.response.SuccessCreateResponse
+import org.chewing.v1.response.SuccessOnlyResponse
 import org.chewing.v1.util.aliases.SuccessResponseEntity
 import org.chewing.v1.util.helper.FileHelper
 import org.chewing.v1.util.helper.ResponseHelper
@@ -13,6 +14,7 @@ import org.chewing.v1.util.security.CurrentUser
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.multipart.MultipartFile
@@ -65,7 +67,12 @@ class ChatController(
         principal: Principal,
     ) {
         val userId = principal.name
-        directChatFacade.processDirectChatReply(message.toChatRoomId(), UserId.of(userId), message.parentMessageId, message.message)
+        directChatFacade.processDirectChatReply(
+            message.toChatRoomId(),
+            UserId.of(userId),
+            message.parentMessageId,
+            message.message,
+        )
     }
 
     @MessageMapping("/chat/group/reply")
@@ -74,7 +81,12 @@ class ChatController(
         principal: Principal,
     ) {
         val userId = principal.name
-        groupChatFacade.processGroupChatReply(message.toChatRoomId(), UserId.of(userId), message.parentMessageId, message.message)
+        groupChatFacade.processGroupChatReply(
+            message.toChatRoomId(),
+            UserId.of(userId),
+            message.parentMessageId,
+            message.message,
+        )
     }
 
     @MessageMapping("/chat/direct/common")
@@ -115,5 +127,14 @@ class ChatController(
         val convertFiles = FileHelper.convertMultipartFileToFileDataList(files)
         groupChatFacade.processGroupChatFiles(convertFiles, userId, ChatRoomId.of(chatRoomId))
         return ResponseHelper.successCreateOnly()
+    }
+
+    @PostMapping("/api/chat/direct/comment")
+    fun chatDirectComment(
+        @RequestBody request: ChatRequest.Comment,
+        @CurrentUser userId: UserId,
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
+        directChatFacade.processDirectChatComment(userId, request.toFriendId(), request.toFeedId(), request.toComment())
+        return ResponseHelper.successOnly()
     }
 }

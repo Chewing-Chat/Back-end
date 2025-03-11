@@ -1,6 +1,8 @@
 package org.chewing.v1.dto.request.chat
 
 import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.feed.FeedId
+import org.chewing.v1.model.user.UserId
 
 class ChatRequest {
     data class Reply(
@@ -46,6 +48,21 @@ class ChatRequest {
         }
         fun toMessageId(): String {
             return messageId
+        }
+    }
+    data class Comment(
+        val comment: String,
+        val feedId: String,
+        val friendId: String,
+    ) {
+        fun toComment(): String {
+            return comment
+        }
+        fun toFeedId(): FeedId {
+            return FeedId.of(feedId)
+        }
+        fun toFriendId(): UserId {
+            return UserId.of(friendId)
         }
     }
 }

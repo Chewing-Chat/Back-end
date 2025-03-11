@@ -106,6 +106,21 @@ sealed class ChatMessageDto {
         val chatRoomType: String,
     ) : ChatMessageDto()
 
+    data class Comment(
+        val messageId: String,
+        val type: String,
+        val chatRoomId: String,
+        val senderId: String,
+        val timestamp: String,
+        val seqNumber: Int,
+        val chatRoomType: String,
+        val files: List<MediaDto>,
+        val feedId: String,
+        val feedType: String,
+        val comment: String,
+        val content: String,
+    ) : ChatMessageDto()
+
     companion object {
         fun from(chatMessage: ChatMessage): ChatMessageDto {
             val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -123,7 +138,6 @@ sealed class ChatMessageDto {
                     seqNumber = chatMessage.roomSequence.sequence,
                     text = chatMessage.text,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
-
                 )
 
                 is ChatLeaveMessage -> Leave(
@@ -195,6 +209,21 @@ sealed class ChatMessageDto {
                     errorCode = chatMessage.errorCode.code,
                     errorMessage = chatMessage.errorCode.message,
                     chatRoomType = chatMessage.chatRoomType.name.lowercase(),
+                )
+
+                is ChatCommentMessage -> Comment(
+                    messageId = chatMessage.messageId,
+                    type = chatMessage.type.name.lowercase(),
+                    chatRoomId = chatMessage.chatRoomId.id,
+                    senderId = chatMessage.senderId.id,
+                    timestamp = formattedTime,
+                    seqNumber = chatMessage.roomSequence.sequence,
+                    chatRoomType = chatMessage.chatRoomType.name.lowercase(),
+                    files = chatMessage.medias.map { MediaDto.from(it) },
+                    feedId = chatMessage.feedId.id,
+                    feedType = chatMessage.feedType.name.lowercase(),
+                    comment = chatMessage.comment,
+                    content = chatMessage.content,
                 )
             }
         }

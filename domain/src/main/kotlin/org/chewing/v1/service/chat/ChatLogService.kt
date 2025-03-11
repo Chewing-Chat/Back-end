@@ -13,6 +13,7 @@ import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.chat.room.ChatRoomSequence
+import org.chewing.v1.model.feed.Feed
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.media.Media
@@ -136,6 +137,19 @@ class ChatLogService(
     ): ChatInviteMessage {
         val chatMessage =
             chatGenerator.generateInviteMessage(chatRoomId, userId, roomSequence, listOf(friendId), chatRoomType)
+        chatAppender.appendChatLog(chatMessage)
+        return chatMessage
+    }
+
+    fun commentMessage(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        roomSequence: ChatRoomSequence,
+        comment: String,
+        chatRoomType: ChatRoomType,
+        feed: Feed,
+    ): ChatCommentMessage {
+        val chatMessage = chatGenerator.generateCommentMessage(chatRoomId, userId, roomSequence, comment, chatRoomType, feed)
         chatAppender.appendChatLog(chatMessage)
         return chatMessage
     }

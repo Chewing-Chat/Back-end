@@ -20,4 +20,8 @@ class FriendShipUpdater(
     fun allowedFriend(userId: UserId, friendId: UserId, friendName: String) {
         friendShipRepository.allowedFriend(userId, friendId, friendName) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
     }
+
+    fun unblock(userId: UserId, friendId: UserId) {
+        friendShipRepository.unblock(userId, friendId) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
+    }
 }

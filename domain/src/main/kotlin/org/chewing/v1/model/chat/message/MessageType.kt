@@ -9,6 +9,7 @@ enum class MessageType {
     FILE,
     INVITE,
     ERROR,
+    COMMENT,
 }
 // 답글 채팅(REPLY)
 // 삭제된 채팅(DELETE)

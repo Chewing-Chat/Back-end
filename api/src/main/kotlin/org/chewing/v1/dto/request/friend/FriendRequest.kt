@@ -27,6 +27,10 @@ class FriendRequest {
         val friendId: String,
     )
 
+    data class Unblock(
+        val friendId: String,
+    )
+
     data class Create(
         val countryCode: String,
         val phoneNumber: String,

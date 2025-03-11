@@ -81,6 +81,10 @@ class FriendShipService(
         friendShipRemover.block(userId, friendId)
     }
 
+    fun unblockFriendShip(userId: UserId, friendId: UserId) {
+        friendShipUpdater.unblock(userId, friendId)
+    }
+
     fun changeFriendFavorite(userId: UserId, friendId: UserId, favorite: Boolean) {
         val friendShip = friendShipReader.read(userId, friendId)
         friendShipValidator.validateInteractionAllowed(friendShip)

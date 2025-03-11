@@ -66,6 +66,16 @@ class FriendController(
         return ResponseHelper.successOnly()
     }
 
+    @PutMapping("/unblock")
+    fun unblockFriend(
+        @CurrentUser userId: UserId,
+        @RequestBody request: FriendRequest.Unblock,
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
+        val friendId = request.friendId
+        friendShipService.unblockFriendShip(userId, UserId.of(friendId))
+        return ResponseHelper.successOnly()
+    }
+
     @PutMapping("/name")
     fun changeFriendName(
         @CurrentUser userId: UserId,

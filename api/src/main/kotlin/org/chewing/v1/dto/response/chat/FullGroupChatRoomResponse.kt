@@ -1,5 +1,6 @@
 package org.chewing.v1.dto.response.chat
 
+import org.chewing.v1.model.chat.log.ChatCommentLog
 import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatInviteLog
 import org.chewing.v1.model.chat.log.ChatLeaveLog
@@ -17,13 +18,12 @@ data class FullGroupChatRoomResponse(
     val chatRoomSequenceNumber: Int,
     val latestChatLog: ChatLogResponse,
     val chatRoomOwnStatus: String,
-    val friendIds: List<String>,
+    val friendInfos: List<GroupChatRoomMemberResponse>,
 ) {
     companion object {
         fun of(chatRoom: GroupChatRoom, chatLog: ChatLog, userId: UserId): FullGroupChatRoomResponse {
-            val friendIds = chatRoom.memberInfos
+            val friendInfos = chatRoom.memberInfos
                 .filter { it.memberId != userId }
-                .map { it.memberId.id }
             val chatRoomOwnStatus = chatRoom.memberInfos
                 .find { it.memberId == userId }!!
             return when (chatLog) {
@@ -33,7 +33,7 @@ data class FullGroupChatRoomResponse(
                     latestChatLog = ChatLogResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
-                    friendIds = friendIds,
+                    friendInfos = friendInfos.map { GroupChatRoomMemberResponse.of(it) },
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                     chatRoomName = chatRoom.roomInfo.name,
 
@@ -45,7 +45,7 @@ data class FullGroupChatRoomResponse(
                     latestChatLog = ChatLogResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
-                    friendIds = friendIds,
+                    friendInfos = friendInfos.map { GroupChatRoomMemberResponse.of(it) },
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                     chatRoomName = chatRoom.roomInfo.name,
 
@@ -56,7 +56,7 @@ data class FullGroupChatRoomResponse(
                     latestChatLog = ChatLogResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
-                    friendIds = friendIds,
+                    friendInfos = friendInfos.map { GroupChatRoomMemberResponse.of(it) },
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                     chatRoomName = chatRoom.roomInfo.name,
 
@@ -67,7 +67,7 @@ data class FullGroupChatRoomResponse(
                     latestChatLog = ChatLogResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
-                    friendIds = friendIds,
+                    friendInfos = friendInfos.map { GroupChatRoomMemberResponse.of(it) },
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                     chatRoomName = chatRoom.roomInfo.name,
 
@@ -78,10 +78,20 @@ data class FullGroupChatRoomResponse(
                     latestChatLog = ChatLogResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
                     joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
-                    friendIds = friendIds,
+                    friendInfos = friendInfos.map { GroupChatRoomMemberResponse.of(it) },
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                     chatRoomName = chatRoom.roomInfo.name,
+                )
 
+                is ChatCommentLog -> FullGroupChatRoomResponse(
+                    chatRoomId = chatRoom.roomInfo.chatRoomId.id,
+                    chatRoomOwnStatus = chatRoomOwnStatus.status.name.lowercase(),
+                    latestChatLog = ChatLogResponse.from(chatLog),
+                    readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
+                    joinSequenceNumber = chatRoom.ownSequence.joinSequenceNumber,
+                    friendInfos = friendInfos.map { GroupChatRoomMemberResponse.of(it) },
+                    chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
+                    chatRoomName = chatRoom.roomInfo.name,
                 )
             }
         }

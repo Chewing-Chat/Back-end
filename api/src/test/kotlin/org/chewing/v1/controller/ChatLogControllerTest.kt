@@ -10,6 +10,7 @@ import org.chewing.v1.TestDataFactory
 import org.chewing.v1.controller.chat.ChatLogController
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
+import org.chewing.v1.model.chat.log.ChatCommentLog
 import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatInviteLog
 import org.chewing.v1.model.chat.log.ChatLeaveLog
@@ -34,6 +35,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import java.time.format.DateTimeFormatter
+import kotlin.text.format
 
 @ActiveProfiles("test")
 class ChatLogControllerTest : RestDocsTest() {
@@ -62,12 +64,15 @@ class ChatLogControllerTest : RestDocsTest() {
         val chatFileLog = TestDataFactory.createFileLog(chatRoomId)
         val chatReplyLog = TestDataFactory.createReplyLog(chatRoomId)
         val chatNormalLog = TestDataFactory.createNormalLog(chatRoomId)
+        val chatCommentLog = TestDataFactory.createCommentLog(chatRoomId)
+
         val sequenceNumber = 100
 
         val chatLogs = listOf(
             chatFileLog,
             chatReplyLog,
             chatNormalLog,
+            chatCommentLog,
         )
         every { directChatFacade.processDirectChatLogs(any(), any(), any()) } returns chatLogs
         given()
@@ -117,6 +122,21 @@ class ChatLogControllerTest : RestDocsTest() {
                             body("$prefix.parentMessageType", equalTo(chatReplyLog.parentMessageType.toString().lowercase()))
                             body("$prefix.text", equalTo(chatReplyLog.text))
                         }
+                        is ChatCommentLog -> {
+                            body("$prefix.messageId", equalTo(chatCommentLog.messageId))
+                            body("$prefix.type", equalTo(chatCommentLog.type.name.lowercase()))
+                            body("$prefix.senderId", equalTo(chatCommentLog.senderId.id))
+                            body(
+                                "$prefix.timestamp",
+                                equalTo(chatCommentLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))),
+                            )
+                            body("$prefix.seqNumber", equalTo(chatCommentLog.roomSequence.sequence))
+                            body("$prefix.comment", equalTo(chatCommentLog.comment))
+                            body("$prefix.feedId", equalTo(chatCommentLog.feedId.id))
+                            body("$prefix.feedType", equalTo(chatCommentLog.feedType.name.lowercase()))
+                            body("$prefix.content", equalTo(chatCommentLog.content))
+                        }
+
                         else -> {}
                     }
                 }
@@ -172,6 +192,20 @@ class ChatLogControllerTest : RestDocsTest() {
                         fieldWithPath("data.chatLogs[].files[].index")
                             .optional()
                             .description("파일 인덱스 (file 메시지에서만 사용)"),
+
+                        // comment 전용
+                        fieldWithPath("data.chatLogs[].comment")
+                            .optional()
+                            .description("댓글 내용 (comment 메시지에서만 사용)"),
+                        fieldWithPath("data.chatLogs[].feedId")
+                            .optional()
+                            .description("피드 ID (comment 메시지에서만 사용)"),
+                        fieldWithPath("data.chatLogs[].feedType")
+                            .optional()
+                            .description("피드 타입 (comment 메시지에서만 사용)"),
+                        fieldWithPath("data.chatLogs[].content")
+                            .optional()
+                            .description("컨텐츠 (comment 메시지에서만 사용)"),
                     ),
                 ),
             )
@@ -280,6 +314,7 @@ class ChatLogControllerTest : RestDocsTest() {
                             )
                             body("$prefix.seqNumber", equalTo(chatLeaveLog.roomSequence.sequence))
                         }
+                        else -> {}
                     }
                 }
             }
