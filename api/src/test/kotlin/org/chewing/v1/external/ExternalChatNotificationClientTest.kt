@@ -219,6 +219,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
                 is ChatMessageDto.Read -> {}
                 is ChatMessageDto.Invite -> {}
                 is ChatMessageDto.Leave -> {}
+                is ChatMessageDto.Comment -> TODO()
             }
         }
     }
@@ -232,6 +233,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
         val testChatRoomId5 = ChatRoomId.of("testChatRoomId5")
         val testChatRoomId7 = ChatRoomId.of("testChatRoomId7")
         val testChatRoomId8 = ChatRoomId.of("testChatRoomId8")
+        val testChatRoomId9 = ChatRoomId.of("testChatRoomId9")
 
         val normalMessage = TestDataFactory.createNormalMessage("testMessageId1", testChatRoomId1, ChatRoomType.GROUP)
         val inviteMessage = TestDataFactory.createInviteMessage("testMessageId2", testChatRoomId2, ChatRoomType.GROUP)
@@ -240,7 +242,7 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
         val replyMessage = TestDataFactory.createReplyMessage("testMessageId5", testChatRoomId5, ChatRoomType.GROUP)
         val leaveMessage = TestDataFactory.createLeaveMessage("testMessageId7", testChatRoomId7, ChatRoomType.GROUP)
         val errorMessage = TestDataFactory.createErrorMessage(testChatRoomId8, ChatRoomType.GROUP)
-
+        val commentMessage = TestDataFactory.createCommentMessage("testMessageId9", testChatRoomId9, ChatRoomType.GROUP)
         // 메시지 전송 + Latch 대기
         sendMessagesAndAwaitLatch(
             groupLatch,
@@ -331,6 +333,22 @@ class ExternalChatNotificationClientTest : IntegrationTest() {
                     assertThat(dto.type).isEqualTo(MessageType.ERROR.name.lowercase())
                 }
                 is ChatMessageDto.Read -> {}
+                is ChatMessageDto.Comment -> {
+                    assertThat(dto.senderId).isEqualTo(commentMessage.senderId.id)
+                    assertThat(dto.chatRoomId).isEqualTo(testChatRoomId9.id)
+                    assertThat(dto.chatRoomType).isEqualTo(ChatRoomType.GROUP.name.lowercase())
+                    assertThat(dto.seqNumber).isEqualTo(commentMessage.roomSequence.sequence)
+                    assertThat(dto.timestamp).isEqualTo(commentMessage.timestamp.format(dateFormat))
+                    assertThat(dto.type).isEqualTo(MessageType.COMMENT.name.lowercase())
+                    assertThat(dto.comment).isEqualTo(commentMessage.comment)
+                    assertThat(dto.feedId).isEqualTo(commentMessage.feedId.id)
+                    assertThat(dto.feedType).isEqualTo(commentMessage.feedType.name.lowercase())
+                    dto.files.forEachIndexed { index, mediaDto ->
+                        assertThat(mediaDto.fileUrl).isEqualTo(fileMessage.medias[index].url)
+                        assertThat(mediaDto.fileType).isEqualTo(fileMessage.medias[index].type.value())
+                        assertThat(mediaDto.index).isEqualTo(fileMessage.medias[index].index)
+                    }
+                }
             }
         }
     }

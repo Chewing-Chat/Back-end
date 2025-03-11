@@ -53,6 +53,20 @@ sealed class ChatLogResponse {
         val text: String,
     ) : ChatLogResponse()
 
+    data class Comment(
+        val messageId: String,
+        val type: String,
+        val senderId: String,
+        val timestamp: String,
+        val seqNumber: Int,
+        val text: String,
+        val files: List<MediaResponse>,
+        val feedId: String,
+        val feedType: String,
+        val content: String,
+        val comment: String,
+    ) : ChatLogResponse()
+
     companion object {
         fun from(chatLog: ChatLog): ChatLogResponse {
             val formattedTime = chatLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
@@ -104,6 +118,20 @@ sealed class ChatLogResponse {
                     timestamp = formattedTime,
                     seqNumber = chatLog.roomSequence.sequence,
                     text = chatLog.text,
+                )
+
+                is ChatCommentLog -> Comment(
+                    messageId = chatLog.messageId,
+                    type = chatLog.type.name.lowercase(),
+                    senderId = chatLog.senderId.id,
+                    timestamp = formattedTime,
+                    seqNumber = chatLog.roomSequence.sequence,
+                    text = chatLog.comment,
+                    files = chatLog.medias.map { MediaResponse.from(it) },
+                    feedId = chatLog.feedId.id,
+                    feedType = chatLog.feedType.name.lowercase(),
+                    content = chatLog.content,
+                    comment = chatLog.comment,
                 )
             }
         }

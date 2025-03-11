@@ -13,6 +13,7 @@ enum class NotificationType {
     SCHEDULE_UPDATE,
     SCHEDULE_DELETE,
     SCHEDULE_CANCEL,
+    DIRECT_CHAT_COMMENT,
     ;
 
     fun toLowerCase(): String {

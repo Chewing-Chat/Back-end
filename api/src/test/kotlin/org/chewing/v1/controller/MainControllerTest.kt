@@ -13,6 +13,7 @@ import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.FriendFacade
 import org.chewing.v1.facade.FriendFeedFacade
 import org.chewing.v1.facade.GroupChatFacade
+import org.chewing.v1.model.chat.log.ChatCommentLog
 import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatInviteLog
 import org.chewing.v1.model.chat.log.ChatLeaveLog
@@ -177,6 +178,8 @@ class MainControllerTest : RestDocsTest() {
                             is ChatNormalLog -> {
                                 body("$path.text", equalTo(log.text))
                             }
+
+                            else -> {}
                         }
                     }
                 }
@@ -220,6 +223,19 @@ class MainControllerTest : RestDocsTest() {
                             is ChatInviteLog -> null
                             is ChatNormalLog -> {
                                 body("$path.text", equalTo(log.text))
+                            }
+
+                            is ChatCommentLog -> {
+                                body("$path.comment", equalTo(log.comment))
+                                body("$path.feedId", equalTo(log.feedId.id))
+                                body("$path.feedType", equalTo(log.feedType.name.lowercase()))
+                                body("$path.content", equalTo(log.content))
+                                log.medias.forEachIndexed { mediaIndex, media ->
+                                    val mediaPath = "$path.files[$mediaIndex]"
+                                    body("$mediaPath.fileUrl", equalTo(media.url))
+                                    body("$mediaPath.fileType", equalTo(media.type.value().lowercase()))
+                                    body("$mediaPath.index", equalTo(media.index))
+                                }
                             }
                         }
                     }

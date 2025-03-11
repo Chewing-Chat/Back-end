@@ -50,6 +50,13 @@ internal class FriendShipRepositoryImpl(
             userId
         }.orElse(null)
 
+    override fun unblock(userId: UserId, friendId: UserId): UserId? =
+        friendShipJpaRepository.findById(FriendShipId.of(userId, friendId)).map {
+            it.updateUnBlock()
+            friendShipJpaRepository.save(it)
+            userId
+        }.orElse(null)
+
     override fun blocked(userId: UserId, friendId: UserId): UserId? =
         friendShipJpaRepository.findById(FriendShipId.of(userId, friendId)).map {
             it.updateBlocked()

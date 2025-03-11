@@ -4,6 +4,7 @@ import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.announcement.AnnouncementId
 import org.chewing.v1.model.auth.JwtToken
+import org.chewing.v1.model.chat.log.ChatCommentLog
 import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatInviteLog
 import org.chewing.v1.model.chat.log.ChatLeaveLog
@@ -11,6 +12,7 @@ import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.ChatLogType
 import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.log.ChatReplyLog
+import org.chewing.v1.model.chat.message.ChatCommentMessage
 import org.chewing.v1.model.chat.message.ChatDeleteMessage
 import org.chewing.v1.model.chat.message.ChatErrorMessage
 import org.chewing.v1.model.chat.message.ChatFileMessage
@@ -397,6 +399,38 @@ object TestDataFactory {
             roomSequence = createChatRoomSequence(chatRoomId),
             timestamp = LocalDateTime.now(),
             type = ChatLogType.LEAVE,
+        )
+    }
+
+    fun createCommentLog(chatRoomId: ChatRoomId): ChatCommentLog {
+        return ChatCommentLog.of(
+            messageId = "messageId",
+            chatRoomId = chatRoomId,
+            senderId = UserId.of("senderId"),
+            roomSequence = createChatRoomSequence(chatRoomId),
+            timestamp = LocalDateTime.now(),
+            type = ChatLogType.COMMENT,
+            medias = listOf(Media.of(FileCategory.CHAT, "www.example.com", 0, MediaType.IMAGE_PNG)),
+            comment = "comment",
+            feedId = FeedId.of("feedId"),
+            feedType = FeedType.FILE,
+            content = "content",
+        )
+    }
+
+    fun createCommentMessage(messageId: String, chatRoomId: ChatRoomId, chatRoomType: ChatRoomType): ChatCommentMessage {
+        return ChatCommentMessage.of(
+            messageId = messageId,
+            chatRoomId = chatRoomId,
+            senderId = UserId.of("senderId"),
+            roomSequence = createChatRoomSequence(chatRoomId),
+            timestamp = LocalDateTime.now(),
+            medias = listOf(Media.of(FileCategory.CHAT, "www.example.com", 0, MediaType.IMAGE_PNG)),
+            comment = "comment",
+            feedId = FeedId.of("feedId"),
+            feedType = FeedType.FILE,
+            content = "content",
+            chatRoomType = chatRoomType,
         )
     }
 

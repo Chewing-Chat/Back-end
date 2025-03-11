@@ -11,6 +11,7 @@ import org.chewing.v1.model.chat.message.MessageType
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.chat.room.ChatRoomSequence
+import org.chewing.v1.model.feed.Feed
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.user.UserId
 import org.springframework.stereotype.Component
@@ -98,6 +99,29 @@ class ChatGenerator {
             roomSequence = roomSequence,
             targetUserIds = targetUserIds,
             chatRoomType = chatRoomType,
+        )
+    }
+
+    fun generateCommentMessage(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        roomSequence: ChatRoomSequence,
+        comment: String,
+        chatRoomType: ChatRoomType,
+        feed: Feed,
+    ): ChatCommentMessage {
+        return ChatCommentMessage.of(
+            generateKey(chatRoomId),
+            chatRoomId = chatRoomId,
+            senderId = userId,
+            timestamp = LocalDateTime.now(),
+            roomSequence = roomSequence,
+            comment = comment,
+            medias = feed.feedDetails.map { it.media },
+            feedId = feed.feed.feedId,
+            feedType = feed.feed.type,
+            chatRoomType = chatRoomType,
+            content = feed.feed.content,
         )
     }
 

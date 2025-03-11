@@ -54,6 +54,10 @@ class NotificationGenerator {
                 }
             }
 
+            is ChatCommentMessage -> {
+                Triple(NotificationType.DIRECT_CHAT_COMMENT, message.chatRoomId, message.comment)
+            }
+
             else -> {
                 logger.warn("지원하지 않는 메시지 타입입니다. message: $message")
                 return emptyList()
@@ -78,10 +82,29 @@ class NotificationGenerator {
         scheduleAction: ScheduleAction,
     ): List<Notification> {
         val (type, targetId, content) = when (scheduleAction) {
-            ScheduleAction.CREATED -> Triple(NotificationType.SCHEDULE_CREATE, scheduleId, "${friendShip.friendName}님이 일정을 생성했습니다.")
-            ScheduleAction.CANCELED -> Triple(NotificationType.SCHEDULE_CANCEL, scheduleId, "${friendShip.friendName}님이 일정을 취소했습니다.")
-            ScheduleAction.DELETED -> Triple(NotificationType.SCHEDULE_DELETE, scheduleId, "${friendShip.friendName}님이 일정을 삭제했습니다.")
-            ScheduleAction.UPDATED -> Triple(NotificationType.SCHEDULE_UPDATE, scheduleId, "${friendShip.friendName}님이 일정을 변경했습니다.")
+            ScheduleAction.CREATED -> Triple(
+                NotificationType.SCHEDULE_CREATE,
+                scheduleId,
+                "${friendShip.friendName}님이 일정을 생성했습니다.",
+            )
+
+            ScheduleAction.CANCELED -> Triple(
+                NotificationType.SCHEDULE_CANCEL,
+                scheduleId,
+                "${friendShip.friendName}님이 일정을 취소했습니다.",
+            )
+
+            ScheduleAction.DELETED -> Triple(
+                NotificationType.SCHEDULE_DELETE,
+                scheduleId,
+                "${friendShip.friendName}님이 일정을 삭제했습니다.",
+            )
+
+            ScheduleAction.UPDATED -> Triple(
+                NotificationType.SCHEDULE_UPDATE,
+                scheduleId,
+                "${friendShip.friendName}님이 일정을 변경했습니다.",
+            )
         }
 
         return createNotifications(

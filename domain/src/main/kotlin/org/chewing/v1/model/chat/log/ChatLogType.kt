@@ -7,4 +7,5 @@ enum class ChatLogType {
     FILE,
     INVITE,
     DELETE,
+    COMMENT,
 }

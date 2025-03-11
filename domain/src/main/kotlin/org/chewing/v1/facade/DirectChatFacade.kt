@@ -9,10 +9,12 @@ import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.chat.room.DirectChatRoom
+import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.chat.ChatLogService
 import org.chewing.v1.service.chat.DirectChatRoomService
+import org.chewing.v1.service.feed.FeedService
 import org.chewing.v1.service.friend.FriendShipService
 import org.chewing.v1.service.notification.NotificationService
 import org.springframework.stereotype.Service
@@ -24,6 +26,7 @@ class DirectChatFacade(
     private val directChatRoomService: DirectChatRoomService,
     private val notificationService: NotificationService,
     private val friendShipService: FriendShipService,
+    private val feedService: FeedService,
 ) {
 
     fun processDirectChatLogs(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): List<ChatLog> {
@@ -232,11 +235,28 @@ class DirectChatFacade(
 
             directChatRoomService.readDirectChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
             notificationService.handleMessageNotification(chatMessage, userId, userId)
-            notificationService.handleMessageNotification(chatMessage, userId, userId)
             notificationService.handleMessageNotification(chatMessage, directChatRoom.roomInfo.friendId, userId)
         } catch (e: NotFoundException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.DIRECT)
             notificationService.handleMessageNotification(errorMessage, userId, userId)
         }
+    }
+
+    fun processDirectChatComment(userId: UserId, friendId: UserId, feedId: FeedId, comment: String) {
+        val feed = feedService.getFeed(feedId, userId)
+        friendShipService.checkAccessibleFriendShip(userId, friendId)
+        val chatRoomId = directChatRoomService.createDirectChatRoom(userId, friendId)
+
+        val directChatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
+        if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
+            directChatRoomService.restoreDirectChatRoom(directChatRoom.roomInfo.friendId, chatRoomId)
+        }
+
+        val chatSequence = directChatRoomService.increaseDirectChatRoomSequence(chatRoomId)
+        val chatMessage = chatLogService.commentMessage(chatRoomId, userId, chatSequence, comment, ChatRoomType.DIRECT, feed)
+
+        directChatRoomService.readDirectChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
+
+        notificationService.handleMessageNotification(chatMessage, friendId, userId)
     }
 }

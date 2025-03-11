@@ -55,6 +55,10 @@ internal class FriendShipJpaEntity(
         this.status = FriendShipStatus.BLOCK
     }
 
+    fun updateUnBlock() {
+        this.status = FriendShipStatus.NORMAL
+    }
+
     fun updateBlocked() {
         this.status = FriendShipStatus.BLOCKED
     }
