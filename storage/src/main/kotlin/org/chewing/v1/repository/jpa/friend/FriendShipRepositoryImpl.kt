@@ -64,9 +64,14 @@ internal class FriendShipRepositoryImpl(
             userId
         }.orElse(null)
 
-    override fun read(userId: UserId, friendId: UserId): FriendShip? =
+    override fun readByRelation(userId: UserId, friendId: UserId): FriendShip? =
         friendShipJpaRepository.findById(FriendShipId.of(userId, friendId))
             .orElse(null)?.toFriendShip()
+
+    override fun readsByRelation(friendIds: List<UserId>, userId: UserId): List<FriendShip> {
+        val friendShipIds = friendIds.map { FriendShipId.of(it, userId) }
+        return friendShipJpaRepository.findAllByIdIn(friendShipIds).map { it.toFriendShip() }
+    }
 
     override fun readsFavorite(userId: UserId): List<FriendShip> =
         friendShipJpaRepository.findAllByIdUserIdAndFavorite(userId.id, true).map { it.toFriendShip() }

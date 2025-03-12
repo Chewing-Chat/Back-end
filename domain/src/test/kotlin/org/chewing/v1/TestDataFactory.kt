@@ -289,6 +289,27 @@ object TestDataFactory {
         ChatLogType.FILE,
     )
 
+    fun createChatCommentLog(
+        messageId: String,
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        chatRoomNumber: ChatRoomSequence,
+    ): ChatCommentLog = ChatCommentLog.of(
+        messageId,
+        chatRoomId,
+        userId,
+        listOf(
+            Media.of(FileCategory.CHAT, "www.example.com", 0, MediaType.IMAGE_PNG),
+        ),
+        LocalDateTime.now(),
+        chatRoomNumber,
+        ChatLogType.COMMENT,
+        "comment",
+        FeedId.of("feedId"),
+        FeedType.FILE,
+        "content",
+    )
+
     fun createChatRoomSequence(chatRoomId: ChatRoomId): ChatRoomSequence = ChatRoomSequence.of(chatRoomId, 1)
     fun createChatRoomMemberSequence(chatRoomId: ChatRoomId): ChatRoomMemberSequence =
         ChatRoomMemberSequence.of(chatRoomId, 0, 0)
@@ -297,8 +318,8 @@ object TestDataFactory {
 
     fun createChatNumber(chatRoomId: ChatRoomId): ChatRoomSequence = ChatRoomSequence.of(chatRoomId, 0)
 
-    fun createPushToken(pushTokenId: String): PushToken =
-        PushToken.of(pushTokenId, "testToken", PushToken.Provider.ANDROID, "deviceId")
+    fun createPushToken(pushTokenId: String, userId: UserId): PushToken =
+        PushToken.of(pushTokenId, "testToken", PushToken.Provider.ANDROID, "deviceId", userId)
 
     fun createNormalMessage(messageId: String, chatRoomId: ChatRoomId): ChatNormalMessage = ChatNormalMessage.of(
         messageId = messageId,

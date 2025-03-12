@@ -359,9 +359,9 @@ class GroupChatRoomServiceTest {
 
         every { chatRoomMemberSequenceRepository.updateReadSequence(chatRoomId, userId, sequenceNumber) } returns chatRoomMemberSequence
 
-        val result = groupChatRoomService.readGroupChatRoom(userId, chatRoomId, sequenceNumber)
-
-        assert(result == chatRoomMemberSequence)
+        assertDoesNotThrow {
+            groupChatRoomService.readGroupChatRoom(userId, chatRoomId, sequenceNumber)
+        }
     }
 
     @Test

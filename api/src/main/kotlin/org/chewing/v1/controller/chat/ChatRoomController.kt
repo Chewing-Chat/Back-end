@@ -3,8 +3,8 @@ package org.chewing.v1.controller.chat
 import org.chewing.v1.dto.request.chat.ChatRoomRequest
 import org.chewing.v1.dto.response.chat.ChatRoomListResponse
 import org.chewing.v1.dto.response.chat.DirectChatRoomResponse
-import org.chewing.v1.dto.response.chat.FullDirectChatRoomResponse
-import org.chewing.v1.dto.response.chat.FullGroupChatRoomResponse
+import org.chewing.v1.dto.response.chat.ThumbnailDirectChatRoomResponse
+import org.chewing.v1.dto.response.chat.ThumbnailGroupChatRoomResponse
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.model.chat.room.ChatRoomId
@@ -41,9 +41,9 @@ class ChatRoomController(
     fun getChatRoomList(
         @CurrentUser userId: UserId,
     ): SuccessResponseEntity<ChatRoomListResponse> {
-        val directChatRooms = directChatFacade.processGetDirectChatRooms(userId)
-        val groupChatRooms = groupChatFacade.processGroupChatRooms(userId)
-        return ResponseHelper.success(ChatRoomListResponse.from(directChatRooms, groupChatRooms, userId))
+        val thumbnailDirectChatRooms = directChatFacade.processGetDirectChatRooms(userId)
+        val thumbnailGroupChatRooms = groupChatFacade.processGroupChatRooms(userId)
+        return ResponseHelper.success(ChatRoomListResponse.from(thumbnailDirectChatRooms, thumbnailGroupChatRooms, userId))
     }
 
     @GetMapping("/search")
@@ -51,9 +51,9 @@ class ChatRoomController(
         @CurrentUser userId: UserId,
         @RequestParam("friendIds") friendIds: List<String>,
     ): SuccessResponseEntity<ChatRoomListResponse> {
-        val directChatRooms = directChatFacade.searchDirectChatRooms(userId, friendIds.map { UserId.of(it) })
-        val groupChatRooms = groupChatFacade.searchGroupChatRooms(userId, friendIds.map { UserId.of(it) })
-        return ResponseHelper.success(ChatRoomListResponse.from(directChatRooms, groupChatRooms, userId))
+        val thumbnailDirectChatRooms = directChatFacade.searchDirectChatRooms(userId, friendIds.map { UserId.of(it) })
+        val thumbnailGroupChatRooms = groupChatFacade.searchGroupChatRooms(userId, friendIds.map { UserId.of(it) })
+        return ResponseHelper.success(ChatRoomListResponse.from(thumbnailDirectChatRooms, thumbnailGroupChatRooms, userId))
     }
 
     @GetMapping("/direct/relation/{friendId}")
@@ -69,9 +69,9 @@ class ChatRoomController(
     fun produceDirectChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.Create,
-    ): SuccessResponseEntity<FullDirectChatRoomResponse> {
-        val (chatRoom, chatLog) = directChatFacade.processCreateDirectChatRoomCommonChat(userId, request.toFriendId(), request.toMessage())
-        return ResponseHelper.successCreate(FullDirectChatRoomResponse.of(chatRoom, chatLog))
+    ): SuccessResponseEntity<ThumbnailDirectChatRoomResponse> {
+        val thumbnailChatRoom = directChatFacade.processCreateDirectChatRoomCommonChat(userId, request.toFriendId(), request.toMessage())
+        return ResponseHelper.successCreate(ThumbnailDirectChatRoomResponse.of(thumbnailChatRoom))
     }
 
     @PostMapping("/direct/create/files")
@@ -79,10 +79,10 @@ class ChatRoomController(
         @RequestPart("files") files: List<MultipartFile>,
         @CurrentUser userId: UserId,
         @RequestParam("friendId") friendId: String,
-    ): SuccessResponseEntity<FullDirectChatRoomResponse> {
+    ): SuccessResponseEntity<ThumbnailDirectChatRoomResponse> {
         val convertFiles = FileHelper.convertMultipartFileToFileDataList(files)
-        val (chatRoom, chatLog) = directChatFacade.processCreateDirectChatRoomFilesChat(userId, UserId.of(friendId), convertFiles)
-        return ResponseHelper.successCreate(FullDirectChatRoomResponse.of(chatRoom, chatLog))
+        val thumbnailChatRoom = directChatFacade.processCreateDirectChatRoomFilesChat(userId, UserId.of(friendId), convertFiles)
+        return ResponseHelper.successCreate(ThumbnailDirectChatRoomResponse.of(thumbnailChatRoom))
     }
 
     @DeleteMapping("/direct/delete")
@@ -107,9 +107,9 @@ class ChatRoomController(
     fun produceGroupChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRoomRequest.CreateGroup,
-    ): SuccessResponseEntity<FullGroupChatRoomResponse> {
-        val (chatRoom, chatLog) = groupChatFacade.processGroupChatCreate(userId, request.toFriendIds(), request.toName())
-        return ResponseHelper.successCreate(FullGroupChatRoomResponse.of(chatRoom, chatLog, userId))
+    ): SuccessResponseEntity<ThumbnailGroupChatRoomResponse> {
+        val thumbnailChatRoom = groupChatFacade.processGroupChatCreate(userId, request.toFriendIds(), request.toName())
+        return ResponseHelper.successCreate(ThumbnailGroupChatRoomResponse.of(thumbnailChatRoom, userId))
     }
 
     @PutMapping("/group/favorite")
@@ -143,17 +143,17 @@ class ChatRoomController(
     fun getGroupChatRoom(
         @CurrentUser userId: UserId,
         @PathVariable chatRoomId: String,
-    ): SuccessResponseEntity<FullGroupChatRoomResponse> {
-        val (chatRoom, chatLogs) = groupChatFacade.processGetGroupChatRoom(userId, ChatRoomId.of(chatRoomId))
-        return ResponseHelper.success(FullGroupChatRoomResponse.of(chatRoom, chatLogs, userId))
+    ): SuccessResponseEntity<ThumbnailGroupChatRoomResponse> {
+        val thumbnailChatRoom = groupChatFacade.processGetGroupChatRoom(userId, ChatRoomId.of(chatRoomId))
+        return ResponseHelper.success(ThumbnailGroupChatRoomResponse.of(thumbnailChatRoom, userId))
     }
 
     @GetMapping("/direct/{chatRoomId}")
     fun getDirectChatRoom(
         @CurrentUser userId: UserId,
         @PathVariable chatRoomId: String,
-    ): SuccessResponseEntity<FullDirectChatRoomResponse> {
-        val (chatRoom, chatLogs) = directChatFacade.processGetDirectChatRoom(userId, ChatRoomId.of(chatRoomId))
-        return ResponseHelper.success(FullDirectChatRoomResponse.of(chatRoom, chatLogs))
+    ): SuccessResponseEntity<ThumbnailDirectChatRoomResponse> {
+        val thumbnailChatRoom = directChatFacade.processGetDirectChatRoom(userId, ChatRoomId.of(chatRoomId))
+        return ResponseHelper.success(ThumbnailDirectChatRoomResponse.of(thumbnailChatRoom))
     }
 }

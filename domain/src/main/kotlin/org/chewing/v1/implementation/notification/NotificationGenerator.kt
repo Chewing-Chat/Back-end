@@ -5,10 +5,10 @@ import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.notification.Notification
+import org.chewing.v1.model.notification.NotificationInfo
 import org.chewing.v1.model.notification.NotificationType
 import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleId
-import org.chewing.v1.model.user.UserInfo
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -17,11 +17,15 @@ class NotificationGenerator {
 
     private val logger = LoggerFactory.getLogger(NotificationGenerator::class.java)
 
-    fun generateMessageNotification(
-        friendShip: FriendShip,
-        pushTokens: List<PushToken>,
+    fun generateMessageNotifications(
+        notificationInfos: List<NotificationInfo>,
         message: ChatMessage,
-        user: UserInfo,
+    ): List<Notification> {
+        return notificationInfos.flatMap { generateMessageNotification(it, message) }
+    }
+    fun generateMessageNotification(
+        notificationInfo: NotificationInfo,
+        message: ChatMessage,
     ): List<Notification> {
         val (type, targetId, content) = when (message) {
             is ChatFileMessage -> {
@@ -40,11 +44,11 @@ class NotificationGenerator {
             }
 
             is ChatInviteMessage -> {
-                Triple(NotificationType.GROUP_CHAT_INVITE, message.chatRoomId, "${friendShip.friendName}님이 초대했습니다.")
+                Triple(NotificationType.GROUP_CHAT_INVITE, message.chatRoomId, "${notificationInfo.friendShip.friendName}님이 초대했습니다.")
             }
 
             is ChatLeaveMessage -> {
-                Triple(NotificationType.GROUP_CHAT_LEAVE, message.chatRoomId, "${friendShip.friendName}님이 나갔습니다.")
+                Triple(NotificationType.GROUP_CHAT_LEAVE, message.chatRoomId, "${notificationInfo.friendShip.friendName}님이 나갔습니다.")
             }
 
             is ChatReplyMessage -> {
@@ -65,55 +69,61 @@ class NotificationGenerator {
         }
 
         return createNotifications(
-            friendShip = friendShip,
-            pushTokens = pushTokens,
+            friendShip = notificationInfo.friendShip,
+            pushTokens = notificationInfo.pushTokens,
             type = type,
             targetId = targetId.id,
             content = content,
-            profileImage = user.image.url,
+            profileImage = notificationInfo.user.image.url,
         )
     }
 
-    fun generateScheduleNotification(
-        friendShip: FriendShip,
-        pushTokens: List<PushToken>,
+    fun generateScheduleNotifications(
+        notificationInfos: List<NotificationInfo>,
         scheduleId: ScheduleId,
-        user: UserInfo,
+        scheduleAction: ScheduleAction,
+    ): List<Notification> {
+        return notificationInfos.flatMap { generateScheduleNotification(it, scheduleId, scheduleAction) }
+    }
+
+    fun generateScheduleNotification(
+        notificationInfo: NotificationInfo,
+        scheduleId: ScheduleId,
         scheduleAction: ScheduleAction,
     ): List<Notification> {
         val (type, targetId, content) = when (scheduleAction) {
             ScheduleAction.CREATED -> Triple(
                 NotificationType.SCHEDULE_CREATE,
                 scheduleId,
-                "${friendShip.friendName}님이 일정을 생성했습니다.",
+                "${notificationInfo.friendShip.friendName}님이 일정을 생성했습니다.",
             )
 
             ScheduleAction.CANCELED -> Triple(
                 NotificationType.SCHEDULE_CANCEL,
                 scheduleId,
-                "${friendShip.friendName}님이 일정을 취소했습니다.",
+                "${notificationInfo.friendShip.friendName}님이 일정을 취소했습니다.",
             )
 
             ScheduleAction.DELETED -> Triple(
                 NotificationType.SCHEDULE_DELETE,
                 scheduleId,
-                "${friendShip.friendName}님이 일정을 삭제했습니다.",
+                "${notificationInfo.friendShip.friendName}님이 일정을 삭제했습니다.",
             )
 
             ScheduleAction.UPDATED -> Triple(
                 NotificationType.SCHEDULE_UPDATE,
                 scheduleId,
-                "${friendShip.friendName}님이 일정을 변경했습니다.",
+                "${notificationInfo.friendShip.friendName}님이 일정을 변경했습니다.",
             )
         }
 
         return createNotifications(
-            friendShip = friendShip,
-            pushTokens = pushTokens,
+            friendShip = notificationInfo.friendShip,
+            pushTokens = notificationInfo.pushTokens,
             type = type,
             targetId = targetId.id,
             content = content,
-            profileImage = user.image.url,
+            profileImage = notificationInfo.user.image.url,
         )
     }
 

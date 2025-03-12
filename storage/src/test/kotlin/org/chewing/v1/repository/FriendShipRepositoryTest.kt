@@ -82,7 +82,7 @@ class FriendShipRepositoryTest : JpaContextTest() {
         val friendId = generateUserId()
 
         jpaDataGenerator.friendShipEntityData(userId, friendId, FriendShipStatus.FRIEND)
-        val friendShip = friendShipRepositoryImpl.read(userId, friendId)
+        val friendShip = friendShipRepositoryImpl.readByRelation(userId, friendId)
 
         assert(friendShip != null)
         assert(friendShip!!.friendId == friendId)

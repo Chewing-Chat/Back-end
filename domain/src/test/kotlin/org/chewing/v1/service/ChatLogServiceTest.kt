@@ -223,6 +223,35 @@ class ChatLogServiceTest {
     }
 
     @Test
+    fun `답장 메시지 생성 및 저장 - 댓글 메시지`() {
+        val chatRoomId = TestDataFactory.createChatRoomId()
+        val userId = TestDataFactory.createUserId()
+        val parentMessageId = "parentMessageId"
+        val chatRoomType = ChatRoomType.DIRECT
+        val text = "text"
+        val seqNumber = TestDataFactory.createChatSequenceNumber(chatRoomId)
+        val parentChatNumber = TestDataFactory.createChatNumber(chatRoomId)
+        val parentChatLog = TestDataFactory.createChatCommentLog(parentMessageId, chatRoomId, userId, parentChatNumber)
+        every { chatLogRepository.readChatMessage(parentMessageId) } returns parentChatLog
+        every { chatLogRepository.appendChatLog(any()) } just Runs
+
+        val result = chatLogService.replyMessage(chatRoomId, userId, parentMessageId, text, seqNumber, chatRoomType)
+
+        assert(result.chatRoomId == chatRoomId)
+        assert(result.senderId == userId)
+        assert(result.text == text)
+        assert(result.type == MessageType.REPLY)
+        assert(result.roomSequence.chatRoomId == chatRoomId)
+        assert(result.roomSequence.sequence == seqNumber.sequence)
+        assert(result.parentMessageId == parentMessageId)
+        assert(result.parentSeqNumber == parentChatNumber.sequence)
+        assert(result.parentMessageType == parentChatLog.type)
+        assert(result.parentMessageText == parentChatLog.comment)
+        assert(result.parentMessageId == parentChatLog.messageId)
+        assert(result.chatRoomType == chatRoomType)
+    }
+
+    @Test
     fun `일반 메시지 생성 및 저장`() {
         val chatRoomId = TestDataFactory.createChatRoomId()
         val userId = TestDataFactory.createUserId()

@@ -2,12 +2,14 @@ package org.chewing.v1.facade
 
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.NotFoundException
+import org.chewing.v1.implementation.chat.grouproom.GroupChatRoomAggregator
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.UnReadTarget
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.chat.room.GroupChatRoom
+import org.chewing.v1.model.chat.room.ThumbnailGroupChatRoom
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
@@ -25,6 +27,7 @@ class GroupChatFacade(
     private val notificationService: NotificationService,
     private val friendShipService: FriendShipService,
     private val userService: UserService,
+    private val groupChatRoomAggregator: GroupChatRoomAggregator,
 ) {
 
     fun processGroupChatLogs(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): List<ChatLog> {
@@ -42,30 +45,19 @@ class GroupChatFacade(
         return chatLogs
     }
 
-    fun processGroupChatRooms(userId: UserId): List<Pair<GroupChatRoom, ChatLog>> {
+    fun processGroupChatRooms(userId: UserId): List<ThumbnailGroupChatRoom> {
         val chatRooms = groupChatRoomService.getGroupChatRooms(userId)
         val chatRoomIds = getChatRoomIds(chatRooms)
         val chatMessages = chatLogService.getsLatestChatLog(chatRoomIds)
-            .associateBy { it.chatRoomId }
-
-        return chatRooms.mapNotNull { chatRoom ->
-            chatMessages[chatRoom.roomInfo.chatRoomId]?.let { latestMessage ->
-                chatRoom to latestMessage
-            }
-        }.sortedByDescending { it.second.timestamp }
+        return groupChatRoomAggregator.aggregatesThumbnail(chatRooms, chatMessages)
     }
 
-    fun searchGroupChatRooms(userId: UserId, friendIds: List<UserId>): List<Pair<GroupChatRoom, ChatLog>> {
+    fun searchGroupChatRooms(userId: UserId, friendIds: List<UserId>): List<ThumbnailGroupChatRoom> {
         val chatRooms = groupChatRoomService.searchGroupChatRooms(userId, friendIds)
         val chatRoomIds = getChatRoomIds(chatRooms)
         val chatMessages = chatLogService.getsLatestChatLog(chatRoomIds)
-            .associateBy { it.chatRoomId }
 
-        return chatRooms.mapNotNull { chatRoom ->
-            chatMessages[chatRoom.roomInfo.chatRoomId]?.let { latestMessage ->
-                chatRoom to latestMessage
-            }
-        }.sortedByDescending { it.second.timestamp }
+        return groupChatRoomAggregator.aggregatesThumbnail(chatRooms, chatMessages)
     }
 
     fun processGroupChatFiles(fileDataList: List<FileData>, userId: UserId, chatRoomId: ChatRoomId) {
@@ -173,18 +165,18 @@ class GroupChatFacade(
         }
     }
 
-    fun processGetGroupChatRoom(userId: UserId, chatRoomId: ChatRoomId): Pair<GroupChatRoom, ChatLog> {
+    fun processGetGroupChatRoom(userId: UserId, chatRoomId: ChatRoomId): ThumbnailGroupChatRoom {
         val groupChatRoom = groupChatRoomService.getGroupChatRoom(userId, chatRoomId)
-        val chatLogs = chatLogService.getLatestChatLog(chatRoomId)
-        return groupChatRoom to chatLogs
+        val chatLog = chatLogService.getLatestChatLog(chatRoomId)
+        return groupChatRoomAggregator.aggregateThumbnail(groupChatRoom, chatLog)
     }
 
     fun searchChatLog(userId: UserId, chatRoomId: ChatRoomId, keyword: String): List<ChatLog> {
         groupChatRoomService.validateIsParticipant(chatRoomId, userId)
-        return chatLogService.getChatKeyWordMessages(chatRoomId, keyword).sortedByDescending { it.timestamp }
+        return chatLogService.getChatKeyWordMessages(chatRoomId, keyword)
     }
 
-    fun processGroupChatCreate(userId: UserId, friendIds: List<UserId>, groupName: String): Pair<GroupChatRoom, ChatLog> {
+    fun processGroupChatCreate(userId: UserId, friendIds: List<UserId>, groupName: String): ThumbnailGroupChatRoom {
         val memberIds = friendIds + userId
         val members = userService.getUsers(memberIds, AccessStatus.ACCESS)
         friendShipService.ensureAllMembersAreFriends(members)
@@ -203,7 +195,7 @@ class GroupChatFacade(
         val chatRoom = groupChatRoomService.getGroupChatRoom(userId, chatRoomId)
         val chatLog = chatLogService.getChatLog(chatMessage.messageId)
         notificationService.handleMessagesNotification(chatMessage, friendIds, userId)
-        return Pair(chatRoom, chatLog)
+        return groupChatRoomAggregator.aggregateThumbnail(chatRoom, chatLog)
     }
 
     fun processUnreadGroupChatLog(userId: UserId): List<Pair<GroupChatRoom, List<ChatLog>>> {
@@ -216,7 +208,7 @@ class GroupChatFacade(
 
         return groupChatRooms.mapNotNull { chatRoom ->
             chatLogsByRoomId[chatRoom.roomInfo.chatRoomId]?.let { chatLogs ->
-                chatRoom to chatLogs.sortedByDescending { it.timestamp }
+                chatRoom to chatLogs
             }
         }.sortedByDescending { it.second.first().timestamp }
     }

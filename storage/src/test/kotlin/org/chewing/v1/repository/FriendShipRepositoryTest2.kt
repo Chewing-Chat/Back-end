@@ -47,7 +47,7 @@ class FriendShipRepositoryTest2 {
         val userId = generateUserId()
         val friendId = generateUserId()
         every { friendShipJpaRepository.findById(FriendShipId.of(userId, friendId)) } returns Optional.empty()
-        val result = friendShipRepositoryImpl.read(userId, friendId)
+        val result = friendShipRepositoryImpl.readByRelation(userId, friendId)
         assert(result == null)
     }
 

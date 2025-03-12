@@ -7,5 +7,6 @@ import org.chewing.v1.model.user.UserId
 interface PushNotificationRepository {
     fun remove(device: PushToken.Device)
     fun append(device: PushToken.Device, appToken: String, userInfo: UserInfo)
-    fun reads(userId: UserId): List<PushToken>
+    fun read(userId: UserId): List<PushToken>
+    fun reads(userIds: List<UserId>): List<PushToken>
 }

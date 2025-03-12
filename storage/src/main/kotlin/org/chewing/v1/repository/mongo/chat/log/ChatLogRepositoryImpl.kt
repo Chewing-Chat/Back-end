@@ -106,7 +106,7 @@ internal class ChatLogRepositoryImpl(
         }
 
         return chatLogMongoRepository
-            .findByChatRoomIdAndSequenceInRange(conditions)
+            .findByChatRoomIdAndSequenceInRange(conditions, SortType.LARGEST.toSort())
             .map { it.toChatLog() }
     }
 

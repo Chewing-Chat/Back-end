@@ -48,14 +48,6 @@ class FriendFacade(
         val friendShips = friendShipService.getFriendShips(userId)
         val friendIds = friendShips.map { it.friendId }
         val users = userService.getUsers(friendIds, AccessStatus.ACCESS)
-
-        return friendShips
-            .mapNotNull { friendShip ->
-                val user = users.find { it.info.userId == friendShip.friendId }
-                user?.let { user ->
-                    val friend = Friend.of(user, friendShip)
-                    friend
-                }
-            }
+        return friendAggregator.aggregates(users, friendShips)
     }
 }

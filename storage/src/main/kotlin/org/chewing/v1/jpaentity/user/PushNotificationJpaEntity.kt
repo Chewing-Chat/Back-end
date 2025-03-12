@@ -2,6 +2,7 @@ package org.chewing.v1.jpaentity.user
 
 import jakarta.persistence.*
 import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.model.user.UserInfo
 import java.util.*
 
@@ -42,6 +43,7 @@ internal class PushNotificationJpaEntity(
             fcmToken = appToken,
             deviceId = deviceId,
             provider = provider,
+            userId = UserId.of(userId),
         )
     }
 }
