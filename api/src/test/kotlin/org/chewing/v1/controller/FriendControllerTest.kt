@@ -301,6 +301,34 @@ class FriendControllerTest : RestDocsTest() {
     }
 
     @Test
+    fun unblockFriend() {
+        val requestBody = FriendRequest.Unblock(
+            friendId = "testFriendId",
+        )
+
+        every { friendShipService.unblockFriendShip(any(), any()) } just Runs
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/friend/unblock")
+            .then()
+            .assertCommonSuccessResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestFields(
+                        fieldWithPath("friendId").description("친구 ID"),
+                    ),
+                    requestAccessTokenFields(),
+                    responseSuccessFields(),
+                ),
+            )
+    }
+
+    @Test
     @DisplayName("친구 삭제")
     fun deleteFriend() {
         val requestBody = FriendRequest.Delete(
