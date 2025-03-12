@@ -25,6 +25,8 @@ internal class ScheduleJpaEntity(
     private var location: String,
     @Enumerated(EnumType.STRING)
     private var status: ScheduleStatus,
+    @Version
+    private var version: Long? = 0,
 ) {
     companion object {
         fun generate(
