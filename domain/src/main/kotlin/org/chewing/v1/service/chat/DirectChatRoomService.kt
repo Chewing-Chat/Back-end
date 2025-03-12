@@ -55,10 +55,28 @@ class DirectChatRoomService(
         return DirectChatRoom.of(existingChatRoom, chatRoomSequences, memberSequences)
     }
 
-    fun createDirectChatRoom(userId: UserId, friendId: UserId): ChatRoomId {
+    fun createNotExistDirectChatRoom(userId: UserId, friendId: UserId): ChatRoomId {
         directChatRoomValidator.isNotSelf(userId, friendId)
         val existingChatRoom = directChatRoomReader.readRoomInfoByRelation(userId, friendId)
         directChatRoomValidator.isNotActivated(existingChatRoom)
+        if (existingChatRoom == null) {
+            val newChatRoom = directChatRoomAppender.appendRoom(userId, friendId)
+            chatSequenceHandler.handleCreateRoomSequence(newChatRoom.chatRoomId)
+            chatSequenceHandler.handleCreateMemberSequences(newChatRoom.chatRoomId, listOf(userId, friendId))
+            return newChatRoom.chatRoomId
+        } else {
+            if (existingChatRoom.status == ChatRoomMemberStatus.DELETED) {
+                directChatRoomUpdater.updateMemberStatus(userId, existingChatRoom.chatRoomId, ChatRoomMemberStatus.NORMAL)
+                val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(existingChatRoom.chatRoomId)
+                chatSequenceHandler.handleJoinMemberSequence(existingChatRoom.chatRoomId, userId, chatRoomSequence)
+            }
+            return existingChatRoom.chatRoomId
+        }
+    }
+
+    fun produceDirectChatRoom(userId: UserId, friendId: UserId): ChatRoomId {
+        directChatRoomValidator.isNotSelf(userId, friendId)
+        val existingChatRoom = directChatRoomReader.readRoomInfoByRelation(userId, friendId)
         if (existingChatRoom == null) {
             val newChatRoom = directChatRoomAppender.appendRoom(userId, friendId)
             chatSequenceHandler.handleCreateRoomSequence(newChatRoom.chatRoomId)
