@@ -2,19 +2,21 @@ package org.chewing.v1.config
 
 import org.chewing.v1.util.security.JwtAuthenticationEntryPoint
 import org.chewing.v1.util.security.JwtAuthenticationFilter
+import org.chewing.v1.util.security.SilentAccessDeniedHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val entryPoint: JwtAuthenticationEntryPoint,
+    private val silentAccessDeniedHandler: SilentAccessDeniedHandler,
 ) {
 
     @Bean
@@ -34,13 +36,15 @@ class SecurityConfig(
                         "/api/auth/logout",
                         "/api/auth/reset/verify",
                         "/ws-stomp/**",
-                        "/api/hello",
                         "/docs/**",
                     ).permitAll()
                     .anyRequest().authenticated()
             }
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-            .exceptionHandling { it.authenticationEntryPoint(entryPoint) }
+            .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter::class.java)
+            .exceptionHandling {
+                it.authenticationEntryPoint(entryPoint)
+                    .accessDeniedHandler(silentAccessDeniedHandler)
+            }
 
         return http.build()
     }

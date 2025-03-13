@@ -99,7 +99,7 @@ class DirectChatFacade(
 
     fun processCreateDirectChatRoomCommonChat(userId: UserId, friendId: UserId, message: String): ThumbnailDirectChatRoom {
         friendShipService.checkAccessibleFriendShip(userId, friendId)
-        val chatRoomId = directChatRoomService.createNotExistDirectChatRoom(userId, friendId)
+        val chatRoomId = directChatRoomService.createDirectChatRoom(userId, friendId)
         val directChatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
         if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
             directChatRoomService.restoreDirectChatRoom(directChatRoom.roomInfo.friendId, chatRoomId)
@@ -123,7 +123,7 @@ class DirectChatFacade(
     fun processCreateDirectChatRoomFilesChat(userId: UserId, friendId: UserId, fileDataList: List<FileData>): ThumbnailDirectChatRoom {
         friendShipService.checkAccessibleFriendShip(userId, friendId)
         val medias = chatLogService.uploadFiles(fileDataList, userId)
-        val chatRoomId = directChatRoomService.createNotExistDirectChatRoom(userId, friendId)
+        val chatRoomId = directChatRoomService.createDirectChatRoom(userId, friendId)
 
         val directChatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
         if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
@@ -235,7 +235,7 @@ class DirectChatFacade(
         val feed = feedService.getFeed(feedId, userId)
         friendShipService.checkAccessibleFriendShip(userId, friendId)
 
-        val chatRoomId = directChatRoomService.produceDirectChatRoom(userId, friendId)
+        val chatRoomId = directChatRoomService.createDirectChatRoom(userId, friendId)
 
         val directChatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
         if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {

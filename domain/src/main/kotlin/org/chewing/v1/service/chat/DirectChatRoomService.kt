@@ -43,8 +43,6 @@ class DirectChatRoomService(
         chatSequenceHandler.handleJoinMemberSequence(chatRoomId, userId, chatRoomSequence)
     }
 
-    // 채팅방 제공
-    //joinSequence -> 채팅방 입장 시 볼 수 있는 sequence 시작점
     fun getDirectChatRoom(userId: UserId, friendId: UserId): DirectChatRoom {
         directChatRoomValidator.isNotSelf(userId, friendId)
         val existingChatRoom = directChatRoomReader.readRoomInfoByRelation(userId, friendId)
@@ -54,26 +52,7 @@ class DirectChatRoomService(
         return DirectChatRoom.of(existingChatRoom, chatRoomSequences, memberSequences)
     }
 
-    fun createNotExistDirectChatRoom(userId: UserId, friendId: UserId): ChatRoomId {
-        directChatRoomValidator.isNotSelf(userId, friendId)
-        val existingChatRoom = directChatRoomReader.readRoomInfoByRelation(userId, friendId)
-        directChatRoomValidator.isNotActivated(existingChatRoom)
-        if (existingChatRoom == null) {
-            val newChatRoom = directChatRoomAppender.appendRoom(userId, friendId)
-            chatSequenceHandler.handleCreateRoomSequence(newChatRoom.chatRoomId)
-            chatSequenceHandler.handleCreateMemberSequences(newChatRoom.chatRoomId, listOf(userId, friendId))
-            return newChatRoom.chatRoomId
-        } else {
-            if (existingChatRoom.status == ChatRoomMemberStatus.DELETED) {
-                directChatRoomUpdater.updateMemberStatus(userId, existingChatRoom.chatRoomId, ChatRoomMemberStatus.NORMAL)
-                val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(existingChatRoom.chatRoomId)
-                chatSequenceHandler.handleJoinMemberSequence(existingChatRoom.chatRoomId, userId, chatRoomSequence)
-            }
-            return existingChatRoom.chatRoomId
-        }
-    }
-
-    fun produceDirectChatRoom(userId: UserId, friendId: UserId): ChatRoomId {
+    fun createDirectChatRoom(userId: UserId, friendId: UserId): ChatRoomId {
         directChatRoomValidator.isNotSelf(userId, friendId)
         val existingChatRoom = directChatRoomReader.readRoomInfoByRelation(userId, friendId)
         if (existingChatRoom == null) {

@@ -10,6 +10,7 @@ import org.chewing.v1.model.chat.room.ChatRoomMemberSequence
 import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
 import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.chat.room.ChatRoomType
+import org.chewing.v1.model.chat.room.DirectChatRoomInfo
 import org.chewing.v1.model.chat.room.GroupChatRoomInfo
 import org.chewing.v1.model.chat.room.GroupChatRoomMemberInfo
 import org.chewing.v1.model.contact.LocalPhoneNumber
@@ -86,6 +87,16 @@ object TestDataFactory {
         return chatRoomIds.map {
             GroupChatRoomMemberInfo.of(it, userId, ChatRoomMemberStatus.NORMAL)
         }
+    }
+
+    fun createDirectChatRoomInfo(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        friendId: UserId,
+        status: ChatRoomMemberStatus,
+        friendStatus: ChatRoomMemberStatus,
+    ): DirectChatRoomInfo {
+        return DirectChatRoomInfo.of(chatRoomId, userId, friendId, status, friendStatus)
     }
 
     fun createChatRoomSequences(chatRoomIds: List<ChatRoomId>): List<ChatRoomSequence> {

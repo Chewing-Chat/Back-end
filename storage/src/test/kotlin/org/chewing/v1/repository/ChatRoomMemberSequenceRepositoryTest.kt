@@ -52,6 +52,7 @@ class ChatRoomMemberSequenceRepositoryTest : MongoContextTest() {
         val result = chatRoomMemberSequenceRepositoryImpl.updateJoinSequence(chatRoomId, userId, ChatRoomSequence.of(chatRoomId, sequenceNumber.plus(1)))
         assert(result != null)
         assert(result!!.joinSequenceNumber == sequenceNumber.plus(1))
+        assert(result.readSequenceNumber == sequenceNumber.plus(1))
     }
 
     @Test

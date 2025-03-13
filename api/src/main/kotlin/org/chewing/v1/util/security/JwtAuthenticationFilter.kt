@@ -10,7 +10,6 @@ import org.chewing.v1.error.ErrorCode
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
-import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 
@@ -33,13 +32,6 @@ class JwtAuthenticationFilter(
             return
         }
 
-        val handler = handlerMapping.getHandler(request)
-        if (handler == null) {
-            request.setAttribute("Exception", HttpRequestMethodNotSupportedException("URL Not Allowed"))
-            filterChain.doFilter(request, response)
-            return
-        }
-
         // 여기부터 수정
         try {
             val token = resolveToken(request)
@@ -49,7 +41,7 @@ class JwtAuthenticationFilter(
             SecurityContextHolder.getContext().authentication = authentication
 
             request.setAttribute("userId", userId)
-        } catch (e: AuthorizationException) {
+        } catch (e: Exception) {
             request.setAttribute("Exception", e)
         }
         filterChain.doFilter(request, response)

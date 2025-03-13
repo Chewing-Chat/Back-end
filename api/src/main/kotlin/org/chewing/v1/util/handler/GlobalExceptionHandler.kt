@@ -16,6 +16,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.servlet.NoHandlerFoundException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
@@ -28,18 +29,24 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException::class)
-    fun handleMissingServletRequestParameterException(e: MissingServletRequestParameterException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
+    protected fun handleMissingServletRequestParameterException(e: MissingServletRequestParameterException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
-    fun handleHttpRequestMethodNotSupportedException(
+    protected fun handleHttpRequestMethodNotSupportedException(
         e: HttpRequestMethodNotSupportedException,
     ): ErrorResponseEntity {
         logger.warn("HTTP Method Not Supported Exception: ${e.method} is not supported for this endpoint. Supported methods: ${e.supportedHttpMethods}")
         return handleException(e, ErrorCode.PATH_WRONG, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler(NoHandlerFoundException::class)
+    protected fun noHandlerFoundHandle(e: NoHandlerFoundException): ErrorResponseEntity {
+        logger.warn("HTTP Url Not Supported Exception: ${e.requestURL} is not supported for this endpoint")
+        return handleException(e, ErrorCode.PATH_WRONG, HttpStatus.BAD_REQUEST)
+    }
+
     @ExceptionHandler(IllegalArgumentException::class)
-    fun handleIllegalArgumentException(e: IllegalArgumentException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
+    protected fun handleIllegalArgumentException(e: IllegalArgumentException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler(AuthorizationException::class)
     protected fun handleAuthorizationException(e: AuthorizationException): ErrorResponseEntity = handleException(e, e.errorCode, HttpStatus.UNAUTHORIZED)
@@ -66,7 +73,7 @@ class GlobalExceptionHandler {
 
     // Optional: 처리되지 않은 예외를 위한 핸들러 추가
     @ExceptionHandler(Exception::class)
-    fun handleGenericException(e: Exception): ErrorResponseEntity {
+    protected fun handleGenericException(e: Exception): ErrorResponseEntity {
         logger.error(e) { "예기치 않은 오류 발생: ${e.message}" }
         return ResponseHelper.error(HttpStatus.INTERNAL_SERVER_ERROR, ErrorResponse.Companion.from(ErrorCode.INTERNAL_SERVER_ERROR))
     }
