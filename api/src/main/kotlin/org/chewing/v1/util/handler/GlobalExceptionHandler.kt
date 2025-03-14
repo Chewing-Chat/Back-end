@@ -45,6 +45,12 @@ class GlobalExceptionHandler {
         return handleException(e, ErrorCode.PATH_WRONG, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDeniedException(ex: AccessDeniedException) {
+        val errorMessage = "Access Denied: " + ex.message
+        logger.error(errorMessage)
+    }
+
     @ExceptionHandler(IllegalArgumentException::class)
     protected fun handleIllegalArgumentException(e: IllegalArgumentException): ErrorResponseEntity = handleException(e, ErrorCode.VARIABLE_WRONG, HttpStatus.BAD_REQUEST)
 

@@ -1,6 +1,8 @@
 package org.chewing.v1.util.interceptor
 
 import mu.KotlinLogging
+import org.chewing.v1.error.AuthorizationException
+import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.util.security.JwtTokenUtil
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
@@ -23,7 +25,7 @@ class StompChannelInterceptor(
             val token = accessor.getFirstNativeHeader("Authorization")
             if (token.isNullOrEmpty()) {
                 logger.warn { "Authentication token missing in CONNECT frame" }
-                throw IllegalArgumentException("Authentication token missing")
+                throw AuthorizationException(ErrorCode.NOT_AUTHORIZED)
             }
             try {
                 val cleanToken = jwtTokenUtil.cleanedToken(token)
@@ -32,7 +34,7 @@ class StompChannelInterceptor(
                 logger.info { "User authenticated: $userId" }
             } catch (e: Exception) {
                 logger.error { "Authentication failed: ${e.message}" }
-                throw IllegalArgumentException("Authentication failed")
+                throw AuthorizationException(ErrorCode.NOT_AUTHORIZED)
             }
         }
         return message

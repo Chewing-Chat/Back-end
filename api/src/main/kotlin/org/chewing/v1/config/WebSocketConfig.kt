@@ -1,6 +1,7 @@
 package org.chewing.v1.config
 
 import org.chewing.v1.util.handler.CustomHandshakeHandler
+import org.chewing.v1.util.handler.CustomStompErrorHandler
 import org.chewing.v1.util.interceptor.StompChannelInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.simp.config.ChannelRegistration
@@ -14,6 +15,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 class WebSocketConfig(
     private val stompCustomHandshakeHandler: CustomHandshakeHandler,
     private val stompChannelInterceptor: StompChannelInterceptor,
+    private val customStompErrorHandler: CustomStompErrorHandler,
 ) : WebSocketMessageBrokerConfigurer {
     override fun configureMessageBroker(config: MessageBrokerRegistry) {
         config.enableSimpleBroker("/topic", "/queue")
@@ -30,6 +32,7 @@ class WebSocketConfig(
         registry.addEndpoint("/ws-stomp")
             .setAllowedOrigins("*") // 모든 출처 허용
             .setHandshakeHandler(stompCustomHandshakeHandler)
+        registry.setErrorHandler(customStompErrorHandler)
     }
 
     override fun configureClientInboundChannel(registration: ChannelRegistration) {
