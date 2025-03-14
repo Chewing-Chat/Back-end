@@ -1,7 +1,7 @@
 package org.chewing.v1.dto
 
 data class ExpoPushTicket(
-    val id: String,
+    val id: String? = null,
     val status: String? = null,
     val message: String? = null,
     val error: String? = null,
