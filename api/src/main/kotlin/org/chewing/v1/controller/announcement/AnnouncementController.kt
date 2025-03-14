@@ -20,7 +20,6 @@ class AnnouncementController(
     fun getAnnouncements(
         @CurrentUser userId: UserId,
     ): SuccessResponseEntity<AnnouncementListResponse> {
-        // 공지사항 목록을 반환하는 로직
         val announcements = announcementService.readAnnouncements()
         return ResponseHelper.success(AnnouncementListResponse.of(announcements))
     }
@@ -30,7 +29,6 @@ class AnnouncementController(
         @CurrentUser userId: UserId,
         @PathVariable announcementId: String,
     ): SuccessResponseEntity<AnnouncementDetailResponse> {
-        // 공지사항을 반환하는 로직
         val announcement = announcementService.readAnnouncement(AnnouncementId.of(announcementId))
         return ResponseHelper.success(AnnouncementDetailResponse.of(announcement))
     }

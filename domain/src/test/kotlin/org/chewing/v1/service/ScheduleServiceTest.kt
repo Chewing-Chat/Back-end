@@ -4,6 +4,7 @@ import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
@@ -15,6 +16,7 @@ import org.chewing.v1.implementation.schedule.ScheduleReader
 import org.chewing.v1.implementation.schedule.ScheduleRemover
 import org.chewing.v1.implementation.schedule.ScheduleUpdater
 import org.chewing.v1.implementation.schedule.ScheduleValidator
+import org.chewing.v1.util.OptimisticLockHandler
 import org.chewing.v1.model.schedule.ScheduleParticipantReadStatus
 import org.chewing.v1.model.schedule.ScheduleParticipantRole
 import org.chewing.v1.model.schedule.ScheduleParticipantStatus
@@ -27,11 +29,13 @@ import org.chewing.v1.service.user.ScheduleService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import org.springframework.dao.OptimisticLockingFailureException
 
 class ScheduleServiceTest {
     private val scheduleRepository: ScheduleRepository = mockk()
     private val scheduleParticipantRepository: ScheduleParticipantRepository = mockk()
     private val scheduleLogRepository: ScheduleLogRepository = mockk()
+    private val optimisticLockHandler = OptimisticLockHandler()
 
     private val scheduleAppender =
         ScheduleAppender(scheduleRepository, scheduleParticipantRepository, scheduleLogRepository)
@@ -41,7 +45,7 @@ class ScheduleServiceTest {
     private val scheduleEnricher = ScheduleEnricher()
     private val scheduleValidator = ScheduleValidator(scheduleParticipantRepository)
     private val scheduleFilter = ScheduleFilter()
-    private val scheduleUpdater = ScheduleUpdater(scheduleRepository, scheduleParticipantRepository)
+    private val scheduleUpdater = ScheduleUpdater(optimisticLockHandler, scheduleRepository, scheduleParticipantRepository)
     private val scheduleService = ScheduleService(
         scheduleAppender,
         scheduleRemover,
@@ -429,6 +433,35 @@ class ScheduleServiceTest {
         }
 
         assert(result.errorCode == ErrorCode.SCHEDULE_NOT_PARTICIPANT)
+    }
+
+    @Test
+    fun `스케줄 업데이트 - 낙관적 락 백오프`() {
+        val userId = TestDataFactory.createUserId()
+        val scheduleId = TestDataFactory.createScheduleId()
+        val scheduleTime = TestDataFactory.createScheduledTime()
+        val scheduleContent = TestDataFactory.createScheduleContent()
+        val friendId = TestDataFactory.createFriendId()
+        val friendIds = listOf(friendId)
+
+        val owner = TestDataFactory.createScheduleParticipant(
+            userId = userId,
+            scheduleId = scheduleId,
+            status = ScheduleParticipantStatus.ACTIVE,
+            role = ScheduleParticipantRole.OWNER,
+            readStatus = ScheduleParticipantReadStatus.READ,
+        )
+
+        every { scheduleParticipantRepository.readParticipant(userId, scheduleId) } returns owner
+        every { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) } throws OptimisticLockingFailureException("")
+
+        val exception = assertThrows<ConflictException> {
+            scheduleService.update(userId, scheduleId, scheduleTime, scheduleContent, friendIds, true)
+        }
+
+        assert(exception.errorCode == ErrorCode.SCHEDULE_UPDATE_FAILED)
+
+        verify(exactly = 5) { scheduleRepository.update(scheduleId, scheduleTime, scheduleContent) }
     }
 
     @Test

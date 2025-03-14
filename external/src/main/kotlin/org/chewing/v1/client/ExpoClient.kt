@@ -34,8 +34,8 @@ class ExpoClient(
         }
 
         // 성공 티켓과 오류 티켓을 분류하여 로깅
-        val okTickets = allTickets.filter { it.status == "ok" }
-        val errorTickets = allTickets.filter { it.status != "ok" }
+        val okTickets = allTickets.filter { it.status != null }
+        val errorTickets = allTickets.filter { it.error != null }
 
         val okTicketMessagesString = okTickets.joinToString(",") {
             "Ticket: ${it.id}"
@@ -44,9 +44,9 @@ class ExpoClient(
 
         if (errorTickets.isNotEmpty()) {
             val errorTicketMessagesString = errorTickets.joinToString(",") {
-                "Ticket: ${it.id}, Error: ${it.message}"
+                "Error: ${it.error_description}"
             }
-            logger.error("Received ERROR ticket for ${errorTickets.size} messages: $errorTicketMessagesString")
+            logger.warn("Received ERROR ticket for ${errorTickets.size} messages: $errorTicketMessagesString")
         }
     }
 }

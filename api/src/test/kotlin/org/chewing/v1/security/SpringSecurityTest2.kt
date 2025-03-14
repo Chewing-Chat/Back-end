@@ -7,8 +7,10 @@ import io.mockk.just
 import org.chewing.v1.TestDataFactory
 import org.chewing.v1.config.IntegrationTest
 import org.chewing.v1.util.handler.GlobalExceptionHandler
-import org.chewing.v1.util.security.JwtTokenUtil
 import org.chewing.v1.util.security.JwtAuthenticationEntryPoint
+import org.chewing.v1.util.security.JwtAuthenticationFilter
+import org.chewing.v1.util.security.JwtTokenUtil
+import org.chewing.v1.util.security.SilentAccessDeniedHandler
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -35,6 +37,12 @@ class SpringSecurityTest2 : IntegrationTest() {
 
     @Autowired
     private lateinit var globalExceptionHandler: GlobalExceptionHandler
+
+    @Autowired
+    private lateinit var silentAccessDeniedHandler: SilentAccessDeniedHandler
+
+    @Autowired
+    private lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
 
     @Test
     @DisplayName("휴대폰 인증번호 전송 - 인증 없이 통과해야함")
@@ -107,9 +115,12 @@ class SpringSecurityTest2 : IntegrationTest() {
     @Test
     @DisplayName("존재하지 않는 경로로 요청 - 200 에러 발생")
     fun notFound() {
+        val userId = TestDataFactory.createUserId()
+        val jwtToken = jwtTokenUtil.createRefreshToken(userId)
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/not/found")
-                .contentType(MediaType.APPLICATION_JSON),
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer ${jwtToken.token}"),
         ).andExpect(status().isBadRequest)
     }
 }

@@ -2,6 +2,7 @@ package org.chewing.v1.facade
 
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.NotFoundException
+import org.chewing.v1.implementation.chat.directroom.DirectChatRoomAggregator
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.UnReadTarget
 import org.chewing.v1.model.chat.room.ChatRoomId
@@ -9,6 +10,7 @@ import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.chat.room.DirectChatRoom
+import org.chewing.v1.model.chat.room.ThumbnailDirectChatRoom
 import org.chewing.v1.model.feed.FeedId
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.user.UserId
@@ -27,6 +29,7 @@ class DirectChatFacade(
     private val notificationService: NotificationService,
     private val friendShipService: FriendShipService,
     private val feedService: FeedService,
+    private val directChatRoomAggregator: DirectChatRoomAggregator,
 ) {
 
     fun processDirectChatLogs(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): List<ChatLog> {
@@ -44,30 +47,17 @@ class DirectChatFacade(
         return chatLogs
     }
 
-    fun processGetDirectChatRooms(userId: UserId): List<Pair<DirectChatRoom, ChatLog>> {
+    fun processGetDirectChatRooms(userId: UserId): List<ThumbnailDirectChatRoom> {
         val chatRooms = directChatRoomService.getDirectChatRooms(userId)
-        val chatRoomIds = chatRooms.map { it.roomInfo.chatRoomId }
-        val chatMessages = chatLogService.getsLatestChatLog(chatRoomIds)
-            .associateBy { it.chatRoomId }
-
-        return chatRooms.mapNotNull { chatRoom ->
-            chatMessages[chatRoom.roomInfo.chatRoomId]?.let { latestMessage ->
-                chatRoom to latestMessage
-            }
-        }.sortedByDescending { it.second.timestamp }
+        val chatMessages = chatLogService.getsLatestChatLog(chatRooms.map { it.roomInfo.chatRoomId })
+        return directChatRoomAggregator.aggregatesThumbnail(chatRooms, chatMessages)
     }
 
-    fun searchDirectChatRooms(userId: UserId, friendIds: List<UserId>): List<Pair<DirectChatRoom, ChatLog>> {
+    fun searchDirectChatRooms(userId: UserId, friendIds: List<UserId>): List<ThumbnailDirectChatRoom> {
         val chatRooms = directChatRoomService.searchDirectChatRooms(userId, friendIds)
-        val chatRoomIds = chatRooms.map { it.roomInfo.chatRoomId }
-        val chatMessages = chatLogService.getsLatestChatLog(chatRoomIds)
-            .associateBy { it.chatRoomId }
+        val chatMessages = chatLogService.getsLatestChatLog(chatRooms.map { it.roomInfo.chatRoomId })
 
-        return chatRooms.mapNotNull { chatRoom ->
-            chatMessages[chatRoom.roomInfo.chatRoomId]?.let { latestMessage ->
-                chatRoom to latestMessage
-            }
-        }.sortedByDescending { it.second.timestamp }
+        return directChatRoomAggregator.aggregatesThumbnail(chatRooms, chatMessages)
     }
 
     fun processUnreadDirectChatLog(userId: UserId): List<Pair<DirectChatRoom, List<ChatLog>>> {
@@ -86,7 +76,7 @@ class DirectChatFacade(
 
         return directChatRooms.mapNotNull { chatRoom ->
             chatLogsByRoomId[chatRoom.roomInfo.chatRoomId]?.let { chatLogs ->
-                chatRoom to chatLogs.sortedByDescending { it.timestamp }
+                chatRoom to chatLogs
             }
         }.sortedByDescending { it.second.first().timestamp }
     }
@@ -94,7 +84,6 @@ class DirectChatFacade(
     fun searchChatLog(userId: UserId, chatRoomId: ChatRoomId, keyword: String): List<ChatLog> {
         directChatRoomService.validateIsParticipant(userId, chatRoomId)
         return chatLogService.getChatKeyWordMessages(chatRoomId, keyword)
-            .sortedByDescending { it.timestamp }
     }
 
     fun processGetRelationDirectChatRoom(userId: UserId, friendId: UserId): DirectChatRoom {
@@ -102,15 +91,15 @@ class DirectChatFacade(
         return directChatRoomService.getDirectChatRoom(userId, friendId)
     }
 
-    fun processGetDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId): Pair<DirectChatRoom, ChatLog> {
+    fun processGetDirectChatRoom(userId: UserId, chatRoomId: ChatRoomId): ThumbnailDirectChatRoom {
         val chatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
         val chatLog = chatLogService.getLatestChatLog(chatRoomId)
-        return Pair(chatRoom, chatLog)
+        return directChatRoomAggregator.aggregateThumbnail(chatRoom, chatLog)
     }
 
-    fun processCreateDirectChatRoomCommonChat(userId: UserId, friendId: UserId, message: String): Pair<DirectChatRoom, ChatLog> {
+    fun processCreateDirectChatRoomCommonChat(userId: UserId, friendId: UserId, message: String): ThumbnailDirectChatRoom {
         friendShipService.checkAccessibleFriendShip(userId, friendId)
-        val chatRoomId = directChatRoomService.createNotExistDirectChatRoom(userId, friendId)
+        val chatRoomId = directChatRoomService.createDirectChatRoom(userId, friendId)
         val directChatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
         if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
             directChatRoomService.restoreDirectChatRoom(directChatRoom.roomInfo.friendId, chatRoomId)
@@ -128,13 +117,13 @@ class DirectChatFacade(
 
         notificationService.handleMessageNotification(chatMessage, friendId, userId)
         val chatLog = chatLogService.getChatLog(chatMessage.messageId)
-        return Pair(directChatRoom, chatLog)
+        return directChatRoomAggregator.aggregateThumbnail(directChatRoom, chatLog)
     }
 
-    fun processCreateDirectChatRoomFilesChat(userId: UserId, friendId: UserId, fileDataList: List<FileData>): Pair<DirectChatRoom, ChatLog> {
+    fun processCreateDirectChatRoomFilesChat(userId: UserId, friendId: UserId, fileDataList: List<FileData>): ThumbnailDirectChatRoom {
         friendShipService.checkAccessibleFriendShip(userId, friendId)
         val medias = chatLogService.uploadFiles(fileDataList, userId)
-        val chatRoomId = directChatRoomService.createNotExistDirectChatRoom(userId, friendId)
+        val chatRoomId = directChatRoomService.createDirectChatRoom(userId, friendId)
 
         val directChatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
         if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {
@@ -149,7 +138,7 @@ class DirectChatFacade(
         notificationService.handleMessageNotification(chatMessage, friendId, userId)
         val chatLog = chatLogService.getChatLog(chatMessage.messageId)
 
-        return Pair(directChatRoom, chatLog)
+        return directChatRoomAggregator.aggregateThumbnail(directChatRoom, chatLog)
     }
 
     fun processDirectChatFiles(fileDataList: List<FileData>, userId: UserId, chatRoomId: ChatRoomId) {
@@ -246,7 +235,7 @@ class DirectChatFacade(
         val feed = feedService.getFeed(feedId, userId)
         friendShipService.checkAccessibleFriendShip(userId, friendId)
 
-        val chatRoomId = directChatRoomService.produceDirectChatRoom(userId, friendId)
+        val chatRoomId = directChatRoomService.createDirectChatRoom(userId, friendId)
 
         val directChatRoom = directChatRoomService.getDirectChatRoom(userId, chatRoomId)
         if (directChatRoom.roomInfo.friendStatus == ChatRoomMemberStatus.DELETED) {

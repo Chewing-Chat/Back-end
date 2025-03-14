@@ -1,5 +1,8 @@
 package org.chewing.v1.implementation.schedule
 
+import org.chewing.v1.error.ConflictException
+import org.chewing.v1.error.ErrorCode
+import org.chewing.v1.util.OptimisticLockHandler
 import org.chewing.v1.model.schedule.ScheduleContent
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.schedule.ScheduleParticipantReadStatus
@@ -12,11 +15,14 @@ import org.springframework.stereotype.Component
 
 @Component
 class ScheduleUpdater(
+    private val optimisticLockHandler: OptimisticLockHandler,
     private val scheduleRepository: ScheduleRepository,
     private val scheduleParticipantRepository: ScheduleParticipantRepository,
 ) {
     fun updateInfo(scheduleId: ScheduleId, scheduleTime: ScheduleTime, scheduleContent: ScheduleContent) {
-        scheduleRepository.update(scheduleId, scheduleTime, scheduleContent)
+        optimisticLockHandler.retryOnOptimisticLock {
+            scheduleRepository.update(scheduleId, scheduleTime, scheduleContent)
+        } ?: throw ConflictException(ErrorCode.SCHEDULE_UPDATE_FAILED)
     }
     fun updateParticipants(scheduleId: ScheduleId, userIds: List<UserId>, status: ScheduleParticipantStatus) {
         scheduleParticipantRepository.updateParticipantsStatus(scheduleId, userIds, status)

@@ -9,4 +9,5 @@ internal interface FriendShipJpaRepository : JpaRepository<FriendShipJpaEntity, 
 
     fun findAllByIdUserId(userId: String, sort: Sort): List<FriendShipJpaEntity>
     fun findAllByIdUserIdAndFavorite(userId: String, favorite: Boolean): List<FriendShipJpaEntity>
+    fun findAllByIdIn(friendShipIds: List<FriendShipId>): List<FriendShipJpaEntity>
 }

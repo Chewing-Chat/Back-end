@@ -2,6 +2,7 @@ package org.chewing.v1.implementation.chat.message
 
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
+import org.chewing.v1.model.chat.log.ChatCommentLog
 import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.ChatNormalLog
@@ -171,6 +172,7 @@ class ChatGenerator {
             is ChatNormalLog -> Pair(parentLog.messageId, parentLog.text)
             is ChatReplyLog -> Pair(parentLog.messageId, parentLog.text)
             is ChatFileLog -> Pair(parentLog.messageId, parentLog.medias[0].url)
+            is ChatCommentLog -> Pair(parentLog.messageId, parentLog.comment)
             else -> throw ConflictException(ErrorCode.INTERNAL_SERVER_ERROR)
         }
 

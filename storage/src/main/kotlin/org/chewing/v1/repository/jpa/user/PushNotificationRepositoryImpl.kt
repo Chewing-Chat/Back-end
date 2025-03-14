@@ -24,8 +24,13 @@ internal class PushNotificationRepositoryImpl(
             pushNotificationJpaRepository.save(PushNotificationJpaEntity.generate(appToken, device, userInfo))
         }
     }
-    override fun reads(userId: UserId): List<PushToken> {
+    override fun read(userId: UserId): List<PushToken> {
         val pushNotifications = pushNotificationJpaRepository.findAllByUserId(userId.id)
+        return pushNotifications.map { it.toPushToken() }
+    }
+
+    override fun reads(userIds: List<UserId>): List<PushToken> {
+        val pushNotifications = pushNotificationJpaRepository.findAllByUserIdIn(userIds.map { it.id })
         return pushNotifications.map { it.toPushToken() }
     }
 }

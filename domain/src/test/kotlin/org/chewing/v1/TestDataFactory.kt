@@ -10,6 +10,7 @@ import org.chewing.v1.model.chat.room.ChatRoomMemberSequence
 import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
 import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.chat.room.ChatRoomType
+import org.chewing.v1.model.chat.room.DirectChatRoomInfo
 import org.chewing.v1.model.chat.room.GroupChatRoomInfo
 import org.chewing.v1.model.chat.room.GroupChatRoomMemberInfo
 import org.chewing.v1.model.contact.LocalPhoneNumber
@@ -86,6 +87,16 @@ object TestDataFactory {
         return chatRoomIds.map {
             GroupChatRoomMemberInfo.of(it, userId, ChatRoomMemberStatus.NORMAL)
         }
+    }
+
+    fun createDirectChatRoomInfo(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        friendId: UserId,
+        status: ChatRoomMemberStatus,
+        friendStatus: ChatRoomMemberStatus,
+    ): DirectChatRoomInfo {
+        return DirectChatRoomInfo.of(chatRoomId, userId, friendId, status, friendStatus)
     }
 
     fun createChatRoomSequences(chatRoomIds: List<ChatRoomId>): List<ChatRoomSequence> {
@@ -289,6 +300,27 @@ object TestDataFactory {
         ChatLogType.FILE,
     )
 
+    fun createChatCommentLog(
+        messageId: String,
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        chatRoomNumber: ChatRoomSequence,
+    ): ChatCommentLog = ChatCommentLog.of(
+        messageId,
+        chatRoomId,
+        userId,
+        listOf(
+            Media.of(FileCategory.CHAT, "www.example.com", 0, MediaType.IMAGE_PNG),
+        ),
+        LocalDateTime.now(),
+        chatRoomNumber,
+        ChatLogType.COMMENT,
+        "comment",
+        FeedId.of("feedId"),
+        FeedType.FILE,
+        "content",
+    )
+
     fun createChatRoomSequence(chatRoomId: ChatRoomId): ChatRoomSequence = ChatRoomSequence.of(chatRoomId, 1)
     fun createChatRoomMemberSequence(chatRoomId: ChatRoomId): ChatRoomMemberSequence =
         ChatRoomMemberSequence.of(chatRoomId, 0, 0)
@@ -297,8 +329,8 @@ object TestDataFactory {
 
     fun createChatNumber(chatRoomId: ChatRoomId): ChatRoomSequence = ChatRoomSequence.of(chatRoomId, 0)
 
-    fun createPushToken(pushTokenId: String): PushToken =
-        PushToken.of(pushTokenId, "testToken", PushToken.Provider.ANDROID, "deviceId")
+    fun createPushToken(pushTokenId: String, userId: UserId): PushToken =
+        PushToken.of(pushTokenId, "testToken", PushToken.Provider.ANDROID, "deviceId", userId)
 
     fun createNormalMessage(messageId: String, chatRoomId: ChatRoomId): ChatNormalMessage = ChatNormalMessage.of(
         messageId = messageId,

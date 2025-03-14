@@ -23,4 +23,10 @@ class NotificationSender(
     fun sendChatNotification(chatMessage: ChatMessage, userId: UserId) {
         externalChatNotificationClient.sendMessage(chatMessage, userId)
     }
+
+    fun sendChatNotifications(chatMessage: ChatMessage, userIdList: List<UserId>) {
+        asyncJobExecutor.executeAsyncJobs(userIdList) {
+            externalChatNotificationClient.sendMessage(chatMessage, it)
+        }
+    }
 }

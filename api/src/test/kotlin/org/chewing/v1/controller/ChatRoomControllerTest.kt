@@ -14,7 +14,10 @@ import org.chewing.v1.controller.chat.ChatRoomController
 import org.chewing.v1.dto.request.chat.ChatRoomRequest
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
+import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ThumbnailDirectChatRoom
+import org.chewing.v1.model.chat.room.ThumbnailGroupChatRoom
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.chat.DirectChatRoomService
 import org.chewing.v1.service.chat.GroupChatRoomService
@@ -74,9 +77,9 @@ class ChatRoomControllerTest : RestDocsTest() {
         val chatLog = chatNormalLog
         val userId = UserId.of("testUserId")
         val directChatRoom = TestDataFactory.createDirectChatRoom(chatRoomId)
-        val directChatRooms = listOf(Pair(directChatRoom, chatLog))
         val groupChatRoom = TestDataFactory.createGroupChatRoom(chatRoomId)
-        val groupChatRooms = listOf(Pair(groupChatRoom, chatLog))
+        val directChatRooms = listOf(ThumbnailDirectChatRoom.of(directChatRoom, chatLog))
+        val groupChatRooms = listOf(ThumbnailGroupChatRoom.of(groupChatRoom, chatLog))
 
         every { directChatFacade.processGetDirectChatRooms(any()) } returns directChatRooms
         every { groupChatFacade.processGroupChatRooms(any()) } returns groupChatRooms
@@ -89,9 +92,11 @@ class ChatRoomControllerTest : RestDocsTest() {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body("status", equalTo(200))
             .apply {
-                directChatRooms.forEachIndexed { index, (chatRoom, chatLog) ->
+                directChatRooms.forEachIndexed { index, thumbnailChatRoom ->
                     val chatRoomJsonPath = "data.directChatRooms[$index]"
                     val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
+                    val chatRoom = thumbnailChatRoom.chatRoom
+                    val chatLog = thumbnailChatRoom.chatLog as ChatNormalLog
                     body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequence))
                     body("$chatRoomJsonPath.readSequenceNumber", equalTo(chatRoom.ownSequence.readSequenceNumber))
                     body("$chatRoomJsonPath.joinSequenceNumber", equalTo(chatRoom.ownSequence.joinSequenceNumber))
@@ -108,7 +113,10 @@ class ChatRoomControllerTest : RestDocsTest() {
                     body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoom.roomInfo.status.name.lowercase()))
                     body("$chatRoomJsonPath.friendId", equalTo(chatRoom.roomInfo.friendId.id))
                 }
-                groupChatRooms.forEachIndexed { index, (chatRoom, chatLog) ->
+                groupChatRooms.forEachIndexed { index, thumbnailChatRoom ->
+                    val chatRoom = thumbnailChatRoom.chatRoom
+                    val chatLog = thumbnailChatRoom.chatLog as ChatNormalLog
+
                     val chatRoomMemberStatus = chatRoom.memberInfos
                         .find { it.memberId == userId }!!
                     val chatRoomJsonPath = "data.groupChatRooms[$index]"
@@ -186,9 +194,9 @@ class ChatRoomControllerTest : RestDocsTest() {
         val chatLog = chatNormalLog
         val userId = UserId.of("testUserId")
         val directChatRoom = TestDataFactory.createDirectChatRoom(chatRoomId)
-        val directChatRooms = listOf(Pair(directChatRoom, chatLog))
         val groupChatRoom = TestDataFactory.createGroupChatRoom(chatRoomId)
-        val groupChatRooms = listOf(Pair(groupChatRoom, chatLog))
+        val directChatRooms = listOf(ThumbnailDirectChatRoom.of(directChatRoom, chatLog))
+        val groupChatRooms = listOf(ThumbnailGroupChatRoom.of(groupChatRoom, chatLog))
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
         every { directChatFacade.searchDirectChatRooms(any(), any()) } returns directChatRooms
         every { groupChatFacade.searchGroupChatRooms(any(), any()) } returns groupChatRooms
@@ -202,7 +210,9 @@ class ChatRoomControllerTest : RestDocsTest() {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body("status", equalTo(200))
             .apply {
-                directChatRooms.forEachIndexed { index, (chatRoom, chatLog) ->
+                directChatRooms.forEachIndexed { index, thumbnailChatRoom ->
+                    val chatRoom = thumbnailChatRoom.chatRoom
+                    val chatLog = thumbnailChatRoom.chatLog as ChatNormalLog
                     val chatRoomJsonPath = "data.directChatRooms[$index]"
                     val chatLogJsonPath = "$chatRoomJsonPath.latestChatLog"
                     body("$chatRoomJsonPath.chatRoomSequenceNumber", equalTo(chatRoom.roomSequence.sequence))
@@ -221,7 +231,9 @@ class ChatRoomControllerTest : RestDocsTest() {
                     body("$chatRoomJsonPath.chatRoomOwnStatus", equalTo(chatRoom.roomInfo.status.name.lowercase()))
                     body("$chatRoomJsonPath.friendId", equalTo(chatRoom.roomInfo.friendId.id))
                 }
-                groupChatRooms.forEachIndexed { index, (chatRoom, chatLog) ->
+                groupChatRooms.forEachIndexed { index, thumbnailChatRoom ->
+                    val chatRoom = thumbnailChatRoom.chatRoom
+                    val chatLog = thumbnailChatRoom.chatLog as ChatNormalLog
                     val chatRoomMemberStatus = chatRoom.memberInfos
                         .find { it.memberId == userId }!!
                     val chatRoomJsonPath = "data.groupChatRooms[$index]"
@@ -345,6 +357,7 @@ class ChatRoomControllerTest : RestDocsTest() {
         val commonMessage = "testMessage"
         val directChatRoom = TestDataFactory.createDirectChatRoom(chatRoomId)
         val chatNormalLog = TestDataFactory.createNormalLog(chatRoomId)
+        val thumbnailDirectChatRoom = ThumbnailDirectChatRoom.of(directChatRoom, chatNormalLog)
         val requestBody = ChatRoomRequest.Create(
             friendId = "testFriendId",
             message = commonMessage,
@@ -355,7 +368,7 @@ class ChatRoomControllerTest : RestDocsTest() {
                 any(),
                 commonMessage,
             )
-        } returns Pair(directChatRoom, chatNormalLog)
+        } returns thumbnailDirectChatRoom
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -428,10 +441,9 @@ class ChatRoomControllerTest : RestDocsTest() {
         )
         val testFriendId = "testFriendId"
         val chatFileLog = TestDataFactory.createFileLog(chatRoomId)
-        every { directChatFacade.processCreateDirectChatRoomFilesChat(any(), any(), any()) } returns Pair(
-            directChatRoom,
-            chatFileLog,
-        )
+        val thumbnailDirectChatRoom = ThumbnailDirectChatRoom.of(directChatRoom, chatFileLog)
+
+        every { directChatFacade.processCreateDirectChatRoomFilesChat(any(), any(), any()) } returns thumbnailDirectChatRoom
 
         given()
             .setupAuthenticatedMultipartRequest()
@@ -604,7 +616,9 @@ class ChatRoomControllerTest : RestDocsTest() {
             name = name,
         )
         val chatInviteLog = TestDataFactory.createInviteLog(chatRoomId)
-        every { groupChatFacade.processGroupChatCreate(any(), any(), any()) } returns Pair(groupChatRoom, chatInviteLog)
+        val thumbnailGroupChatRoom = ThumbnailGroupChatRoom.of(groupChatRoom, chatInviteLog)
+
+        every { groupChatFacade.processGroupChatCreate(any(), any(), any()) } returns thumbnailGroupChatRoom
 
         given()
             .setupAuthenticatedJsonRequest()
@@ -746,8 +760,10 @@ class ChatRoomControllerTest : RestDocsTest() {
         val groupChatRoom = TestDataFactory.createGroupChatRoom(chatRoomId)
         val chatLog = TestDataFactory.createNormalLog(chatRoomId)
 
+        val thumbnailGroupChatRoom = ThumbnailGroupChatRoom.of(groupChatRoom, chatLog)
+
         // groupChatFacade.processGetGroupChatRoom이 호출되면 위의 그룹 채팅방과 단일 로그를 반환하도록 모킹
-        every { groupChatFacade.processGetGroupChatRoom(any(), any()) } returns Pair(groupChatRoom, chatLog)
+        every { groupChatFacade.processGetGroupChatRoom(any(), any()) } returns thumbnailGroupChatRoom
 
         // GET 요청 실행 및 검증
         given()
@@ -822,7 +838,10 @@ class ChatRoomControllerTest : RestDocsTest() {
         val userId = UserId.of("testUserId")
         val directChatRoom = TestDataFactory.createDirectChatRoom(chatRoomId)
         val chatLog = TestDataFactory.createNormalLog(chatRoomId)
-        every { directChatFacade.processGetDirectChatRoom(any(), any()) } returns Pair(directChatRoom, chatLog)
+
+        val thumbnailDirectChatRoom = ThumbnailDirectChatRoom.of(directChatRoom, chatLog)
+
+        every { directChatFacade.processGetDirectChatRoom(any(), any()) } returns thumbnailDirectChatRoom
 
         given()
             .setupAuthenticatedMultipartRequest()

@@ -15,11 +15,6 @@ class DirectChatRoomValidator {
             throw ConflictException(ErrorCode.CHATROOM_NOT_SELF)
         }
     }
-    fun isNotActivated(chatRoomInfo: DirectChatRoomInfo?) {
-        if (chatRoomInfo != null && chatRoomInfo.status != ChatRoomMemberStatus.DELETED) {
-            throw ConflictException(ErrorCode.CHATROOM_CREATE_FAILED)
-        }
-    }
     fun isActivated(chatRoomInfo: DirectChatRoomInfo?) {
         if (chatRoomInfo == null || chatRoomInfo.status == ChatRoomMemberStatus.DELETED) {
             throw NotFoundException(ErrorCode.CHATROOM_NOT_FOUND)

@@ -9,7 +9,6 @@ import org.chewing.v1.implementation.chat.grouproom.GroupChatRoomValidator
 import org.chewing.v1.implementation.chat.sequence.ChatSequenceFinder
 import org.chewing.v1.implementation.chat.sequence.ChatSequenceHandler
 import org.chewing.v1.model.chat.room.ChatRoomId
-import org.chewing.v1.model.chat.room.ChatRoomMemberSequence
 import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
 import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.chat.room.GroupChatRoom
@@ -82,8 +81,8 @@ class GroupChatRoomService(
         }
     }
 
-    fun readGroupChatRoom(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int): ChatRoomMemberSequence {
-        return chatSequenceHandler.handleMemberReadSequence(chatRoomId, userId, sequenceNumber)
+    fun readGroupChatRoom(userId: UserId, chatRoomId: ChatRoomId, sequenceNumber: Int) {
+        chatSequenceHandler.handleMemberReadSequence(chatRoomId, userId, sequenceNumber)
     }
 
     fun increaseGroupChatRoomSequence(chatRoomId: ChatRoomId): ChatRoomSequence {

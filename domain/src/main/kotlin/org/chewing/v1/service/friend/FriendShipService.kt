@@ -86,24 +86,24 @@ class FriendShipService(
     }
 
     fun changeFriendFavorite(userId: UserId, friendId: UserId, favorite: Boolean) {
-        val friendShip = friendShipReader.read(userId, friendId)
+        val friendShip = friendShipReader.readByRelation(userId, friendId)
         friendShipValidator.validateInteractionAllowed(friendShip)
         friendShipUpdater.updateFavorite(userId, friendId, favorite)
     }
 
     fun changeFriendName(userId: UserId, friendId: UserId, friendName: String) {
-        val friendShip = friendShipReader.read(userId, friendId)
+        val friendShip = friendShipReader.readByRelation(userId, friendId)
         friendShipValidator.validateInteractionAllowed(friendShip)
         friendShipUpdater.updateName(userId, friendId, friendName)
     }
 
     fun checkAccessibleFriendShip(userId: UserId, friendId: UserId) {
-        val friendShip = friendShipReader.read(userId, friendId)
+        val friendShip = friendShipReader.readByRelation(userId, friendId)
         friendShipValidator.validateInteractionAllowed(friendShip)
     }
 
     fun checkAllowedFriendShip(userId: UserId, friendId: UserId) {
-        val friendShip = friendShipReader.read(userId, friendId)
+        val friendShip = friendShipReader.readByRelation(userId, friendId)
         friendShipValidator.validateAllowedFriend(friendShip)
     }
 }

@@ -16,6 +16,7 @@ import org.chewing.v1.external.ExternalPushNotificationClient
 import org.chewing.v1.external.ExternalSessionClient
 import org.chewing.v1.implementation.friend.friendship.FriendShipReader
 import org.chewing.v1.implementation.notification.NotificationGenerator
+import org.chewing.v1.implementation.notification.NotificationProducer
 import org.chewing.v1.implementation.notification.NotificationSender
 import org.chewing.v1.implementation.session.SessionProvider
 import org.chewing.v1.implementation.user.UserReader
@@ -46,9 +47,10 @@ class NotificationServiceTest {
     private val notificationSender: NotificationSender =
         NotificationSender(externalPushNotificationClient, externalChatNotificationClient, asyncJobExecutor)
     private val sessionProvider: SessionProvider = SessionProvider(externalSessionClient)
+    private val notificationProducer = NotificationProducer(friendShipReader, userReader)
     private val notificationGenerator = NotificationGenerator()
     private val notificationService =
-        NotificationService(userReader, notificationGenerator, notificationSender, sessionProvider, friendShipReader)
+        NotificationService(notificationGenerator, notificationSender, sessionProvider, notificationProducer)
 
     @Test
     fun `웹소켓 을 통한 전송`() {
@@ -74,7 +76,7 @@ class NotificationServiceTest {
         val friendId = TestDataFactory.createFriendId()
         val chatRoomId = ChatRoomId.of("chatRoomId")
         val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
-        val pushToken = TestDataFactory.createPushToken("pushToken")
+        val pushToken = TestDataFactory.createPushToken("pushToken", friendId)
         val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
         val chatMessage = TestDataFactory.createNormalMessage("messageId", chatRoomId)
         val notificationSlot = slot<List<Notification>>()
@@ -82,8 +84,8 @@ class NotificationServiceTest {
 
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
-        every { friendShipRepository.read(friendId, userId) } returns friendShip
-        every { pushNotificationRepository.reads(friendId) } returns listOf(pushToken)
+        every { friendShipRepository.readByRelation(friendId, userId) } returns friendShip
+        every { pushNotificationRepository.read(friendId) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
 
@@ -119,7 +121,7 @@ class NotificationServiceTest {
         val chatRoomId = ChatRoomId.of("chatRoomId")
 
         val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
-        val pushToken = TestDataFactory.createPushToken("pushToken")
+        val pushToken = TestDataFactory.createPushToken("pushToken", friendId)
         val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
         val chatMessage = TestDataFactory.createNormalMessage("messageId", chatRoomId)
         val notificationSlot = slot<List<Notification>>()
@@ -127,8 +129,8 @@ class NotificationServiceTest {
 
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
-        every { friendShipRepository.read(friendId, userId) } returns friendShip
-        every { pushNotificationRepository.reads(friendId) } returns listOf(pushToken)
+        every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
+        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
         // when
@@ -153,7 +155,7 @@ class NotificationServiceTest {
         val pushTokenId = "pushToken"
         val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
         val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
-        val pushToken = TestDataFactory.createPushToken(pushTokenId)
+        val pushToken = TestDataFactory.createPushToken(pushTokenId, friendId)
         val chatRoomId = ChatRoomId.of("chatRoomId")
         val chatMessage = TestDataFactory.createReadMessage(chatRoomId)
         val notificationSlot = slot<List<Notification>>()
@@ -161,8 +163,8 @@ class NotificationServiceTest {
 
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
-        every { friendShipRepository.read(friendId, userId) } returns friendShip
-        every { pushNotificationRepository.reads(friendId) } returns listOf(pushToken)
+        every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
+        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
 
@@ -183,7 +185,7 @@ class NotificationServiceTest {
         val pushTokenId = "pushToken"
         val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
         val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
-        val pushToken = TestDataFactory.createPushToken(pushTokenId)
+        val pushToken = TestDataFactory.createPushToken(pushTokenId, friendId)
         val chatRoomId = ChatRoomId.of("chatRoomId")
         val chatNormalMessage = TestDataFactory.createChatNormalLog("messageId", chatRoomId, userId)
         val chatMessage = TestDataFactory.createReplyMessage("messageId", chatRoomId, chatNormalMessage)
@@ -191,8 +193,8 @@ class NotificationServiceTest {
         val friendUser = TestDataFactory.createUserInfo(friendId, AccessStatus.ACCESS)
 
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
-        every { pushNotificationRepository.reads(friendId) } returns listOf(pushToken)
-        every { friendShipRepository.read(friendId, userId) } returns friendShip
+        every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
+        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
@@ -220,7 +222,7 @@ class NotificationServiceTest {
         val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
         val pushTokenId = "pushToken"
         val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
-        val pushToken = TestDataFactory.createPushToken(pushTokenId)
+        val pushToken = TestDataFactory.createPushToken(pushTokenId, friendId)
         val chatRoomId = ChatRoomId.of("chatRoomId")
         val chatMessage = TestDataFactory.createFileMessage("messageId", chatRoomId)
         val notificationSlot = slot<List<Notification>>()
@@ -228,8 +230,8 @@ class NotificationServiceTest {
 
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
-        every { pushNotificationRepository.reads(friendId) } returns listOf(pushToken)
-        every { friendShipRepository.read(friendId, userId) } returns friendShip
+        every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
+        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
         // when
@@ -252,7 +254,7 @@ class NotificationServiceTest {
         val pushTokenId = "pushToken"
         val user = TestDataFactory.createUserInfo(userId, AccessStatus.ACCESS)
         val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
-        val pushToken = TestDataFactory.createPushToken(pushTokenId)
+        val pushToken = TestDataFactory.createPushToken(pushTokenId, friendId)
         val chatRoomId = ChatRoomId.of("chatRoomId")
         val chatMessage = TestDataFactory.createInviteMessage("messageId", chatRoomId)
         val notificationSlot = slot<List<Notification>>()
@@ -260,9 +262,9 @@ class NotificationServiceTest {
 
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
-        every { pushNotificationRepository.reads(friendId) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
-        every { friendShipRepository.read(friendId, userId) } returns friendShip
+        every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
+        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
 
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
         // when
@@ -290,19 +292,20 @@ class NotificationServiceTest {
         val pushTokenId = "pushToken"
         val friendShip = TestDataFactory.createFriendShip(userId, friendId, FriendShipStatus.FRIEND)
         val chatRoomId = ChatRoomId.of("chatRoomId")
-        val pushToken = TestDataFactory.createPushToken(pushTokenId)
+        val pushToken = TestDataFactory.createPushToken(pushTokenId, friendId)
         val chatMessage = TestDataFactory.createLeaveMessage("messageId", chatRoomId)
         val notificationSlot = slot<List<Notification>>()
         val friendUser = TestDataFactory.createUserInfo(friendId, AccessStatus.ACCESS)
 
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
-        every { pushNotificationRepository.reads(friendId) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
-        every { friendShipRepository.read(friendId, userId) } returns friendShip
+        every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
+        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
 
         // When
+
         notificationService.handleMessagesNotification(chatMessage, listOf(friendId), userId)
 
         // Then

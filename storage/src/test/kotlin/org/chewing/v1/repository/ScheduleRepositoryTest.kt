@@ -10,7 +10,9 @@ import org.chewing.v1.repository.jpa.schedule.ScheduleRepositoryImpl
 import org.chewing.v1.repository.support.JpaDataGenerator
 import org.chewing.v1.repository.support.ScheduleProvider
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.OptimisticLockingFailureException
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
@@ -59,6 +61,32 @@ class ScheduleRepositoryTest : JpaContextTest() {
         assert(result.get().toScheduleInfo().content.title == newContent.title)
         assert(result.get().toScheduleInfo().content.location == newContent.location)
         assert(result.get().toScheduleInfo().scheduleId == schedule.scheduleId)
+    }
+
+    @Test
+    fun `동일 엔티티 동시 업데이트 시 낙관적 락 실패`() {
+        // 초기 스케줄 엔티티 생성
+        val content = ScheduleProvider.buildContent()
+        val time = ScheduleProvider.buildTime()
+        val schedule = jpaDataGenerator.scheduleEntityData(content, time)
+
+        // 동일한 엔티티를 두 번 조회하여 두 개의 인스턴스로 만듭니다.
+        val entity1 = scheduleJpaRepository.findById(schedule.scheduleId.id).get()
+        val entity2 = scheduleJpaRepository.findById(schedule.scheduleId.id).get()
+
+        // entity1 업데이트 후 저장 (이 과정에서 버전이 증가)
+        entity1.updateInfo(ScheduleProvider.buildNewTime(), ScheduleProvider.buildNewContent())
+        scheduleJpaRepository.save(entity1)
+        scheduleJpaRepository.flush() // DB에 즉시 반영하여 버전 증가
+
+        // entity2는 이전 버전을 보유한 상태입니다.
+        entity2.updateInfo(ScheduleProvider.buildNewTime(), ScheduleProvider.buildNewContent())
+
+        // entity2 저장 시, 버전 불일치로 인해 OptimisticLockingFailureException 발생해야 함
+        assertThrows<OptimisticLockingFailureException> {
+            scheduleJpaRepository.save(entity2)
+            scheduleJpaRepository.flush()
+        }
     }
 
     @Test

@@ -36,8 +36,8 @@ class ChatSequenceHandler(
         chatRoomSequenceRepository.appendSequence(chatRoomId)
     }
 
-    fun handleMemberReadSequence(chatRoomId: ChatRoomId, userId: UserId, sequenceNumber: Int): ChatRoomMemberSequence {
-        return chatRoomMemberSequenceRepository.updateReadSequence(chatRoomId, userId, sequenceNumber) ?: throw ConflictException(
+    fun handleMemberReadSequence(chatRoomId: ChatRoomId, userId: UserId, sequenceNumber: Int) {
+        chatRoomMemberSequenceRepository.updateReadSequence(chatRoomId, userId, sequenceNumber) ?: throw ConflictException(
             ErrorCode.CHATROOM_READ_FAILED,
         )
     }

@@ -32,7 +32,11 @@ class UserReader(
         return userRepository.reads(userIds, status)
     }
 
-    fun readsPushToken(userId: UserId): List<PushToken> {
-        return pushNotificationRepository.reads(userId)
+    fun readPushTokens(userId: UserId): List<PushToken> {
+        return pushNotificationRepository.read(userId)
+    }
+
+    fun readsPushTokens(userIds: List<UserId>): List<PushToken> {
+        return pushNotificationRepository.reads(userIds)
     }
 }

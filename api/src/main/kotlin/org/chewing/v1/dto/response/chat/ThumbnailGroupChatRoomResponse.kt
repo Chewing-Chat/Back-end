@@ -4,13 +4,12 @@ import org.chewing.v1.model.chat.log.ChatCommentLog
 import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatInviteLog
 import org.chewing.v1.model.chat.log.ChatLeaveLog
-import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.log.ChatReplyLog
-import org.chewing.v1.model.chat.room.GroupChatRoom
+import org.chewing.v1.model.chat.room.ThumbnailGroupChatRoom
 import org.chewing.v1.model.user.UserId
 
-data class FullGroupChatRoomResponse(
+data class ThumbnailGroupChatRoomResponse(
     val chatRoomId: String,
     val chatRoomName: String,
     val readSequenceNumber: Int,
@@ -21,14 +20,16 @@ data class FullGroupChatRoomResponse(
     val friendInfos: List<GroupChatRoomMemberResponse>,
 ) {
     companion object {
-        fun of(chatRoom: GroupChatRoom, chatLog: ChatLog, userId: UserId): FullGroupChatRoomResponse {
-            val friendInfos = chatRoom.memberInfos
+        fun of(thumbnailChatRoom: ThumbnailGroupChatRoom, userId: UserId): ThumbnailGroupChatRoomResponse {
+            val friendInfos = thumbnailChatRoom.chatRoom.memberInfos
                 .filter { it.memberId != userId }
-            val chatRoomOwnStatus = chatRoom.memberInfos
+            val chatRoomOwnStatus = thumbnailChatRoom.chatRoom.memberInfos
                 .find { it.memberId == userId }!!
+            val chatLog = thumbnailChatRoom.chatLog
+            val chatRoom = thumbnailChatRoom.chatRoom
             return when (chatLog) {
-                is ChatReplyLog -> FullGroupChatRoomResponse(
-                    chatRoomId = chatRoom.roomInfo.chatRoomId.id,
+                is ChatReplyLog -> ThumbnailGroupChatRoomResponse(
+                    chatRoomId = thumbnailChatRoom.chatRoom.roomInfo.chatRoomId.id,
                     chatRoomOwnStatus = chatRoomOwnStatus.status.name.lowercase(),
                     latestChatLog = ChatLogResponse.from(chatLog),
                     readSequenceNumber = chatRoom.ownSequence.readSequenceNumber,
@@ -39,7 +40,7 @@ data class FullGroupChatRoomResponse(
 
                 )
 
-                is ChatFileLog -> FullGroupChatRoomResponse(
+                is ChatFileLog -> ThumbnailGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomOwnStatus = chatRoomOwnStatus.status.name.lowercase(),
                     latestChatLog = ChatLogResponse.from(chatLog),
@@ -50,7 +51,7 @@ data class FullGroupChatRoomResponse(
                     chatRoomName = chatRoom.roomInfo.name,
 
                 )
-                is ChatInviteLog -> FullGroupChatRoomResponse(
+                is ChatInviteLog -> ThumbnailGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomOwnStatus = chatRoomOwnStatus.status.name.lowercase(),
                     latestChatLog = ChatLogResponse.from(chatLog),
@@ -61,7 +62,7 @@ data class FullGroupChatRoomResponse(
                     chatRoomName = chatRoom.roomInfo.name,
 
                 )
-                is ChatLeaveLog -> FullGroupChatRoomResponse(
+                is ChatLeaveLog -> ThumbnailGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomOwnStatus = chatRoomOwnStatus.status.name.lowercase(),
                     latestChatLog = ChatLogResponse.from(chatLog),
@@ -72,7 +73,7 @@ data class FullGroupChatRoomResponse(
                     chatRoomName = chatRoom.roomInfo.name,
 
                 )
-                is ChatNormalLog -> FullGroupChatRoomResponse(
+                is ChatNormalLog -> ThumbnailGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomOwnStatus = chatRoomOwnStatus.status.name.lowercase(),
                     latestChatLog = ChatLogResponse.from(chatLog),
@@ -83,7 +84,7 @@ data class FullGroupChatRoomResponse(
                     chatRoomName = chatRoom.roomInfo.name,
                 )
 
-                is ChatCommentLog -> FullGroupChatRoomResponse(
+                is ChatCommentLog -> ThumbnailGroupChatRoomResponse(
                     chatRoomId = chatRoom.roomInfo.chatRoomId.id,
                     chatRoomOwnStatus = chatRoomOwnStatus.status.name.lowercase(),
                     latestChatLog = ChatLogResponse.from(chatLog),

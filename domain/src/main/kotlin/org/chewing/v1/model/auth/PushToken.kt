@@ -1,9 +1,12 @@
 package org.chewing.v1.model.auth
 
+import org.chewing.v1.model.user.UserId
+
 class PushToken private constructor(
     val pushTokenId: String,
     val pushToken: String,
     val device: Device,
+    val userId: UserId,
 ) {
     companion object {
         fun of(
@@ -11,11 +14,13 @@ class PushToken private constructor(
             fcmToken: String,
             provider: Provider,
             deviceId: String,
+            userId: UserId,
         ): PushToken {
             return PushToken(
                 pushTokenId = pushTokenId,
                 pushToken = fcmToken,
                 device = Device.of(deviceId, provider),
+                userId = userId,
             )
         }
     }

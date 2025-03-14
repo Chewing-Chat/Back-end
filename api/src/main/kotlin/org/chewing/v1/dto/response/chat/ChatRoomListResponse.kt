@@ -1,27 +1,22 @@
 package org.chewing.v1.dto.response.chat
 
-import org.chewing.v1.model.chat.log.ChatLog
-import org.chewing.v1.model.chat.room.DirectChatRoom
-import org.chewing.v1.model.chat.room.GroupChatRoom
+import org.chewing.v1.model.chat.room.ThumbnailDirectChatRoom
+import org.chewing.v1.model.chat.room.ThumbnailGroupChatRoom
 import org.chewing.v1.model.user.UserId
 
 data class ChatRoomListResponse(
-    val directChatRooms: List<FullDirectChatRoomResponse>,
-    val groupChatRooms: List<FullGroupChatRoomResponse>,
+    val directChatRooms: List<ThumbnailDirectChatRoomResponse>,
+    val groupChatRooms: List<ThumbnailGroupChatRoomResponse>,
 ) {
     companion object {
         fun from(
-            directChats: List<Pair<DirectChatRoom, ChatLog>>,
-            groupChats: List<Pair<GroupChatRoom, ChatLog>>,
+            thumbnailDirectChatRooms: List<ThumbnailDirectChatRoom>,
+            thumbnailGroupChatRooms: List<ThumbnailGroupChatRoom>,
             userId: UserId,
         ): ChatRoomListResponse {
-            val directChatResponses = directChats.map { (chatRoom, chatLog) ->
-                FullDirectChatRoomResponse.of(chatRoom, chatLog)
-            }
+            val directChatResponses = thumbnailDirectChatRooms.map { ThumbnailDirectChatRoomResponse.of(it) }
 
-            val groupChatResponses = groupChats.map { (chatRoom, chatLog) ->
-                FullGroupChatRoomResponse.of(chatRoom, chatLog, userId)
-            }
+            val groupChatResponses = thumbnailGroupChatRooms.map { ThumbnailGroupChatRoomResponse.of(it, userId) }
 
             return ChatRoomListResponse(directChatResponses, groupChatResponses)
         }

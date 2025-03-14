@@ -12,6 +12,7 @@ class FriendShipReader(
     private val friendShipRepository: FriendShipRepository,
 ) {
     fun reads(userId: UserId): List<FriendShip> = friendShipRepository.reads(userId)
-    fun read(userId: UserId, friendId: UserId): FriendShip = friendShipRepository.read(userId, friendId) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
+    fun readByRelation(userId: UserId, friendId: UserId): FriendShip = friendShipRepository.readByRelation(userId, friendId) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
+    fun readsByRelation(friendIds: List<UserId>, userId: UserId): List<FriendShip> = friendShipRepository.readsByRelation(friendIds, userId)
     fun readsFavorite(userId: UserId): List<FriendShip> = friendShipRepository.readsFavorite(userId)
 }

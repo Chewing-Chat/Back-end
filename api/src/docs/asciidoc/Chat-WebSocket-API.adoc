@@ -208,6 +208,7 @@
 |`Delete` |메시지 삭제 알림
 |`Reply`  |답장(Reply) 메시지
 |`Error`  |에러 상태 전달 (예: 권한 없음, 유효성 오류 등)
+|`Comment`  |피드 댓글 메시지
 |===
 
 === 4.1 개인 채팅방 일반 메시지 수신
@@ -235,7 +236,7 @@
 |`chatRoomId` |채팅방 ID
 |`chatRoomType` |채팅방 타입 (direct, group)
 |`senderId` |보낸 사람 ID
-|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`type` |메시지 타입(normal)
 |`text` |메시지 내용
 |`timestamp` |메시지 생성 시간
 |`seqNumber` |메시지 순번
@@ -243,7 +244,7 @@
 
 === 4.2 개인 채팅방 파일 메시지 수신
 
-- **STOMP SEND Destination**: `/user/queue/chat/group`
+- **STOMP SEND Destination**: `/user/queue/chat/direct`
 - **Response**:
 
 [source,json]
@@ -271,7 +272,7 @@
 |`chatRoomId` |채팅방 ID
 |`chatRoomType` |채팅방 타입 (direct, group)
 |`senderId` |보낸 사람 ID
-|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`type` |메시지 타입 (file)
 |`timestamp` |메시지 생성 시간
 |`seqNumber` |메시지 순번
 |`files` |파일 정보
@@ -305,7 +306,7 @@
 |`chatRoomId` |채팅방 ID
 |`chatRoomType` |채팅방 타입 (direct, group)
 |`senderId` |보낸 사람 ID
-|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`type` |메시지 타입 (delete)
 |`timestamp` |메시지 생성 시간
 |`seqNumber` |메시지 순번
 |===
@@ -339,7 +340,7 @@
 |`chatRoomId` |채팅방 ID
 |`chatRoomType` |채팅방 타입 (direct, group)
 |`senderId` |보낸 사람 ID
-|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`type` |메시지 타입 (reply)
 |`text` |메시지 내용
 |`timestamp` |메시지 생성 시간
 |`seqNumber` |메시지 순번
@@ -372,10 +373,57 @@
 |`chatRoomId` |채팅방 ID
 |`chatRoomType` |채팅방 타입 (direct, group)
 |`senderId` |보낸 사람 ID
-|`type` |메시지 타입 (normal, file, delete, reply, error)
+|`type` |메시지 타입 (error)
 |`timestamp` |메시지 생성 시간
 |`errorCode` |에러 코드
 |`errorMessage` |에러 메시지 내용
+|===
+
+=== 4.6 개인 채팅방 댓글 메시지 수신
+
+- **STOMP SEND Destination**: `/user/queue/chat/direct`
+- **Response**:
+
+[source,json]
+----
+{
+  "messageId": "testMessageId2",
+  "chatRoomId": "testChatRoomId2",
+  "chatRoomType": "group",
+  "senderId": "someUserId",
+  "type": "comment",
+  "timestamp": "2025-02-13 10:00:00",
+  "seqNumber": 2,
+  "files" : {
+    "fileType": "image/png",
+    "fileUrl": "http://some-url.com/some-image.jpg",
+    "fileName": "some-image.jpg"
+  },
+  "comment" : "comment",
+  "feedId" : "testFeedId",
+  "feedType" : "file/text_blue/text_sky",
+  "content" : "testFeedContent"
+}
+----
+
+|===
+|응답 필드 |설명
+
+|`messageId` |메시지 ID
+|`chatRoomId` |채팅방 ID
+|`chatRoomType` |채팅방 타입 (direct, group)
+|`senderId` |보낸 사람 ID
+|`type` |메시지 타입 (file)
+|`timestamp` |메시지 생성 시간
+|`seqNumber` |메시지 순번
+|`files` | 피드 파일 정보
+|`fileType` |파일 타입
+|`fileUrl` |파일 URL
+|`fileName` |파일 이름
+|`comment` |댓글 내용
+|`feedId` |피드 ID
+|`feedType` |피드 타입
+|`content` |피드 내용
 |===
 
 == 5. 그룹 채팅방 STOMP 메시지 수신
