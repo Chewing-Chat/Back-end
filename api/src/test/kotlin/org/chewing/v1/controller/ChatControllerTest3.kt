@@ -31,7 +31,7 @@ class ChatControllerTest3 : IntegrationTest() {
 
     @Test
     fun `Authorization 헤더 없이 연결 시도 - 실패해야 함`() {
-        val url = "ws://localhost:$port/ws-stomp"
+        val url = "ws://localhost:$port/ws-stomp-pure"
         val webSocketHeaders = WebSocketHttpHeaders()
         val futureSession = stompClient.connectAsync(url, webSocketHeaders, object : StompSessionHandlerAdapter() {})
 
