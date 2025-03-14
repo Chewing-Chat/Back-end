@@ -24,13 +24,12 @@ class WebSocketConfig(
     }
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        // WebSocket 연결 엔드포인트 등록
         registry.addEndpoint("/ws-stomp")
-            .setAllowedOrigins("*") // 모든 출처 허용
+            .setAllowedOriginPatterns("*")
             .setHandshakeHandler(stompCustomHandshakeHandler)
-            .withSockJS() // SockJS 지원 추가
-        registry.addEndpoint("/ws-stomp")
-            .setAllowedOrigins("*") // 모든 출처 허용
+            .withSockJS()
+        registry.addEndpoint("/ws-stomp-pure")
+            .setAllowedOriginPatterns("*")
             .setHandshakeHandler(stompCustomHandshakeHandler)
         registry.setErrorHandler(customStompErrorHandler)
     }

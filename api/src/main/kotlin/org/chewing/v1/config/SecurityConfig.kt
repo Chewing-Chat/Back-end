@@ -22,6 +22,8 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .cors()
+            .and()
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
@@ -36,6 +38,7 @@ class SecurityConfig(
                         "/api/auth/logout",
                         "/api/auth/reset/verify",
                         "/ws-stomp/**",
+                        "/ws-stomp-pure/**",
                         "/docs/**",
                     ).permitAll()
                     .anyRequest().authenticated()
