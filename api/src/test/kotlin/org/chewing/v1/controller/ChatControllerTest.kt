@@ -52,7 +52,7 @@ class ChatControllerTest : IntegrationTest() {
         val stompHeaders = StompHeaders().apply {
             add("Authorization", "Bearer $token")
         }
-        val url = "ws://localhost:$port/ws-stomp"
+        val url = "ws://localhost:$port/ws-stomp-pure"
 
         // 재시도 메커니즘 구현
         val maxRetries = 5

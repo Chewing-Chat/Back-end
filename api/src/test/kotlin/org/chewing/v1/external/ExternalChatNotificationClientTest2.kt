@@ -63,7 +63,7 @@ class ExternalChatNotificationClientTest2 : IntegrationTest() {
             add("Authorization", "Bearer $token")
         }
 
-        val url = "ws://localhost:$port/ws-stomp"
+        val url = "ws://localhost:$port/ws-stomp-pure"
 
         val futureSession = stompClient.connectAsync(
             url,
