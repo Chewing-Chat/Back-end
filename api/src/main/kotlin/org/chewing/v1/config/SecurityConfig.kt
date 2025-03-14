@@ -38,6 +38,7 @@ class SecurityConfig(
                         "/api/auth/logout",
                         "/api/auth/reset/verify",
                         "/ws-stomp/**",
+                        "/ws-stomp-pure/**",
                         "/docs/**",
                     ).permitAll()
                     .anyRequest().authenticated()
