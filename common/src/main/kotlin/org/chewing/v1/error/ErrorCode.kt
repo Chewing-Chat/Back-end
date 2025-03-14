@@ -20,6 +20,7 @@ enum class ErrorCode(
     PHONE_NUMBER_NOT_FOUND("AUTH_8", "해당 전화번호를 찾을 수 없습니다."),
     WRONG_PASSWORD("AUTH_9", "비밀번호가 틀렸습니다."),
     INVALID_PHONE_NUMBER("AUTH_10", "잘못된 전화번호입니다."),
+    ACCESS_DENIED("AUTH_11", "접근 권한이 없습니다."),
 
     // Common
     PATH_WRONG("COMMON_1", "잘못된 메세드입니다."),
