@@ -9,7 +9,13 @@ import org.hibernate.annotations.DynamicInsert
 
 @DynamicInsert
 @Entity
-@Table(name = "friend_ship", schema = "chewing")
+@Table(
+    name = "friend_ship",
+    schema = "chewing",
+    indexes = [
+        Index(name = "friend_ship_idx_user_id_favorite", columnList = "user_id, favorite"),
+    ],
+)
 internal class FriendShipJpaEntity(
     @EmbeddedId
     private val id: FriendShipId,

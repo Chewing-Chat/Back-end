@@ -4,6 +4,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Id
+import jakarta.persistence.Index
 import jakarta.persistence.Table
 import org.chewing.v1.jpaentity.common.BaseEntity
 import org.chewing.v1.model.chat.room.ChatRoomId
@@ -15,7 +16,15 @@ import java.util.UUID
 
 @DynamicInsert
 @Entity
-@Table(name = "direct_chat_room", schema = "chewing")
+@Table(
+    name = "direct_chat_room",
+    schema = "chewing",
+    indexes = [
+        Index(name = "direct_chat_room_idx_user_a_id_status", columnList = "userAId, userAStatus"),
+        Index(name = "direct_chat_room_idx_user_b_id_status", columnList = "userBId, userBStatus"),
+        Index(name = "direct_chat_room_idx_user_a_id_user_b_id", columnList = "userAId, userBId"),
+    ],
+)
 internal class DirectChatRoomJpaEntity(
     @Id
     private val chatRoomId: String = UUID.randomUUID().toString(),

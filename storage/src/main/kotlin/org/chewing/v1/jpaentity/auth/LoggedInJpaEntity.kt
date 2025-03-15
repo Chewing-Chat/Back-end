@@ -7,7 +7,14 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
-@Table(name = "logged_in", schema = "chewing")
+@Table(
+    name = "logged_in",
+    schema = "chewing",
+    indexes = [
+        Index(name = "logged_in_idx_refresh_token", columnList = "refreshToken"),
+        Index(name = "logged_in_idx_refresh_token_user", columnList = "refreshToken, userId"),
+    ],
+)
 internal class LoggedInJpaEntity(
     @Id
     private val loggedInId: String = UUID.randomUUID().toString(),
@@ -30,10 +37,6 @@ internal class LoggedInJpaEntity(
 
     fun toRefreshToken(): RefreshToken {
         return RefreshToken.of(refreshToken, expiredAt)
-    }
-
-    fun toLoggedInId(): String {
-        return loggedInId
     }
 
     fun updateRefreshToken(refreshToken: RefreshToken) {

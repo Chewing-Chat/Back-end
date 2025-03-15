@@ -4,6 +4,7 @@ import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
+import jakarta.persistence.Index
 import jakarta.persistence.Table
 import org.chewing.v1.jpaentity.common.BaseEntity
 import org.chewing.v1.model.chat.room.ChatRoomId
@@ -14,7 +15,14 @@ import org.hibernate.annotations.DynamicInsert
 
 @DynamicInsert
 @Entity
-@Table(name = "group_chat_room_member", schema = "chewing")
+@Table(
+    name = "group_chat_room_member",
+    schema = "chewing",
+    indexes = [
+        Index(name = "group_chat_room_member_idx_chat_room_id_status", columnList = "chat_room_id, userStatus"),
+        Index(name = "group_chat_room_member_idx_user_id_status", columnList = "user_id, userStatus"),
+    ],
+)
 internal class GroupChatRoomMemberJpaEntity(
     @EmbeddedId
     private val id: ChatRoomMemberId,
