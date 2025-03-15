@@ -7,7 +7,15 @@ import org.chewing.v1.model.user.UserInfo
 import java.util.*
 
 @Entity
-@Table(name = "push_notification", schema = "chewing")
+@Table(
+    name = "push_notification",
+    schema = "chewing",
+    indexes = [
+        Index(name = "push_notification_idx_device_provider", columnList = "deviceId, provider"),
+        Index(name = "push_notification_idx_user_id", columnList = "userId"),
+        Index(name = "push_notification_idx_app_token_user_id", columnList = "appToken, userId"),
+    ],
+)
 internal class PushNotificationJpaEntity(
     @Id
     @Column(name = "push_notification_id")

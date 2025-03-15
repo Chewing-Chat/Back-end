@@ -14,7 +14,14 @@ import java.util.*
 
 @DynamicInsert
 @Entity
-@Table(name = "`user`", schema = "chewing")
+@Table(
+    name = "`user`",
+    schema = "chewing",
+    indexes = [
+        Index(name = "user_idx_phone_status", columnList = "phoneNumber, status"),
+        Index(name = "user_idx_userid_status", columnList = "userId, status"),
+    ],
+)
 internal class UserJpaEntity(
     @Id
     private val userId: String = UUID.randomUUID().toString(),
