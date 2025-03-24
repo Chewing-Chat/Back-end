@@ -16,6 +16,7 @@ import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
 import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
 import org.chewing.v1.model.chat.room.ThumbnailDirectChatRoom
 import org.chewing.v1.model.chat.room.ThumbnailGroupChatRoom
 import org.chewing.v1.model.user.UserId
@@ -548,7 +549,7 @@ class ChatRoomControllerTest : RestDocsTest() {
             chatRoomId = chatRoomId.id,
             favorite = favorite,
         )
-        every { directChatRoomService.favoriteDirectChatRoomType(any(), any(), any()) } just Runs
+        every { directChatRoomService.favoriteDirectChatRoomType(any(), any(), ChatRoomMemberStatus.FAVORITE) } just Runs
 
         given()
             .setupAuthenticatedJsonRequest()

@@ -42,7 +42,7 @@ class ChatRoomRequest {
     ) {
         fun toFavorite(): ChatRoomMemberStatus {
             if (favorite) {
-                ChatRoomMemberStatus.FAVORITE
+                return ChatRoomMemberStatus.FAVORITE
             }
             return ChatRoomMemberStatus.NORMAL
         }
