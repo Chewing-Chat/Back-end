@@ -22,14 +22,14 @@ class NotificationService(
         // 오프라인 사용자 목록에서 자기 자신 제거
         val offlineUserIds = offlineUserIdsOriginal.filter { it != userId }
 
+        if (onlineUserIds.isNotEmpty()) {
+            notificationSender.sendChatNotifications(chatMessage, onlineUserIds)
+        }
+
         if (offlineUserIds.isNotEmpty()) {
             val notificationInfos = notificationProducer.produceNotificationInfos(userId, offlineUserIds)
             val notificationList = notificationGenerator.generateMessageNotifications(notificationInfos, chatMessage)
             notificationSender.sendPushNotification(notificationList)
-        }
-
-        if (onlineUserIds.isNotEmpty()) {
-            notificationSender.sendChatNotifications(chatMessage, onlineUserIds)
         }
     }
 
