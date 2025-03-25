@@ -140,8 +140,8 @@ class GroupChatFacade(
     fun processGroupChatInvite(chatRoomId: ChatRoomId, userId: UserId, inviteUserId: UserId) {
         try {
             val memberIds = getMemberIds(userId, chatRoomId)
-            val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
             groupChatRoomService.inviteGroupChatRoom(userId, chatRoomId, inviteUserId)
+            val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
             val chatMessage =
                 chatLogService.inviteMessage(chatRoomId, userId, inviteUserId, chatSequence, ChatRoomType.GROUP)
             groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)

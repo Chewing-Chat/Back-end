@@ -44,7 +44,6 @@ class GroupChatRoomService(
         groupChatRoomValidator.isParticipant(chatRoomId, userId)
         groupChatRoomAppender.appendMember(chatRoomId, friendId)
         val chatRoomSequence = chatSequenceFinder.findCurrentRoomSequence(chatRoomId)
-        chatSequenceHandler.handleCreateRoomSequence(chatRoomId)
         chatSequenceHandler.handleJoinMemberSequence(chatRoomId, friendId, chatRoomSequence)
     }
 
