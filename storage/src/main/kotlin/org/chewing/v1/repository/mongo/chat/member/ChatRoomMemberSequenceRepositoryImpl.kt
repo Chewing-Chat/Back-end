@@ -58,7 +58,7 @@ class ChatRoomMemberSequenceRepositoryImpl(
         )
 
         val options = FindAndModifyOptions.options()
-            .upsert(false)
+            .upsert(true)
             .returnNew(true)
 
         val update = Update()

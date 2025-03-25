@@ -138,18 +138,13 @@ class GroupChatFacade(
     }
 
     fun processGroupChatInvite(chatRoomId: ChatRoomId, userId: UserId, inviteUserId: UserId) {
-        try {
-            groupChatRoomService.inviteGroupChatRoom(userId, chatRoomId, inviteUserId)
-            val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
-            val chatMessage =
-                chatLogService.inviteMessage(chatRoomId, inviteUserId, userId, chatSequence, ChatRoomType.GROUP)
-            groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
-            val memberIds = getMemberIds(userId, chatRoomId)
-            notificationService.handleMessagesNotification(chatMessage, memberIds, userId)
-        } catch (e: ConflictException) {
-            val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
-            notificationService.handleMessageNotification(errorMessage, userId, userId)
-        }
+        groupChatRoomService.inviteGroupChatRoom(userId, chatRoomId, inviteUserId)
+        val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
+        val chatMessage =
+            chatLogService.inviteMessage(chatRoomId, inviteUserId, userId, chatSequence, ChatRoomType.GROUP)
+        groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
+        val memberIds = getMemberIds(userId, chatRoomId)
+        notificationService.handleMessagesNotification(chatMessage, memberIds, userId)
     }
 
     fun processGroupChatLeave(chatRoomId: ChatRoomId, userId: UserId) {
