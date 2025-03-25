@@ -27,6 +27,7 @@ object FileHelper {
             if (originalImage != null) {
                 val baos = ByteArrayOutputStream()
                 Thumbnails.of(originalImage)
+                    .scale(1.0)
                     .outputFormat("jpg")
                     .toOutputStream(baos)
                 val optimizedBytes = baos.toByteArray()
