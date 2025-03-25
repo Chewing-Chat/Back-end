@@ -56,12 +56,14 @@ class ChatRoomMemberSequenceRepositoryTest : MongoContextTest() {
     }
 
     @Test
-    fun `입장 시퀀스를 업데이트 - 실패 - 없음`() {
+    fun `입장 시퀀스를 업데이트 - 성공 업다면 생성`() {
         val chatRoomId = generateChatRoomId()
         val userId = generateUserId()
         val sequenceNumber = 1
-        val result = chatRoomMemberSequenceRepositoryImpl.updateJoinSequence(chatRoomId, userId, ChatRoomSequence.of(chatRoomId, sequenceNumber.plus(1)))
-        assert(result == null)
+        val result = chatRoomMemberSequenceRepositoryImpl.updateJoinSequence(chatRoomId, userId, ChatRoomSequence.of(chatRoomId, sequenceNumber))
+        assert(result != null)
+        assert(result!!.joinSequenceNumber == sequenceNumber)
+        assert(result.readSequenceNumber == sequenceNumber)
     }
 
     @Test
