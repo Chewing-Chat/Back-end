@@ -154,11 +154,12 @@ class GroupChatFacade(
 
     fun processGroupChatLeave(chatRoomId: ChatRoomId, userId: UserId) {
         try {
+            val friendIds = getFriendIds(userId, chatRoomId)
             groupChatRoomService.deleteGroupChatRoom(userId, chatRoomId)
             val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
             val chatMessage = chatLogService.leaveMessage(chatRoomId, userId, chatSequence, ChatRoomType.GROUP)
             groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
-            notificationService.handleMessageNotification(chatMessage, userId, userId)
+            notificationService.handleMessagesNotification(chatMessage, friendIds, userId)
         } catch (e: NotFoundException) {
             val errorMessage = chatLogService.chatErrorMessages(chatRoomId, userId, e.errorCode, ChatRoomType.GROUP)
             notificationService.handleMessageNotification(errorMessage, userId, userId)
@@ -220,5 +221,10 @@ class GroupChatFacade(
 
     private fun getChatRoomIds(chatRooms: List<GroupChatRoom>): List<ChatRoomId> {
         return chatRooms.map { it.roomInfo.chatRoomId }
+    }
+
+    private fun getFriendIds(userId: UserId, chatRoomId: ChatRoomId): List<UserId> {
+        val groupChatRoom = groupChatRoomService.getGroupChatRoom(userId, chatRoomId)
+        return groupChatRoom.memberInfos.map { it.memberId }.filter { it != userId }
     }
 }
