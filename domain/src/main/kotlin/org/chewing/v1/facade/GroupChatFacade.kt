@@ -143,7 +143,7 @@ class GroupChatFacade(
             groupChatRoomService.inviteGroupChatRoom(userId, chatRoomId, inviteUserId)
             val chatSequence = groupChatRoomService.increaseGroupChatRoomSequence(chatRoomId)
             val chatMessage =
-                chatLogService.inviteMessage(chatRoomId,inviteUserId, userId, chatSequence, ChatRoomType.GROUP)
+                chatLogService.inviteMessage(chatRoomId, inviteUserId, userId, chatSequence, ChatRoomType.GROUP)
             groupChatRoomService.readGroupChatRoom(userId, chatRoomId, chatMessage.roomSequence.sequence)
             notificationService.handleMessagesNotification(chatMessage, memberIds, userId)
         } catch (e: ConflictException) {
