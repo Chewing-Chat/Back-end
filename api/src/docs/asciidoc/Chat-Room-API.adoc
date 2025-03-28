@@ -182,3 +182,18 @@ include::{snippets}/chat-room-controller-test/get-group-chat-room/http-response.
 
 === 응답 필드 설명(Response Fields)
 include::{snippets}/chat-room-controller-test/get-group-chat-room/response-fields.adoc[]
+
+
+== 14. 그룹 채팅방 이름 수정하기
+
+=== 요청(Request)
+include::{snippets}/chat-room-controller-test/change-group-chat-room-name/http-request.adoc[]
+
+=== 요청 필드 설명(Request Fields)
+include::{snippets}/chat-room-controller-test/change-group-chat-room-name/request-fields.adoc[]
+
+=== 응답(Response)
+include::{snippets}/chat-room-controller-test/change-group-chat-room-name/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/chat-room-controller-test/change-group-chat-room-name/response-fields.adoc[]

@@ -11,6 +11,7 @@ import org.chewing.v1.RestDocsUtils.responseErrorFields
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory.createFeed
+import org.chewing.v1.TestDataFactory.createValidJpegMockFile
 import org.chewing.v1.controller.feed.FeedController
 import org.chewing.v1.dto.request.feed.FeedRequest
 import org.chewing.v1.error.ConflictException
@@ -350,19 +351,8 @@ class FeedControllerTest : RestDocsTest() {
     @Test
     @DisplayName("피드 파일 추가")
     fun addFileFeed() {
-        val mockFile1 = MockMultipartFile(
-            "files",
-            "0.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
-        val mockFile2 = MockMultipartFile(
-            "files",
-            "1.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
-
+        val mockFile1 = createValidJpegMockFile("0.jpg")
+        val mockFile2 = createValidJpegMockFile("1.jpg")
         val feedId = FeedId.of("testFeedId1")
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
@@ -403,18 +393,8 @@ class FeedControllerTest : RestDocsTest() {
 
     @Test
     fun addFileFeedFailedFileNameCouldNotBeEmpty() {
-        val mockFile1 = MockMultipartFile(
-            "files",
-            "0.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
-        val mockFile2 = MockMultipartFile(
-            "files",
-            "1.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile1 = createValidJpegMockFile("0.jpg")
+        val mockFile2 = createValidJpegMockFile("1.jpg")
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
@@ -445,18 +425,8 @@ class FeedControllerTest : RestDocsTest() {
 
     @Test
     fun addFileFeedFailedFileNameIncorrect() {
-        val mockFile1 = MockMultipartFile(
-            "files",
-            "0.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
-        val mockFile2 = MockMultipartFile(
-            "files",
-            "1.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile1 = createValidJpegMockFile("0.jpg")
+        val mockFile2 = createValidJpegMockFile("1.jpg")
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
@@ -521,18 +491,8 @@ class FeedControllerTest : RestDocsTest() {
 
     @Test
     fun addFileFeedFailedFileConvertFailed() {
-        val mockFile1 = MockMultipartFile(
-            "files",
-            "0.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
-        val mockFile2 = MockMultipartFile(
-            "files",
-            "1.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile1 = createValidJpegMockFile("0.jpg")
+        val mockFile2 = createValidJpegMockFile("1.jpg")
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
@@ -563,18 +523,8 @@ class FeedControllerTest : RestDocsTest() {
 
     @Test
     fun addFileFeedFailedFileUploadFailed() {
-        val mockFile1 = MockMultipartFile(
-            "files",
-            "0.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
-        val mockFile2 = MockMultipartFile(
-            "files",
-            "1.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile1 = createValidJpegMockFile("0.jpg")
+        val mockFile2 = createValidJpegMockFile("1.jpg")
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 

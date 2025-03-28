@@ -12,6 +12,7 @@ import org.chewing.v1.RestDocsUtils.responseErrorFields
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory
+import org.chewing.v1.TestDataFactory.createValidJpegMockFile
 import org.chewing.v1.controller.user.UserController
 import org.chewing.v1.dto.request.user.UserRequest
 import org.chewing.v1.error.ConflictException
@@ -28,8 +29,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
@@ -67,12 +66,7 @@ class UserControllerTest : RestDocsTest() {
     @Test
     @DisplayName("프로필 이미지 변경")
     fun changeProfileImage() {
-        val mockFile = MockMultipartFile(
-            "file",
-            "testFile.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile = createValidJpegMockFile("0.jpg")
 
         every { userService.updateFile(any(), any(), any()) } just Runs
 
@@ -102,12 +96,7 @@ class UserControllerTest : RestDocsTest() {
 
     @Test
     fun changeProfileImageFailedFileNameCouldNotBeEmpty() {
-        val mockFile = MockMultipartFile(
-            "file",
-            "",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile = createValidJpegMockFile("")
 
         given()
             .setupAuthenticatedMultipartRequest()
@@ -130,12 +119,7 @@ class UserControllerTest : RestDocsTest() {
 
     @Test
     fun changeProfileImageFailedNotSupportFileType() {
-        val mockFile = MockMultipartFile(
-            "file",
-            "testFile.jpg",
-            "image/png",
-            "Test content".toByteArray(),
-        )
+        val mockFile = createValidJpegMockFile("testFile.exe")
 
         given()
             .setupAuthenticatedMultipartRequest()
@@ -158,12 +142,7 @@ class UserControllerTest : RestDocsTest() {
 
     @Test
     fun changeProfileImageFailedFileNameIncorrect() {
-        val mockFile = MockMultipartFile(
-            "file",
-            "testFile.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile = createValidJpegMockFile("testFile.jpg")
 
         every { userService.updateFile(any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_INCORRECT)
 
@@ -188,12 +167,7 @@ class UserControllerTest : RestDocsTest() {
 
     @Test
     fun changeProfileImageFailedFileConvertFailed() {
-        val mockFile = MockMultipartFile(
-            "file",
-            "testFile.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile = createValidJpegMockFile("testFile.jpg")
 
         every { userService.updateFile(any(), any(), any()) } throws ConflictException(ErrorCode.FILE_CONVERT_FAILED)
 
@@ -218,12 +192,7 @@ class UserControllerTest : RestDocsTest() {
 
     @Test
     fun changeProfileImageFailedFileUploadFailed() {
-        val mockFile = MockMultipartFile(
-            "file",
-            "testFile.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile = createValidJpegMockFile("testFile.jpg")
 
         every { userService.updateFile(any(), any(), any()) } throws ConflictException(ErrorCode.FILE_UPLOAD_FAILED)
 

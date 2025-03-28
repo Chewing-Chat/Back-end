@@ -60,9 +60,31 @@ import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
 import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
+import org.springframework.mock.web.MockMultipartFile
+import java.awt.Color
+import java.awt.image.BufferedImage
+import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
+import javax.imageio.ImageIO
 
 object TestDataFactory {
+
+    fun createValidJpegMockFile(fileName: String): MockMultipartFile {
+        val width = 100
+        val height = 100
+        val image = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+
+        val graphics = image.createGraphics()
+        graphics.color = Color.WHITE
+        graphics.fillRect(0, 0, width, height)
+        graphics.dispose()
+
+        val baos = ByteArrayOutputStream()
+        ImageIO.write(image, "jpg", baos)
+        val imageBytes = baos.toByteArray()
+
+        return MockMultipartFile("files", fileName, "image/jpeg", imageBytes)
+    }
 
     fun createJwtToken(): JwtToken {
         return JwtToken.of("accessToken", RefreshToken.of("refreshToken", LocalDateTime.now()))

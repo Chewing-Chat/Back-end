@@ -52,6 +52,11 @@ class GroupChatRoomService(
         groupChatRoomUpdater.updateMemberStatus(chatRoomId, userId, status)
     }
 
+    fun changeGroupChatRoomName(userId: UserId, chatRoomId: ChatRoomId, groupName: String) {
+        groupChatRoomValidator.isParticipant(chatRoomId, userId)
+        groupChatRoomUpdater.updateGroupName(chatRoomId, groupName)
+    }
+
     fun validateIsParticipant(chatRoomId: ChatRoomId, userId: UserId) {
         groupChatRoomValidator.isParticipant(chatRoomId, userId)
     }

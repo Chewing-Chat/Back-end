@@ -27,4 +27,12 @@ internal class GroupChatRoomRepositoryImpl(
             .map { it.toChatRoom() }
             .orElse(null)
     }
+
+    override fun updateGroupName(chatRoomId: ChatRoomId, groupName: String) {
+        groupChatRoomJpaRepository.findById(chatRoomId.id)
+            .map {
+                it.updateGroupName(groupName)
+                groupChatRoomJpaRepository.save(it)
+            }
+    }
 }
