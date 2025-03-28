@@ -48,4 +48,11 @@ class ChatRoomRequest {
         }
         fun toChatRoomId() = ChatRoomId.of(chatRoomId)
     }
+    data class Name(
+        val chatRoomId: String,
+        val name: String,
+    ) {
+        fun toChatRoomId() = ChatRoomId.of(chatRoomId)
+        fun toName() = name
+    }
 }

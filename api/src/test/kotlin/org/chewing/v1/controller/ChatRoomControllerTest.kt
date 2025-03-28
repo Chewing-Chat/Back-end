@@ -10,6 +10,7 @@ import org.chewing.v1.RestDocsUtils.requestPreprocessor
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
 import org.chewing.v1.TestDataFactory
+import org.chewing.v1.TestDataFactory.createValidJpegMockFile
 import org.chewing.v1.controller.chat.ChatRoomController
 import org.chewing.v1.dto.request.chat.ChatRoomRequest
 import org.chewing.v1.facade.DirectChatFacade
@@ -428,18 +429,9 @@ class ChatRoomControllerTest : RestDocsTest() {
     fun createFilesDirectChatRoom() {
         val chatRoomId = ChatRoomId.of("testChatRoomId")
         val directChatRoom = TestDataFactory.createDirectChatRoom(chatRoomId)
-        val mockFile1 = MockMultipartFile(
-            "files",
-            "0.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
-        val mockFile2 = MockMultipartFile(
-            "files",
-            "1.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile1 = createValidJpegMockFile("0.jpg")
+        val mockFile2 = createValidJpegMockFile("1.jpg")
+
         val testFriendId = "testFriendId"
         val chatFileLog = TestDataFactory.createFileLog(chatRoomId)
         val thumbnailDirectChatRoom = ThumbnailDirectChatRoom.of(directChatRoom, chatFileLog)
@@ -894,6 +886,39 @@ class ChatRoomControllerTest : RestDocsTest() {
                         fieldWithPath("data.chatRoomOwnStatus").description("채팅방 멤버 상태"),
                         fieldWithPath("data.friendId").description("친구 ID"),
                     ),
+                ),
+            )
+    }
+
+    @Test
+    fun changeGroupChatRoomName(){
+        val chatRoomId = ChatRoomId.of("testChatRoomId")
+        val name = "testGroupChatRoomName"
+        val requestBody = ChatRoomRequest.Name(
+            chatRoomId = chatRoomId.id,
+            name = name
+        )
+        every { groupChatRoomService.changeGroupChatRoomName(any(), any(), any()) } just Runs
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/chatRoom/group/name")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body("status", equalTo(200))
+            .assertCommonSuccessResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestAccessTokenFields(),
+                    requestFields(
+                        fieldWithPath("chatRoomId").description("채팅방 ID"),
+                        fieldWithPath("name").description("변경할 채팅방 이름"),
+                    ),
+                    responseSuccessFields(),
                 ),
             )
     }

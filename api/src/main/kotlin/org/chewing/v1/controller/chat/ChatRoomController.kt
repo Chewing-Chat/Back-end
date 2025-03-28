@@ -121,6 +121,15 @@ class ChatRoomController(
         return ResponseHelper.successOnly()
     }
 
+    @PutMapping("/group/name")
+    fun changeGroupChatRoomName(
+        @CurrentUser userId: UserId,
+        @RequestBody request: ChatRoomRequest.Name,
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
+        groupChatRoomService.changeGroupChatRoomName(userId, request.toChatRoomId(), request.toName())
+        return ResponseHelper.successOnly()
+    }
+
     @PostMapping("/group/invite")
     fun inviteGroupChatRoom(
         @CurrentUser userId: UserId,

@@ -16,7 +16,7 @@ internal class GroupChatRoomJpaEntity(
     @Id
     private val chatRoomId: String = UUID.randomUUID().toString(),
 
-    val name: String,
+    var name: String,
 ) : BaseEntity() {
     companion object {
         fun generate(name: String): GroupChatRoomJpaEntity {
@@ -24,6 +24,10 @@ internal class GroupChatRoomJpaEntity(
                 name = name,
             )
         }
+    }
+
+    fun updateGroupName(groupName: String) {
+        name = groupName
     }
 
     fun toChatRoom(): GroupChatRoomInfo {

@@ -7,4 +7,5 @@ interface GroupChatRoomRepository {
     fun append(groupName: String): ChatRoomId
     fun readRoomInfos(chatRoomIds: List<ChatRoomId>): List<GroupChatRoomInfo>
     fun readRoomInfo(chatRoomId: ChatRoomId): GroupChatRoomInfo?
+    fun updateGroupName(chatRoomId: ChatRoomId, groupName: String)
 }

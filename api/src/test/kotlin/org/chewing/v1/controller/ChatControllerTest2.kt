@@ -9,6 +9,7 @@ import org.chewing.v1.RestDocsUtils.requestAccessTokenFields
 import org.chewing.v1.RestDocsUtils.requestPreprocessor
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
+import org.chewing.v1.TestDataFactory.createValidJpegMockFile
 import org.chewing.v1.controller.chat.ChatController
 import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.GroupChatFacade
@@ -55,18 +56,8 @@ class ChatControllerTest2 : RestDocsTest() {
     @Test
     @DisplayName("개인 채팅방 파일 추가")
     fun uploadDirectChatRoomFiles() {
-        val mockFile1 = MockMultipartFile(
-            "files",
-            "0.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
-        val mockFile2 = MockMultipartFile(
-            "files",
-            "1.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile1 = createValidJpegMockFile("0.jpg")
+        val mockFile2 = createValidJpegMockFile("1.jpg")
 
         every { directChatFacade.processDirectChatFiles(any(), any(), any()) } just Runs
 
@@ -100,18 +91,8 @@ class ChatControllerTest2 : RestDocsTest() {
     @Test
     @DisplayName("그룹 채팅방 파일 추가")
     fun uploadGroupChatRoomFiles() {
-        val mockFile1 = MockMultipartFile(
-            "files",
-            "0.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
-        val mockFile2 = MockMultipartFile(
-            "files",
-            "1.jpg",
-            MediaType.IMAGE_JPEG_VALUE,
-            "Test content".toByteArray(),
-        )
+        val mockFile1 = createValidJpegMockFile("0.jpg")
+        val mockFile2 = createValidJpegMockFile("1.jpg")
 
         every { groupChatFacade.processGroupChatFiles(any(), any(), any()) } just Runs
 
