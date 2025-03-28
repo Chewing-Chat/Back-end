@@ -2,7 +2,6 @@ package org.chewing.v1.util.helper
 
 import com.sksamuel.scrimage.ImmutableImage
 import com.sksamuel.scrimage.webp.WebpWriter
-import net.coobird.thumbnailator.Thumbnails
 import org.chewing.v1.error.AuthorizationException
 import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
@@ -10,9 +9,7 @@ import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.media.MediaType
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.io.IOException
-import javax.imageio.ImageIO
 
 object FileHelper {
     @Throws(IOException::class, ConflictException::class)
@@ -40,7 +37,6 @@ object FileHelper {
             outputFilename = originalFilename.substringBeforeLast('.') + ".webp"
             outputMediaType = MediaType.IMAGE_WEBP
         }
-
 
         return FileData.of(
             inputStreamToUse,

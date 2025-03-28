@@ -31,11 +31,10 @@ class GroupChatRoomServiceTest {
     private val chatRoomSequenceRepository: ChatRoomSequenceRepository = mockk()
     private val chatRoomMemberSequenceRepository: ChatRoomMemberSequenceRepository = mockk()
 
-
     private val groupChatRoomAppender = GroupChatRoomAppender(groupChatRoomRepository, groupChatRoomMemberRepository)
     private val groupChatRoomReader = GroupChatRoomReader(groupChatRoomRepository, groupChatRoomMemberRepository)
     private val groupChatRoomRemover = GroupChatRoomRemover(groupChatRoomMemberRepository)
-    private val groupChatRoomUpdater = GroupChatRoomUpdater(groupChatRoomMemberRepository,groupChatRoomRepository)
+    private val groupChatRoomUpdater = GroupChatRoomUpdater(groupChatRoomMemberRepository, groupChatRoomRepository)
     private val groupChatRoomValidator = GroupChatRoomValidator(groupChatRoomMemberRepository)
     private val chatSequenceFinder = ChatSequenceFinder(chatRoomMemberSequenceRepository, chatRoomSequenceRepository)
     private val chatSequenceHandler = ChatSequenceHandler(chatRoomMemberSequenceRepository, chatRoomSequenceRepository)

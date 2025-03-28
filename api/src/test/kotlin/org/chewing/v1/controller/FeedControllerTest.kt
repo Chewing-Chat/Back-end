@@ -428,7 +428,6 @@ class FeedControllerTest : RestDocsTest() {
         val mockFile1 = createValidJpegMockFile("0.jpg")
         val mockFile2 = createValidJpegMockFile("1.jpg")
 
-
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
         every { feedService.makeFile(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_NAME_INCORRECT)
@@ -495,7 +494,6 @@ class FeedControllerTest : RestDocsTest() {
         val mockFile1 = createValidJpegMockFile("0.jpg")
         val mockFile2 = createValidJpegMockFile("1.jpg")
 
-
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 
         every { feedService.makeFile(any(), any(), any(), any(), any(), any()) } throws ConflictException(ErrorCode.FILE_CONVERT_FAILED)
@@ -527,7 +525,6 @@ class FeedControllerTest : RestDocsTest() {
     fun addFileFeedFailedFileUploadFailed() {
         val mockFile1 = createValidJpegMockFile("0.jpg")
         val mockFile2 = createValidJpegMockFile("1.jpg")
-
 
         val testFriendIds = listOf<String>("testFriendId", "testFriendId2")
 

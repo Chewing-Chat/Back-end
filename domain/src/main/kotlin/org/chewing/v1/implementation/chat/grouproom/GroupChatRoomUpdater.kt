@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 @Component
 class GroupChatRoomUpdater(
     private val groupChatRoomMemberRepository: GroupChatRoomMemberRepository,
-    private val groupChatRoomRepository: GroupChatRoomRepository
+    private val groupChatRoomRepository: GroupChatRoomRepository,
 ) {
     fun updateMemberStatus(chatRoomId: ChatRoomId, userId: UserId, status: ChatRoomMemberStatus) {
         groupChatRoomMemberRepository.updateStatus(chatRoomId, userId, status)

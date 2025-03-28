@@ -30,7 +30,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
 import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
@@ -891,12 +890,12 @@ class ChatRoomControllerTest : RestDocsTest() {
     }
 
     @Test
-    fun changeGroupChatRoomName(){
+    fun changeGroupChatRoomName() {
         val chatRoomId = ChatRoomId.of("testChatRoomId")
         val name = "testGroupChatRoomName"
         val requestBody = ChatRoomRequest.Name(
             chatRoomId = chatRoomId.id,
-            name = name
+            name = name,
         )
         every { groupChatRoomService.changeGroupChatRoomName(any(), any(), any()) } just Runs
         given()

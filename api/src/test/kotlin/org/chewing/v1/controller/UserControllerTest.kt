@@ -29,8 +29,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.mock.web.MockMultipartFile
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
@@ -69,7 +67,6 @@ class UserControllerTest : RestDocsTest() {
     @DisplayName("프로필 이미지 변경")
     fun changeProfileImage() {
         val mockFile = createValidJpegMockFile("0.jpg")
-
 
         every { userService.updateFile(any(), any(), any()) } just Runs
 
