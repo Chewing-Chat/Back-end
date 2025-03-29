@@ -23,5 +23,6 @@ class FriendShipUpdater(
 
     fun unblock(userId: UserId, friendId: UserId) {
         friendShipRepository.unblock(userId, friendId) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
+        friendShipRepository.unblock(friendId, userId) ?: throw NotFoundException(ErrorCode.FRIEND_NOT_FOUND)
     }
 }
