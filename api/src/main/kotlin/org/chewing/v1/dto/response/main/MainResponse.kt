@@ -1,7 +1,7 @@
 package org.chewing.v1.dto.response.main
 
+import OneDayFeedResponse
 import org.chewing.v1.dto.response.chat.ChatLogResponse
-import org.chewing.v1.dto.response.feed.ThumbnailFeedResponse
 import org.chewing.v1.dto.response.friend.FriendResponse
 import org.chewing.v1.dto.response.user.UserResponse
 import org.chewing.v1.model.chat.log.ChatLog
@@ -18,7 +18,7 @@ data class MainResponse(
     val totalFriends: Int,
     val directChatRooms: List<DirectMainChatRoomResponse>,
     val groupChatRooms: List<GroupMainChatRoomResponse>,
-    val oneDayFeeds: List<ThumbnailFeedResponse>,
+    val oneDayFeeds: List<OneDayFeedResponse>,
 ) {
     data class DirectMainChatRoomResponse(
         val chatRoomId: String,
@@ -81,7 +81,7 @@ data class MainResponse(
                 groupChatRooms = groupChats.map { (chatRoom, chatLogs) ->
                     GroupMainChatRoomResponse.of(chatRoom, chatLogs, userId)
                 },
-                oneDayFeeds = oneDayFeeds.map { ThumbnailFeedResponse.of(it) },
+                oneDayFeeds = oneDayFeeds.map { OneDayFeedResponse.of(it) },
             )
         }
     }
