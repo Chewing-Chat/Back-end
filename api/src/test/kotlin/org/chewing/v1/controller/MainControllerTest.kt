@@ -247,6 +247,7 @@ class MainControllerTest : RestDocsTest() {
                     body("data.oneDayFeeds[$index].feedType", equalTo(feed.feed.type.name.lowercase()))
                     body("data.oneDayFeeds[$index].uploadAt", equalTo(formattedUploadTime))
                     body("data.oneDayFeeds[$index].ownerId", equalTo(feed.feed.userId.id))
+                    body("data.oneDayFeeds[$index].content", equalTo(feed.feed.content))
                     when (feed.feed.type) {
                         FeedType.FILE -> {
                             body("data.oneDayFeeds[$index].thumbnailFileUrl", equalTo(feed.feedDetails[0].media.url))
@@ -254,11 +255,9 @@ class MainControllerTest : RestDocsTest() {
                         }
 
                         FeedType.TEXT_BLUE -> {
-                            body("data.oneDayFeeds[$index].content", equalTo(feed.feed.content))
                         }
 
                         FeedType.TEXT_SKY -> {
-                            body("data.oneDayFeeds[$index].content", equalTo(feed.feed.content))
                         }
                     }
                 }
@@ -365,15 +364,12 @@ class MainControllerTest : RestDocsTest() {
                         fieldWithPath("data.oneDayFeeds[].uploadAt").description("피드 업로드 시간 - 형식 yyyy-MM-dd HH:mm:ss"),
                         fieldWithPath("data.oneDayFeeds[].feedType").description("피드 타입(TEXT_BLUE, TEXT_SKY, FILE)"),
                         fieldWithPath("data.oneDayFeeds[].ownerId").description("피드 소유자 ID"),
+                        fieldWithPath("data.oneDayFeeds[].content").description("피드 내용"),
 
                         // FILE 타입에 대한 설명
                         fieldWithPath("data.oneDayFeeds[].thumbnailFileUrl").optional().description("썸네일 파일 URL (파일 타입일 경우)"),
                         fieldWithPath("data.oneDayFeeds[].fileType").optional().description("미디어 타입(image/png, image/jpeg, image/jpg, image/png) (파일 타입일 경우)"),
                         fieldWithPath("data.oneDayFeeds[].count").optional().description("파일 개수 (파일 타입일 경우)"),
-
-                        // TEXT 타입에 대한 설명
-                        fieldWithPath("data.oneDayFeeds[].content").optional().description("텍스트 피드 내용 (TEXT_BLUE, TEXT_SKY 타입일 경우)"),
-
                     ),
                 ),
             )
