@@ -29,10 +29,10 @@ class NotificationGenerator {
     ): List<Notification> {
         val (type, targetId, content) = when (message) {
             is ChatFileMessage -> {
-                val mediaUrl = message.medias.first().url
+                val content = "사진을 보냈습니다." // val mediaUrl = message.medias.first().url
                 when (message.chatRoomType) {
-                    ChatRoomType.DIRECT -> Triple(NotificationType.DIRECT_CHAT_FILE, message.chatRoomId, mediaUrl)
-                    ChatRoomType.GROUP -> Triple(NotificationType.GROUP_CHAT_FILE, message.chatRoomId, mediaUrl)
+                    ChatRoomType.DIRECT -> Triple(NotificationType.DIRECT_CHAT_FILE, message.chatRoomId, content)
+                    ChatRoomType.GROUP -> Triple(NotificationType.GROUP_CHAT_FILE, message.chatRoomId, content)
                 }
             }
 
