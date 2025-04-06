@@ -3,7 +3,7 @@ package org.chewing.v1.implementation.user
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
 import org.chewing.v1.model.contact.Contact
-import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.auth.PushInfo
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
@@ -32,11 +32,16 @@ class UserReader(
         return userRepository.reads(userIds, status)
     }
 
-    fun readPushTokens(userId: UserId): List<PushToken> {
-        return pushNotificationRepository.read(userId)
+    fun readPushTokens(userId: UserId): List<PushInfo> {
+        return pushNotificationRepository.readAll(userId)
     }
 
-    fun readsPushTokens(userIds: List<UserId>): List<PushToken> {
-        return pushNotificationRepository.reads(userIds)
+    fun readsPushTokens(userIds: List<UserId>): List<PushInfo> {
+        return pushNotificationRepository.readsAll(userIds)
+    }
+
+    fun readPushToken(userId: UserId, deviceId: String): PushInfo {
+        return pushNotificationRepository.read(userId, deviceId)
+            ?: throw NotFoundException(ErrorCode.USER_PUSH_TOKEN_NOT_FOUND)
     }
 }

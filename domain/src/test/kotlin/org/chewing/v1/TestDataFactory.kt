@@ -27,6 +27,7 @@ import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
+import org.chewing.v1.model.notification.NotificationStatus
 import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleInfo
 import org.chewing.v1.model.schedule.ScheduleContent
@@ -149,7 +150,7 @@ object TestDataFactory {
         return FileData.of(inputStream, contentType, fileName, size)
     }
 
-    fun createDevice(): PushToken.Device = PushToken.Device.of("deviceId", PushToken.Provider.ANDROID)
+    fun createDevice(): PushInfo.Device = PushInfo.Device.of("deviceId", PushInfo.Provider.ANDROID)
 
     fun createRefreshToken(): RefreshToken = RefreshToken.of("refreshToken", LocalDateTime.now())
     fun createOldRefreshToken(): RefreshToken = RefreshToken.of("oldRefreshToken", LocalDateTime.now().minusDays(1))
@@ -329,8 +330,8 @@ object TestDataFactory {
 
     fun createChatNumber(chatRoomId: ChatRoomId): ChatRoomSequence = ChatRoomSequence.of(chatRoomId, 0)
 
-    fun createPushToken(pushTokenId: String, userId: UserId): PushToken =
-        PushToken.of(pushTokenId, "testToken", PushToken.Provider.ANDROID, "deviceId", userId)
+    fun createPushToken(pushTokenId: String, userId: UserId): PushInfo =
+        PushInfo.of(pushTokenId, "testToken", PushInfo.Provider.ANDROID, "deviceId", userId, NotificationStatus.ALLOWED,NotificationStatus.ALLOWED)
 
     fun createNormalMessage(messageId: String, chatRoomId: ChatRoomId): ChatNormalMessage = ChatNormalMessage.of(
         messageId = messageId,

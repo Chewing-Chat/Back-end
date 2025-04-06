@@ -1,12 +1,13 @@
 package org.chewing.v1.jparepository.user
 
 import org.chewing.v1.jpaentity.user.PushNotificationJpaEntity
-import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.auth.PushInfo
 import org.springframework.data.jpa.repository.JpaRepository
 
 internal interface PushNotificationJpaRepository : JpaRepository<PushNotificationJpaEntity, String> {
-    fun deleteByDeviceIdAndProvider(deviceId: String, deviceProvider: PushToken.Provider)
+    fun deleteByDeviceIdAndProvider(deviceId: String, deviceProvider: PushInfo.Provider)
     fun findAllByUserId(userId: String): List<PushNotificationJpaEntity>
     fun findAllByUserIdIn(userIds: List<String>): List<PushNotificationJpaEntity>
     fun findByAppTokenAndUserId(appToken: String, userId: String): PushNotificationJpaEntity?
+    fun findByDeviceIdAndUserId(deviceId: String, userId: String): PushNotificationJpaEntity?
 }

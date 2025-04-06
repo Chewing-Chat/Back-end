@@ -2,7 +2,9 @@ package org.chewing.v1.controller.user
 
 import org.chewing.v1.dto.request.user.UserRequest
 import org.chewing.v1.dto.response.user.AccountResponse
+import org.chewing.v1.dto.response.user.PushResponse
 import org.chewing.v1.facade.AccountFacade
+import org.chewing.v1.model.auth.PushInfo
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
@@ -57,6 +59,33 @@ class UserController(
         @RequestBody statusMessage: UserRequest.UpdateStatusMessage,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
         userService.updateStatusMessage(userId, statusMessage.toStatusMessage())
+        return ResponseHelper.successOnly()
+    }
+
+    @GetMapping("/push/notification/{deviceId}")
+    fun getPushNotification(
+        @CurrentUser userId: UserId,
+        @PathVariable("deviceId") deviceId: String,
+    ): SuccessResponseEntity<PushResponse> {
+        val pushInfo = userService.getPushInfo(userId, deviceId)
+        return ResponseHelper.success(PushResponse.of(pushInfo))
+    }
+
+    @PutMapping("/push/notification/chat")
+    fun updateChatPushNotification(
+        @CurrentUser userId: UserId,
+        @RequestBody pushInfo: UserRequest.UpdateNotification,
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
+        userService.updatePushNotification(userId, pushInfo.toDeviceId(), pushInfo.toNotification(), PushInfo.PushType.CHAT)
+        return ResponseHelper.successOnly()
+    }
+
+    @PutMapping("/push/notification/schedule")
+    fun updateSchedulePushNotification(
+        @CurrentUser userId: UserId,
+        @RequestBody pushInfo: UserRequest.UpdateNotification,
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
+        userService.updatePushNotification(userId, pushInfo.toDeviceId(), pushInfo.toNotification(), PushInfo.PushType.SCHEDULE)
         return ResponseHelper.successOnly()
     }
 }

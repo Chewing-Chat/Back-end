@@ -13,7 +13,6 @@ import org.chewing.v1.jpaentity.friend.FriendShipJpaEntity
 import org.chewing.v1.jpaentity.schedule.ScheduleJpaEntity
 import org.chewing.v1.jpaentity.schedule.ScheduleLogJpaEntity
 import org.chewing.v1.jpaentity.schedule.ScheduleParticipantJpaEntity
-import org.chewing.v1.jpaentity.user.*
 import org.chewing.v1.jpaentity.user.PushNotificationJpaEntity
 import org.chewing.v1.jpaentity.user.UserJpaEntity
 import org.chewing.v1.jparepository.announcement.AnnouncementJpaRepository
@@ -25,7 +24,6 @@ import org.chewing.v1.jparepository.feed.FeedDetailJpaRepository
 import org.chewing.v1.jparepository.feed.FeedJpaRepository
 import org.chewing.v1.jparepository.feed.FeedVisibilityJpaRepository
 import org.chewing.v1.jparepository.friend.FriendShipJpaRepository
-import org.chewing.v1.jparepository.user.*
 import org.chewing.v1.jparepository.user.PushNotificationJpaRepository
 import org.chewing.v1.jparepository.schedule.ScheduleJpaRepository
 import org.chewing.v1.jparepository.schedule.ScheduleLogJpaRepository
@@ -33,7 +31,7 @@ import org.chewing.v1.jparepository.schedule.ScheduleParticipantJpaRepository
 import org.chewing.v1.jparepository.user.UserJpaRepository
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.contact.PhoneNumber
-import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.auth.PushInfo
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.DirectChatRoomInfo
 import org.chewing.v1.model.chat.room.GroupChatRoomInfo
@@ -165,7 +163,7 @@ class JpaDataGenerator {
         feedVisibilityJpaRepository.saveAll(userIds.map { FeedVisibilityEntity(FeedVisibilityId.of(feedId, it)) })
     }
 
-    fun pushNotificationData(userId: UserId): PushToken {
+    fun pushNotificationData(userId: UserId): PushInfo {
         val user = UserProvider.buildNormal(userId)
         val device = PushTokenProvider.buildDeviceNormal()
         val appToken = PushTokenProvider.buildAppTokenNormal()

@@ -1,7 +1,7 @@
 package org.chewing.v1.facade
 
 import org.chewing.v1.model.auth.CredentialTarget
-import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.auth.PushInfo
 import org.chewing.v1.model.contact.LocalPhoneNumber
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId
@@ -20,7 +20,7 @@ class AccountFacade(
         localPhoneNumber: LocalPhoneNumber,
         verificationCode: String,
         appToken: String,
-        device: PushToken.Device,
+        device: PushInfo.Device,
         userName: String,
     ): UserId {
         authService.verify(localPhoneNumber, verificationCode)
@@ -69,7 +69,7 @@ class AccountFacade(
     fun login(
         localPhoneNumber: LocalPhoneNumber,
         password: String,
-        device: PushToken.Device,
+        device: PushInfo.Device,
         appToken: String,
     ): UserId {
         val user = userService.getUserByContact(localPhoneNumber, AccessStatus.ACCESS)

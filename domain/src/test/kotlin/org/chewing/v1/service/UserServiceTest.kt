@@ -32,7 +32,7 @@ class UserServiceTest {
 
     private val userReader =
         UserReader(userRepository, pushNotificationRepository)
-    private val userUpdater = UserUpdater(userRepository)
+    private val userUpdater = UserUpdater(userRepository,pushNotificationRepository)
     private val userRemover = UserRemover(userRepository, pushNotificationRepository)
     private val userAppender =
         UserAppender(userRepository, pushNotificationRepository)

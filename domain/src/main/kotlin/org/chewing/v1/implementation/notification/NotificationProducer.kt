@@ -22,7 +22,7 @@ class NotificationProducer(
         return NotificationInfo.of(
             friendShip = friendShip,
             user = user,
-            pushTokens = pushTokens,
+            pushInfos = pushTokens,
         )
     }
 
@@ -43,7 +43,7 @@ class NotificationProducer(
                 NotificationInfo.of(
                     friendShip = friendShip,
                     user = user,
-                    pushTokens = tokens,
+                    pushInfos = tokens,
                 )
             } else {
                 null

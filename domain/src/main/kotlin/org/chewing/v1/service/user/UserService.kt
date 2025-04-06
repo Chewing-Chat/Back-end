@@ -8,10 +8,11 @@ import org.chewing.v1.implementation.user.UserRemover
 import org.chewing.v1.implementation.user.UserUpdater
 import org.chewing.v1.implementation.user.UserValidator
 import org.chewing.v1.model.auth.CredentialTarget
-import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.auth.PushInfo
 import org.chewing.v1.model.contact.LocalPhoneNumber
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
+import org.chewing.v1.model.notification.NotificationStatus
 import org.chewing.v1.model.user.*
 import org.springframework.stereotype.Service
 
@@ -63,7 +64,7 @@ class UserService(
     fun createUser(
         localPhoneNumber: LocalPhoneNumber,
         appToken: String,
-        device: PushToken.Device,
+        device: PushInfo.Device,
         userName: String,
     ): UserInfo {
         val phoneNumber = contactFormatter.formatContact(localPhoneNumber)
@@ -76,7 +77,7 @@ class UserService(
 
     fun createDeviceInfo(
         userInfo: UserInfo,
-        device: PushToken.Device,
+        device: PushInfo.Device,
         appToken: String,
     ) {
         userAppender.appendUserPushToken(userInfo, appToken, device)
@@ -114,5 +115,24 @@ class UserService(
     fun deleteUser(userId: UserId) {
         val removedUser = userRemover.remove(userId)
         fileHandler.handleOldFile(removedUser.image)
+    }
+
+    fun getPushInfo(
+        userId: UserId,
+        deviceId: String,
+    ): PushInfo {
+        return userReader.readPushToken(userId, deviceId)
+    }
+
+    fun updatePushNotification(
+        userId: UserId,
+        deviceId: String,
+        status: NotificationStatus,
+        type: PushInfo.PushType,
+    ) {
+        when (type) {
+            PushInfo.PushType.CHAT -> userUpdater.updatePushChatStatus(userId, deviceId, status)
+            PushInfo.PushType.SCHEDULE -> userUpdater.updatePushScheduleStatus(userId, deviceId, status)
+        }
     }
 }

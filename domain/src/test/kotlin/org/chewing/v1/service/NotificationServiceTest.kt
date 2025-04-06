@@ -85,7 +85,7 @@ class NotificationServiceTest {
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { friendShipRepository.readByRelation(friendId, userId) } returns friendShip
-        every { pushNotificationRepository.read(friendId) } returns listOf(pushToken)
+        every { pushNotificationRepository.readAll(friendId) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
 
@@ -130,7 +130,7 @@ class NotificationServiceTest {
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
         // when
@@ -141,7 +141,7 @@ class NotificationServiceTest {
 
         notifications.forEach {
             assert(it.friendShip == friendShip)
-            assert(it.pushToken == pushToken)
+            assert(it.pushInfo == pushToken)
             assert(it.type == NotificationType.DIRECT_CHAT_NORMAL)
             assert(it.targetId == chatRoomId.id)
             assert(it.content == chatMessage.text)
@@ -164,7 +164,7 @@ class NotificationServiceTest {
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
 
@@ -194,7 +194,7 @@ class NotificationServiceTest {
 
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
@@ -208,7 +208,7 @@ class NotificationServiceTest {
         val notifications = notificationSlot.captured
         notifications.forEach {
             assert(it.friendShip == friendShip)
-            assert(it.pushToken == pushToken)
+            assert(it.pushInfo == pushToken)
             assert(it.type == NotificationType.DIRECT_CHAT_REPLY)
             assert(it.targetId == chatRoomId.id)
             assert(it.content == chatMessage.text)
@@ -231,7 +231,7 @@ class NotificationServiceTest {
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
         // when
@@ -240,7 +240,7 @@ class NotificationServiceTest {
         val notifications = notificationSlot.captured
         notifications.forEach {
             assert(it.friendShip == friendShip)
-            assert(it.pushToken == pushToken)
+            assert(it.pushInfo == pushToken)
             assert(it.type == NotificationType.DIRECT_CHAT_FILE)
             assert(it.targetId == chatRoomId.id)
             assert(it.content == chatMessage.medias.first().url)
@@ -264,7 +264,7 @@ class NotificationServiceTest {
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { externalSessionClient.isOnline(friendId) } returns false
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
 
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
         // when
@@ -276,7 +276,7 @@ class NotificationServiceTest {
         val notifications = notificationSlot.captured
         notifications.forEach {
             assert(it.friendShip == friendShip)
-            assert(it.pushToken == pushToken)
+            assert(it.pushInfo == pushToken)
             assert(it.type == NotificationType.GROUP_CHAT_INVITE)
             assert(it.targetId == chatRoomId.id)
             assert(it.content == "${friendShip.friendName}님이 초대했습니다.")
@@ -302,7 +302,7 @@ class NotificationServiceTest {
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.reads(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
 
         // When
 
@@ -315,7 +315,7 @@ class NotificationServiceTest {
 
         notifications.forEach {
             assert(it.friendShip == friendShip)
-            assert(it.pushToken == pushToken)
+            assert(it.pushInfo == pushToken)
             assert(it.type == NotificationType.GROUP_CHAT_LEAVE)
             assert(it.targetId == chatRoomId.id)
             assert(it.content == "${friendShip.friendName}님이 나갔습니다.")
