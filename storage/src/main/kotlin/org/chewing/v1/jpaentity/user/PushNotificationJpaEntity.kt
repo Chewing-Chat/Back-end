@@ -33,7 +33,7 @@ internal class PushNotificationJpaEntity(
     private var chatStatus: NotificationStatus = NotificationStatus.ALLOWED,
 
     @Enumerated(EnumType.STRING)
-    private var scheduleStatus: NotificationStatus= NotificationStatus.ALLOWED,
+    private var scheduleStatus: NotificationStatus = NotificationStatus.ALLOWED,
 
     private val userId: String,
 ) {
@@ -47,7 +47,7 @@ internal class PushNotificationJpaEntity(
                 appToken = appToken,
                 deviceId = device.deviceId,
                 provider = device.provider,
-                userId = userInfo.userId.id
+                userId = userInfo.userId.id,
             )
         }
     }

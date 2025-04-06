@@ -7,10 +7,10 @@ data class PushResponse(
     val deviceId: String,
     val scheduleStatus: NotificationStatus,
     val chatStatus: NotificationStatus,
-    ) {
+) {
     companion object {
         fun of(
-            pushInfo: PushInfo
+            pushInfo: PushInfo,
         ): PushResponse {
             return PushResponse(
                 deviceId = pushInfo.device.deviceId,

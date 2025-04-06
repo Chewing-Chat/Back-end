@@ -22,7 +22,6 @@ enum class ErrorCode(
     INVALID_PHONE_NUMBER("AUTH_10", "잘못된 전화번호입니다."),
     ACCESS_DENIED("AUTH_11", "접근 권한이 없습니다."),
 
-
     // Common
     PATH_WRONG("COMMON_1", "잘못된 메세드입니다."),
     VARIABLE_WRONG("COMMON_2", "요청 변수가 잘못되었습니다."),

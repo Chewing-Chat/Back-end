@@ -13,12 +13,12 @@ interface PushNotificationRepository {
     fun updateChatStatus(
         userId: UserId,
         deviceId: String,
-        status: NotificationStatus
+        status: NotificationStatus,
     )
     fun updateScheduleStatus(
         userId: UserId,
         deviceId: String,
-        status: NotificationStatus
+        status: NotificationStatus,
     )
     fun read(userId: UserId, deviceId: String): PushInfo?
 }

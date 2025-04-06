@@ -38,7 +38,7 @@ internal class PushNotificationRepositoryImpl(
     override fun updateChatStatus(
         userId: UserId,
         deviceId: String,
-        status: NotificationStatus
+        status: NotificationStatus,
     ) {
         pushNotificationJpaRepository.findByDeviceIdAndUserId(
             deviceId = deviceId,
@@ -52,7 +52,7 @@ internal class PushNotificationRepositoryImpl(
     override fun updateScheduleStatus(
         userId: UserId,
         deviceId: String,
-        status: NotificationStatus
+        status: NotificationStatus,
     ) {
         pushNotificationJpaRepository.findByDeviceIdAndUserId(
             deviceId = deviceId,

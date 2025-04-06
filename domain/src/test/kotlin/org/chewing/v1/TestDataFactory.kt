@@ -331,7 +331,7 @@ object TestDataFactory {
     fun createChatNumber(chatRoomId: ChatRoomId): ChatRoomSequence = ChatRoomSequence.of(chatRoomId, 0)
 
     fun createPushToken(pushTokenId: String, userId: UserId): PushInfo =
-        PushInfo.of(pushTokenId, "testToken", PushInfo.Provider.ANDROID, "deviceId", userId, NotificationStatus.ALLOWED,NotificationStatus.ALLOWED)
+        PushInfo.of(pushTokenId, "testToken", PushInfo.Provider.ANDROID, "deviceId", userId, NotificationStatus.ALLOWED, NotificationStatus.ALLOWED)
 
     fun createNormalMessage(messageId: String, chatRoomId: ChatRoomId): ChatNormalMessage = ChatNormalMessage.of(
         messageId = messageId,

@@ -8,7 +8,7 @@ class PushInfo private constructor(
     val pushToken: String,
     val device: Device,
     val userId: UserId,
-    val statusInfo:NotificationStatusInfo
+    val statusInfo: NotificationStatusInfo,
 ) {
     companion object {
         fun of(
@@ -28,7 +28,7 @@ class PushInfo private constructor(
                 statusInfo = NotificationStatusInfo(
                     chatStatus = chatStatus,
                     scheduleStatus = scheduleStatus,
-                )
+                ),
             )
         }
     }

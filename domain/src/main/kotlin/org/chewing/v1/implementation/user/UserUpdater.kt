@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
 @Component
 class UserUpdater(
     private val userRepository: UserRepository,
-    private val pushNotificationRepository: PushNotificationRepository
+    private val pushNotificationRepository: PushNotificationRepository,
 ) {
     /**
      * 주어진 사용자 정보를 업데이트합니다.
@@ -32,10 +32,10 @@ class UserUpdater(
     }
 
     fun updatePushChatStatus(userId: UserId, deviceId: String, notificationStatus: NotificationStatus) {
-        pushNotificationRepository.updateChatStatus(userId,deviceId, notificationStatus)
+        pushNotificationRepository.updateChatStatus(userId, deviceId, notificationStatus)
     }
 
     fun updatePushScheduleStatus(userId: UserId, deviceId: String, notificationStatus: NotificationStatus) {
-        pushNotificationRepository.updateScheduleStatus(userId,deviceId, notificationStatus)
+        pushNotificationRepository.updateScheduleStatus(userId, deviceId, notificationStatus)
     }
 }
