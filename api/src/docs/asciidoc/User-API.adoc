@@ -95,3 +95,51 @@ include::{snippets}/user-controller-test/delete-user/http-response.adoc[]
 
 === 응답 필드 설명(Response Fields)
 include::{snippets}/user-controller-test/delete-user/response-fields.adoc[]
+
+== 5. 푸시 알림 설정 조회 04/06 수정
+
+=== 요청(Request)
+include::{snippets}/user-controller-test/get-push-notification/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/user-controller-test/get-push-notification/request-headers.adoc[]
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/get-push-notification/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/get-push-notification/response-fields.adoc[]
+
+== 6. 푸시 일정 알림 설정 변경 04/06 수정
+
+=== 요청(Request)
+include::{snippets}/user-controller-test/update-push-notification-schedule/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/user-controller-test/update-push-notification-schedule/request-headers.adoc[]
+
+=== 요청 필드 설명(Request Fields)
+include::{snippets}/user-controller-test/update-push-notification-schedule/request-fields.adoc[]
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/update-push-notification-schedule/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/update-push-notification-schedule/response-fields.adoc[]
+
+== 7. 푸시 채팅 알림 설정 변경 04/06 수정
+
+=== 요청(Request)
+include::{snippets}/user-controller-test/update-push-notification-chat/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/user-controller-test/update-push-notification-chat/request-headers.adoc[]
+
+=== 요청 필드 설명(Request Fields)
+include::{snippets}/user-controller-test/update-push-notification-chat/request-fields.adoc[]
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/update-push-notification-chat/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/update-push-notification-chat/response-fields.adoc[]

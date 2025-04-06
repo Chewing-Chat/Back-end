@@ -9,11 +9,11 @@ class UserRequest {
         fun toStatusMessage(): String = statusMessage
     }
     data class UpdateNotification(
-        val notification: Boolean,
+        val status: Boolean,
         val deviceId: String,
     ) {
         fun toNotification(): NotificationStatus {
-            return if (notification) {
+            return if (status) {
                 NotificationStatus.ALLOWED
             } else {
                 NotificationStatus.NOT_ALLOWED

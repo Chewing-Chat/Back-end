@@ -76,7 +76,7 @@ class UserController(
         @CurrentUser userId: UserId,
         @RequestBody pushInfo: UserRequest.UpdateNotification,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
-        userService.updatePushNotification(userId, pushInfo.toDeviceId(), pushInfo.toNotification(), PushInfo.PushType.CHAT)
+        userService.updatePushNotification(userId, pushInfo.toDeviceId(), pushInfo.toNotification(), PushInfo.PushTarget.CHAT)
         return ResponseHelper.successOnly()
     }
 
@@ -85,7 +85,7 @@ class UserController(
         @CurrentUser userId: UserId,
         @RequestBody pushInfo: UserRequest.UpdateNotification,
     ): SuccessResponseEntity<SuccessOnlyResponse> {
-        userService.updatePushNotification(userId, pushInfo.toDeviceId(), pushInfo.toNotification(), PushInfo.PushType.SCHEDULE)
+        userService.updatePushNotification(userId, pushInfo.toDeviceId(), pushInfo.toNotification(), PushInfo.PushTarget.SCHEDULE)
         return ResponseHelper.successOnly()
     }
 }

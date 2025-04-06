@@ -60,7 +60,7 @@ class PushInfo private constructor(
         IOS,
     }
 
-    enum class PushType {
+    enum class PushTarget {
         CHAT,
         SCHEDULE,
     }

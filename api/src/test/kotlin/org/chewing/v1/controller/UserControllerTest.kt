@@ -294,4 +294,94 @@ class UserControllerTest : RestDocsTest() {
                 ),
             )
     }
+
+    @Test
+    @DisplayName("푸시 알림 설정 조회")
+    fun getPushNotification() {
+        val deviceId = "testDeviceId"
+        val pushInfo = TestDataFactory.createPushInfo(deviceId)
+        every { userService.getPushInfo(any(), deviceId) } returns pushInfo
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .get("/api/user/push/notification/$deviceId")
+            .then()
+            .statusCode(200)
+            .body("status", equalTo(200))
+            .body("data.deviceId", equalTo(deviceId))
+            .body("data.scheduleStatus", equalTo(pushInfo.statusInfo.scheduleStatus.name.lowercase()))
+            .body("data.chatStatus", equalTo(pushInfo.statusInfo.chatStatus.name.lowercase()))
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestAccessTokenFields(),
+                    responseFields(
+                        fieldWithPath("status").description("상태 코드"),
+                        fieldWithPath("data.deviceId").description("디바이스 ID"),
+                        fieldWithPath("data.scheduleStatus").description("일정 알림 상태"),
+                        fieldWithPath("data.chatStatus").description("채팅 알림 상태"),
+                    ),
+                ),
+            )
+    }
+
+    @Test
+    @DisplayName("푸시 일정 알림 설정 변경")
+    fun updatePushNotificationSchedule() {
+        val deviceId = "testDeviceId"
+        val requestBody = UserRequest.UpdateNotification(false, "testDeviceId")
+        every { userService.updatePushNotification(any(), deviceId, any(), any()) } just Runs
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/user/push/notification/chat")
+            .then()
+            .assertCommonSuccessResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestFields(
+                        fieldWithPath("status").description("푸시 알림 상태"),
+                        fieldWithPath("deviceId").description("디바이스 ID"),
+                    ),
+                    requestAccessTokenFields(),
+                    responseSuccessFields(),
+                ),
+            )
+        verify { userService.updatePushNotification(any(), deviceId, any(), any()) }
+    }
+
+    @Test
+    @DisplayName("푸시 채팅 알림 설정 변경")
+    fun updatePushNotificationChat() {
+        val deviceId = "testDeviceId"
+        val requestBody = UserRequest.UpdateNotification(true, "testDeviceId")
+        every { userService.updatePushNotification(any(), deviceId, any(), any()) } just Runs
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/user/push/notification/chat")
+            .then()
+            .assertCommonSuccessResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestFields(
+                        fieldWithPath("status").description("푸시 알림 상태"),
+                        fieldWithPath("deviceId").description("디바이스 ID"),
+                    ),
+                    requestAccessTokenFields(),
+                    responseSuccessFields(),
+                ),
+            )
+        verify { userService.updatePushNotification(any(), deviceId, any(), any()) }
+    }
 }

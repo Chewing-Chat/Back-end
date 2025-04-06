@@ -128,11 +128,11 @@ class UserService(
         userId: UserId,
         deviceId: String,
         status: NotificationStatus,
-        type: PushInfo.PushType,
+        type: PushInfo.PushTarget,
     ) {
         when (type) {
-            PushInfo.PushType.CHAT -> userUpdater.updatePushChatStatus(userId, deviceId, status)
-            PushInfo.PushType.SCHEDULE -> userUpdater.updatePushScheduleStatus(userId, deviceId, status)
+            PushInfo.PushTarget.CHAT -> userUpdater.updatePushChatStatus(userId, deviceId, status)
+            PushInfo.PushTarget.SCHEDULE -> userUpdater.updatePushScheduleStatus(userId, deviceId, status)
         }
     }
 }
