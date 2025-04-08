@@ -4,7 +4,7 @@ import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.announcement.AnnouncementId
 import org.chewing.v1.model.auth.JwtToken
-import org.chewing.v1.model.auth.PushInfo
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.chat.log.ChatCommentLog
 import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatInviteLog

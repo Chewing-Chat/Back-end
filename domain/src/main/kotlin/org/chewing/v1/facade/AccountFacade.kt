@@ -1,7 +1,7 @@
 package org.chewing.v1.facade
 
 import org.chewing.v1.model.auth.CredentialTarget
-import org.chewing.v1.model.auth.PushInfo
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.contact.LocalPhoneNumber
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId

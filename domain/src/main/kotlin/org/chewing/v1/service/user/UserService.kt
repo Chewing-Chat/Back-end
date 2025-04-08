@@ -8,7 +8,7 @@ import org.chewing.v1.implementation.user.UserRemover
 import org.chewing.v1.implementation.user.UserUpdater
 import org.chewing.v1.implementation.user.UserValidator
 import org.chewing.v1.model.auth.CredentialTarget
-import org.chewing.v1.model.auth.PushInfo
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.contact.LocalPhoneNumber
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData

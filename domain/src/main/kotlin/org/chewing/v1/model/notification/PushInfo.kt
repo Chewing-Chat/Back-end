@@ -1,6 +1,5 @@
-package org.chewing.v1.model.auth
+package org.chewing.v1.model.notification
 
-import org.chewing.v1.model.notification.NotificationStatus
 import org.chewing.v1.model.user.UserId
 
 class PushInfo private constructor(

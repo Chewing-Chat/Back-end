@@ -4,7 +4,7 @@ import org.chewing.v1.dto.request.user.UserRequest
 import org.chewing.v1.dto.response.user.AccountResponse
 import org.chewing.v1.dto.response.user.PushResponse
 import org.chewing.v1.facade.AccountFacade
-import org.chewing.v1.model.auth.PushInfo
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserId

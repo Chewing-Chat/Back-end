@@ -1,6 +1,5 @@
 package org.chewing.v1.model.notification
 
-import org.chewing.v1.model.auth.PushInfo
 import org.chewing.v1.model.friend.FriendShip
 
 class Notification private constructor(

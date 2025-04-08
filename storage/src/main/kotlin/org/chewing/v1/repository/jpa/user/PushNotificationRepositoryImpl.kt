@@ -2,8 +2,9 @@ package org.chewing.v1.repository.jpa.user
 
 import org.chewing.v1.jpaentity.user.PushNotificationJpaEntity
 import org.chewing.v1.jparepository.user.PushNotificationJpaRepository
-import org.chewing.v1.model.auth.PushInfo
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.notification.NotificationStatus
+import org.chewing.v1.model.notification.PushInfo.PushTarget
 import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.PushNotificationRepository
@@ -20,19 +21,41 @@ internal class PushNotificationRepositoryImpl(
     }
 
     override fun append(device: PushInfo.Device, appToken: String, userInfo: UserInfo) {
-        val entity = pushNotificationJpaRepository.findByAppTokenAndUserId(appToken, userInfo.userId.id)
+        val entity = pushNotificationJpaRepository.findByDeviceIdAndUserId(device.deviceId, userInfo.userId.id)
         if (entity == null) {
             pushNotificationJpaRepository.save(PushNotificationJpaEntity.generate(appToken, device, userInfo))
+        } else {
+            entity.updateAppToken(appToken)
+            pushNotificationJpaRepository.save(entity)
         }
     }
-    override fun readAll(userId: UserId): List<PushInfo> {
-        val pushNotifications = pushNotificationJpaRepository.findAllByUserId(userId.id)
-        return pushNotifications.map { it.toPushToken() }
+
+    override fun readAll(userId: UserId, target: PushTarget): List<PushInfo> {
+        return when (target) {
+            PushTarget.CHAT -> {
+                pushNotificationJpaRepository.findAllByUserIdAndChatStatus(userId.id, NotificationStatus.ALLOWED)
+                    .map { it.toPushToken() }
+            }
+
+            PushTarget.SCHEDULE -> {
+                pushNotificationJpaRepository.findAllByUserIdAndScheduleStatus(userId.id, NotificationStatus.ALLOWED)
+                    .map { it.toPushToken() }
+            }
+        }
     }
 
-    override fun readsAll(userIds: List<UserId>): List<PushInfo> {
-        val pushNotifications = pushNotificationJpaRepository.findAllByUserIdIn(userIds.map { it.id })
-        return pushNotifications.map { it.toPushToken() }
+    override fun readsAll(userIds: List<UserId>, target: PushTarget): List<PushInfo> {
+        return when (target) {
+            PushTarget.CHAT -> {
+                pushNotificationJpaRepository.findAllByUserIdInAndChatStatus(userIds.map { it.id }, NotificationStatus.ALLOWED)
+                    .map { it.toPushToken() }
+            }
+
+            PushTarget.SCHEDULE -> {
+                pushNotificationJpaRepository.findAllByUserIdInAndScheduleStatus(userIds.map { it.id }, NotificationStatus.ALLOWED)
+                    .map { it.toPushToken() }
+            }
+        }
     }
 
     override fun updateChatStatus(

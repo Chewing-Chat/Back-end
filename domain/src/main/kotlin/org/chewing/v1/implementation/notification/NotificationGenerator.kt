@@ -1,6 +1,6 @@
 package org.chewing.v1.implementation.notification
 
-import org.chewing.v1.model.auth.PushInfo
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.friend.FriendShip

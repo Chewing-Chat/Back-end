@@ -24,6 +24,7 @@ import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.notification.Notification
 import org.chewing.v1.model.notification.NotificationType
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.repository.friend.FriendShipRepository
 import org.chewing.v1.repository.user.PushNotificationRepository
@@ -85,7 +86,7 @@ class NotificationServiceTest {
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { friendShipRepository.readByRelation(friendId, userId) } returns friendShip
-        every { pushNotificationRepository.readAll(friendId) } returns listOf(pushToken)
+        every { pushNotificationRepository.readAll(friendId, PushInfo.PushTarget.CHAT) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
 
@@ -130,7 +131,7 @@ class NotificationServiceTest {
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId), PushInfo.PushTarget.CHAT) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
         // when
@@ -164,7 +165,7 @@ class NotificationServiceTest {
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId), PushInfo.PushTarget.CHAT) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
 
@@ -194,7 +195,7 @@ class NotificationServiceTest {
 
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId), PushInfo.PushTarget.CHAT) } returns listOf(pushToken)
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
@@ -231,7 +232,7 @@ class NotificationServiceTest {
         every { userRepository.read(userId, AccessStatus.ACCESS) } returns user
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId), PushInfo.PushTarget.CHAT) } returns listOf(pushToken)
         every { externalSessionClient.isOnline(friendId) } returns false
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
         // when
@@ -264,7 +265,7 @@ class NotificationServiceTest {
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         every { externalSessionClient.isOnline(friendId) } returns false
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId), PushInfo.PushTarget.CHAT) } returns listOf(pushToken)
 
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
         // when
@@ -302,7 +303,7 @@ class NotificationServiceTest {
         every { userRepository.read(friendId, AccessStatus.ACCESS) } returns friendUser
         coEvery { externalPushNotificationClient.sendPushNotifications(capture(notificationSlot)) } just Runs
         every { friendShipRepository.readsByRelation(listOf(friendId), userId) } returns listOf(friendShip)
-        every { pushNotificationRepository.readsAll(listOf(friendId)) } returns listOf(pushToken)
+        every { pushNotificationRepository.readsAll(listOf(friendId), PushInfo.PushTarget.CHAT) } returns listOf(pushToken)
 
         // When
 

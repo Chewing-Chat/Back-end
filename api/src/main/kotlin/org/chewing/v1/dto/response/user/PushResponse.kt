@@ -1,6 +1,6 @@
 package org.chewing.v1.dto.response.user
 
-import org.chewing.v1.model.auth.PushInfo
+import org.chewing.v1.model.notification.PushInfo
 
 data class PushResponse(
     val deviceId: String,

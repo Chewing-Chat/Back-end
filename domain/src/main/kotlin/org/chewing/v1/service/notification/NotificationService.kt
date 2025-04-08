@@ -5,6 +5,7 @@ import org.chewing.v1.implementation.notification.NotificationProducer
 import org.chewing.v1.implementation.notification.NotificationSender
 import org.chewing.v1.implementation.session.SessionProvider
 import org.chewing.v1.model.chat.message.ChatMessage
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleId
 import org.chewing.v1.model.user.UserId
@@ -27,7 +28,7 @@ class NotificationService(
         }
 
         if (offlineUserIds.isNotEmpty()) {
-            val notificationInfos = notificationProducer.produceNotificationInfos(userId, offlineUserIds)
+            val notificationInfos = notificationProducer.produceNotificationInfos(userId, offlineUserIds, PushInfo.PushTarget.CHAT)
             val notificationList = notificationGenerator.generateMessageNotifications(notificationInfos, chatMessage)
             notificationSender.sendPushNotification(notificationList)
         }
@@ -38,7 +39,7 @@ class NotificationService(
         if (!sessionProvider.isOnline(targetUserId)) {
             // 오프라인 유저에게 푸시 알림 전송 자기 자신은 제외
             if (targetUserId != userId) {
-                val notificationInfo = notificationProducer.produceNotificationInfo(userId, targetUserId)
+                val notificationInfo = notificationProducer.produceNotificationInfo(userId, targetUserId, PushInfo.PushTarget.CHAT)
                 val notifications = notificationGenerator.generateMessageNotification(notificationInfo, chatMessage)
                 notificationSender.sendPushNotification(notifications)
             }
@@ -55,7 +56,7 @@ class NotificationService(
     ) {
         val offlineUserIds = targetUserIds.filter { !sessionProvider.isOnline(it) }
         if (offlineUserIds.isNotEmpty()) {
-            val notificationInfos = notificationProducer.produceNotificationInfos(userId, targetUserIds)
+            val notificationInfos = notificationProducer.produceNotificationInfos(userId, targetUserIds, PushInfo.PushTarget.SCHEDULE)
             val notificationList = notificationGenerator.generateScheduleNotifications(notificationInfos, targetScheduleId, scheduleAction)
             notificationSender.sendPushNotification(notificationList)
         }

@@ -1,7 +1,7 @@
 package org.chewing.v1.jpaentity.user
 
 import jakarta.persistence.*
-import org.chewing.v1.model.auth.PushInfo
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.notification.NotificationStatus
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.model.user.UserInfo
@@ -22,7 +22,7 @@ internal class PushNotificationJpaEntity(
     @Column(name = "push_notification_id")
     private val pushId: String = UUID.randomUUID().toString(),
 
-    private val appToken: String,
+    private var appToken: String,
 
     private val deviceId: String,
 
@@ -70,5 +70,11 @@ internal class PushNotificationJpaEntity(
 
     fun updateScheduleStatus(status: NotificationStatus) {
         this.scheduleStatus = status
+    }
+
+    fun updateAppToken(
+        appToken: String,
+    ) {
+        this.appToken = appToken
     }
 }

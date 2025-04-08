@@ -1,6 +1,6 @@
 package org.chewing.v1.dto.request.auth
 
-import org.chewing.v1.model.auth.PushInfo
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.contact.LocalPhoneNumber
 
 class SignUpRequest {
