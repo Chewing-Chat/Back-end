@@ -99,6 +99,7 @@ class FriendControllerTest : RestDocsTest() {
                     body("data.friends[$index].profileImageUrl", equalTo(s.user.info.image.url))
                     body("data.friends[$index].profileImageType", equalTo(s.user.info.image.type.value()))
                     body("data.friends[$index].statusMessage", equalTo(s.user.info.statusMessage))
+                    body("data.friends[$index].birthday", equalTo(s.user.info.birthday.toString()))
                 }
             }
             .apply(
@@ -122,6 +123,7 @@ class FriendControllerTest : RestDocsTest() {
                         fieldWithPath("data.friends[].profileImageUrl").description("프로필 이미지 URL"),
                         fieldWithPath("data.friends[].profileImageType").description("프로필 이미지 타입(image/jpeg, image/png)"),
                         fieldWithPath("data.friends[].statusMessage").description("상태 메시지"),
+                        fieldWithPath("data.friends[].birthday").description("생일(yyyy-MM-dd), 없다면 빈칸"),
                     ),
                     requestAccessTokenFields(),
                 ),

@@ -6,6 +6,7 @@ import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
+import java.time.LocalDate
 
 object UserProvider {
     fun buildUserName(): String {
@@ -21,6 +22,7 @@ object UserProvider {
             PhoneNumberProvider.buildPhoneNumber(),
             "testPassword",
             "testStatusMessage",
+            LocalDate.now(),
         )
     }
 

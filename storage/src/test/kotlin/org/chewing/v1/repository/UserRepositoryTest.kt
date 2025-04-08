@@ -77,6 +77,7 @@ class UserRepositoryTest : JpaContextTest() {
         val result = userJpaRepository.findById(user.userId.id)
 
         assert(result.get().toUser().status == AccessStatus.NEED_CREATE_PASSWORD)
+        assert(result.get().toUser().birthday == null)
     }
 
     @Test

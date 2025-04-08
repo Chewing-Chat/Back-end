@@ -8,6 +8,7 @@ data class UserResponse(
     val imageUrl: String,
     val imageType: String,
     val name: String,
+    val birthday: String,
 ) {
     companion object {
         fun of(
@@ -19,6 +20,7 @@ data class UserResponse(
                 imageUrl = userInfo.image.url,
                 imageType = userInfo.image.type.value().lowercase(),
                 name = userInfo.name,
+                birthday = userInfo.birthday?.toString() ?: "",
             )
         }
     }

@@ -15,6 +15,7 @@ import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.notification.NotificationStatus
 import org.chewing.v1.model.user.*
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class UserService(
@@ -99,6 +100,10 @@ class UserService(
 
     fun updateStatusMessage(userId: UserId, statusMessage: String) {
         userUpdater.updateStatusMessage(userId, statusMessage)
+    }
+
+    fun updateBirthday(userId: UserId, birthday: LocalDate) {
+        userUpdater.updateBirthday(userId, birthday)
     }
 
     fun checkAvailability(

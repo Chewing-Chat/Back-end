@@ -10,6 +10,7 @@ import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
 import org.hibernate.annotations.DynamicInsert
+import java.time.LocalDate
 import java.util.*
 
 @DynamicInsert
@@ -46,6 +47,8 @@ internal class UserJpaEntity(
     private var name: String,
 
     private var statusMessage: String,
+
+    private var birthday: LocalDate?,
 ) : BaseEntity() {
     companion object {
         fun generate(phoneNumber: PhoneNumber, userName: String, access: AccessStatus): UserJpaEntity {
@@ -59,6 +62,7 @@ internal class UserJpaEntity(
                 name = userName,
                 password = "",
                 statusMessage = "",
+                birthday = null,
             )
         }
     }
@@ -72,6 +76,7 @@ internal class UserJpaEntity(
             PhoneNumber.of(this.phoneNumber),
             this.password,
             this.statusMessage,
+            this.birthday,
         )
     }
 
@@ -103,5 +108,9 @@ internal class UserJpaEntity(
 
     fun updateUserName(name: String) {
         this.name = name
+    }
+
+    fun updateBirthday(birthday: LocalDate) {
+        this.birthday = birthday
     }
 }

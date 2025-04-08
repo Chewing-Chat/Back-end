@@ -279,6 +279,7 @@ class UserControllerTest : RestDocsTest() {
             .body("data.name", equalTo(user.info.name))
             .body("data.phoneNumber", equalTo(user.localPhoneNumber.number))
             .body("data.countryCode", equalTo(user.localPhoneNumber.countryCode))
+            .body("data.birth", equalTo(user.info.birthday.toString()))
             .apply(
                 document(
                     "{class-name}/{method-name}",
@@ -290,6 +291,7 @@ class UserControllerTest : RestDocsTest() {
                         fieldWithPath("data.name").description("사용자 이름"),
                         fieldWithPath("data.phoneNumber").description("전화번호"),
                         fieldWithPath("data.countryCode").description("국가 코드"),
+                        fieldWithPath("data.birth").description("생일(YYYY-MM-DD) 없다면 빈칸"),
                     ),
                 ),
             )
@@ -383,5 +385,36 @@ class UserControllerTest : RestDocsTest() {
                 ),
             )
         verify { userService.updatePushNotification(any(), deviceId, any(), any()) }
+    }
+
+    @Test
+    @DisplayName("생일 변경")
+    fun changeBirthday() {
+        val requestBody = mapOf(
+            "birthday" to "2023-10-10",
+        )
+
+        every { userService.updateBirthday(any(), any()) } just Runs
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/user/birthday")
+            .then()
+            .assertCommonSuccessResponse()
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestFields(
+                        fieldWithPath("birthday").description("생일"),
+                    ),
+                    requestAccessTokenFields(),
+                    responseSuccessFields(),
+                ),
+            )
+
+        verify { userService.updateBirthday(any(), any()) }
     }
 }
