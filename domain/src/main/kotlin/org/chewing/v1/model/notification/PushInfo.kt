@@ -1,12 +1,13 @@
-package org.chewing.v1.model.auth
+package org.chewing.v1.model.notification
 
 import org.chewing.v1.model.user.UserId
 
-class PushToken private constructor(
-    val pushTokenId: String,
+class PushInfo private constructor(
+    val pushId: String,
     val pushToken: String,
     val device: Device,
     val userId: UserId,
+    val statusInfo: NotificationStatusInfo,
 ) {
     companion object {
         fun of(
@@ -15,12 +16,18 @@ class PushToken private constructor(
             provider: Provider,
             deviceId: String,
             userId: UserId,
-        ): PushToken {
-            return PushToken(
-                pushTokenId = pushTokenId,
+            chatStatus: NotificationStatus,
+            scheduleStatus: NotificationStatus,
+        ): PushInfo {
+            return PushInfo(
+                pushId = pushTokenId,
                 pushToken = fcmToken,
                 device = Device.of(deviceId, provider),
                 userId = userId,
+                statusInfo = NotificationStatusInfo(
+                    chatStatus = chatStatus,
+                    scheduleStatus = scheduleStatus,
+                ),
             )
         }
     }
@@ -42,8 +49,18 @@ class PushToken private constructor(
         }
     }
 
+    data class NotificationStatusInfo(
+        val chatStatus: NotificationStatus,
+        val scheduleStatus: NotificationStatus,
+    )
+
     enum class Provider {
         ANDROID,
         IOS,
+    }
+
+    enum class PushTarget {
+        CHAT,
+        SCHEDULE,
     }
 }

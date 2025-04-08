@@ -2,7 +2,7 @@ package org.chewing.v1.implementation.user
 
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.error.NotFoundException
-import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.PushNotificationRepository
@@ -16,7 +16,7 @@ class UserRemover(
 ) {
     fun remove(userId: UserId): UserInfo = userRepository.remove(userId) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
 
-    fun removePushToken(device: PushToken.Device) {
+    fun removePushToken(device: PushInfo.Device) {
         pushNotificationRepository.remove(device)
     }
 }

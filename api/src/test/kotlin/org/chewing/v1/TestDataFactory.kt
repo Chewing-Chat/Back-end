@@ -4,6 +4,7 @@ import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.announcement.Announcement
 import org.chewing.v1.model.announcement.AnnouncementId
 import org.chewing.v1.model.auth.JwtToken
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.chat.log.ChatCommentLog
 import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatInviteLog
@@ -45,6 +46,7 @@ import org.chewing.v1.model.friend.FriendShipStatus
 import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.media.MediaType
+import org.chewing.v1.model.notification.NotificationStatus
 import org.chewing.v1.model.schedule.Schedule
 import org.chewing.v1.model.schedule.ScheduleAction
 import org.chewing.v1.model.schedule.ScheduleId
@@ -88,6 +90,18 @@ object TestDataFactory {
 
     fun createJwtToken(): JwtToken {
         return JwtToken.of("accessToken", RefreshToken.of("refreshToken", LocalDateTime.now()))
+    }
+
+    fun createPushInfo(deviceId: String): PushInfo {
+        return PushInfo.of(
+            "testToken",
+            "testToken",
+            PushInfo.Provider.ANDROID,
+            deviceId,
+            UserId.of("testUserId"),
+            NotificationStatus.ALLOWED,
+            NotificationStatus.NOT_ALLOWED,
+        )
     }
 
     fun createFriendName(): String {
@@ -303,12 +317,14 @@ object TestDataFactory {
                     listOf(createFeedDetail1(), createFeedDetail2()),
                 )
             }
+
             FeedType.TEXT_BLUE -> {
                 return Feed.of(
                     createFeedInfo(feedId, feedType),
                     listOf(),
                 )
             }
+
             FeedType.TEXT_SKY -> {
                 return Feed.of(
                     createFeedInfo(feedId, feedType),
@@ -413,6 +429,7 @@ object TestDataFactory {
             parentSeqNumber = 0,
         )
     }
+
     fun createLeaveLog(chatRoomId: ChatRoomId): ChatLeaveLog {
         return ChatLeaveLog.of(
             messageId = "messageId",
@@ -440,7 +457,11 @@ object TestDataFactory {
         )
     }
 
-    fun createCommentMessage(messageId: String, chatRoomId: ChatRoomId, chatRoomType: ChatRoomType): ChatCommentMessage {
+    fun createCommentMessage(
+        messageId: String,
+        chatRoomId: ChatRoomId,
+        chatRoomType: ChatRoomType,
+    ): ChatCommentMessage {
         return ChatCommentMessage.of(
             messageId = messageId,
             chatRoomId = chatRoomId,

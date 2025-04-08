@@ -1,6 +1,6 @@
 package org.chewing.v1.implementation.notification
 
-import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.friend.FriendShip
@@ -70,7 +70,7 @@ class NotificationGenerator {
 
         return createNotifications(
             friendShip = notificationInfo.friendShip,
-            pushTokens = notificationInfo.pushTokens,
+            pushInfos = notificationInfo.pushInfos,
             type = type,
             targetId = targetId.id,
             content = content,
@@ -119,7 +119,7 @@ class NotificationGenerator {
 
         return createNotifications(
             friendShip = notificationInfo.friendShip,
-            pushTokens = notificationInfo.pushTokens,
+            pushInfos = notificationInfo.pushInfos,
             type = type,
             targetId = targetId.id,
             content = content,
@@ -129,15 +129,15 @@ class NotificationGenerator {
 
     private fun createNotifications(
         friendShip: FriendShip,
-        pushTokens: List<PushToken>,
+        pushInfos: List<PushInfo>,
         type: NotificationType,
         targetId: String,
         content: String,
         profileImage: String,
-    ): List<Notification> = pushTokens.map { pushToken ->
+    ): List<Notification> = pushInfos.map { pushToken ->
         Notification.of(
             friendShip = friendShip,
-            pushToken = pushToken,
+            pushInfo = pushToken,
             type = type,
             targetId = targetId,
             content = content,

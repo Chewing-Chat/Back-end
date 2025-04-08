@@ -1,6 +1,6 @@
 package org.chewing.v1.dto.request.auth
 
-import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.contact.LocalPhoneNumber
 
 data class LoginRequest(
@@ -16,8 +16,8 @@ data class LoginRequest(
     }
 
     fun toPassword(): String = password
-    fun toDevice(): PushToken.Device {
-        return PushToken.Device.of(deviceId, PushToken.Provider.valueOf(provider.uppercase()))
+    fun toDevice(): PushInfo.Device {
+        return PushInfo.Device.of(deviceId, PushInfo.Provider.valueOf(provider.uppercase()))
     }
     fun toAppToken(): String {
         return appToken

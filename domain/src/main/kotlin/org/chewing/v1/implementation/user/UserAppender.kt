@@ -1,7 +1,7 @@
 package org.chewing.v1.implementation.user
 
 import org.chewing.v1.model.contact.Contact
-import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.repository.user.PushNotificationRepository
@@ -14,7 +14,7 @@ class UserAppender(
     private val pushNotificationRepository: PushNotificationRepository,
 ) {
 
-    fun appendUserPushToken(userInfo: UserInfo, appToken: String, device: PushToken.Device) {
+    fun appendUserPushToken(userInfo: UserInfo, appToken: String, device: PushInfo.Device) {
         pushNotificationRepository.append(device, appToken, userInfo)
     }
 

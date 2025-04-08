@@ -1,15 +1,19 @@
 package org.chewing.v1.repository.support
 
-import org.chewing.v1.model.auth.PushToken
+import org.chewing.v1.model.notification.PushInfo
 import org.springframework.stereotype.Component
 
 @Component
 object PushTokenProvider {
-    fun buildDeviceNormal(): PushToken.Device {
-        return PushToken.Device.of("deviceId", PushToken.Provider.ANDROID)
+    fun buildDeviceNormal(): PushInfo.Device {
+        return PushInfo.Device.of("deviceId", PushInfo.Provider.ANDROID)
     }
 
     fun buildAppTokenNormal(): String {
         return "appToken"
+    }
+
+    fun buildAppTokenNew(): String {
+        return "appTokenNew"
     }
 }
