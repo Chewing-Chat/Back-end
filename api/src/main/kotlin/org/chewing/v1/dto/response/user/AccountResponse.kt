@@ -6,6 +6,7 @@ data class AccountResponse(
     val name: String,
     val phoneNumber: String,
     val countryCode: String,
+    val birth: String,
 ) {
     companion object {
         fun of(
@@ -15,6 +16,7 @@ data class AccountResponse(
                 name = user.info.name,
                 phoneNumber = user.localPhoneNumber.number,
                 countryCode = user.localPhoneNumber.countryCode,
+                birth = user.info.birthday?.toString() ?: "",
             )
         }
     }

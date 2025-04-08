@@ -62,6 +62,15 @@ class UserController(
         return ResponseHelper.successOnly()
     }
 
+    @PutMapping("/birthday")
+    fun changeBirthday(
+        @CurrentUser userId: UserId,
+        @RequestBody birthday: UserRequest.UpdateBirthday,
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
+        userService.updateBirthday(userId, birthday.toBirthday())
+        return ResponseHelper.successOnly()
+    }
+
     @GetMapping("/push/notification/{deviceId}")
     fun getPushNotification(
         @CurrentUser userId: UserId,

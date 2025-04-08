@@ -8,6 +8,7 @@ import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.PushNotificationRepository
 import org.chewing.v1.repository.user.UserRepository
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 
 /**
  * UserUpdater는 사용자 정보를 업데이트하는 구현체입니다.
@@ -29,6 +30,10 @@ class UserUpdater(
 
     fun updateStatusMessage(userId: UserId, statusMessage: String) {
         userRepository.updateStatusMessage(userId, statusMessage) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
+    }
+
+    fun updateBirthday(userId: UserId, birthday: LocalDate) {
+        userRepository.updateBirthday(userId, birthday) ?: throw NotFoundException(ErrorCode.USER_NOT_FOUND)
     }
 
     fun updatePushChatStatus(userId: UserId, deviceId: String, notificationStatus: NotificationStatus) {

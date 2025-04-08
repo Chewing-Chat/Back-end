@@ -12,6 +12,7 @@ data class FriendResponse(
     val statusMessage: String,
     val favorite: Boolean,
     val status: String,
+    val birthday: String,
 ) {
     companion object {
         fun of(
@@ -27,6 +28,7 @@ data class FriendResponse(
                 status = friend.status.name.lowercase(),
                 phoneNumber = friend.user.localPhoneNumber.number,
                 countryCode = friend.user.localPhoneNumber.countryCode,
+                birthday = friend.user.info.birthday?.toString() ?: "",
             )
         }
     }

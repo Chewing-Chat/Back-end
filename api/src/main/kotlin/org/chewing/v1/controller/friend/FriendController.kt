@@ -56,6 +56,14 @@ class FriendController(
         return ResponseHelper.successOnly()
     }
 
+    @GetMapping("")
+    fun getFriend(
+        @CurrentUser userId: UserId,
+    ): SuccessResponseEntity<FriendListResponse> {
+        val friends = friendFacade.getFriends(userId)
+        return ResponseHelper.success(FriendListResponse.of(friends))
+    }
+
     @DeleteMapping("/block")
     fun blockFriend(
         @CurrentUser userId: UserId,

@@ -11,6 +11,7 @@ import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.*
 import org.chewing.v1.model.user.AccessStatus
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 object TestDataFactory {
@@ -18,16 +19,6 @@ object TestDataFactory {
     fun createUserName(): String = "testUserName"
 
     fun createJwtToken(): JwtToken = JwtToken.of("accessToken", RefreshToken.of("refreshToken", LocalDateTime.now()))
-
-    fun createUser(userId: UserId): UserInfo = UserInfo.of(
-        userId,
-        "name",
-        Media.of(FileCategory.PROFILE, "www.example.com", 0, MediaType.IMAGE_PNG),
-        AccessStatus.ACCESS,
-        PhoneNumber.of("testPhoneNumber"),
-        "password",
-        "testStatusMessage",
-    )
 
     fun createUserInfo(accessStatus: AccessStatus): UserInfo {
         return UserInfo.of(
@@ -38,6 +29,7 @@ object TestDataFactory {
             PhoneNumber.of("testPhoneNumber"),
             "testPassword",
             "testStatusMessage",
+            LocalDate.now(),
         )
     }
 

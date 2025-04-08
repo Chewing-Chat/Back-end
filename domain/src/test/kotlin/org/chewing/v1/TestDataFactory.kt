@@ -44,6 +44,7 @@ import org.chewing.v1.model.token.RefreshToken
 import org.chewing.v1.model.user.*
 import org.chewing.v1.model.user.AccessStatus
 import java.io.ByteArrayInputStream
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -165,6 +166,7 @@ object TestDataFactory {
             PhoneNumber.of("+821012345678"),
             "testPassword",
             "testStatusMessage",
+            LocalDate.now(),
         )
     }
 
@@ -181,6 +183,7 @@ object TestDataFactory {
         PhoneNumber.of("testPhoneNumber"),
         password,
         "testStatusMessage",
+        LocalDate.now(),
     )
 
     fun createScheduledTime(): ScheduleTime =

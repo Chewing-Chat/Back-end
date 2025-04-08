@@ -143,3 +143,20 @@ include::{snippets}/user-controller-test/update-push-notification-chat/http-resp
 
 === 응답 필드 설명(Response Fields)
 include::{snippets}/user-controller-test/update-push-notification-chat/response-fields.adoc[]
+
+== 8. 유저 생일 변경 04/08 수정
+
+=== 요청(Request)
+include::{snippets}/user-controller-test/change-birthday/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/user-controller-test/change-birthday/request-headers.adoc[]
+
+=== 요청 필드 설명(Request Fields)
+include::{snippets}/user-controller-test/change-birthday/request-fields.adoc[]
+
+=== 응답(Response)
+include::{snippets}/user-controller-test/change-birthday/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/user-controller-test/change-birthday/response-fields.adoc[]

@@ -66,6 +66,7 @@ import org.springframework.mock.web.MockMultipartFile
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
+import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.imageio.ImageIO
 
@@ -218,6 +219,7 @@ object TestDataFactory {
             PhoneNumber.of("testPhoneNumber"),
             "testPassword",
             "testStatusMessage",
+            LocalDate.now(),
         )
     }
 

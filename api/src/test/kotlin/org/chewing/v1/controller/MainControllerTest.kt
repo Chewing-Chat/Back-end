@@ -121,6 +121,7 @@ class MainControllerTest : RestDocsTest() {
                 body("data.user.imageUrl", equalTo(user.info.image.url))
                 body("data.user.imageType", equalTo(user.info.image.type.value().lowercase()))
                 body("data.totalFriends", equalTo(friends.size))
+                body("data.user.birthday", equalTo(user.info.birthday.toString()))
                 friends.forEachIndexed { index, s ->
                     body("data.friends[$index].phoneNumber", equalTo(s.user.localPhoneNumber.number))
                     body("data.friends[$index].countryCode", equalTo(s.user.localPhoneNumber.countryCode))
@@ -131,6 +132,7 @@ class MainControllerTest : RestDocsTest() {
                     body("data.friends[$index].profileImageUrl", equalTo(s.user.info.image.url))
                     body("data.friends[$index].profileImageType", equalTo(s.user.info.image.type.value()))
                     body("data.friends[$index].statusMessage", equalTo(s.user.info.statusMessage))
+                    body("data.friends[$index].birthday", equalTo(s.user.info.birthday.toString()))
                 }
                 groupChat.forEachIndexed { index, (groupChatRoom, logs) ->
                     val friendIds = groupChatRoom.memberInfos
@@ -277,6 +279,7 @@ class MainControllerTest : RestDocsTest() {
                         fieldWithPath("data.user.statusMessage").description("사용자 상태 메시지"),
                         fieldWithPath("data.user.imageUrl").description("사용자 프로필 이미지 URL"),
                         fieldWithPath("data.user.imageType").description("프로필 이미지 타입 (예: 'default' / 'uploaded')"),
+                        fieldWithPath("data.user.birthday").description("사용자 생일 (yyyy-MM-dd 형식) 없다면 빈칸으로 넘어옴"),
 
                         // data.friends
                         fieldWithPath("data.totalFriends").description("전체 친구 수"),
@@ -290,6 +293,7 @@ class MainControllerTest : RestDocsTest() {
                         fieldWithPath("data.friends[].profileImageUrl").description("친구 프로필 이미지 URL"),
                         fieldWithPath("data.friends[].profileImageType").description("친구 프로필 이미지 타입"),
                         fieldWithPath("data.friends[].statusMessage").description("친구 상태 메시지"),
+                        fieldWithPath("data.friends[].birthday").description("친구 생일 (yyyy-MM-dd 형식) 없다면 빈칸으로 넘어옴"),
 
                         // data.groupChatRooms
                         fieldWithPath("data.groupChatRooms[]").description("그룹 채팅방 목록"),

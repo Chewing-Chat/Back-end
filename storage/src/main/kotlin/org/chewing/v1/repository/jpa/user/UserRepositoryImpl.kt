@@ -10,6 +10,7 @@ import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.repository.user.UserRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 
 @Repository
 internal class UserRepositoryImpl(
@@ -85,6 +86,17 @@ internal class UserRepositoryImpl(
     override fun updateStatusMessage(userId: UserId, statusMessage: String): UserId? {
         return userJpaRepository.findById(userId.id).map {
             it.updateStatusMessage(statusMessage)
+            userJpaRepository.save(it)
+            it.toUserId()
+        }.orElse(null)
+    }
+
+    override fun updateBirthday(
+        userId: UserId,
+        birthday: LocalDate,
+    ): UserId? {
+        return userJpaRepository.findById(userId.id).map {
+            it.updateBirthday(birthday)
             userJpaRepository.save(it)
             it.toUserId()
         }.orElse(null)

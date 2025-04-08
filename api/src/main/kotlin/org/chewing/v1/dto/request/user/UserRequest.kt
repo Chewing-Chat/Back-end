@@ -1,6 +1,7 @@
 package org.chewing.v1.dto.request.user
 
 import org.chewing.v1.model.notification.NotificationStatus
+import java.time.LocalDate
 
 class UserRequest {
     data class UpdateStatusMessage(
@@ -20,5 +21,10 @@ class UserRequest {
             }
         }
         fun toDeviceId(): String = deviceId
+    }
+    data class UpdateBirthday(
+        val birthday: LocalDate,
+    ) {
+        fun toBirthday(): LocalDate = birthday
     }
 }
