@@ -106,4 +106,37 @@ class JwtTokenProviderTest {
         val cleaned = jwtTokenProvider.cleanedToken(token)
         assert(cleaned == "someToken")
     }
+
+    @Test
+    @DisplayName("Refresh 토큰으로 새로운 JwtToken을 재발급할 수 있어야 한다")
+    fun `test refresh`() {
+        val userId = TestDataFactory.createUserId()
+        val jwtToken = jwtTokenProvider.createJwtToken(userId)
+        val refreshToken = jwtToken.refreshToken.token
+
+        val (newToken, extractedUserId) = jwtTokenProvider.refresh("Bearer $refreshToken")
+
+        assert(newToken.accessToken.isNotBlank())
+        assert(newToken.refreshToken.token.isNotBlank())
+        assert(extractedUserId == userId)
+    }
+
+    @Test
+    @DisplayName("정상적인 refresh token에 대해 validateRefreshToken이 성공하는지 테스트")
+    fun `test validateRefreshToken with valid token`() {
+        val userId = TestDataFactory.createUserId()
+        val refreshToken = jwtTokenProvider.createRefreshToken(userId).token
+        jwtTokenProvider.validateRefreshToken("Bearer $refreshToken")
+    }
+
+    @Test
+    @DisplayName("Bearer prefix가 있는 토큰에서도 사용자 ID를 추출할 수 있어야 한다")
+    fun `test getUserIdFromToken with Bearer token`() {
+        val userId = TestDataFactory.createUserId()
+        val token = jwtTokenProvider.createAccessToken(userId)
+        val bearerToken = "Bearer $token"
+
+        val extractedUserId = jwtTokenProvider.getUserIdFromToken(bearerToken)
+        assert(extractedUserId == userId)
+    }
 }

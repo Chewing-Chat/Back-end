@@ -6,7 +6,7 @@ import org.chewing.v1.model.notification.PushInfo
 import org.springframework.data.jpa.repository.JpaRepository
 
 internal interface PushNotificationJpaRepository : JpaRepository<PushNotificationJpaEntity, String> {
-    fun deleteByDeviceIdAndProvider(deviceId: String, deviceProvider: PushInfo.Provider)
+    fun deleteAllByDeviceIdAndProvider(deviceId: String, deviceProvider: PushInfo.Provider)
     fun findAllByUserId(userId: String): List<PushNotificationJpaEntity>
     fun findAllByUserIdAndChatStatus(userId: String, chatStatus: NotificationStatus): List<PushNotificationJpaEntity>
     fun findAllByUserIdAndScheduleStatus(userId: String, scheduleStatus: NotificationStatus): List<PushNotificationJpaEntity>

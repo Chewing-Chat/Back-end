@@ -1,6 +1,7 @@
 package org.chewing.v1.controller.auth
 
 import org.chewing.v1.dto.request.auth.LoginRequest
+import org.chewing.v1.dto.request.auth.LogoutRequest
 import org.chewing.v1.dto.request.auth.SignUpRequest
 import org.chewing.v1.dto.request.auth.VerificationRequest
 import org.chewing.v1.dto.request.auth.VerifyOnlyRequest
@@ -106,9 +107,13 @@ class AuthController(
     @DeleteMapping("/logout")
     fun logout(
         @RequestHeader("Authorization") refreshToken: String,
+        @RequestBody request: LogoutRequest,
     ): ResponseEntity<HttpResponse<SuccessOnlyResponse>> {
         jwtTokenUtil.validateRefreshToken(refreshToken)
-        authService.logout(refreshToken)
+        accountFacade.logout(
+            request.toDevice(),
+            refreshToken,
+        )
         return ResponseHelper.successOnly()
     }
 

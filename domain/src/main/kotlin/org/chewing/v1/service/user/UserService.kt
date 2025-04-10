@@ -129,6 +129,12 @@ class UserService(
         return userReader.readPushToken(userId, deviceId)
     }
 
+    fun removePushInfo(
+        device: PushInfo.Device,
+    ) {
+        userRemover.removePushToken(device)
+    }
+
     fun updatePushNotification(
         userId: UserId,
         deviceId: String,

@@ -8,7 +8,6 @@ import io.mockk.verify
 import org.chewing.v1.RestDocsTest
 import org.chewing.v1.RestDocsUtils.requestAccessTokenFields
 import org.chewing.v1.RestDocsUtils.requestPreprocessor
-import org.chewing.v1.RestDocsUtils.requestRefreshTokenFields
 import org.chewing.v1.RestDocsUtils.responseErrorFields
 import org.chewing.v1.RestDocsUtils.responsePreprocessor
 import org.chewing.v1.RestDocsUtils.responseSuccessFields
@@ -16,6 +15,7 @@ import org.chewing.v1.TestDataFactory.createJwtToken
 import org.chewing.v1.TestDataFactory.createUserId
 import org.chewing.v1.controller.auth.AuthController
 import org.chewing.v1.dto.request.auth.LoginRequest
+import org.chewing.v1.dto.request.auth.LogoutRequest
 import org.chewing.v1.dto.request.auth.SignUpRequest
 import org.chewing.v1.dto.request.auth.VerificationRequest
 import org.chewing.v1.dto.request.auth.VerifyOnlyRequest
@@ -740,11 +740,17 @@ class AuthControllerTest : RestDocsTest() {
     @Test
     @DisplayName("로그아웃")
     fun logout() {
-        every { authService.logout(any()) } just Runs
+        val requestBody = LogoutRequest(
+            deviceId = "testDeviceId",
+            provider = "ios",
+        )
+        every { accountFacade.logout(any(), any()) } just Runs
         every { jwtTokenUtil.validateRefreshToken(any()) } just Runs
 
         given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .header("Authorization", "Bearer refreshToken")
+            .body(requestBody)
             .delete("/api/auth/logout")
             .then()
             .assertCommonSuccessResponse()
@@ -754,7 +760,13 @@ class AuthControllerTest : RestDocsTest() {
                     "{class-name}/{method-name}",
                     requestPreprocessor(),
                     responsePreprocessor(),
-                    requestRefreshTokenFields(),
+                    requestHeaders(
+                        headerWithName("Authorization").description("리프레시 토큰"),
+                    ),
+                    requestFields(
+                        fieldWithPath("deviceId").description("디바이스 아이디(디바이스 식별을 위한 정보)"),
+                        fieldWithPath("provider").description("플랫폼(ios, android)"),
+                    ),
                     responseSuccessFields(),
                 ),
             )

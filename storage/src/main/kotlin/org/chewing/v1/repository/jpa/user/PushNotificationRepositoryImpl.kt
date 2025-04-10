@@ -17,7 +17,7 @@ internal class PushNotificationRepositoryImpl(
 ) : PushNotificationRepository {
     @Transactional
     override fun remove(device: PushInfo.Device) {
-        pushNotificationJpaRepository.deleteByDeviceIdAndProvider(device.deviceId, device.provider)
+        pushNotificationJpaRepository.deleteAllByDeviceIdAndProvider(device.deviceId, device.provider)
     }
 
     override fun append(device: PushInfo.Device, appToken: String, userInfo: UserInfo) {
