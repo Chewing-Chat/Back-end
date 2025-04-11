@@ -24,7 +24,7 @@ import java.util.*
 internal class FeedJpaEntity(
     @Id
     private val feedId: String = UUID.randomUUID().toString(),
-    private val content: String,
+    private var content: String,
     private val userId: String,
     @Enumerated(EnumType.STRING)
     private val type: FeedType,
@@ -59,6 +59,11 @@ internal class FeedJpaEntity(
                 type = type,
             )
     }
+
+    fun updateContent(content: String) {
+        this.content = content
+    }
+
     fun delete() {
         status = FeedStatus.DELETED
     }

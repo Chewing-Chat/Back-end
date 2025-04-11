@@ -13,6 +13,8 @@ interface FeedRepository {
     fun removes(feedIds: List<FeedId>)
     fun removesOwned(userId: UserId)
     fun append(userId: UserId, content: String, type: FeedType): FeedId
+    fun update(feedId: FeedId, content: String)
     fun isOwners(feedIds: List<FeedId>, userId: UserId): Boolean
+    fun isOwner(feedId: FeedId, userId: UserId): Boolean
     fun readsOneDay(targetUserIds: List<UserId>): List<FeedInfo>
 }

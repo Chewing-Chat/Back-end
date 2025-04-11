@@ -12,6 +12,7 @@ import org.chewing.v1.implementation.feed.FeedAppender
 import org.chewing.v1.implementation.feed.FeedEnricher
 import org.chewing.v1.implementation.feed.FeedReader
 import org.chewing.v1.implementation.feed.FeedRemover
+import org.chewing.v1.implementation.feed.FeedUpdater
 import org.chewing.v1.implementation.feed.FeedValidator
 import org.chewing.v1.implementation.media.FileHandler
 import org.chewing.v1.model.feed.FeedType
@@ -36,8 +37,9 @@ class FeedServiceTest {
     private val feedValidator: FeedValidator = FeedValidator(feedRepository, feedVisibilityRepository)
     private val feedEnricher: FeedEnricher = FeedEnricher()
     private val feedRemover: FeedRemover = FeedRemover(feedRepository, feedDetailRepository, feedVisibilityRepository)
+    private val feedUpdater: FeedUpdater = FeedUpdater(feedRepository)
     private val feedService: FeedService =
-        FeedService(feedReader, feedAppender, feedValidator, fileHandler, feedEnricher, feedRemover)
+        FeedService(feedReader, feedAppender, feedValidator, fileHandler, feedEnricher, feedRemover,feedUpdater)
 
     @Test
     fun `피드를 가져온다`() {
