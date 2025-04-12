@@ -90,10 +90,17 @@ class SpringSecurityTest2 : IntegrationTest() {
     fun logout() {
         val userId = TestDataFactory.createUserId()
         val jwtToken = jwtTokenUtil.createRefreshToken(userId)
-        every { authService.logout(any()) } just Runs
+        val deviceId = "testDeviceId"
+        val provider = "IOS"
+        val requestBody = mapOf(
+            "deviceId" to deviceId,
+            "provider" to provider,
+        )
+        every { accountFacade.logout(any(), any()) } just Runs
         mockMvc.perform(
             MockMvcRequestBuilders.delete("/api/auth/logout")
                 .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody))
                 .header("Authorization", "Bearer ${jwtToken.token}"),
         ).andExpect(status().isOk)
     }

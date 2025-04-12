@@ -39,7 +39,7 @@ class FeedServiceTest {
     private val feedRemover: FeedRemover = FeedRemover(feedRepository, feedDetailRepository, feedVisibilityRepository)
     private val feedUpdater: FeedUpdater = FeedUpdater(feedRepository)
     private val feedService: FeedService =
-        FeedService(feedReader, feedAppender, feedValidator, fileHandler, feedEnricher, feedRemover,feedUpdater)
+        FeedService(feedReader, feedAppender, feedValidator, fileHandler, feedEnricher, feedRemover, feedUpdater)
 
     @Test
     fun `피드를 가져온다`() {

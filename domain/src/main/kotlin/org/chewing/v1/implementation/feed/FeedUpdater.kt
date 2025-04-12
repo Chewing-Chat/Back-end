@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 class FeedUpdater(
     private val feedRepository: FeedRepository,
 ) {
-    fun update(feedId: FeedId, content: String){
+    fun update(feedId: FeedId, content: String) {
         feedRepository.update(feedId, content)
     }
 }

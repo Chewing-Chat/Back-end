@@ -590,4 +590,34 @@ class FeedControllerTest : RestDocsTest() {
                 ),
             )
     }
+
+    @Test
+    fun updateTextFeed() {
+        val requestBody = FeedRequest.UpdateText(
+            feedId = "testFeedId",
+            content = "testContent",
+        )
+        every { feedService.changeText(any(), any(), any()) } just Runs
+
+        given()
+            .setupAuthenticatedJsonRequest()
+            .body(requestBody)
+            .put("/api/feed/text")
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .body("status", equalTo(200))
+            .apply(
+                document(
+                    "{class-name}/{method-name}",
+                    requestPreprocessor(),
+                    responsePreprocessor(),
+                    requestAccessTokenFields(),
+                    requestFields(
+                        fieldWithPath("feedId").description("피드 아이디"),
+                        fieldWithPath("content").description("피드 내용"),
+                    ),
+                    responseSuccessFields(),
+                ),
+            )
+    }
 }
