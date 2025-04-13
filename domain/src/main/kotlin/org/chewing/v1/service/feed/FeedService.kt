@@ -4,6 +4,7 @@ import org.chewing.v1.implementation.feed.FeedAppender
 import org.chewing.v1.implementation.feed.FeedEnricher
 import org.chewing.v1.implementation.feed.FeedReader
 import org.chewing.v1.implementation.feed.FeedRemover
+import org.chewing.v1.implementation.feed.FeedUpdater
 import org.chewing.v1.implementation.feed.FeedValidator
 import org.chewing.v1.implementation.media.FileHandler
 import org.chewing.v1.model.feed.*
@@ -20,6 +21,7 @@ class FeedService(
     private val fileHandler: FileHandler,
     private val feedEnricher: FeedEnricher,
     private val feedRemover: FeedRemover,
+    private val feedUpdater: FeedUpdater,
 ) {
     fun getFeed(feedId: FeedId, userId: UserId): Feed {
         feedValidator.isFeedVisible(feedId, userId)
@@ -72,5 +74,14 @@ class FeedService(
         val targetUserIds = targetFriends.plus(userId)
         feedAppender.appendVisibility(feedId, targetUserIds)
         return feedId
+    }
+
+    fun changeText(
+        userId: UserId,
+        feedId: FeedId,
+        content: String,
+    ) {
+        feedValidator.isFeedOwner(feedId, userId)
+        feedUpdater.update(feedId, content)
     }
 }

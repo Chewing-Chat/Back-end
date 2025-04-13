@@ -46,6 +46,10 @@ internal class FeedRepositoryImpl(
         return feedJpaRepository.existsByFeedIdInAndUserId(feedIds.map { it.id }, userId.id)
     }
 
+    override fun isOwner(feedId: FeedId, userId: UserId): Boolean {
+        return feedJpaRepository.existsByFeedIdAndUserId(feedId.id, userId.id)
+    }
+
     override fun readsOneDay(targetUserIds: List<UserId>): List<FeedInfo> {
         val now = LocalDateTime.now()
         val startDate = now.minusDays(1)
@@ -55,5 +59,12 @@ internal class FeedRepositoryImpl(
             SortType.LATEST.toSort(),
         )
             .map { it.toFeedInfo() }
+    }
+
+    override fun update(feedId: FeedId, content: String) {
+        feedJpaRepository.findById(feedId.id).ifPresent {
+            it.updateContent(content)
+            feedJpaRepository.save(it)
+        }
     }
 }

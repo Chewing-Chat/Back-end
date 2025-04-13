@@ -24,8 +24,7 @@ class JwtTokenUtil(
     @Value("\${jwt.access-expiration}") private val accessExpiration: Long,
     @Value("\${jwt.refresh-expiration}") private val refreshExpiration: Long,
 ) {
-    private val secretKey: SecretKey
-        get() = Keys.hmacShaKeyFor(secretKeyString.toByteArray())
+    private val secretKey: SecretKey = Keys.hmacShaKeyFor(secretKeyString.toByteArray())
 
     fun createJwtToken(userId: UserId): JwtToken {
         val accessToken = createAccessToken(userId)
@@ -79,7 +78,7 @@ class JwtTokenUtil(
 
     // 토큰에서 사용자 ID 추출
     fun getUserIdFromToken(token: String): UserId {
-        val claims = getClaimsFromToken(token)
+        val claims = getClaimsFromToken(cleanedToken(token))
         return UserId.of(claims.subject)
     }
 

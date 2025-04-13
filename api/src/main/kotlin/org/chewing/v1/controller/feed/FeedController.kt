@@ -87,4 +87,13 @@ class FeedController(
         val feedId = feedService.makeText(userId, request.toFriendIds(), request.toContent(), request.toType())
         return ResponseHelper.successCreate(FeedIdResponse.of(feedId))
     }
+
+    @PutMapping("/text")
+    fun updateTextFeed(
+        @CurrentUser userId: UserId,
+        @RequestBody request: FeedRequest.UpdateText,
+    ): SuccessResponseEntity<SuccessOnlyResponse> {
+        feedService.changeText(userId, request.toFeedId(), request.toContent())
+        return ResponseHelper.successOnly()
+    }
 }

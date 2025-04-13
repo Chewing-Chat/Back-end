@@ -27,4 +27,15 @@ class FeedRequest {
             return content
         }
     }
+    data class UpdateText(
+        val feedId: String,
+        val content: String,
+    ) {
+        fun toFeedId(): FeedId {
+            return FeedId.of(feedId)
+        }
+        fun toContent(): String {
+            return content
+        }
+    }
 }

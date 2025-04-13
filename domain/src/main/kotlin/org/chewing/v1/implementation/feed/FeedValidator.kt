@@ -19,6 +19,12 @@ class FeedValidator(
         }
     }
 
+    fun isFeedOwner(feedId: FeedId, userId: UserId) {
+        if (!feedRepository.isOwner(feedId, userId)) {
+            throw ConflictException(ErrorCode.FEED_IS_NOT_OWNED)
+        }
+    }
+
     fun isFeedVisible(feedId: FeedId, userId: UserId) {
         if (!feedVisibilityRepository.isVisible(feedId, userId)) {
             throw ConflictException(ErrorCode.FEED_IS_NOT_VISIBLE)

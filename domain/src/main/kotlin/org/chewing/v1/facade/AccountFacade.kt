@@ -77,4 +77,12 @@ class AccountFacade(
         userService.createDeviceInfo(user.info, device, appToken)
         return user.info.userId
     }
+
+    fun logout(
+        device: PushInfo.Device,
+        token: String,
+    ) {
+        authService.logout(token)
+        userService.removePushInfo(device)
+    }
 }

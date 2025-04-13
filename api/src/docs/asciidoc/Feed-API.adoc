@@ -143,3 +143,20 @@ include::{snippets}/feed-controller-test/add-text-feed/http-response.adoc[]
 
 === 응답 필드 설명(Response Fields)
 include::{snippets}/feed-controller-test/add-text-feed/response-fields.adoc[]
+
+== 7. 피드 수정 04/12 수정
+
+=== 요청(Request)
+include::{snippets}/feed-controller-test/update-text-feed/http-request.adoc[]
+
+=== 요청헤더(Request Headers)
+include::{snippets}/feed-controller-test/update-text-feed/request-headers.adoc[]
+
+=== 요청 필드 설명(Request Fields)
+include::{snippets}/feed-controller-test/update-text-feed/request-fields.adoc[]
+
+=== 응답(Response)
+include::{snippets}/feed-controller-test/update-text-feed/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/feed-controller-test/update-text-feed/response-fields.adoc[]
