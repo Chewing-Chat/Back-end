@@ -17,13 +17,18 @@ data class ChatGPTRequest(
         ): ChatGPTRequest {
             return ChatGPTRequest(
                 model = model,
-                messages = prompts.map { Message(content = listOf(Message.of(it))) },
+                messages = prompts.map {
+                    Message(
+                        role = it.role.name.lowercase(),
+                        content = listOf(Message.of(it)),
+                    )
+                },
             )
         }
     }
 
     data class Message(
-        val role: String = "user",
+        val role: String,
         val content: List<Any>,
     ) {
         companion object {
