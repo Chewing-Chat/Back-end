@@ -7,6 +7,7 @@ import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.ChatNormalLog
 import org.chewing.v1.model.chat.log.ChatReplyLog
+import org.chewing.v1.model.chat.member.SenderType
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.message.MessageType
 import org.chewing.v1.model.chat.room.ChatRoomId
@@ -189,6 +190,26 @@ class ChatGenerator {
             parentMessageType = parentLog.type,
             type = MessageType.REPLY,
             chatRoomType = chatRoomType,
+        )
+    }
+
+    fun generateAiMessage(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        roomSequence: ChatRoomSequence,
+        text: String,
+        chatRoomType: ChatRoomType,
+        senderType: SenderType,
+    ): ChatAiMessage {
+        return ChatAiMessage.of(
+            generateKey(chatRoomId),
+            chatRoomId = chatRoomId,
+            senderId = userId,
+            timestamp = LocalDateTime.now(),
+            roomSequence = roomSequence,
+            text = text,
+            chatRoomType = chatRoomType,
+            senderType = senderType,
         )
     }
 

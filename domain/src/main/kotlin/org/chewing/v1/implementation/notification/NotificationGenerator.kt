@@ -1,8 +1,11 @@
 package org.chewing.v1.implementation.notification
 
+import org.chewing.v1.error.ConflictException
+import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatRoomType
+import org.chewing.v1.model.chat.room.ChatRoomType.*
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.notification.Notification
 import org.chewing.v1.model.notification.NotificationInfo
@@ -31,15 +34,17 @@ class NotificationGenerator {
             is ChatFileMessage -> {
                 val content = "사진을 보냈습니다." // val mediaUrl = message.medias.first().url
                 when (message.chatRoomType) {
-                    ChatRoomType.DIRECT -> Triple(NotificationType.DIRECT_CHAT_FILE, message.chatRoomId, content)
-                    ChatRoomType.GROUP -> Triple(NotificationType.GROUP_CHAT_FILE, message.chatRoomId, content)
+                    DIRECT -> Triple(NotificationType.DIRECT_CHAT_FILE, message.chatRoomId, content)
+                    GROUP -> Triple(NotificationType.GROUP_CHAT_FILE, message.chatRoomId, content)
+                    AI -> throw ConflictException(ErrorCode.AI_NOTIFICATION_NOT_SUPPORTED)
                 }
             }
 
             is ChatNormalMessage -> {
                 when (message.chatRoomType) {
-                    ChatRoomType.DIRECT -> Triple(NotificationType.DIRECT_CHAT_NORMAL, message.chatRoomId, message.text)
-                    ChatRoomType.GROUP -> Triple(NotificationType.GROUP_CHAT_NORMAL, message.chatRoomId, message.text)
+                    DIRECT -> Triple(NotificationType.DIRECT_CHAT_NORMAL, message.chatRoomId, message.text)
+                    GROUP -> Triple(NotificationType.GROUP_CHAT_NORMAL, message.chatRoomId, message.text)
+                    AI -> throw ConflictException(ErrorCode.AI_NOTIFICATION_NOT_SUPPORTED)
                 }
             }
 
@@ -53,8 +58,9 @@ class NotificationGenerator {
 
             is ChatReplyMessage -> {
                 when (message.chatRoomType) {
-                    ChatRoomType.DIRECT -> Triple(NotificationType.DIRECT_CHAT_REPLY, message.chatRoomId, message.text)
-                    ChatRoomType.GROUP -> Triple(NotificationType.GROUP_CHAT_REPLY, message.chatRoomId, message.text)
+                    DIRECT -> Triple(NotificationType.DIRECT_CHAT_REPLY, message.chatRoomId, message.text)
+                    GROUP -> Triple(NotificationType.GROUP_CHAT_REPLY, message.chatRoomId, message.text)
+                    AI -> throw ConflictException(ErrorCode.AI_NOTIFICATION_NOT_SUPPORTED)
                 }
             }
 

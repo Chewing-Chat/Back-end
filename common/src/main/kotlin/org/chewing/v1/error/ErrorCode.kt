@@ -79,6 +79,7 @@ enum class ErrorCode(
     INVALID_TYPE("INVALID_1", "잘못된 타입입니다."),
 
     AI_PROMPT_FAILED("AI_1", "AI 프롬프트를 실패하였습니다."),
+    AI_NOTIFICATION_NOT_SUPPORTED("AI_2", "AI 알림을 지원하지 않습니다."),
     ;
 
     companion object {

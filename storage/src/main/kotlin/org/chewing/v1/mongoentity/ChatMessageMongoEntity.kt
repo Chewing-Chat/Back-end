@@ -45,6 +45,7 @@ internal sealed class ChatMessageMongoEntity(
             is ChatReplyMessage -> ChatReplyMongoEntity.from(chatMessage)
             is ChatErrorMessage -> null
             is ChatCommentMessage -> ChatCommentMongoEntity.from(chatMessage)
+            is ChatAiMessage -> ChatAiMongoEntity.from(chatMessage)
         }
     }
 

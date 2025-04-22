@@ -67,6 +67,16 @@ sealed class ChatLogResponse {
         val comment: String,
     ) : ChatLogResponse()
 
+    data class Ai(
+        val messageId: String,
+        val type: String,
+        val senderId: String,
+        val timestamp: String,
+        val seqNumber: Int,
+        val text: String,
+        val senderType: String,
+    ) : ChatLogResponse()
+
     companion object {
         fun from(chatLog: ChatLog): ChatLogResponse {
             val formattedTime = chatLog.timestamp.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
@@ -132,6 +142,16 @@ sealed class ChatLogResponse {
                     feedType = chatLog.feedType.name.lowercase(),
                     content = chatLog.content,
                     comment = chatLog.comment,
+                )
+
+                is ChatAiLog -> Ai(
+                    messageId = chatLog.messageId,
+                    type = chatLog.type.name.lowercase(),
+                    senderId = chatLog.senderId.id,
+                    timestamp = formattedTime,
+                    seqNumber = chatLog.roomSequence.sequence,
+                    text = chatLog.text,
+                    senderType = chatLog.senderType.name.lowercase(),
                 )
             }
         }
