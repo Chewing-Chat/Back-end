@@ -167,6 +167,7 @@ object TestDataFactory {
             "testPassword",
             "testStatusMessage",
             LocalDate.now(),
+            UserRole.USER,
         )
     }
 
@@ -184,6 +185,7 @@ object TestDataFactory {
         password,
         "testStatusMessage",
         LocalDate.now(),
+        UserRole.USER,
     )
 
     fun createScheduledTime(): ScheduleTime =

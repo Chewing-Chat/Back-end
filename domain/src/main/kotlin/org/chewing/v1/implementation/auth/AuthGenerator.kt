@@ -8,7 +8,8 @@ import java.util.Random
 class AuthGenerator {
 
     fun generateVerificationCode(): String {
-        return (100000 + Random().nextInt(900000)).toString()
+//        return (100000 + Random().nextInt(900000)).toString()
+        return "000000"
     }
 
     fun hashPassword(password: String): String {

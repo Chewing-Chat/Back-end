@@ -2,6 +2,8 @@ package org.chewing.v1.dto
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import org.chewing.v1.error.ConflictException
+import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.chat.message.*
 import java.time.format.DateTimeFormatter
 
@@ -225,6 +227,8 @@ sealed class ChatMessageDto {
                     comment = chatMessage.comment,
                     content = chatMessage.content,
                 )
+
+                is ChatAiMessage -> throw ConflictException(ErrorCode.AI_WEBSOCKET_NOT_SUPPORTED)
             }
         }
     }

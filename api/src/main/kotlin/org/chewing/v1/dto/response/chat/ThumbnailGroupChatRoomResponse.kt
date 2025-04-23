@@ -1,5 +1,8 @@
 package org.chewing.v1.dto.response.chat
 
+import org.chewing.v1.error.ConflictException
+import org.chewing.v1.error.ErrorCode
+import org.chewing.v1.model.chat.log.ChatAiLog
 import org.chewing.v1.model.chat.log.ChatCommentLog
 import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatInviteLog
@@ -94,6 +97,8 @@ data class ThumbnailGroupChatRoomResponse(
                     chatRoomSequenceNumber = chatRoom.roomSequence.sequence,
                     chatRoomName = chatRoom.roomInfo.name,
                 )
+
+                is ChatAiLog -> throw ConflictException(ErrorCode.AI_NOT_SUPPORTED)
             }
         }
     }

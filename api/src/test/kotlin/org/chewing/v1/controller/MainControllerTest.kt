@@ -13,6 +13,7 @@ import org.chewing.v1.facade.DirectChatFacade
 import org.chewing.v1.facade.FriendFacade
 import org.chewing.v1.facade.FriendFeedFacade
 import org.chewing.v1.facade.GroupChatFacade
+import org.chewing.v1.model.chat.log.ChatAiLog
 import org.chewing.v1.model.chat.log.ChatCommentLog
 import org.chewing.v1.model.chat.log.ChatFileLog
 import org.chewing.v1.model.chat.log.ChatInviteLog
@@ -239,6 +240,8 @@ class MainControllerTest : RestDocsTest() {
                                     body("$mediaPath.index", equalTo(media.index))
                                 }
                             }
+
+                            is ChatAiLog -> null
                         }
                     }
                 }
