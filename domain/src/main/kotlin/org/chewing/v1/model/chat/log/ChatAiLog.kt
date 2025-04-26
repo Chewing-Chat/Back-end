@@ -14,7 +14,7 @@ class ChatAiLog private constructor(
     override val roomSequence: ChatRoomSequence,
     override val type: ChatLogType,
     val text: String,
-    val senderType: SenderType
+    val senderType: SenderType,
 ) : ChatLog() {
 
     companion object {
@@ -26,7 +26,7 @@ class ChatAiLog private constructor(
             roomSequence: ChatRoomSequence,
             timestamp: LocalDateTime,
             type: ChatLogType,
-            senderType: SenderType
+            senderType: SenderType,
         ): ChatAiLog {
             return ChatAiLog(
                 messageId = messageId,
@@ -36,7 +36,7 @@ class ChatAiLog private constructor(
                 roomSequence = roomSequence,
                 timestamp = timestamp,
                 type = type,
-                senderType = senderType
+                senderType = senderType,
             )
         }
     }

@@ -2,7 +2,6 @@ package org.chewing.v1.facade
 
 import org.chewing.v1.model.chat.member.SenderType
 import org.chewing.v1.model.chat.room.ChatRoomId
-import org.chewing.v1.model.chat.room.ChatRoomMemberStatus
 import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.user.UserId
 import org.chewing.v1.service.ai.AiPromptService
@@ -21,12 +20,18 @@ class AiFacade(
         chatRoomId: ChatRoomId,
         text: String,
     ): String {
-        val directChatRoom = aiChatRoomService.getAiChatRoom(chatRoomId, userId)
-        val chatSequence = aiChatRoomService.increaseDirectChatRoomSequence(directChatRoom.chatRoomId)
-        chatLogService.aiMessage(directChatRoom.chatRoomId, userId, chatSequence, text, ChatRoomType.AI, SenderType.USER)
-        val chatLogs = chatLogService.getChatLogs(directChatRoom.chatRoomId, chatSequence.sequence, 0)
+        val aiChatRoom = aiChatRoomService.getAiChatRoom(chatRoomId, userId)
+        val chatSequence = aiChatRoomService.increaseDirectChatRoomSequence(aiChatRoom.chatRoomId)
+        chatLogService.aiMessage(aiChatRoom.chatRoomId, userId, chatSequence, text, ChatRoomType.AI, SenderType.USER)
+        val chatLogs = chatLogService.getChatLogs(aiChatRoom.chatRoomId, chatSequence.sequence, 0)
         val aiMessage = aiPromptService.prompt(chatLogs)
-        chatLogService.aiMessage(directChatRoom.chatRoomId, userId, chatSequence, aiMessage, ChatRoomType.AI, SenderType.AI)
+        chatLogService.aiMessage(aiChatRoom.chatRoomId, userId, chatSequence, aiMessage, ChatRoomType.AI, SenderType.AI)
         return aiMessage
+    }
+
+    fun produceAiChatRoom(
+        userId: UserId,
+    ): ChatRoomId {
+        return  aiChatRoomService.createAiChatRoom(userId)
     }
 }

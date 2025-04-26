@@ -6,5 +6,5 @@ import org.chewing.v1.model.user.UserId
 
 interface AiChatRoomRepository {
     fun append(userId: UserId): ChatRoomId
-    fun readInfo(chatRoomId: ChatRoomId,userId: UserId): AiChatRoomInfo?
+    fun readInfo(chatRoomId: ChatRoomId, userId: UserId): AiChatRoomInfo?
 }

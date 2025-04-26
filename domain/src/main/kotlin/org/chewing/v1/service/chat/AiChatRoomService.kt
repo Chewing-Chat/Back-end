@@ -7,7 +7,6 @@ import org.chewing.v1.model.chat.room.AiChatRoomInfo
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.ChatRoomSequence
 import org.chewing.v1.model.user.UserId
-import org.chewing.v1.repository.chat.AiChatRoomRepository
 import org.springframework.stereotype.Service
 
 @Service
@@ -21,14 +20,14 @@ class AiChatRoomService(
     ): ChatRoomId {
         val chatRoomId = aiChatRoomAppender.appendChatRoom(userId)
         chatSequenceHandler.handleCreateRoomSequence(chatRoomId)
-        chatSequenceHandler.handleCreateMemberSequences(chatRoomId, listOf(userId))
+        chatSequenceHandler.handleCreateRoomSequence(chatRoomId, userId)
         return chatRoomId
     }
     fun getAiChatRoom(
         chatRoomId: ChatRoomId,
         userId: UserId,
     ): AiChatRoomInfo {
-        return aiChatRoomReader.readRoomInfo(chatRoomId,userId)
+        return aiChatRoomReader.readRoomInfo(chatRoomId, userId)
     }
 
     fun increaseDirectChatRoomSequence(chatRoomId: ChatRoomId): ChatRoomSequence {

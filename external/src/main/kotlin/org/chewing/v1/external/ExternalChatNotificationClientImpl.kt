@@ -2,7 +2,6 @@ package org.chewing.v1.external
 
 import org.chewing.v1.dto.ChatMessageDto
 import org.chewing.v1.model.chat.message.ChatMessage
-import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.chat.room.ChatRoomType.*
 import org.chewing.v1.model.user.UserId
 import org.springframework.messaging.simp.SimpMessagingTemplate

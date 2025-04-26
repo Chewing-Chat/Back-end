@@ -13,7 +13,7 @@ class UserInfo private constructor(
     val password: String,
     val statusMessage: String,
     val birthday: LocalDate?,
-    val role: UserRole
+    val role: UserRole,
 ) {
     companion object {
         fun of(

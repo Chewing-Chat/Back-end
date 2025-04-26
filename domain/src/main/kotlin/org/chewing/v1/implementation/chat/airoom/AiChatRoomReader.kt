@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class AiChatRoomReader(
-    private val aiChatRoomRepository: AiChatRoomRepository
+    private val aiChatRoomRepository: AiChatRoomRepository,
 ) {
     fun readRoomInfo(chatRoomId: ChatRoomId, userId: UserId) =
         aiChatRoomRepository.readInfo(chatRoomId, userId) ?: throw NotFoundException(

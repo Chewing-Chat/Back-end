@@ -4,7 +4,6 @@ import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.notification.PushInfo
 import org.chewing.v1.model.chat.message.*
-import org.chewing.v1.model.chat.room.ChatRoomType
 import org.chewing.v1.model.chat.room.ChatRoomType.*
 import org.chewing.v1.model.friend.FriendShip
 import org.chewing.v1.model.notification.Notification
