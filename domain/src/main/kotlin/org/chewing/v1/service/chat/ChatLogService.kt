@@ -162,9 +162,10 @@ class ChatLogService(
         text: String,
         chatRoomType: ChatRoomType,
         senderType: SenderType,
-    ) {
+    ): ChatAiMessage {
         val chatMessage = chatGenerator.generateAiMessage(chatRoomId, userId, roomSequence, text, chatRoomType, senderType)
         chatAppender.appendChatLog(chatMessage)
+        return chatMessage
     }
 
     fun getsLatestChatLog(chatRoomIds: List<ChatRoomId>): List<ChatLog> {
