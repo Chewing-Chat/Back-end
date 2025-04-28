@@ -9,7 +9,7 @@ data class AiChatMessageResponse(
     val timestamp: String,
     val seqNumber: Int,
     val text: String,
-    val senderType: String
+    val senderType: String,
 ) {
     companion object {
         fun of(promptMessage: ChatAiMessage): AiChatMessageResponse {
@@ -20,7 +20,7 @@ data class AiChatMessageResponse(
                 timestamp = promptMessage.timestamp.toString(),
                 seqNumber = promptMessage.roomSequence.sequence,
                 text = promptMessage.text,
-                senderType = promptMessage.senderType.name.lowercase()
+                senderType = promptMessage.senderType.name.lowercase(),
             )
         }
     }

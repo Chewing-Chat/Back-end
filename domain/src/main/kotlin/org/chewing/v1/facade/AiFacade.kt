@@ -16,7 +16,7 @@ class AiFacade(
     private val aiChatRoomService: AiChatRoomService,
     private val aiPromptService: AiPromptService,
     private val chatLogService: ChatLogService,
-    private val aiUserGenerator: AiUserGenerator
+    private val aiUserGenerator: AiUserGenerator,
 ) {
     fun processAiMessage(
         userId: UserId,
@@ -36,6 +36,6 @@ class AiFacade(
     fun produceAiChatRoom(
         userId: UserId,
     ): ChatRoomId {
-        return  aiChatRoomService.createAiChatRoom(userId)
+        return aiChatRoomService.createAiChatRoom(userId)
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 @Controller
 class AiController(
     private val aiFacade: AiFacade,
-    private val aiChatRoomService: AiChatRoomService
+    private val aiChatRoomService: AiChatRoomService,
 ) {
     @PostMapping("/ai/chat/room")
     fun createAiChatRoom(
