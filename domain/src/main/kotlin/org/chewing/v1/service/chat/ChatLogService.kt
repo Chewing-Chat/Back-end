@@ -9,6 +9,7 @@ import org.chewing.v1.implementation.chat.message.ChatValidator
 import org.chewing.v1.implementation.media.FileHandler
 import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.UnReadTarget
+import org.chewing.v1.model.chat.member.SenderType
 import org.chewing.v1.model.chat.message.*
 import org.chewing.v1.model.chat.room.ChatRoomId
 import org.chewing.v1.model.chat.room.ChatRoomType
@@ -150,6 +151,19 @@ class ChatLogService(
         feed: Feed,
     ): ChatCommentMessage {
         val chatMessage = chatGenerator.generateCommentMessage(chatRoomId, userId, roomSequence, comment, chatRoomType, feed)
+        chatAppender.appendChatLog(chatMessage)
+        return chatMessage
+    }
+
+    fun aiMessage(
+        chatRoomId: ChatRoomId,
+        userId: UserId,
+        roomSequence: ChatRoomSequence,
+        text: String,
+        chatRoomType: ChatRoomType,
+        senderType: SenderType,
+    ): ChatAiMessage {
+        val chatMessage = chatGenerator.generateAiMessage(chatRoomId, userId, roomSequence, text, chatRoomType, senderType)
         chatAppender.appendChatLog(chatMessage)
         return chatMessage
     }

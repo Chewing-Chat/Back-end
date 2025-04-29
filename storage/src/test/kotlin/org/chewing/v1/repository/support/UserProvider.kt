@@ -6,6 +6,7 @@ import org.chewing.v1.model.media.MediaType
 import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
+import org.chewing.v1.model.user.UserRole
 import java.time.LocalDate
 
 object UserProvider {
@@ -23,6 +24,7 @@ object UserProvider {
             "testPassword",
             "testStatusMessage",
             LocalDate.now(),
+            UserRole.USER,
         )
     }
 

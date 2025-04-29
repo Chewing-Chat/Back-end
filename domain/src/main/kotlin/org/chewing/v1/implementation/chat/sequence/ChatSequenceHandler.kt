@@ -32,6 +32,10 @@ class ChatSequenceHandler(
         }
     }
 
+    fun handleCreateRoomSequence(chatRoomId: ChatRoomId, userId: UserId) {
+        chatRoomMemberSequenceRepository.appendSequence(chatRoomId, userId)
+    }
+
     fun handleCreateRoomSequence(chatRoomId: ChatRoomId) {
         chatRoomSequenceRepository.appendSequence(chatRoomId)
     }

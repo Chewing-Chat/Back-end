@@ -12,6 +12,8 @@ spring:
       - fcm.yml
       - ncp.yml
       - media.yml
+      - openai.yml
+      - ai.yml
       - optional:file:../.env[.properties]
       - optional:file:./.env[.properties]
   mvc:

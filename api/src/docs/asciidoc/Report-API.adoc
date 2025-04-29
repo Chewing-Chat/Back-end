@@ -1,0 +1,19 @@
+[[Report-API]]
+= Report API
+
+== 1. 피드 신고하기 04/19 수정
+
+=== 요청(Request)
+include::{snippets}/report-controller-test/report-feed/http-request.adoc[]
+
+=== 요청 헤더(Request Headers)
+include::{snippets}/report-controller-test/report-feed/request-headers.adoc[]
+
+=== 요청 필드 설명(Request Fields)
+include::{snippets}/report-controller-test/report-feed/request-fields.adoc[]
+
+=== 응답(Response)
+include::{snippets}/report-controller-test/report-feed/http-response.adoc[]
+
+=== 응답 필드 설명(Response Fields)
+include::{snippets}/report-controller-test/report-feed/response-fields.adoc[]

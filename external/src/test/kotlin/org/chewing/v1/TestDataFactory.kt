@@ -30,6 +30,7 @@ object TestDataFactory {
             "testPassword",
             "testStatusMessage",
             LocalDate.now(),
+            UserRole.USER,
         )
     }
 

@@ -62,6 +62,7 @@ import org.chewing.v1.model.user.AccessStatus
 import org.chewing.v1.model.user.User
 import org.chewing.v1.model.user.UserInfo
 import org.chewing.v1.model.user.UserId
+import org.chewing.v1.model.user.UserRole
 import org.springframework.mock.web.MockMultipartFile
 import java.awt.Color
 import java.awt.image.BufferedImage
@@ -220,6 +221,7 @@ object TestDataFactory {
             "testPassword",
             "testStatusMessage",
             LocalDate.now(),
+            UserRole.USER,
         )
     }
 
