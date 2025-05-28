@@ -36,6 +36,7 @@ class ChatLogServiceTest {
         chatGenerator,
         chatRemover,
         chatValidator,
+        chatLogRepository
     )
 
     @Test

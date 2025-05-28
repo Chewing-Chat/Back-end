@@ -14,4 +14,9 @@ class AiPromptService(
         val prompts = aiPromptGenerator.generateChatLogPrompts(chatlogs)
         return aiSender.sendPrompt(prompts)
     }
+
+    fun promptClone(chatlogs: List<ChatLog>, prompt: String): String {
+        val chatStylePrompt = aiPromptGenerator.generateClonePrompt(chatlogs, prompt)
+        return aiSender.sendPrompt(chatStylePrompt)
+    }
 }
