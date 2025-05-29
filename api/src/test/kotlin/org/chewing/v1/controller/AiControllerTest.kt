@@ -73,10 +73,10 @@ class AiControllerTest : RestDocsTest() {
                     responsePreprocessor(),
                     responseFields(
                         fieldWithPath("status").description("응답 상태"),
-                        fieldWithPath("data.chatRoomId").description("AI 채팅방 ID")
+                        fieldWithPath("data.chatRoomId").description("AI 채팅방 ID"),
                     ),
                     requestAccessTokenFields(),
-                )
+                ),
             )
     }
 
@@ -87,7 +87,7 @@ class AiControllerTest : RestDocsTest() {
         val request = ClonePromptRequest(
             prompt = "안녕",
             sourceChatRoomId = "chatroom-001",
-            aiChatRoomId = "ai-room-001"
+            aiChatRoomId = "ai-room-001",
         )
         val aiMessage = ChatAiMessage.of(
             messageId = "msg-002",
@@ -95,9 +95,9 @@ class AiControllerTest : RestDocsTest() {
             chatRoomType = ChatRoomType.AI,
             senderId = UserId.of("ai-user"),
             timestamp = LocalDateTime.now(),
-            roomSequence = ChatRoomSequence.of(chatRoomId,2),
+            roomSequence = ChatRoomSequence.of(chatRoomId, 2),
             text = "안녕하세요!",
-            senderType = SenderType.AI
+            senderType = SenderType.AI,
         )
         val userMessage = ChatAiMessage.of(
             messageId = "msg-001",
@@ -107,7 +107,7 @@ class AiControllerTest : RestDocsTest() {
             timestamp = LocalDateTime.now(),
             roomSequence = ChatRoomSequence.of(chatRoomId, 1),
             text = request.prompt,
-            senderType = SenderType.USER
+            senderType = SenderType.USER,
         )
         every {
             aiFacade.cloneChatAsUserFromChatRoom(any(), any(), any(), any())
@@ -145,7 +145,7 @@ class AiControllerTest : RestDocsTest() {
                     requestFields(
                         fieldWithPath("prompt").description("사용자 입력 프롬프트"),
                         fieldWithPath("sourceChatRoomId").description("복제할 원본 채팅방 ID"),
-                        fieldWithPath("aiChatRoomId").description("AI 채팅방 ID")
+                        fieldWithPath("aiChatRoomId").description("AI 채팅방 ID"),
                     ),
                     requestAccessTokenFields(),
                     responseFields(
@@ -163,9 +163,9 @@ class AiControllerTest : RestDocsTest() {
                         fieldWithPath("data.aiMessage.timestamp").description("메시지 타임스탬프"),
                         fieldWithPath("data.aiMessage.seqNumber").description("채팅방 내 메시지 순서"),
                         fieldWithPath("data.aiMessage.text").description("메시지 내용"),
-                        fieldWithPath("data.aiMessage.senderType").description("메시지 발신자 타입")
-                    )
-                )
+                        fieldWithPath("data.aiMessage.senderType").description("메시지 발신자 타입"),
+                    ),
+                ),
             )
     }
 }

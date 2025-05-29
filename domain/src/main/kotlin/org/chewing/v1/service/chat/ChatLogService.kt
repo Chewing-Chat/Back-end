@@ -30,7 +30,7 @@ class ChatLogService(
     private val chatGenerator: ChatGenerator,
     private val chatRemover: ChatRemover,
     private val chatValidator: ChatValidator,
-    private val chatLogRepository: ChatLogRepository
+    private val chatLogRepository: ChatLogRepository,
 ) {
     fun uploadFiles(fileDataList: List<FileData>, userId: UserId): List<Media> {
         return fileHandler.handleNewFiles(userId, fileDataList, FileCategory.CHAT)

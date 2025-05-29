@@ -13,10 +13,10 @@ data class PairAiChatMessageResponse(
         ): PairAiChatMessageResponse {
             return PairAiChatMessageResponse(
                 userMessage = AiChatMessageResponse.of(
-                    userMessage
+                    userMessage,
                 ),
                 aiMessage = AiChatMessageResponse.of(
-                    aiMessage
+                    aiMessage,
                 ),
             )
         }

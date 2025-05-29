@@ -4,7 +4,6 @@ import org.chewing.v1.error.ConflictException
 import org.chewing.v1.error.ErrorCode
 import org.chewing.v1.model.ai.Prompt
 import org.chewing.v1.model.ai.PromptRole
-import org.chewing.v1.model.ai.PromptType
 import org.chewing.v1.model.ai.TextPrompt
 import org.chewing.v1.model.chat.log.ChatAiLog
 import org.chewing.v1.model.chat.log.ChatLog
@@ -46,7 +45,7 @@ class AiPromptGenerator {
                 text?.let {
                     TextPrompt.of(
                         role = PromptRole.USER,
-                        text = it
+                        text = it,
                     )
                 }
             }
@@ -54,10 +53,9 @@ class AiPromptGenerator {
         val finalPrompt = TextPrompt.of(
             role = PromptRole.USER,
             text = "채팅 로그를 분석해서 대화 문맥에 따라 다음 대화에 채팅로그의 사용자가 너라고 생각하고 사용자의 말투와 똑같이 답해줘, 예를 들어 사용자가 반말중이면 반말하고," +
-                    "공룡이 주제인거 같으면 공룡에 대해서 답변하면 된다. :\n\n$prompt"
+                "공룡이 주제인거 같으면 공룡에 대해서 답변하면 된다. :\n\n$prompt",
         )
 
         return messagePrompts + finalPrompt
     }
-
 }

@@ -66,9 +66,8 @@ class AiFacade(
         val aiResponseSeq = aiChatRoomService.increaseDirectChatRoomSequence(targetAiChatRoomId)
         val aiUserId = aiUserGenerator.getAiUserId()
 
-        val aiMessage =  chatLogService.aiMessage(sourceChatRoomId, aiUserId, aiResponseSeq, aiGeneratedPrompt, ChatRoomType.AI, SenderType.AI)
+        val aiMessage = chatLogService.aiMessage(sourceChatRoomId, aiUserId, aiResponseSeq, aiGeneratedPrompt, ChatRoomType.AI, SenderType.AI)
 
-        return Pair(userMessage,aiMessage)
+        return Pair(userMessage, aiMessage)
     }
-
 }
