@@ -42,26 +42,33 @@ class AiFacade(
     }
 
     fun cloneChatAsUserFromChatRoom(
-        requester: UserId,
-        chatRoomId: ChatRoomId,
-        prompt: String,
-    ): ChatAiMessage {
+        requestingUserId: UserId,
+        sourceChatRoomId: ChatRoomId,
+        targetAiChatRoomId: ChatRoomId,
+        userPrompt: String,
+    ): Pair<ChatAiMessage, ChatAiMessage> {
         // 1. 현재 채팅방에서 상대방 ID 추출
-        val directChatRoom = directChatRoomService.getDirectChatRoom(requester, chatRoomId)
-        val targetUserId = directChatRoom.roomInfo.friendId
+        val directChatRoom = directChatRoomService.getDirectChatRoom(requestingUserId, sourceChatRoomId)
+        val friendUserId = directChatRoom.roomInfo.friendId
 
-        // 2. 해당 채팅방 로그 중, targetUserId가 작성한 메시지만 추출
-        val targetLogs = chatLogService.getChatLogsBySender(chatRoomId, targetUserId)
+        // 2. 해당 채팅방 로그 중, 상대방이 작성한 메시지만 추출
+        val friendMessages = chatLogService.getChatLogsBySender(sourceChatRoomId, friendUserId)
 
-        // 3. 프롬프트 생성
-        val clonePrompt = aiPromptService.promptClone(targetLogs, prompt)
+        // 3. 사용자 입력 메시지를 AI 채팅방에 저장
+        val aiChatRoom = aiChatRoomService.getAiChatRoom(sourceChatRoomId, requestingUserId)
+        val userMessageSeq = aiChatRoomService.increaseDirectChatRoomSequence(aiChatRoom.chatRoomId)
+        val userMessage = chatLogService.aiMessage(aiChatRoom.chatRoomId, requestingUserId, userMessageSeq, userPrompt, ChatRoomType.AI, SenderType.USER)
 
-        // 4. AI 응답을 현재 채팅방에 저장
-        val sequence = aiChatRoomService.increaseDirectChatRoomSequence(chatRoomId)
+        // 4. 클론용 프롬프트 생성
+        val aiGeneratedPrompt = aiPromptService.promptClone(friendMessages, userPrompt)
+
+        // 5. AI 응답을 실제 채팅방에 저장
+        val aiResponseSeq = aiChatRoomService.increaseDirectChatRoomSequence(targetAiChatRoomId)
         val aiUserId = aiUserGenerator.getAiUserId()
 
-        return chatLogService.aiMessage(chatRoomId, aiUserId, sequence, clonePrompt, ChatRoomType.DIRECT, SenderType.AI)
-    }
+        val aiMessage =  chatLogService.aiMessage(sourceChatRoomId, aiUserId, aiResponseSeq, aiGeneratedPrompt, ChatRoomType.AI, SenderType.AI)
 
+        return Pair(userMessage,aiMessage)
+    }
 
 }

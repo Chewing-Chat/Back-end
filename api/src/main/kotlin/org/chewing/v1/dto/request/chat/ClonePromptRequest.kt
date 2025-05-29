@@ -1,3 +1,9 @@
 package org.chewing.v1.dto.request.chat
 
-data class ClonePromptRequest(val prompt: String)
+import org.chewing.v1.model.chat.room.ChatRoomId
+
+data class ClonePromptRequest(
+    val prompt: String,
+    val sourceChatRoomId: String,
+    val aiChatRoomId: String,
+)
