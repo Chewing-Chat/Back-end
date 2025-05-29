@@ -4,11 +4,13 @@ import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.UnReadTarget
 import org.chewing.v1.model.chat.message.ChatMessage
 import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.user.UserId
 import org.chewing.v1.mongoentity.ChatMessageMongoEntity
 import org.chewing.v1.mongoentity.LatestChatMessageWrapper
 import org.chewing.v1.mongorepository.ChatLogMongoRepository
 import org.chewing.v1.repository.chat.ChatLogRepository
 import org.chewing.v1.util.SortType
+import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.aggregation.Aggregation
 import org.springframework.data.mongodb.core.query.Criteria
@@ -115,5 +117,19 @@ internal class ChatLogRepositoryImpl(
             .with(SortType.LARGEST.toSort())
             .limit(1)
         return mongoTemplate.findOne(query, ChatMessageMongoEntity::class.java)?.toChatLog()
+    }
+
+    override fun readChatLogsBySender(chatRoomId: ChatRoomId, senderId: UserId): List<ChatLog> {
+        val criteria = Criteria
+            .where("chatRoomId").`is`(chatRoomId.id)
+            .and("senderId").`is`(senderId.id)
+            .and("type").`in`("NORMAL", "REPLY", "AI")
+
+        val query = Query(criteria)
+            .with(Sort.by(Sort.Direction.ASC, "sequence"))
+            .limit(100) // 적절한 범위로 조정
+
+        return mongoTemplate.find(query, ChatMessageMongoEntity::class.java)
+            .map { it.toChatLog() }
     }
 }

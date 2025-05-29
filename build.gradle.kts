@@ -65,6 +65,7 @@ subprojects {
 
         //env
         implementation("me.paulschwarz:spring-dotenv:4.0.0")
+        implementation("org.springframework.boot:spring-boot-starter-web")
     }
 
     tasks {

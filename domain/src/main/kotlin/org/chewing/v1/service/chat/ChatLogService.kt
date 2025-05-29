@@ -19,6 +19,7 @@ import org.chewing.v1.model.media.FileCategory
 import org.chewing.v1.model.media.FileData
 import org.chewing.v1.model.media.Media
 import org.chewing.v1.model.user.UserId
+import org.chewing.v1.repository.chat.ChatLogRepository
 import org.springframework.stereotype.Service
 
 @Service
@@ -29,6 +30,7 @@ class ChatLogService(
     private val chatGenerator: ChatGenerator,
     private val chatRemover: ChatRemover,
     private val chatValidator: ChatValidator,
+    private val chatLogRepository: ChatLogRepository,
 ) {
     fun uploadFiles(fileDataList: List<FileData>, userId: UserId): List<Media> {
         return fileHandler.handleNewFiles(userId, fileDataList, FileCategory.CHAT)
@@ -193,5 +195,8 @@ class ChatLogService(
     }
     fun getChatLog(messageId: String): ChatLog {
         return chatReader.readChatMessage(messageId)
+    }
+    fun getChatLogsBySender(chatRoomId: ChatRoomId, senderId: UserId): List<ChatLog> {
+        return chatLogRepository.readChatLogsBySender(chatRoomId, senderId)
     }
 }

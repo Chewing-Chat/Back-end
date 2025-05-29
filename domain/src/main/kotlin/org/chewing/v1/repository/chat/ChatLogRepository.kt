@@ -4,6 +4,7 @@ import org.chewing.v1.model.chat.log.ChatLog
 import org.chewing.v1.model.chat.log.UnReadTarget
 import org.chewing.v1.model.chat.message.ChatMessage
 import org.chewing.v1.model.chat.room.ChatRoomId
+import org.chewing.v1.model.user.UserId
 
 interface ChatLogRepository {
     fun readChatMessages(chatRoomId: ChatRoomId, sequence: Int, joinSequence: Int): List<ChatLog>
@@ -15,4 +16,5 @@ interface ChatLogRepository {
     fun readChatKeyWordMessages(chatRoomId: ChatRoomId, keyword: String): List<ChatLog>
     fun readUnreadChatLogs(targets: List<UnReadTarget>): List<ChatLog>
     fun readLatestChatMessage(chatRoomId: ChatRoomId): ChatLog?
+    fun readChatLogsBySender(chatRoomId: ChatRoomId, senderId: UserId): List<ChatLog>
 }
