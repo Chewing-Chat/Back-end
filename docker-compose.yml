@@ -48,6 +48,8 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - /etc/letsencrypt/live/drr.kro.kr/fullchain.pem:/etc/nginx/ssl/fullchain.pem:ro
       - /etc/letsencrypt/live/drr.kro.kr/privkey.pem:/etc/nginx/ssl/privkey.pem:ro
+      - /var/www/html:/var/www/html:rw
+      - /var/www/certbot:/var/www/certbot:ro
     depends_on:
       - service
     networks:
