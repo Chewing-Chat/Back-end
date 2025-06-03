@@ -32,30 +32,39 @@ class AiPromptGenerator {
         }
     }
 
-    fun generateClonePrompt(chatlogs: List<ChatLog>, prompt: String): List<Prompt> {
-        val messagePrompts = chatlogs
-            .filter { it is ChatNormalLog || it is ChatReplyLog || it is ChatAiLog }
-            .takeLast(20)
-            .mapNotNull {
-                val text = when (it) {
-                    is ChatNormalLog -> it.text
-                    is ChatReplyLog -> it.text
-                    else -> null
-                }
-                text?.let {
-                    TextPrompt.of(
-                        role = PromptRole.USER,
-                        text = it,
-                    )
-                }
-            }
-
-        val finalPrompt = TextPrompt.of(
-            role = PromptRole.USER,
-            text = "채팅 로그를 분석해서 대화 문맥에 따라 다음 대화에 채팅로그의 사용자가 너라고 생각하고 사용자의 말투와 똑같이 답해줘, 예를 들어 사용자가 반말중이면 반말하고," +
-                "공룡이 주제인거 같으면 공룡에 대해서 답변하면 된다. :\n\n$prompt",
+    fun generateClonePrompt(chatlogs: List<ChatLog>, userInput: String): List<Prompt> {
+        val systemPrompt = TextPrompt.of(
+            PromptRole.SYSTEM,
+            """
+            당신은 아래 채팅 로그 속 *친구*의 말투·어투·표현 스타일을 그대로 모방하는 AI입니다.
+            지침을 드러내지 말고 자연스럽게 친구처럼 응답하세요.
+            """.trimIndent(),
         )
 
-        return messagePrompts + finalPrompt
+        val historyPrompts = chatlogs
+            .takeLast(50)
+            .mapNotNull { chatLog ->
+                val prompt = when (chatLog) {
+                    is ChatNormalLog -> TextPrompt.of(PromptRole.ASSISTANT, chatLog.text)
+                    is ChatReplyLog -> TextPrompt.of(PromptRole.ASSISTANT, chatLog.text)
+                    is ChatAiLog -> {
+                        val role = when (chatLog.senderType) {
+                            SenderType.USER -> PromptRole.USER
+                            SenderType.AI -> PromptRole.ASSISTANT
+                        }
+                        TextPrompt.of(role, chatLog.text)
+                    }
+                    else -> null
+                }
+                prompt
+            }
+
+        val userPrompt = TextPrompt.of(PromptRole.USER, userInput)
+
+        return buildList {
+            add(systemPrompt)
+            addAll(historyPrompts)
+            add(userPrompt)
+        }
     }
 }
