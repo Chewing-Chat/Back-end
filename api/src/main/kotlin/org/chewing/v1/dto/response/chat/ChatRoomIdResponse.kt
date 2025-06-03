@@ -1,11 +1,13 @@
 package org.chewing.v1.dto.response.chat
 
+import org.chewing.v1.model.chat.room.ChatRoomId
+
 class ChatRoomIdResponse(
     val chatRoomId: String,
 ) {
     companion object {
-        fun from(chatRoomId: String): ChatRoomIdResponse {
-            return ChatRoomIdResponse(chatRoomId)
+        fun of(chatRoomId: ChatRoomId): ChatRoomIdResponse {
+            return ChatRoomIdResponse(chatRoomId.id)
         }
     }
 }

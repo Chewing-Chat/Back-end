@@ -85,3 +85,5 @@ include::Chat-Log-API.adoc[]
 include::Notification-API.adoc[]
 
 include::Report-API.adoc[]
+
+include::Ai-API.adoc[]
