@@ -59,8 +59,9 @@ class AiFacade(
         val userMessageSeq = aiChatRoomService.increaseDirectChatRoomSequence(aiChatRoom.chatRoomId)
         val userMessage = chatLogService.aiMessage(aiChatRoom.chatRoomId, requestingUserId, userMessageSeq, userPrompt, ChatRoomType.AI, SenderType.USER)
 
+        val aiMessages = chatLogService.getChatLogs(targetAiChatRoomId, userMessageSeq.sequence, 0)
         // 4. 클론용 프롬프트 생성
-        val aiGeneratedPrompt = aiPromptService.promptClone(friendMessages, userPrompt)
+        val aiGeneratedPrompt = aiPromptService.promptClone(friendMessages + aiMessages, userPrompt)
 
         // 5. AI 응답을 실제 채팅방에 저장
         val aiResponseSeq = aiChatRoomService.increaseDirectChatRoomSequence(targetAiChatRoomId)
