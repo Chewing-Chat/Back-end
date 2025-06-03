@@ -10,6 +10,7 @@ import org.chewing.v1.service.ai.AiPromptService
 import org.chewing.v1.service.chat.AiChatRoomService
 import org.chewing.v1.service.chat.ChatLogService
 import org.chewing.v1.service.chat.DirectChatRoomService
+import org.chewing.v1.service.friend.FriendShipService
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,6 +20,7 @@ class AiFacade(
     private val chatLogService: ChatLogService,
     private val aiUserGenerator: AiUserGenerator,
     private val directChatRoomService: DirectChatRoomService,
+    private val friendShipService: FriendShipService
 ) {
     fun processAiMessage(
         userId: UserId,
@@ -47,9 +49,10 @@ class AiFacade(
         targetAiChatRoomId: ChatRoomId,
         userPrompt: String,
     ): Pair<ChatAiMessage, ChatAiMessage> {
-        // 1. 현재 채팅방에서 상대방 ID 추출
+        // 1. 현재 채팅방에서 상대방 ID 추출 하여 친구 관계 조회
         val directChatRoom = directChatRoomService.getDirectChatRoom(requestingUserId, sourceChatRoomId)
         val friendUserId = directChatRoom.roomInfo.friendId
+        val friendShip = friendShipService.getFriendShip(requestingUserId, friendUserId)
 
         // 2. 해당 채팅방 로그 중, 상대방이 작성한 메시지만 추출
         val friendMessages = chatLogService.getChatLogsBySender(sourceChatRoomId, friendUserId)
@@ -61,7 +64,7 @@ class AiFacade(
 
         val aiMessages = chatLogService.getChatLogs(targetAiChatRoomId, userMessageSeq.sequence, 0)
         // 4. 클론용 프롬프트 생성
-        val aiGeneratedPrompt = aiPromptService.promptClone(friendMessages + aiMessages, userPrompt)
+        val aiGeneratedPrompt = aiPromptService.promptClone(friendMessages + aiMessages, userPrompt, friendShip)
 
         // 5. AI 응답을 실제 채팅방에 저장
         val aiResponseSeq = aiChatRoomService.increaseDirectChatRoomSequence(targetAiChatRoomId)

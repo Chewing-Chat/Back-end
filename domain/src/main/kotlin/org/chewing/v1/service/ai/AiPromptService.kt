@@ -3,6 +3,7 @@ package org.chewing.v1.service.ai
 import org.chewing.v1.implementation.ai.AiPromptGenerator
 import org.chewing.v1.implementation.ai.AiSender
 import org.chewing.v1.model.chat.log.ChatLog
+import org.chewing.v1.model.friend.FriendShip
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,8 +16,8 @@ class AiPromptService(
         return aiSender.sendPrompt(prompts)
     }
 
-    fun promptClone(chatlogs: List<ChatLog>, prompt: String): String {
-        val chatStylePrompt = aiPromptGenerator.generateClonePrompt(chatlogs, prompt)
+    fun promptClone(chatlogs: List<ChatLog>, prompt: String, friendShip: FriendShip): String {
+        val chatStylePrompt = aiPromptGenerator.generateClonePrompt(chatlogs, prompt , friendShip)
         return aiSender.sendPrompt(chatStylePrompt)
     }
 }
