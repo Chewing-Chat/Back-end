@@ -106,4 +106,8 @@ class FriendShipService(
         val friendShip = friendShipReader.readByRelation(userId, friendId)
         friendShipValidator.validateAllowedFriend(friendShip)
     }
+
+    fun getFriendShip(userId: UserId, friendId: UserId): FriendShip {
+        return friendShipReader.readByRelation(userId, friendId)
+    }
 }
