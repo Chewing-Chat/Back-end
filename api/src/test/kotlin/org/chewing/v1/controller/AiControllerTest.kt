@@ -59,7 +59,7 @@ class AiControllerTest : RestDocsTest() {
 
         given()
             .setupAuthenticatedJsonRequest()
-            .post("/ai/chat/room")
+            .post("/api/ai/chat/room")
             .then()
             .statusCode(HttpStatus.CREATED.value())
             .apply {
@@ -116,7 +116,7 @@ class AiControllerTest : RestDocsTest() {
         given()
             .setupAuthenticatedJsonRequest()
             .body(request)
-            .post("/ai/chat/clone")
+            .post("/api/ai/chat/clone")
             .then()
             .statusCode(HttpStatus.OK.value())
             .body("status", equalTo(200))
