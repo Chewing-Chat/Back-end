@@ -55,7 +55,7 @@ class AiFacade(
         val friendMessages = chatLogService.getChatLogsBySender(sourceChatRoomId, friendUserId)
 
         // 3. 사용자 입력 메시지를 AI 채팅방에 저장
-        val aiChatRoom = aiChatRoomService.getAiChatRoom(sourceChatRoomId, requestingUserId)
+        val aiChatRoom = aiChatRoomService.getAiChatRoom(targetAiChatRoomId, requestingUserId)
         val userMessageSeq = aiChatRoomService.increaseDirectChatRoomSequence(aiChatRoom.chatRoomId)
         val userMessage = chatLogService.aiMessage(aiChatRoom.chatRoomId, requestingUserId, userMessageSeq, userPrompt, ChatRoomType.AI, SenderType.USER)
 
