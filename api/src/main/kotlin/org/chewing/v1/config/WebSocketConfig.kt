@@ -12,15 +12,13 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration
 
-
-
 @Configuration
 @EnableWebSocketMessageBroker
 class WebSocketConfig(
     private val stompCustomHandshakeHandler: CustomHandshakeHandler,
     private val stompChannelInterceptor: StompChannelInterceptor,
     private val customStompErrorHandler: CustomStompErrorHandler,
-    private val customWebSocketHandlerDecoratorFactory: CustomWebSocketHandlerDecoratorFactory
+    private val customWebSocketHandlerDecoratorFactory: CustomWebSocketHandlerDecoratorFactory,
 ) : WebSocketMessageBrokerConfigurer {
     override fun configureMessageBroker(config: MessageBrokerRegistry) {
         config.enableSimpleBroker("/topic", "/queue")
