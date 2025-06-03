@@ -12,13 +12,15 @@ import org.chewing.v1.util.security.CurrentUser
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
+@RequestMapping("/api/ai")
 class AiController(
     private val aiFacade: AiFacade,
     private val aiChatRoomService: AiChatRoomService,
 ) {
-    @PostMapping("/ai/chat/room")
+    @PostMapping("/chat/room")
     fun createAiChatRoom(
         @CurrentUser userId: UserId,
     ): SuccessResponseEntity<ChatRoomId> {
@@ -26,7 +28,7 @@ class AiController(
         return ResponseHelper.success(chatRoomId)
     }
 
-    @PostMapping("/ai/chat/room/prompt")
+    @PostMapping("/chat/room/prompt")
     fun promptAiChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ChatRequest.Common,
