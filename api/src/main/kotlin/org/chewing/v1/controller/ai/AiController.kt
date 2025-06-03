@@ -38,7 +38,7 @@ class AiController(
         return ResponseHelper.success(AiChatMessageResponse.of(prompt))
     }
 
-    @PostMapping("/ai/chat/clone")
+    @PostMapping("/chat/clone")
     fun cloneDirectChatRoom(
         @CurrentUser userId: UserId,
         @RequestBody request: ClonePromptRequest,
