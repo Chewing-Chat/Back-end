@@ -20,7 +20,7 @@ class AiFacade(
     private val chatLogService: ChatLogService,
     private val aiUserGenerator: AiUserGenerator,
     private val directChatRoomService: DirectChatRoomService,
-    private val friendShipService: FriendShipService
+    private val friendShipService: FriendShipService,
 ) {
     fun processAiMessage(
         userId: UserId,

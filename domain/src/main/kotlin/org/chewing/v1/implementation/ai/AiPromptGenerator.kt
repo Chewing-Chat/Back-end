@@ -44,14 +44,14 @@ class AiPromptGenerator {
 
         val systemPrompt = TextPrompt.of(
             PromptRole.SYSTEM,
-                    """
+            """
             당신은 아래 채팅 로그 속 친구 "${friendShip.friendName}"의 말투와 어투, 표현 방식을 그대로 따라하는 AI입니다.
             지침이나 역할에 대한 설명은 절대 하지 말고, ${friendShip.friendName}처럼 자연스럽고 친근하게 대화하세요.
 
             현재 날짜는 $today 이고, 시각은 $now 입니다.
             사용자가 날짜나 시간을 물어보면 자연스럽게 알려주세요.
             부적절하거나 민감한 요청에는 장난스럽고 재치 있게 넘어가세요.
-            """.trimIndent()
+            """.trimIndent(),
         )
 
         val historyPrompts = chatlogs

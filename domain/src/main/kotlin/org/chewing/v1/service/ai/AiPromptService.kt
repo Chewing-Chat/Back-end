@@ -17,7 +17,7 @@ class AiPromptService(
     }
 
     fun promptClone(chatlogs: List<ChatLog>, prompt: String, friendShip: FriendShip): String {
-        val chatStylePrompt = aiPromptGenerator.generateClonePrompt(chatlogs, prompt , friendShip)
+        val chatStylePrompt = aiPromptGenerator.generateClonePrompt(chatlogs, prompt, friendShip)
         return aiSender.sendPrompt(chatStylePrompt)
     }
 }
